@@ -1,0 +1,1396 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<title>Reversa · Argus Prime</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: coluna única de leitura técnica — cabeçalho editorial, faixa de envio, resumo, tabelas auditáveis. Cantos retos, réguas finas. */
+:root {
+  --bg: #FDFAF6; --card: #FFFDFA; --fg: #1F1A14; --muted-fg: #6B6258; --soft: #F2EDE3; --line: #E3DDD3;
+  --accent: #9C7D53; --accent-ink: #7A5F3B; --ok: #3F6B4A; --ok-bg: #E6EFE6; --warn: #8A5A12; --warn-bg: #F7EBD3;
+  --bad: #9A3328; --bad-bg: #F6E1DD;
+  --f-display: "DM Serif Display", "Lora", Georgia, serif;
+  --f-body: "Manrope", "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #15120E; --card: #1C1814; --fg: #EFE8DD; --muted-fg: #A89D8F; --soft: #252019; --line: #3A332A;
+  --accent: #C4A576; --accent-ink: #D8BC8E; --ok: #8FC29C; --ok-bg: #1E2B21; --warn: #E2B66C; --warn-bg: #2E2416;
+  --bad: #E8958A; --bad-bg: #331B17; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #15120E; --card: #1C1814; --fg: #EFE8DD; --muted-fg: #A89D8F; --soft: #252019; --line: #3A332A;
+  --accent: #C4A576; --accent-ink: #D8BC8E; --ok: #8FC29C; --ok-bg: #1E2B21; --warn: #E2B66C; --warn-bg: #2E2416;
+  --bad: #E8958A; --bad-bg: #331B17; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 64px; display: grid; gap: 40px; }
+h1, h2 { font-family: var(--f-display); font-weight: 400; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); line-height: 1.05; }
+h1 em, h2 em { color: var(--accent); font-style: italic; }
+h2 { font-size: 1.6rem; line-height: 1.2; }
+p { margin: 0; }
+.eyebrow { display: flex; align-items: center; gap: 10px; font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted-fg); font-weight: 600; }
+.eyebrow::before { content: ""; width: 28px; height: 1px; background: var(--accent); }
+.lede { color: var(--muted-fg); max-width: 68ch; }
+.num { font-variant-numeric: tabular-nums; }
+section { display: grid; gap: 16px; min-width: 0; }
+.head { display: grid; gap: 14px; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+
+/* envio */
+.drop { border: 1px dashed var(--accent); background: var(--card); padding: 28px 24px; display: flex; flex-wrap: wrap; gap: 16px 24px; align-items: center; justify-content: space-between; transition: background .15s; }
+.drop.over { background: var(--soft); }
+.drop strong { font-weight: 600; }
+.drop .hint { color: var(--muted-fg); font-size: .88rem; }
+.btns { display: flex; flex-wrap: wrap; gap: 10px; }
+button, .btn { font: inherit; font-size: .88rem; font-weight: 600; padding: 9px 16px; border: 1px solid var(--fg); background: var(--fg); color: var(--bg); cursor: pointer; border-radius: 0; }
+button.sec, .btn.sec { background: transparent; color: var(--fg); border-color: var(--line); }
+button:hover, .btn:hover { border-color: var(--accent); }
+button.sec:hover, .btn.sec:hover { background: var(--soft); }
+button:focus-visible, .btn:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.banner { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; font-size: .88rem; color: var(--muted-fg); }
+
+/* resumo */
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.kpi { padding: 20px 18px; display: grid; gap: 6px; align-content: start; }
+.kpi + .kpi { border-left: 1px solid var(--line); }
+.kpi .lbl { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-fg); font-weight: 600; }
+.kpi .val { font-family: var(--f-display); font-size: 1.9rem; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.kpi.main .val { color: var(--accent-ink); font-size: 2.3rem; }
+.kpi .sub { font-size: .82rem; color: var(--muted-fg); }
+
+/* listas e tabelas */
+.files { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.file { padding: 12px 0; border-bottom: 1px solid var(--line); display: grid; gap: 6px; }
+.file-top { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.file-name { font-weight: 600; word-break: break-all; }
+.file-meta { color: var(--muted-fg); font-size: .85rem; }
+.msgs { margin: 0; padding-left: 18px; font-size: .86rem; color: var(--muted-fg); display: grid; gap: 2px; }
+.msgs .e { color: var(--bad); }
+.pill { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .04em; padding: 2px 8px; white-space: nowrap; }
+.pill.ok { color: var(--ok); background: var(--ok-bg); }
+.pill.warn { color: var(--warn); background: var(--warn-bg); }
+.pill.bad { color: var(--bad); background: var(--bad-bg); }
+.pill.neu { color: var(--muted-fg); background: var(--soft); }
+.scroll { overflow-x: auto; border: 1px solid var(--line); background: var(--card); }
+table { border-collapse: collapse; width: 100%; font-size: .84rem; }
+th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; vertical-align: top; }
+th { font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted-fg); font-weight: 700; background: var(--soft); position: sticky; top: 0; }
+td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; }
+tbody tr:hover td { background: var(--soft); }
+tfoot td { font-weight: 700; border-top: 1px solid var(--fg); border-bottom: 0; }
+.tools { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; }
+.tools label { display: flex; gap: 6px; align-items: center; font-size: .88rem; }
+.tools input[type=search] { font: inherit; font-size: .88rem; padding: 8px 10px; border: 1px solid var(--line); background: var(--card); color: var(--fg); min-width: 0; width: 240px; max-width: 100%; border-radius: 0; }
+.note { font-size: .82rem; color: var(--muted-fg); }
+.pdf-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; align-items: end; padding: 20px; border: 1px solid var(--line); background: var(--card); }
+.pdf-form label { display: grid; gap: 6px; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted-fg); font-weight: 700; min-width: 0; }
+.pdf-form input { font: inherit; font-size: .92rem; letter-spacing: 0; text-transform: none; font-weight: 400; padding: 9px 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 0; min-width: 0; }
+.empty { padding: 28px; text-align: center; color: var(--muted-fg); border: 1px solid var(--line); background: var(--card); }
+
+/* metodologia */
+.method { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
+.method > div { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.method h3 { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; margin: 0; font-weight: 700; }
+.method p, .method li { font-size: .9rem; color: var(--muted-fg); }
+.method ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.formula { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .82rem; background: var(--soft); padding: 12px 14px; border-left: 2px solid var(--accent); line-height: 1.7; overflow-x: auto; color: var(--fg); }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 18px; font-size: .88rem; font-weight: 600; z-index: 10; max-width: calc(100% - 32px); }
+.tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--line); }
+.tabs button { background: transparent; color: var(--muted-fg); border: 0; border-bottom: 2px solid transparent; padding: 10px 14px; font-weight: 600; }
+.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
+.tabs button:hover { background: var(--soft); border-color: transparent; border-bottom-color: var(--line); }
+.tabs button[aria-selected="true"]:hover { border-bottom-color: var(--accent); }
+.fund { font-size: .88rem; color: var(--muted-fg); max-width: 90ch; border-left: 2px solid var(--accent); padding: 4px 0 4px 14px; }
+.cfg { border: 1px solid var(--line); background: var(--card); padding: 14px 18px; }
+.cfg summary { cursor: pointer; font-weight: 600; font-size: .9rem; }
+.cfg[open] summary { margin-bottom: 12px; }
+.cfg label { display: grid; gap: 6px; font-size: .85rem; color: var(--muted-fg); }
+.cfg input { font: inherit; font-size: .92rem; padding: 9px 10px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 0; width: 100%; }
+tr.clic { cursor: pointer; }
+td.wrapc { white-space: normal; min-width: 220px; }
+.kpi.risk .val { color: var(--bad); }
+.kpi.pot .val { color: var(--warn); }
+footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--line); padding-top: 16px; }
+@media (max-width: 640px) { .kpi + .kpi { border-left: 0; border-top: 1px solid var(--line); } .wrap { padding-block: 28px 48px; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="head">
+    <div class="eyebrow">Argus Prime · Engenharia Tributária</div>
+    <h1><em>Reversa</em></h1>
+    <p class="lede">Recuperação de créditos de PIS e COFINS para empresas do Lucro Real e do Lucro Presumido, a partir da EFD-Contribuições. Cada tese é calculada item a item, com memória de cálculo rastreável até a linha do SPED. Os arquivos são lidos neste navegador e não são enviados a nenhum servidor.</p>
+  </header>
+
+  <section aria-labelledby="envio">
+    <h2 id="envio" hidden>Arquivos</h2>
+    <div class="drop" id="drop">
+      <div>
+        <strong>Arraste os arquivos da EFD-Contribuições aqui</strong>
+        <p class="hint">Um arquivo .txt por competência, como baixado do ReceitanetBX. Envie todos os meses do período: as compras de um mês ajudam a calcular o ICMS-ST das vendas de outro.</p>
+      </div>
+      <div class="btns">
+        <label class="btn" for="arquivos">Selecionar arquivos</label>
+        <input type="file" id="arquivos" multiple accept=".txt,.TXT,text/plain">
+        <button class="sec" id="btn-exemplo" type="button">Carregar exemplo</button>
+      </div>
+    </div>
+    <details class="cfg">
+      <summary>Configurar tabela de monofásicos</summary>
+      <label for="ncm-extra">NCMs adicionais sujeitos à incidência monofásica (prefixos separados por vírgula, ex.: 8708, 2202.10). Use para autopeças dos Anexos I e II da Lei 10.485/2002, bebidas e outros grupos da carteira.
+        <input type="text" id="ncm-extra" placeholder="8708, 8421.23, 4016.93">
+      </label>
+    </details>
+    <div class="banner" id="banner"></div>
+  </section>
+
+  <section aria-labelledby="resumo">
+    <div class="sec-head"><h2 id="resumo">Resumo</h2><span class="note" id="gerado"></span></div>
+    <div class="kpis" id="kpis"></div>
+  </section>
+
+  <section aria-labelledby="t-teses">
+    <div class="sec-head">
+      <h2 id="t-teses">Teses de <em>PIS e COFINS</em></h2>
+      <div class="btns">
+        <button class="sec" type="button" id="btn-xlsx">Exportar Excel</button>
+      </div>
+    </div>
+    <div class="scroll"><table id="tab-teses"></table></div>
+    <p class="note">Entram no recuperável só as teses pacificadas. Insumos são potencial a validar; o risco da Lei 14.592/2023 é passivo a regularizar antes do pedido. Teses em julgamento ficam só em monitoramento.</p>
+  </section>
+
+  <section aria-labelledby="t-arquivos">
+    <div class="sec-head"><h2 id="t-arquivos">Arquivos lidos</h2></div>
+    <div class="files" id="files"></div>
+  </section>
+
+  <section aria-labelledby="t-det">
+    <div class="sec-head"><h2 id="t-det">Memória de <em>cálculo</em></h2></div>
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <p class="fund" id="fund"></p>
+    <ul class="msgs" id="tese-avisos"></ul>
+    <div class="scroll"><table id="tab-comp"></table></div>
+    <div class="tools">
+      <label><input type="checkbox" id="so-credito" checked> Só itens com valor</label>
+      <input type="search" id="busca" placeholder="Buscar nota, CFOP, produto, NCM…" aria-label="Buscar na memória de cálculo">
+      <button class="sec" type="button" id="btn-copiar">Copiar tabela</button>
+      <button class="sec" type="button" id="btn-csv">Exportar CSV</button>
+      <span class="note" id="contagem"></span>
+    </div>
+    <div class="scroll" style="max-height: 560px"><table id="tab-mem"></table></div>
+    <p class="note">Cada linha aponta o número da linha do registro C170 no arquivo SPED de origem, para conferência no PVA ou num editor de texto.</p>
+  </section>
+
+  <section aria-labelledby="t-pdf">
+    <div class="sec-head"><h2 id="t-pdf">Memória de cálculo em <em>PDF</em></h2></div>
+    <p class="lede">Documento formal com identificação do contribuinte, quadro das teses, fundamentação, fonte dos dados com a impressão digital SHA-256 de cada arquivo, metodologia, resumo por competência e detalhamento por nota de cada tese, e bloco de assinatura.</p>
+    <form class="pdf-form" id="form-pdf">
+      <label for="pdf-resp">Responsável técnico<input type="text" id="pdf-resp" placeholder="Nome completo" autocomplete="name"></label>
+      <label for="pdf-reg">Registro profissional<input type="text" id="pdf-reg" placeholder="Ex.: CRC SC-000000/O-0"></label>
+      <label for="pdf-local">Local<input type="text" id="pdf-local" placeholder="Florianópolis/SC"></label>
+      <button type="submit" id="btn-pdf">Gerar memória de cálculo</button>
+    </form>
+  </section>
+
+  <section aria-labelledby="t-met">
+    <div class="sec-head"><h2 id="t-met">Metodologia</h2></div>
+    <div class="method">
+      <div>
+        <h3>ICMS na base (Tema 69)</h3>
+        <p>Saídas tributadas (CST 01 e 02), Lucro Real e Presumido.</p>
+        <div class="formula">base correta = item − desconto − ICMS destacado<br>excesso = mín(ICMS; base declarada − base correta)<br>crédito = excesso × alíquota declarada</div>
+      </div>
+      <div>
+        <h3>Monofásicos (revenda)</h3>
+        <p>Saída com CFOP de revenda, NCM monofásico pelo cadastro 0200 e PIS/COFINS tributados (CST 01 ou 02). O revendedor tem alíquota zero, então o valor pago é restituível por inteiro. Absorve o Tema 69 e o ICMS-ST do mesmo item, sem dupla contagem.</p>
+        <div class="formula">crédito = PIS e COFINS informados no item</div>
+      </div>
+      <div>
+        <h3>ICMS-ST do substituído (Tema 1125)</h3>
+        <p>Saídas com CST ICMS x60 e CFOP de revenda. O ICMS-ST vem das notas de compra do mesmo produto e estabelecimento.</p>
+        <div class="formula">ST unitário = ST das entradas ÷ quantidade das entradas<br>ST atribuído = quantidade vendida × ST unitário<br>excesso = mín(ST atribuído; base declarada − (item − desconto − ST atribuído))<br>crédito = excesso × alíquota declarada</div>
+      </div>
+      <div>
+        <h3>Insumos e risco (só Lucro Real)</h3>
+        <ul>
+          <li><strong>Insumos:</strong> entradas sem crédito (CST 70 a 75, 98, 99) em CFOP de insumo, frete, serviço ou consumo. Potencial a 1,65% e 7,6%, sem ICMS na base a partir de 05/2023. Não soma no recuperável.</li>
+          <li><strong>Lei 14.592/2023:</strong> entradas com crédito (CST 50 a 56) a partir de 05/2023 cuja base inclui o ICMS. Sai como risco de glosa.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Controles</h3>
+        <ul>
+          <li>Valores em centavos inteiros, sem erro de arredondamento.</li>
+          <li>Conferência do total de linhas pelo registro 9999.</li>
+          <li>Retificadora prevalece sobre a original da mesma competência.</li>
+          <li>Notas canceladas, denegadas e inutilizadas são descartadas.</li>
+          <li>Regime lido do registro 0110: insumos e risco só rodam no não cumulativo.</li>
+          <li>EFD ICMS/IPI enviada por engano é recusada.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Fora do escopo desta versão</h3>
+        <ul>
+          <li>Atualização pela Selic.</li>
+          <li>Escrituração consolidada (C180 a C190) e notas sem itens C170: contadas e sinalizadas, mas não calculadas.</li>
+          <li>Prescrição: corte aproximado de 5 anos pela competência, a confirmar caso a caso.</li>
+          <li>ISS na base (Tema 118) e PIS/COFINS na própria base (Tema 1067): em monitoramento, sem cálculo.</li>
+          <li>O resultado é uma estimativa técnica e depende de revisão tributária antes de qualquer pedido.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer id="rodape"></footer>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+<script>
+/*
+ * Reversa — motor de apuração (v0.2)
+ * Leitura da EFD-Contribuições e apuração das teses de PIS/COFINS para
+ * empresas do Lucro Real (não cumulativo) e do Lucro Presumido (cumulativo).
+ *
+ * Teses calculadas:
+ *   tema69      Exclusão do ICMS destacado da base (STF, Tema 69)           -> soma no recuperável
+ *   monofasico  Revenda de produtos monofásicos tributada por engano         -> soma no recuperável
+ *   icmsSt      Exclusão do ICMS-ST da base do substituído (STJ, Tema 1125) -> soma no recuperável
+ *   insumos     Levantamento de entradas sem crédito (só Lucro Real)        -> potencial a validar
+ *   lei14592    Crédito tomado sobre ICMS após 05/2023 (só Lucro Real)      -> risco (passivo)
+ *
+ * Todos os valores monetários em CENTAVOS (inteiros).
+ * Funciona no navegador (window.MotorCreditos) e no Node (module.exports).
+ */
+(function (root) {
+  'use strict';
+
+  var VERSAO_MOTOR = '0.2.0';
+
+  // ---------------------------------------------------------------- utilidades
+
+  /** "1234,56" -> 123456 (centavos). Vazio -> 0. */
+  function centavos(txt) {
+    if (txt === undefined || txt === null) return 0;
+    var s = String(txt).trim();
+    if (s === '') return 0;
+    s = s.replace(/\./g, '').replace(',', '.');
+    var n = Number(s);
+    if (!isFinite(n)) throw new Error('Valor numérico inválido: "' + txt + '"');
+    return Math.round(n * 100);
+  }
+
+  /** "1,6500" -> 1.65 (alíquota percentual). */
+  function aliquota(txt) {
+    if (txt === undefined || txt === null || String(txt).trim() === '') return 0;
+    var n = Number(String(txt).trim().replace(',', '.'));
+    if (!isFinite(n)) throw new Error('Alíquota inválida: "' + txt + '"');
+    return n;
+  }
+
+  /** "12,50000" -> 12.5 (quantidade). */
+  function quantidade(txt) {
+    if (txt === undefined || txt === null || String(txt).trim() === '') return 0;
+    var n = Number(String(txt).trim().replace(/\./g, '').replace(',', '.'));
+    if (!isFinite(n)) throw new Error('Quantidade inválida: "' + txt + '"');
+    return n;
+  }
+
+  /** "31012024" -> {iso:"2024-01-31", ano:2024, mes:1} */
+  function data(txt) {
+    var s = String(txt || '').trim();
+    if (!/^\d{8}$/.test(s)) return null;
+    var d = +s.slice(0, 2), m = +s.slice(2, 4), a = +s.slice(4, 8);
+    return { iso: a + '-' + s.slice(2, 4) + '-' + s.slice(0, 2), ano: a, mes: m, dia: d };
+  }
+
+  function competencia(d) {
+    return d ? d.ano + '-' + (d.mes < 10 ? '0' : '') + d.mes : '?';
+  }
+
+  /** Divide a linha "|REG|A|B|" em ["REG","A","B"]. */
+  function campos(linha) {
+    var p = linha.split('|');
+    if (p.length < 3 || p[0] !== '') return null;
+    if (p[p.length - 1] === '' || p[p.length - 1] === '\r') p.pop();
+    p.shift();
+    return p;
+  }
+
+  function soDigitos(s) { return String(s || '').replace(/\D/g, ''); }
+  function sufixoCfop(cfop) { return String(cfop || '').slice(-3); }
+
+  // ---------------------------------------------------------- layout (campos)
+  // Índices 0-based conforme o Guia Prático da EFD-Contribuições.
+  var L = {
+    '0000': { COD_VER: 1, TIPO_ESCRIT: 2, IND_SIT_ESP: 3, NUM_REC_ANT: 4, DT_INI: 5, DT_FIN: 6, NOME: 7, CNPJ: 8, UF: 9, COD_MUN: 10 },
+    '0110': { COD_INC_TRIB: 1, IND_APRO_CRED: 2, COD_TIPO_CONT: 3, IND_REG_CUM: 4 },
+    '0140': { COD_EST: 1, NOME: 2, CNPJ: 3 },
+    '0200': { COD_ITEM: 1, DESCR_ITEM: 2, UNID_INV: 5, TIPO_ITEM: 6, COD_NCM: 7, EX_IPI: 8 },
+    'C010': { CNPJ: 1, IND_ESCRI: 2 },
+    'C100': { IND_OPER: 1, IND_EMIT: 2, COD_PART: 3, COD_MOD: 4, COD_SIT: 5, SER: 6, NUM_DOC: 7, CHV_NFE: 8, DT_DOC: 9, DT_E_S: 10, VL_DOC: 11, VL_DESC: 13, VL_MERC: 15, VL_ICMS: 21, VL_PIS: 25, VL_COFINS: 26 },
+    'C170': { NUM_ITEM: 1, COD_ITEM: 2, DESCR_COMPL: 3, QTD: 4, UNID: 5, VL_ITEM: 6, VL_DESC: 7, CST_ICMS: 9, CFOP: 10,
+              VL_BC_ICMS: 12, ALIQ_ICMS: 13, VL_ICMS: 14, VL_BC_ICMS_ST: 15, ALIQ_ST: 16, VL_ICMS_ST: 17, VL_IPI: 23,
+              CST_PIS: 24, VL_BC_PIS: 25, ALIQ_PIS: 26, VL_PIS: 29, CST_COFINS: 30, VL_BC_COFINS: 31, ALIQ_COFINS: 32, VL_COFINS: 35 },
+    '9999': { QTD_LIN: 1 }
+  };
+  var MIN_CAMPOS = { '0000': 11, '0140': 4, '0200': 9, 'C010': 3, 'C100': 27, 'C170': 36 };
+
+  var REGIME = { '1': 'Não cumulativo', '2': 'Cumulativo', '3': 'Misto (não cumulativo e cumulativo)' };
+  var SIT_VALIDAS = { '00': 1, '01': 1, '06': 1, '07': 1, '08': 1 };
+  var CST_TRIBUTADOS = { '01': 1, '02': 1 };
+  var CST_ENTRADA_COM_CREDITO = { '50': 1, '51': 1, '52': 1, '53': 1, '54': 1, '55': 1, '56': 1 };
+  var CST_ENTRADA_SEM_CREDITO = { '70': 1, '71': 1, '72': 1, '73': 1, '74': 1, '75': 1, '98': 1, '99': 1 };
+
+  // Saídas de mercadoria adquirida de terceiros (revenda). Últimos 3 dígitos do CFOP.
+  var CFOP_REVENDA = { '102': 1, '104': 1, '106': 1, '108': 1, '110': 1, '114': 1, '117': 1, '119': 1, '123': 1, '403': 1, '405': 1, '655': 1, '656': 1, '667': 1 };
+  // Entradas típicas de insumo, frete, serviço e consumo (candidatas ao levantamento de insumos).
+  var CFOP_INSUMO = { '101': 1, '111': 1, '116': 1, '120': 1, '122': 1, '126': 1, '128': 1, '351': 1, '352': 1, '353': 1, '354': 1, '356': 1, '407': 1, '556': 1, '653': 1, '933': 1 };
+
+  var ALIQ_NC = { pis: 1.65, cofins: 7.6 };
+  var INICIO_LEI_14592 = '2023-05';   // MP 1.159/2023 (efeitos a partir de 01/05/2023), convertida na Lei 14.592/2023
+
+  // ---------------------------------------------- tabela inicial de monofásicos
+  // Prefixos de NCM. É uma tabela de PARTIDA: o resultado sai como "a conferir NCM a NCM".
+  var MONOFASICOS = [
+    { grupo: 'Farmacêuticos', base: 'Lei 10.147/2000, art. 1º, I, "a"',
+      prefixos: ['3001', '3003', '3004', '3002101', '3002102', '3002103', '3002201', '3002202', '30029020', '30029092', '30029099', '30051010', '3006301', '3006302', '30066000'],
+      excecoes: ['30039056', '30049046'] },
+    { grupo: 'Perfumaria e higiene pessoal', base: 'Lei 10.147/2000, art. 1º, I, "b"',
+      prefixos: ['3303', '3304', '3305', '3306', '3307', '34011190', '34012010', '96032100'], excecoes: [] },
+    { grupo: 'Pneus e câmaras de ar', base: 'Lei 10.485/2002, art. 5º',
+      prefixos: ['4011', '4013'], excecoes: [] }
+  ];
+
+  function classificarMonofasico(ncm, exIpi, extras) {
+    var n = soDigitos(ncm);
+    if (n.length < 4) return null;
+    for (var i = 0; i < MONOFASICOS.length; i++) {
+      var g = MONOFASICOS[i];
+      if (g.excecoes.some(function (e) { return n.indexOf(e) === 0; })) return null;
+      if (g.grupo.indexOf('Perfumaria') === 0 && n.indexOf('34011190') === 0 && soDigitos(exIpi) === '01') return null;
+      if (g.prefixos.some(function (p) { return n.indexOf(p) === 0; })) return { grupo: g.grupo, base: g.base };
+    }
+    for (var j = 0; j < (extras || []).length; j++) {
+      var p = soDigitos(extras[j]);
+      if (p.length >= 4 && n.indexOf(p) === 0) return { grupo: 'Incluído pelo usuário (' + p + ')', base: 'Tabela complementar informada pelo usuário' };
+    }
+    return null;
+  }
+
+  // ------------------------------------------------------------------ parser
+
+  /**
+   * Lê o texto de uma EFD-Contribuições.
+   * @returns {{arquivo, meta, itens, entradas, produtos, avisos, erros, estatisticas}}
+   *   itens    = itens C170 de notas de SAÍDA válidas
+   *   entradas = itens C170 de notas de ENTRADA válidas
+   */
+  function lerEfdContribuicoes(texto, nomeArquivo) {
+    var res = {
+      arquivo: nomeArquivo || '(sem nome)',
+      meta: null, itens: [], entradas: [], produtos: 0, avisos: [], erros: [],
+      estatisticas: { linhas: 0, registros: {}, c100Saida: 0, c100Entrada: 0, c100SaidaSemItens: 0, c100Ignorados: 0, consolidados: 0, itensSemNcm: 0 }
+    };
+    var linhas = texto.split(/\r?\n/);
+    var estab = null, estab0140 = null, doc = null, docTemItem = false, qtd9999 = null;
+    var cadastro = {};   // "cnpj|cod" e "*|cod" -> {ncm, descr, exIpi, unid}
+
+    function fecharDoc() {
+      if (doc && doc.saida && doc.valida && !docTemItem) res.estatisticas.c100SaidaSemItens++;
+      doc = null; docTemItem = false;
+    }
+    function produto(cod) {
+      return cadastro[estab + '|' + cod] || cadastro['*|' + cod] || null;
+    }
+
+    for (var i = 0; i < linhas.length; i++) {
+      var bruta = linhas[i];
+      if (bruta.trim() === '') continue;
+      var nLinha = i + 1;
+      var f = campos(bruta);
+      if (!f) { res.erros.push('Linha ' + nLinha + ': formato inválido (não começa com "|").'); continue; }
+      var reg = f[0];
+      res.estatisticas.linhas++;
+      res.estatisticas.registros[reg] = (res.estatisticas.registros[reg] || 0) + 1;
+
+      if (MIN_CAMPOS[reg] && f.length < MIN_CAMPOS[reg]) {
+        res.erros.push('Linha ' + nLinha + ': registro ' + reg + ' com ' + f.length + ' campos (esperado ≥ ' + MIN_CAMPOS[reg] + ').');
+        continue;
+      }
+
+      try {
+        if (reg === '0000') {
+          if (/^\d{8}$/.test(f[3])) {
+            res.erros.push('Este arquivo parece ser uma EFD ICMS/IPI, não uma EFD-Contribuições.');
+            return res;
+          }
+          var x = L['0000'];
+          res.meta = {
+            versaoLeiaute: f[x.COD_VER],
+            retificadora: f[x.TIPO_ESCRIT] === '1',
+            recAnterior: f[x.NUM_REC_ANT] || '',
+            dtIni: data(f[x.DT_INI]), dtFin: data(f[x.DT_FIN]),
+            nome: f[x.NOME], cnpj: f[x.CNPJ], uf: f[x.UF],
+            regime: null, regimeCodigo: null
+          };
+          res.meta.competencia = competencia(res.meta.dtIni);
+        } else if (reg === '0110') {
+          if (res.meta) {
+            res.meta.regimeCodigo = f[L['0110'].COD_INC_TRIB];
+            res.meta.regime = REGIME[res.meta.regimeCodigo] || ('Código ' + f[1]);
+          }
+        } else if (reg === '0140') {
+          estab0140 = f[L['0140'].CNPJ] || null;
+        } else if (reg === '0200') {
+          var z = L['0200'];
+          var info = { ncm: soDigitos(f[z.COD_NCM]), descr: f[z.DESCR_ITEM] || '', exIpi: f[z.EX_IPI] || '', unid: f[z.UNID_INV] || '' };
+          cadastro[(estab0140 || '*') + '|' + f[z.COD_ITEM]] = info;
+          if (!cadastro['*|' + f[z.COD_ITEM]]) cadastro['*|' + f[z.COD_ITEM]] = info;
+          res.produtos++;
+        } else if (reg === 'C010') {
+          fecharDoc();
+          estab = f[L.C010.CNPJ];
+          if (f[L.C010.IND_ESCRI] === '1') {
+            res.avisos.push('Estabelecimento ' + estab + ' escriturado de forma consolidada (C180/C190): itens não são analisados nesta versão.');
+          }
+        } else if (reg === 'C180' || reg === 'C190' || reg === 'C181' || reg === 'C185') {
+          res.estatisticas.consolidados++;
+        } else if (reg === 'C100') {
+          fecharDoc();
+          var c = L.C100;
+          var saida = f[c.IND_OPER] === '1';
+          var entrada = f[c.IND_OPER] === '0';
+          var sitOk = !!SIT_VALIDAS[f[c.COD_SIT]];
+          doc = {
+            linha: nLinha, estab: estab, numero: f[c.NUM_DOC], serie: f[c.SER], chave: f[c.CHV_NFE],
+            modelo: f[c.COD_MOD], data: data(f[c.DT_DOC]), sit: f[c.COD_SIT],
+            saida: saida, entrada: entrada, valida: sitOk
+          };
+          if (!sitOk) res.estatisticas.c100Ignorados++;
+          else if (saida) res.estatisticas.c100Saida++;
+          else if (entrada) res.estatisticas.c100Entrada++;
+        } else if (reg === 'C170') {
+          if (!doc) { res.avisos.push('Linha ' + nLinha + ': C170 sem C100 anterior — ignorado.'); continue; }
+          docTemItem = true;
+          if (!doc.valida || !(doc.saida || doc.entrada)) continue;
+          var k = L.C170;
+          var prod = produto(f[k.COD_ITEM]);
+          if (!prod || !prod.ncm) res.estatisticas.itensSemNcm++;
+          var it = {
+            linha: nLinha, linhaDoc: doc.linha, estab: doc.estab,
+            doc: doc.numero, serie: doc.serie, chave: doc.chave, data: doc.data ? doc.data.iso : '',
+            item: f[k.NUM_ITEM], codItem: f[k.COD_ITEM], descricao: prod ? prod.descr : '', ncm: prod ? prod.ncm : '', exIpi: prod ? prod.exIpi : '',
+            qtd: quantidade(f[k.QTD]), unid: f[k.UNID] || '', cfop: f[k.CFOP], cstIcms: f[k.CST_ICMS] || '',
+            vlItem: centavos(f[k.VL_ITEM]), vlDesc: centavos(f[k.VL_DESC]), vlIcms: centavos(f[k.VL_ICMS]),
+            vlIcmsSt: centavos(f[k.VL_ICMS_ST]), vlIpi: centavos(f[k.VL_IPI]),
+            cstPis: f[k.CST_PIS], bcPis: centavos(f[k.VL_BC_PIS]), aliqPis: aliquota(f[k.ALIQ_PIS]), vlPis: centavos(f[k.VL_PIS]),
+            cstCofins: f[k.CST_COFINS], bcCofins: centavos(f[k.VL_BC_COFINS]), aliqCofins: aliquota(f[k.ALIQ_COFINS]), vlCofins: centavos(f[k.VL_COFINS])
+          };
+          (doc.saida ? res.itens : res.entradas).push(it);
+        } else if (reg === '9999') {
+          qtd9999 = parseInt(f[L['9999'].QTD_LIN], 10);
+        }
+      } catch (e) {
+        res.erros.push('Linha ' + nLinha + ': ' + e.message);
+      }
+    }
+    fecharDoc();
+
+    if (!res.meta) res.erros.push('Registro 0000 não encontrado: o arquivo não é uma EFD-Contribuições válida.');
+    else if (!res.meta.regimeCodigo) res.avisos.push('Registro 0110 ausente: regime de apuração não identificado.');
+    if (qtd9999 === null) res.avisos.push('Registro 9999 ausente: o arquivo pode estar incompleto.');
+    else if (qtd9999 !== res.estatisticas.linhas) res.avisos.push('Registro 9999 informa ' + qtd9999 + ' linhas, mas o arquivo tem ' + res.estatisticas.linhas + '. O arquivo pode estar truncado ou editado.');
+    if (res.estatisticas.c100SaidaSemItens > 0) res.avisos.push(res.estatisticas.c100SaidaSemItens + ' nota(s) de saída sem itens C170: não analisadas nesta versão.');
+    if (res.estatisticas.consolidados > 0) res.avisos.push(res.estatisticas.consolidados + ' registro(s) de escrituração consolidada (C180–C190) não analisados nesta versão.');
+    var totalItens = res.itens.length + res.entradas.length;
+    if (totalItens > 0 && res.estatisticas.itensSemNcm === totalItens) res.avisos.push('Nenhum item tem NCM no cadastro (0200): a tese dos monofásicos não pode ser verificada neste arquivo.');
+    else if (res.estatisticas.itensSemNcm > 0) res.avisos.push(res.estatisticas.itensSemNcm + ' item(ns) sem NCM no cadastro (0200).');
+    return res;
+  }
+
+  // ------------------------------------------------------------------- regras
+
+  function valorTributo(vl, bc, aliq) {
+    return vl > 0 ? vl : Math.round(bc * aliq / 100);
+  }
+
+  /**
+   * Tema 69 — exclusão do ICMS destacado da base do PIS/COFINS.
+   *   base_correta  = max(0, VL_ITEM − VL_DESC − VL_ICMS)
+   *   excesso_base  = min(VL_ICMS, max(0, VL_BC − base_correta))
+   *   crédito       = excesso_base × alíquota declarada
+   */
+  function calcularItem(it) {
+    var baseCorreta = Math.max(0, it.vlItem - it.vlDesc - it.vlIcms);
+    function trib(cst, bc, aliq) {
+      if (!CST_TRIBUTADOS[cst]) return { excesso: 0, credito: 0, status: 'CST ' + cst + ' fora do escopo' };
+      if (it.vlIcms <= 0) return { excesso: 0, credito: 0, status: 'Sem ICMS destacado' };
+      var excesso = Math.min(it.vlIcms, Math.max(0, bc - baseCorreta));
+      if (excesso === 0) return { excesso: 0, credito: 0, status: 'ICMS já excluído' };
+      return { excesso: excesso, credito: Math.round(excesso * aliq / 100), status: 'Crédito' };
+    }
+    var p = trib(it.cstPis, it.bcPis, it.aliqPis);
+    var c = trib(it.cstCofins, it.bcCofins, it.aliqCofins);
+    return {
+      baseCorreta: baseCorreta,
+      excessoPis: p.excesso, creditoPis: p.credito, statusPis: p.status,
+      excessoCofins: c.excesso, creditoCofins: c.credito, statusCofins: c.status
+    };
+  }
+
+  /** Monofásico: revenda de produto monofásico tributada (CST 01/02) -> restituição integral do PIS/COFINS pago. */
+  function calcularMonofasico(it, extras) {
+    var cls = classificarMonofasico(it.ncm, it.exIpi, extras);
+    if (!cls) return null;
+    var r = { grupo: cls.grupo, base: cls.base, pis: 0, cofins: 0, status: '' };
+    if (!CFOP_REVENDA[sufixoCfop(it.cfop)]) { r.status = 'CFOP ' + it.cfop + ' não é de revenda'; return r; }
+    var tribPis = !!CST_TRIBUTADOS[it.cstPis], tribCof = !!CST_TRIBUTADOS[it.cstCofins];
+    if (!tribPis && !tribCof) { r.status = 'Já sem tributação (CST ' + it.cstPis + ')'; return r; }
+    r.pis = tribPis ? valorTributo(it.vlPis, it.bcPis, it.aliqPis) : 0;
+    r.cofins = tribCof ? valorTributo(it.vlCofins, it.bcCofins, it.aliqCofins) : 0;
+    r.status = (r.pis || r.cofins) ? 'Crédito — conferir NCM' : 'Tributado sem valor';
+    return r;
+  }
+
+  /** Custo médio unitário de ICMS-ST nas entradas, por estabelecimento + código do item. */
+  function indiceSt(entradas) {
+    var idx = {};
+    entradas.forEach(function (e) {
+      if (e.vlIcmsSt <= 0 || e.qtd <= 0) return;
+      var k = e.estab + '|' + e.codItem;
+      var a = idx[k] || (idx[k] = { st: 0, qtd: 0, unids: {}, notas: 0 });
+      a.st += e.vlIcmsSt; a.qtd += e.qtd; a.unids[e.unid] = 1; a.notas++;
+    });
+    return idx;
+  }
+
+  /**
+   * ICMS-ST (substituído) — Tema 1125 STJ.
+   * Só saídas com CST ICMS x60 (ICMS cobrado anteriormente por ST), CFOP de revenda e PIS/COFINS tributados.
+   *   st_atribuído  = quantidade vendida × (ICMS-ST das entradas ÷ quantidade das entradas)
+   *   base_correta  = max(0, VL_ITEM − VL_DESC − st_atribuído)
+   *   excesso_base  = min(st_atribuído, max(0, VL_BC − base_correta))
+   */
+  function calcularIcmsSt(it, idx) {
+    if (String(it.cstIcms).slice(-2) !== '60') return null;
+    if (!CFOP_REVENDA[sufixoCfop(it.cfop)]) return null;
+    var r = { stUnit: 0, stAtribuido: 0, excessoPis: 0, excessoCofins: 0, pis: 0, cofins: 0, status: '', semEntrada: false };
+    if (!CST_TRIBUTADOS[it.cstPis] && !CST_TRIBUTADOS[it.cstCofins]) { r.status = 'CST ' + it.cstPis + ' fora do escopo'; return r; }
+    var a = idx[it.estab + '|' + it.codItem];
+    if (!a) { r.status = 'Sem entrada com ICMS-ST para o item'; r.semEntrada = true; return r; }
+    var unids = Object.keys(a.unids);
+    if (unids.length !== 1 || unids[0] !== it.unid) { r.status = 'Unidade divergente (' + unids.join('/') + ' × ' + it.unid + ') — conferir 0220'; return r; }
+    r.stUnit = a.st / a.qtd;
+    r.stAtribuido = Math.round(it.qtd * r.stUnit);
+    var baseCorreta = Math.max(0, it.vlItem - it.vlDesc - r.stAtribuido);
+    if (CST_TRIBUTADOS[it.cstPis]) { r.excessoPis = Math.min(r.stAtribuido, Math.max(0, it.bcPis - baseCorreta)); r.pis = Math.round(r.excessoPis * it.aliqPis / 100); }
+    if (CST_TRIBUTADOS[it.cstCofins]) { r.excessoCofins = Math.min(r.stAtribuido, Math.max(0, it.bcCofins - baseCorreta)); r.cofins = Math.round(r.excessoCofins * it.aliqCofins / 100); }
+    r.status = (r.pis || r.cofins) ? 'Crédito' : 'ICMS-ST já excluído';
+    return r;
+  }
+
+  /** Insumos (só não cumulativo): entrada sem crédito em CFOP típico de insumo -> potencial a validar. */
+  function calcularInsumo(e, comp) {
+    if (!CST_ENTRADA_SEM_CREDITO[e.cstPis]) return null;
+    if (!CFOP_INSUMO[sufixoCfop(e.cfop)]) return null;
+    var semIcms = comp >= INICIO_LEI_14592;
+    var base = Math.max(0, e.vlItem - e.vlDesc + e.vlIpi - (semIcms ? e.vlIcms : 0));
+    return { base: base, pis: Math.round(base * ALIQ_NC.pis / 100), cofins: Math.round(base * ALIQ_NC.cofins / 100),
+             status: 'A validar (essencialidade/relevância)' + (semIcms ? ' — base sem ICMS' : '') };
+  }
+
+  /** Lei 14.592/2023: a partir de 05/2023 o ICMS não entra na base do crédito. Detecta crédito tomado sobre ICMS. */
+  function calcularRisco14592(e, comp) {
+    if (comp < INICIO_LEI_14592) return null;
+    if (!CST_ENTRADA_COM_CREDITO[e.cstPis] || e.vlIcms <= 0) return null;
+    var baseMax = Math.max(0, e.vlItem - e.vlDesc + e.vlIpi - e.vlIcms);
+    var exPis = Math.min(e.vlIcms, Math.max(0, e.bcPis - baseMax));
+    var exCof = CST_ENTRADA_COM_CREDITO[e.cstCofins] ? Math.min(e.vlIcms, Math.max(0, e.bcCofins - baseMax)) : 0;
+    if (!exPis && !exCof) return null;
+    return { excessoPis: exPis, excessoCofins: exCof,
+             pis: Math.round(exPis * e.aliqPis / 100), cofins: Math.round(exCof * e.aliqCofins / 100),
+             status: 'Crédito sobre ICMS — risco de glosa' };
+  }
+
+  // ------------------------------------------------------------ catálogo
+
+  var CATALOGO = [
+    { id: 'tema69', nome: 'Exclusão do ICMS da base do PIS/COFINS', curto: 'ICMS na base (Tema 69)',
+      classificacao: 'Pacificada', natureza: 'credito', regimes: 'Lucro Real e Presumido', calculada: true,
+      fundamento: 'STF, RE 574.706 (Tema 69), com modulação a partir de 15/03/2017; ICMS a excluir é o destacado na nota (ED julgados em 13/05/2021). PGFN, Parecer SEI 7.698/2021/ME.' },
+    { id: 'monofasico', nome: 'Revenda de produtos monofásicos tributada por engano', curto: 'Monofásicos (revenda)',
+      classificacao: 'Pacificada (correção de erro)', natureza: 'credito', regimes: 'Lucro Real e Presumido', calculada: true,
+      fundamento: 'Lei 10.147/2000 (farmacêuticos e perfumaria) e Lei 10.485/2002 (autopeças, pneus e câmaras): alíquota zero na revenda por atacadista ou varejista. Pagamento indevido restituível (CTN, arts. 165 e 168).' },
+    { id: 'icmsSt', nome: 'Exclusão do ICMS-ST da base do PIS/COFINS do substituído', curto: 'ICMS-ST (Tema 1125)',
+      classificacao: 'Pacificada', natureza: 'credito', regimes: 'Lucro Real e Presumido', calculada: true,
+      fundamento: 'STJ, Tema 1.125 (REsp 1.896.678 e 1.958.265), efeitos a partir de 15/03/2017 (modulação redefinida em 20/06/2024). PGFN, Parecer SEI 4.090/2024/MF; Receita Federal, Solução de Consulta Cosit 100/2025 (recuperação administrativa; valor a excluir é o destacado nas notas).' },
+    { id: 'insumos', nome: 'Créditos de insumos não aproveitados', curto: 'Insumos (levantamento)',
+      classificacao: 'Pacificada no conceito, prova caso a caso', natureza: 'potencial', regimes: 'Só Lucro Real (não cumulativo)', calculada: true,
+      fundamento: 'STJ, REsp 1.221.170 (Temas 779 e 780): insumo pelo critério de essencialidade ou relevância. Receita Federal, Parecer Normativo Cosit 5/2018. Exige análise do processo produtivo antes do pedido.' },
+    { id: 'lei14592', nome: 'Crédito tomado sobre ICMS após a Lei 14.592/2023', curto: 'Risco: ICMS no crédito',
+      classificacao: 'Verificação de risco', natureza: 'risco', regimes: 'Só Lucro Real (não cumulativo)', calculada: true,
+      fundamento: 'Lei 14.592/2023 (conversão da MP 1.159/2023): a partir de 05/2023 o ICMS destacado não integra a base dos créditos. Crédito tomado sobre ICMS pode ser glosado e deve ser compensado antes de pedir restituição.' },
+    { id: 'tema118', nome: 'Exclusão do ISS da base do PIS/COFINS', curto: 'ISS na base (Tema 118)',
+      classificacao: 'Em julgamento — alto risco', natureza: 'monitorar', regimes: 'Lucro Real e Presumido', calculada: false,
+      fundamento: 'STF, RE 592.616 (Tema 118): placar empatado em 5 x 5, julgamento retirado da pauta de 25/02/2026. Só por ação judicial; não entra no recuperável.' },
+    { id: 'tema1067', nome: 'Exclusão do PIS/COFINS da própria base', curto: 'PIS/COFINS na própria base (Tema 1067)',
+      classificacao: 'Pendente no STF — alto risco', natureza: 'monitorar', regimes: 'Lucro Real e Presumido', calculada: false,
+      fundamento: 'STF, RE 1.233.096 (Tema 1.067), sem data de julgamento. Só por ação judicial; não entra no recuperável.' },
+    { id: 'tema1093', nome: 'Crédito na compra de monofásicos para revenda', curto: 'Crédito na compra de monofásicos',
+      classificacao: 'Desfavorável — não recomendada', natureza: 'monitorar', regimes: 'Só Lucro Real', calculada: false,
+      fundamento: 'STJ, Tema 1.093: vedado o crédito sobre aquisição de bens sujeitos à tributação monofásica para revenda.' }
+  ];
+
+  var COLUNAS = {
+    tema69: [
+      ['data', 'Data', 't'], ['doc', 'NF', 't'], ['item', 'Item', 't'], ['cfop', 'CFOP', 't'], ['vlItem', 'Valor item', 'm'], ['vlIcms', 'ICMS', 'm'],
+      ['bcPis', 'Base PIS decl.', 'm'], ['baseCorreta', 'Base correta', 'm'], ['excessoPis', 'Excesso base', 'm'], ['pis', 'Crédito PIS', 'm'], ['cofins', 'Crédito COFINS', 'm'], ['status', 'Situação', 't']],
+    monofasico: [
+      ['data', 'Data', 't'], ['doc', 'NF', 't'], ['codItem', 'Produto', 't'], ['ncm', 'NCM', 't'], ['grupo', 'Grupo', 't'], ['cfop', 'CFOP', 't'],
+      ['cstPis', 'CST', 't'], ['vlItem', 'Valor item', 'm'], ['pis', 'PIS pago', 'm'], ['cofins', 'COFINS pago', 'm'], ['status', 'Situação', 't']],
+    icmsSt: [
+      ['data', 'Data', 't'], ['doc', 'NF', 't'], ['codItem', 'Produto', 't'], ['qtd', 'Qtd', 'n'], ['cstIcms', 'CST ICMS', 't'], ['vlItem', 'Valor item', 'm'],
+      ['stAtribuido', 'ICMS-ST atribuído', 'm'], ['excessoPis', 'Excesso base', 'm'], ['pis', 'Crédito PIS', 'm'], ['cofins', 'Crédito COFINS', 'm'], ['status', 'Situação', 't']],
+    insumos: [
+      ['data', 'Data', 't'], ['doc', 'NF', 't'], ['codItem', 'Produto', 't'], ['descricao', 'Descrição', 't'], ['cfop', 'CFOP', 't'], ['cstPis', 'CST', 't'],
+      ['base', 'Base potencial', 'm'], ['pis', 'PIS potencial', 'm'], ['cofins', 'COFINS potencial', 'm'], ['status', 'Situação', 't']],
+    lei14592: [
+      ['data', 'Data', 't'], ['doc', 'NF', 't'], ['codItem', 'Produto', 't'], ['cfop', 'CFOP', 't'], ['vlItem', 'Valor item', 'm'], ['vlIcms', 'ICMS', 'm'],
+      ['bcPis', 'Base do crédito', 'm'], ['excessoPis', 'ICMS na base', 'm'], ['pis', 'PIS em risco', 'm'], ['cofins', 'COFINS em risco', 'm'], ['status', 'Situação', 't']]
+  };
+
+  // ------------------------------------------------------------ apuração
+
+  /**
+   * Processa um conjunto de arquivos já lidos.
+   * @param {Array} lidos  saídas de lerEfdContribuicoes
+   * @param {{hoje?: Date, ncmsExtras?: string[]}} opts
+   */
+  function apurar(lidos, opts) {
+    opts = opts || {};
+    var hoje = opts.hoje || new Date();
+    var extras = opts.ncmsExtras || [];
+    var limite = new Date(hoje.getFullYear() - 5, hoje.getMonth(), 1); // corte aproximado de 5 anos
+    var avisos = [], porChave = {};
+
+    lidos.forEach(function (l) {
+      if (!l.meta || (l.erros.length && !l.itens.length && !(l.entradas || []).length)) return;
+      var chave = l.meta.cnpj + '|' + l.meta.competencia;
+      var atual = porChave[chave];
+      if (atual) {
+        var fica = (!atual.meta.retificadora && l.meta.retificadora) ? l : atual;
+        avisos.push('Dois arquivos para ' + l.meta.cnpj + ' em ' + l.meta.competencia + ' (' + atual.arquivo + ', ' + l.arquivo + '). Usado: ' + fica.arquivo + '.');
+        porChave[chave] = fica;
+      } else porChave[chave] = l;
+    });
+    var usados = Object.keys(porChave).sort().map(function (k) { return porChave[k]; });
+
+    // Resultado por tese
+    var T = {};
+    CATALOGO.forEach(function (c) {
+      if (!c.calculada) return;
+      T[c.id] = { id: c.id, nome: c.nome, curto: c.curto, classificacao: c.classificacao, natureza: c.natureza, regimes: c.regimes, fundamento: c.fundamento,
+                  colunas: COLUNAS[c.id], total: { pis: 0, cofins: 0, itens: 0, itensComValor: 0 }, totalNoPrazo: { pis: 0, cofins: 0 },
+                  competencias: {}, detalhes: [], avisos: [], aplicavel: false };
+    });
+    function lancar(id, l, comp, prescrito, linha, pis, cofins) {
+      var t = T[id];
+      t.aplicavel = true;
+      var ck = l.meta.cnpj + '|' + comp;
+      var lc = t.competencias[ck] || (t.competencias[ck] = { cnpj: l.meta.cnpj, nome: l.meta.nome, competencia: comp, regime: l.meta.regime || '—', arquivo: l.arquivo,
+                                                             retificadora: l.meta.retificadora, possivelmentePrescrito: prescrito, itens: 0, itensComValor: 0, pis: 0, cofins: 0 });
+      linha.pis = pis; linha.cofins = cofins; linha.competencia = comp; linha.cnpjMatriz = l.meta.cnpj; linha.arquivo = l.arquivo; linha.possivelmentePrescrito = prescrito;
+      t.detalhes.push(linha);
+      lc.itens++; t.total.itens++;
+      if (pis || cofins) { lc.itensComValor++; t.total.itensComValor++; }
+      lc.pis += pis; lc.cofins += cofins; t.total.pis += pis; t.total.cofins += cofins;
+      if (!prescrito) { t.totalNoPrazo.pis += pis; t.totalNoPrazo.cofins += cofins; }
+    }
+
+    // Índice de ICMS-ST de entradas de todos os arquivos usados (mesmo CNPJ/estabelecimento)
+    var todasEntradas = [];
+    usados.forEach(function (l) { (l.entradas || []).forEach(function (e) { todasEntradas.push(e); }); });
+    var idxSt = indiceSt(todasEntradas);
+    var stSemEntrada = { receita: 0, itens: 0 };
+
+    // Compatibilidade com v0.1 (tela e PDF do Tema 69)
+    var detalhes = [], competencias = {}, tot = { excessoPis: 0, creditoPis: 0, excessoCofins: 0, creditoCofins: 0, itens: 0, itensComCredito: 0 };
+    var totPrazo = { creditoPis: 0, creditoCofins: 0 };
+    var regimes = {};
+
+    usados.forEach(function (l) {
+      var comp = l.meta.competencia;
+      var di = l.meta.dtIni;
+      var prescrito = di ? new Date(di.ano, di.mes - 1, 1) < limite : false;
+      var naoCumulativo = l.meta.regimeCodigo === '1' || l.meta.regimeCodigo === '3';
+      regimes[l.meta.regime || '—'] = 1;
+      var cKey = l.meta.cnpj + '|' + comp;
+      var linhaComp = competencias[cKey] = {
+        cnpj: l.meta.cnpj, nome: l.meta.nome, competencia: comp, regime: l.meta.regime || '—',
+        arquivo: l.arquivo, retificadora: l.meta.retificadora, possivelmentePrescrito: prescrito,
+        itens: 0, itensComCredito: 0, excessoPis: 0, creditoPis: 0, excessoCofins: 0, creditoCofins: 0
+      };
+
+      l.itens.forEach(function (it) {
+        var r = calcularItem(it);
+        var mono = calcularMonofasico(it, extras);
+        var st = calcularIcmsSt(it, idxSt);
+
+        // Prioridade: a restituição integral do monofásico absorve as exclusões de base no mesmo item.
+        if (mono && (mono.pis || mono.cofins)) {
+          ['Pis', 'Cofins'].forEach(function (s) {
+            if (r['credito' + s]) { r['credito' + s] = 0; r['excesso' + s] = 0; r['status' + s] = 'Coberto pela tese dos monofásicos'; }
+          });
+          if (st && (st.pis || st.cofins)) { st.pis = 0; st.cofins = 0; st.status = 'Coberto pela tese dos monofásicos'; }
+        }
+
+        var d = Object.assign({ competencia: comp, cnpjMatriz: l.meta.cnpj, arquivo: l.arquivo }, it, r);
+        detalhes.push(d);
+        linhaComp.itens++; tot.itens++;
+        if (r.creditoPis || r.creditoCofins) { linhaComp.itensComCredito++; tot.itensComCredito++; }
+        ['excessoPis', 'creditoPis', 'excessoCofins', 'creditoCofins'].forEach(function (c) { linhaComp[c] += r[c]; tot[c] += r[c]; });
+        if (!prescrito) { totPrazo.creditoPis += r.creditoPis; totPrazo.creditoCofins += r.creditoCofins; }
+
+        lancar('tema69', l, comp, prescrito, Object.assign({}, it, { baseCorreta: r.baseCorreta, excessoPis: r.excessoPis, excessoCofins: r.excessoCofins, status: r.statusPis }), r.creditoPis, r.creditoCofins);
+        if (mono) lancar('monofasico', l, comp, prescrito, Object.assign({}, it, { grupo: mono.grupo, base: mono.base, status: mono.status }), mono.pis, mono.cofins);
+        if (st) {
+          if (st.semEntrada) { stSemEntrada.receita += it.vlItem - it.vlDesc; stSemEntrada.itens++; }
+          lancar('icmsSt', l, comp, prescrito, Object.assign({}, it, { stAtribuido: st.stAtribuido, excessoPis: st.excessoPis, excessoCofins: st.excessoCofins, status: st.status }), st.pis, st.cofins);
+        }
+      });
+
+      if (naoCumulativo) {
+        (l.entradas || []).forEach(function (e) {
+          var ins = calcularInsumo(e, comp);
+          if (ins) lancar('insumos', l, comp, prescrito, Object.assign({}, e, { base: ins.base, status: ins.status }), ins.pis, ins.cofins);
+          var rk = calcularRisco14592(e, comp);
+          if (rk) lancar('lei14592', l, comp, prescrito, Object.assign({}, e, { excessoPis: rk.excessoPis, excessoCofins: rk.excessoCofins, status: rk.status }), rk.pis, rk.cofins);
+        });
+      }
+    });
+
+    if (stSemEntrada.itens > 0) {
+      T.icmsSt.avisos.push(stSemEntrada.itens + ' item(ns) vendidos com ICMS-ST (CST x60) sem entrada correspondente nos arquivos (receita de ' + formatarReais(stSemEntrada.receita) +
+        '). Para quantificar, carregue os meses de compra ou a EFD ICMS/IPI.');
+    }
+    if (T.monofasico.aplicavel) T.monofasico.avisos.push('Classificação por NCM a partir de tabela inicial: confira NCM a NCM e a condição de revendedor antes do pedido.');
+    if (T.insumos.aplicavel) T.insumos.avisos.push('Valores potenciais, não somados ao recuperável: cada item depende de análise de essencialidade ou relevância e de o fornecedor ser pessoa jurídica.');
+    if (T.lei14592.aplicavel) T.lei14592.avisos.push('Passivo potencial: se confirmado, deve ser regularizado e abatido antes de pedir restituição.');
+
+    var teses = CATALOGO.filter(function (c) { return c.calculada; }).map(function (c) {
+      var t = T[c.id];
+      t.competencias = Object.keys(t.competencias).sort().map(function (k) { return t.competencias[k]; });
+      return t;
+    });
+    var recuperavel = { pis: 0, cofins: 0 }, recuperavelNoPrazo = { pis: 0, cofins: 0 }, potencial = { pis: 0, cofins: 0 }, risco = { pis: 0, cofins: 0 };
+    teses.forEach(function (t) {
+      if (t.natureza === 'credito') {
+        recuperavel.pis += t.total.pis; recuperavel.cofins += t.total.cofins;
+        recuperavelNoPrazo.pis += t.totalNoPrazo.pis; recuperavelNoPrazo.cofins += t.totalNoPrazo.cofins;
+      } else if (t.natureza === 'potencial') { potencial.pis += t.totalNoPrazo.pis; potencial.cofins += t.totalNoPrazo.cofins; }
+      else if (t.natureza === 'risco') { risco.pis += t.total.pis; risco.cofins += t.total.cofins; }
+    });
+
+    return {
+      versaoMotor: VERSAO_MOTOR,
+      tese: 'Exclusão do ICMS da base de cálculo do PIS/COFINS (STF, Tema 69 — RE 574.706)',
+      geradoEm: hoje.toISOString(),
+      regimes: Object.keys(regimes),
+      // Tema 69 (formato v0.1)
+      competencias: Object.keys(competencias).sort().map(function (k) { return competencias[k]; }),
+      total: tot, totalNoPrazo: totPrazo, detalhes: detalhes,
+      // Todas as teses
+      teses: teses,
+      resumo: { recuperavel: recuperavel, recuperavelNoPrazo: recuperavelNoPrazo, potencial: potencial, risco: risco },
+      catalogo: CATALOGO,
+      avisos: avisos
+    };
+  }
+
+  function formatarReais(c) {
+    var neg = c < 0; c = Math.abs(Math.round(c));
+    var s = Math.floor(c / 100).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    var r = (c % 100).toString(); if (r.length < 2) r = '0' + r;
+    return (neg ? '-' : '') + 'R$ ' + s + ',' + r;
+  }
+
+  var api = {
+    VERSAO_MOTOR: VERSAO_MOTOR,
+    lerEfdContribuicoes: lerEfdContribuicoes,
+    calcularItem: calcularItem,
+    calcularMonofasico: calcularMonofasico,
+    calcularIcmsSt: calcularIcmsSt,
+    classificarMonofasico: classificarMonofasico,
+    apurar: apurar,
+    CATALOGO: CATALOGO, MONOFASICOS: MONOFASICOS,
+    centavos: centavos, aliquota: aliquota, quantidade: quantidade, formatarReais: formatarReais
+  };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.MotorCreditos = api;
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+/*
+ * Memória de cálculo em PDF — Reversa (Argus Prime).
+ * Usa jsPDF + jspdf-autotable (carregados do CDN pela página).
+ * Expõe window.GeradorMemoria.gerar(res, lidos, opts) -> Blob (application/pdf)
+ */
+(function (root) {
+  'use strict';
+
+  var COR = { tinta: [31, 26, 20], bronze: [156, 125, 83], suave: [107, 98, 88], linha: [227, 221, 211], fundo: [242, 237, 227], alerta: [138, 90, 18] };
+  var R = function (c) { return root.MotorCreditos.formatarReais(c); };
+  function cnpjFmt(c) { return /^\d{14}$/.test(c) ? c.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5') : (c || '-'); }
+  function compFmt(c) { var p = String(c).split('-'); return p.length === 2 ? p[1] + '/' + p[0] : c; }
+  function aliq(a) { return a.toFixed(4).replace('.', ',') + '%'; }
+  function dataBR(d) { return d.toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }); }
+  // jsPDF usa WinAnsi: troca caracteres fora dessa tabela
+  function t(s) { return String(s == null ? '' : s).replace(/[−–]/g, '-').replace(/≤/g, '<=').replace(/≥/g, '>='); }
+
+  function gerar(res, lidos, opts) {
+    opts = opts || {};
+    var jsPDF = root.jspdf && root.jspdf.jsPDF;
+    if (!jsPDF) throw new Error('A biblioteca de PDF não carregou. Verifique a conexão com a internet e tente de novo.');
+    var doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    if (typeof doc.autoTable !== 'function') throw new Error('O complemento de tabelas do PDF não carregou. Tente de novo.');
+
+    var W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(), M = 16;
+    var emissao = opts.emissao || new Date();
+    var contribuintes = {};
+    res.competencias.forEach(function (c) { contribuintes[c.cnpj] = c.nome; });
+    var cnpjs = Object.keys(contribuintes);
+    var comps = res.competencias.map(function (c) { return c.competencia; }).sort();
+    var periodo = comps.length ? compFmt(comps[0]) + (comps.length > 1 ? ' a ' + compFmt(comps[comps.length - 1]) : '') : '-';
+    var y = M;
+
+    function cor(c) { doc.setTextColor(c[0], c[1], c[2]); }
+    function fonte(f, estilo, tam) { doc.setFont(f, estilo); doc.setFontSize(tam); }
+    function espaco(h) { if (y + h > H - 18) { doc.addPage(); y = M + 6; } }
+    function paragrafo(txt, larg) {
+      fonte('helvetica', 'normal', 9.5); cor(COR.tinta);
+      var linhas = doc.splitTextToSize(t(txt), larg || (W - 2 * M));
+      espaco(linhas.length * 4.6);
+      doc.text(linhas, M, y); y += linhas.length * 4.6 + 2;
+    }
+    function titulo(n, txt) {
+      espaco(16); y += 4;
+      fonte('times', 'normal', 15); cor(COR.tinta); doc.text(t(n + '. ' + txt), M, y);
+      doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.line(M, y + 2.5, W - M, y + 2.5);
+      y += 9;
+    }
+    function tabela(cfg) {
+      doc.autoTable(Object.assign({
+        startY: y, margin: { left: M, right: M, top: M + 6, bottom: 18 }, theme: 'plain',
+        styles: { font: 'helvetica', fontSize: 8, cellPadding: 1.6, textColor: COR.tinta, lineColor: COR.linha, lineWidth: { bottom: 0.15 } },
+        headStyles: { fillColor: COR.fundo, textColor: COR.suave, fontStyle: 'bold', fontSize: 7 },
+        footStyles: { fontStyle: 'bold', textColor: COR.tinta, lineWidth: { top: 0.4 }, lineColor: COR.tinta }
+      }, cfg));
+      y = doc.lastAutoTable.finalY + 6;
+    }
+
+    var z = res.resumo;
+    var teses = res.teses.filter(function (x) { return x.aplicavel; });
+    var METODO = {
+      tema69: ['base correta = valor do item - desconto - ICMS destacado',
+               'excesso      = menor valor entre o ICMS e (base declarada - base correta), nunca negativo',
+               'crédito      = excesso x alíquota declarada no próprio arquivo'],
+      monofasico: ['condição    = CFOP de revenda + NCM monofásico (cadastro 0200) + CST 01 ou 02',
+                   'crédito     = PIS e COFINS informados no item (alíquota correta do revendedor: zero)'],
+      icmsSt: ['ST unitário  = ICMS-ST das notas de entrada do produto / quantidade dessas entradas',
+               'ST atribuído = quantidade vendida x ST unitário',
+               'excesso      = menor valor entre o ST atribuído e (base declarada - (item - desconto - ST atribuído))',
+               'crédito      = excesso x alíquota declarada'],
+      insumos: ['condição  = entrada com CST 70 a 75, 98 ou 99 em CFOP de insumo, frete, serviço ou consumo',
+                'base      = item - desconto + IPI (- ICMS a partir de 05/2023)',
+                'potencial = base x 1,65% (PIS) e x 7,6% (COFINS)'],
+      lei14592: ['condição = entrada com crédito (CST 50 a 56) a partir de 05/2023',
+                 'excesso  = menor valor entre o ICMS e (base do crédito - (item - desconto + IPI - ICMS))',
+                 'risco    = excesso x alíquota declarada']
+    };
+    var CRITERIO = {
+      tema69: 'Itens (C170) de notas de saída em situação regular, extemporânea ou complementar, com CST de PIS ou de COFINS 01 ou 02.',
+      monofasico: 'Itens de saída classificados pelo NCM do cadastro de produtos (registro 0200) em grupo sujeito à incidência monofásica, vendidos com CFOP de revenda. O fabricante e o importador recolhem as contribuições pela alíquota concentrada; o atacadista e o varejista têm alíquota zero. O enquadramento por NCM parte de tabela inicial e deve ser conferido produto a produto.',
+      icmsSt: 'Itens de saída com CST de ICMS terminado em 60 (ICMS cobrado anteriormente por substituição tributária) e CFOP de revenda. O valor do ICMS-ST é obtido das notas de compra do mesmo produto e estabelecimento presentes nos arquivos; itens sem compra correspondente ou com unidade divergente são listados, mas não quantificados.',
+      insumos: 'Levantamento restrito ao regime não cumulativo. Os valores são potenciais e não integram o recuperável: cada item depende de demonstração da essencialidade ou relevância para a atividade e de o fornecedor ser pessoa jurídica.',
+      lei14592: 'Verificação restrita ao regime não cumulativo. Indica crédito possivelmente tomado sobre o ICMS destacado, vedado a partir de 05/2023. Se confirmado, o valor deve ser regularizado e abatido antes de qualquer pedido de restituição.'
+    };
+    var rotulo = function (x) { return x.natureza === 'risco' ? 'Risco' : x.natureza === 'potencial' ? 'Potencial' : 'Crédito'; };
+    var natTxt = function (n) { return n === 'credito' ? 'Recuperável' : n === 'potencial' ? 'Potencial' : n === 'risco' ? 'Risco' : 'Monitorar'; };
+    function valorCol(d, c) {
+      var v = d[c[0]];
+      if (c[2] === 'm') return R(v || 0);
+      if (c[2] === 'n') return Number(v || 0).toLocaleString('pt-BR', { maximumFractionDigits: 4 });
+      if (c[0] === 'data') { var p = String(v || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : t(v); }
+      return t(v);
+    }
+
+    // ------------------------------------------------------------- capa
+    fonte('helvetica', 'bold', 8); cor(COR.bronze);
+    doc.setDrawColor(COR.bronze[0], COR.bronze[1], COR.bronze[2]); doc.setLineWidth(0.3); doc.line(M, y + 3, M + 10, y + 3);
+    doc.setCharSpace(1.2); doc.text('ARGUS PRIME  ·  ENGENHARIA TRIBUTÁRIA', M + 13, y + 4); doc.setCharSpace(0);
+    y += 18;
+    fonte('times', 'normal', 30); cor(COR.tinta); doc.text('Memória de cálculo', M, y); y += 10;
+    fonte('times', 'italic', 16); cor(COR.bronze); doc.text(t('Créditos de PIS e COFINS · ' + teses.length + ' tese(s) analisada(s)'), M, y); y += 12;
+
+    var ficha = [
+      ['Contribuinte', cnpjs.map(function (c) { return contribuintes[c]; }).join('; ') || '-'],
+      ['CNPJ', cnpjs.map(cnpjFmt).join('; ') || '-'],
+      ['Regime', (res.regimes || []).join('; ') || '-'],
+      ['Período analisado', periodo + ' (' + comps.length + ' competência' + (comps.length === 1 ? '' : 's') + ')'],
+      ['Fonte', 'Escrituração Fiscal Digital das Contribuições (EFD-Contribuições)'],
+      ['Emissão', dataBR(emissao) + ' · Reversa, motor v' + res.versaoMotor]
+    ];
+    tabela({ body: ficha.map(function (r) { return [t(r[0]), t(r[1])]; }), theme: 'plain', styles: { font: 'helvetica', fontSize: 9.5, cellPadding: 1.8, textColor: COR.tinta, lineColor: COR.linha, lineWidth: { bottom: 0.15 } },
+      columnStyles: { 0: { cellWidth: 45, textColor: COR.suave, fontStyle: 'bold' } } });
+
+    y += 2;
+    var bw = (W - 2 * M - 12) / 4, bx = M;
+    [['Recuperável no prazo', R(z.recuperavelNoPrazo.pis + z.recuperavelNoPrazo.cofins), true], ['PIS', R(z.recuperavelNoPrazo.pis)], ['COFINS', R(z.recuperavelNoPrazo.cofins)],
+     ['Total geral (inclui possíveis prescritos)', R(z.recuperavel.pis + z.recuperavel.cofins)]].forEach(function (k) {
+      doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.rect(bx, y, bw, 22);
+      fonte('helvetica', 'bold', 7); cor(COR.suave); doc.text(t(k[0].toUpperCase()), bx + 4, y + 6);
+      fonte('times', 'normal', k[2] ? 18 : 15); cor(k[2] ? COR.bronze : COR.tinta); doc.text(t(k[1]), bx + 4, y + 16);
+      bx += bw + 4;
+    });
+    y += 28;
+    fonte('helvetica', 'normal', 9); cor(COR.tinta);
+    doc.text(t('Fora do recuperável: potencial de insumos a validar ' + R(z.potencial.pis + z.potencial.cofins) + ' · risco identificado (Lei 14.592/2023) ' + R(z.risco.pis + z.risco.cofins) + '.'), M, y); y += 7;
+    if (opts.exemplo) {
+      fonte('helvetica', 'bold', 9); cor(COR.alerta);
+      doc.text(t('DOCUMENTO DE DEMONSTRAÇÃO: gerado a partir de arquivos SPED sintéticos. Não utilizar como peça técnica.'), M, y); y += 6;
+    }
+    fonte('helvetica', 'normal', 8.5); cor(COR.suave);
+    doc.text(doc.splitTextToSize(t('Valores históricos, sem atualização monetária pela taxa Selic. Estimativa técnica sujeita a revisão tributária antes de qualquer pedido de restituição, compensação ou medida judicial.'), W - 2 * M), M, y);
+
+    // ------------------------------------------------------------- 1. objeto
+    doc.addPage(); y = M + 6;
+    var sec = 0;
+    titulo(++sec, 'Objeto');
+    paragrafo('Este documento demonstra, item a item, os valores de PIS e de COFINS apurados a maior pelo contribuinte em cada tese analisada, a partir das informações que o próprio contribuinte transmitiu à Receita Federal na EFD-Contribuições do período. Também apresenta, separadamente, créditos potenciais que dependem de validação e riscos identificados na escrituração.');
+
+    titulo(++sec, 'Quadro das teses');
+    tabela({
+      head: [['Tese', 'Natureza', 'Classificação', 'Regimes', 'PIS no prazo', 'COFINS no prazo', 'Total no prazo', 'Total geral']],
+      body: res.teses.map(function (x) {
+        return [t(x.curto), natTxt(x.natureza), t(x.classificacao), t(x.regimes), R(x.totalNoPrazo.pis), R(x.totalNoPrazo.cofins), R(x.totalNoPrazo.pis + x.totalNoPrazo.cofins), R(x.total.pis + x.total.cofins)];
+      }).concat(res.catalogo.filter(function (c) { return !c.calculada; }).map(function (c) {
+        return [t(c.curto), natTxt(c.natureza), t(c.classificacao), t(c.regimes), '-', '-', '-', '-'];
+      })),
+      foot: [['Recuperável (teses pacificadas)', '', '', '', R(z.recuperavelNoPrazo.pis), R(z.recuperavelNoPrazo.cofins), R(z.recuperavelNoPrazo.pis + z.recuperavelNoPrazo.cofins), R(z.recuperavel.pis + z.recuperavel.cofins)]],
+      columnStyles: { 4: { halign: 'right' }, 5: { halign: 'right' }, 6: { halign: 'right', fontStyle: 'bold' }, 7: { halign: 'right' } }
+    });
+    paragrafo('Teses classificadas como "Monitorar" estão em julgamento ou têm orientação desfavorável nos tribunais superiores e não foram quantificadas.');
+
+    titulo(++sec, 'Fonte dos dados');
+    paragrafo('Foram processados os arquivos abaixo. A impressão digital SHA-256 identifica cada arquivo de forma unívoca: qualquer alteração no conteúdo produz outro código, o que permite confirmar que o cálculo se refere exatamente aos arquivos listados.');
+    var usados = {};
+    res.competencias.forEach(function (c) { usados[c.arquivo] = true; });
+    tabela({
+      head: [['Arquivo', 'Competência', 'Tipo', 'Regime', 'Situação', 'Linhas', 'Itens saída', 'Itens entrada', 'SHA-256']],
+      body: lidos.map(function (l) {
+        var sit = l.erros.length ? 'Recusado' : usados[l.arquivo] ? 'Utilizado' : 'Substituído por retificadora';
+        return [t(l.arquivo), l.meta ? compFmt(l.meta.competencia) : '-', l.meta ? (l.meta.retificadora ? 'Retificadora' : 'Original') : '-', t(l.meta && l.meta.regime || '-'), sit,
+          l.estatisticas.linhas.toLocaleString('pt-BR'), l.itens.length.toLocaleString('pt-BR'), (l.entradas || []).length.toLocaleString('pt-BR'), (opts.hashes && opts.hashes[l.arquivo]) || 'indisponível'];
+      }),
+      columnStyles: { 5: { halign: 'right' }, 6: { halign: 'right' }, 7: { halign: 'right' }, 8: { fontSize: 5.6, cellWidth: 66 } }
+    });
+
+    titulo(++sec, 'Critérios gerais');
+    paragrafo('Os valores são calculados em centavos inteiros e arredondados item a item. Havendo original e retificadora para a mesma competência, prevalece a retificadora. Notas canceladas, denegadas e inutilizadas são descartadas. O regime de apuração é lido do registro 0110: o levantamento de insumos e a verificação de risco só se aplicam ao regime não cumulativo.');
+    paragrafo('Quando um mesmo item se enquadra na tese dos monofásicos, a restituição integral do PIS e da COFINS pagos absorve as teses de exclusão de base (ICMS e ICMS-ST) daquele item, para que não haja dupla contagem.');
+    paragrafo('A recuperação do indébito observa o prazo de cinco anos contado do pagamento indevido (art. 168 do Código Tributário Nacional). As competências com possível prescrição estão sinalizadas e somadas à parte.');
+
+    // ------------------------------------------------------------- uma seção por tese
+    teses.forEach(function (x) {
+      doc.addPage(); y = M + 6;
+      titulo(++sec, x.nome);
+      fonte('helvetica', 'bold', 8); cor(COR.bronze);
+      doc.text(t((natTxt(x.natureza) + ' · ' + x.classificacao + ' · ' + x.regimes).toUpperCase()), M, y); y += 6;
+      paragrafo('Fundamentação. ' + x.fundamento);
+      paragrafo('Critério. ' + (CRITERIO[x.id] || ''));
+      var f = METODO[x.id] || [];
+      if (f.length) {
+        espaco(8 + f.length * 4.6);
+        fonte('courier', 'normal', 8.6); cor(COR.tinta);
+        doc.setFillColor(COR.fundo[0], COR.fundo[1], COR.fundo[2]); doc.rect(M, y - 4, W - 2 * M, f.length * 4.4 + 3, 'F');
+        doc.text(f.map(t), M + 4, y); y += f.length * 4.4 + 5;
+      }
+      x.avisos.forEach(function (m) { paragrafo('Observação: ' + m); });
+
+      var rot = rotulo(x);
+      tabela({
+        head: [['Competência', 'CNPJ', 'Regime', 'Itens c/ valor', rot + ' PIS', rot + ' COFINS', 'Total', 'Situação']],
+        body: x.competencias.map(function (c) {
+          return [compFmt(c.competencia), cnpjFmt(c.cnpj), t(c.regime), c.itensComValor + ' / ' + c.itens, R(c.pis), R(c.cofins), R(c.pis + c.cofins),
+            (c.possivelmentePrescrito ? 'Possivelmente prescrito' : 'No prazo') + (c.retificadora ? ' · retificadora' : '')];
+        }),
+        foot: [['Total geral', '', '', '', R(x.total.pis), R(x.total.cofins), R(x.total.pis + x.total.cofins), ''],
+               ['Total no prazo', '', '', '', R(x.totalNoPrazo.pis), R(x.totalNoPrazo.cofins), R(x.totalNoPrazo.pis + x.totalNoPrazo.cofins), '']],
+        columnStyles: { 3: { halign: 'right' }, 4: { halign: 'right' }, 5: { halign: 'right' }, 6: { halign: 'right', fontStyle: 'bold' } }
+      });
+
+      var comValor = x.detalhes.filter(function (d) { return d.pis || d.cofins; });
+      var cols = x.colunas.filter(function (c) { return c[0] !== 'status'; });
+      espaco(30);
+      fonte('helvetica', 'bold', 9.5); cor(COR.tinta); doc.text(t('Detalhamento por nota fiscal (' + comValor.length + ' item(ns) com valor)'), M, y); y += 5;
+      if (comValor.length) {
+        var cs = {};
+        cols.forEach(function (c, i) { if (c[2] !== 't') cs[i + 2] = { halign: 'right' }; if (c[0] === 'pis' || c[0] === 'cofins') cs[i + 2] = { halign: 'right', fontStyle: 'bold' }; if (c[0] === 'descricao') cs[i + 2] = { cellWidth: 40 }; });
+        var foot = ['Total', ''].concat(cols.map(function (c) { return c[0] === 'pis' ? R(x.total.pis) : c[0] === 'cofins' ? R(x.total.cofins) : ''; }));
+        tabela({
+          head: [['Comp.', 'Linha'].concat(cols.map(function (c) { return t(c[1]); }))],
+          body: comValor.map(function (d) { return [compFmt(d.competencia), d.linha].concat(cols.map(function (c) { return valorCol(d, c); })); }),
+          foot: [foot],
+          styles: { font: 'helvetica', fontSize: 6.8, cellPadding: 1.2, textColor: COR.tinta, lineColor: COR.linha, lineWidth: { bottom: 0.15 } },
+          headStyles: { fillColor: COR.fundo, textColor: COR.suave, fontStyle: 'bold', fontSize: 6.2 },
+          columnStyles: Object.assign({ 1: { halign: 'right' } }, cs)
+        });
+      } else paragrafo('Nenhum item com valor nesta tese.');
+
+      var porStatus = {};
+      x.detalhes.forEach(function (d) { if (!(d.pis || d.cofins)) porStatus[d.status] = (porStatus[d.status] || 0) + 1; });
+      var ks = Object.keys(porStatus);
+      if (ks.length) {
+        espaco(20);
+        fonte('helvetica', 'bold', 9.5); cor(COR.tinta); doc.text(t('Itens enquadrados sem valor'), M, y); y += 4;
+        tabela({ head: [['Motivo', 'Itens']], body: ks.map(function (k) { return [t(k), porStatus[k]]; }), tableWidth: 150, columnStyles: { 1: { halign: 'right' } } });
+      }
+    });
+
+    doc.addPage(); y = M + 6;
+    titulo(++sec, 'Avisos e limitações');
+    var av = [];
+    lidos.forEach(function (l) { l.erros.forEach(function (m) { av.push(l.arquivo + ': ' + m); }); l.avisos.forEach(function (m) { av.push(l.arquivo + ': ' + m); }); });
+    res.avisos.forEach(function (m) { av.push(m); });
+    if (opts.ncmsExtras && opts.ncmsExtras.length) av.push('NCMs monofásicos acrescentados pelo usuário: ' + opts.ncmsExtras.join(', ') + '.');
+    av.push('Não há atualização monetária pela taxa Selic nos valores apresentados.');
+    av.push('A sinalização de prescrição usa corte aproximado de cinco anos pela competência e deve ser confirmada pela data de cada pagamento.');
+    av.push('Notas sem itens C170 e escrituração consolidada (registros C180 a C190), quando existentes, não foram calculadas.');
+    av.forEach(function (m) { paragrafo('•  ' + m); });
+
+    // ------------------------------------------------------------- encerramento
+    titulo(++sec, 'Responsabilidade técnica');
+    paragrafo('Os valores acima foram apurados de forma automatizada a partir das escriturações informadas e conferidos segundo a metodologia descrita. A utilização deste documento em pedido de restituição, compensação ou medida judicial depende de revisão e validação pelo responsável técnico abaixo identificado.');
+    espaco(34); y += 18;
+    doc.setDrawColor(COR.tinta[0], COR.tinta[1], COR.tinta[2]); doc.setLineWidth(0.3); doc.line(M, y, M + 95, y);
+    fonte('helvetica', 'bold', 9.5); cor(COR.tinta); doc.text(t(opts.responsavel || 'Responsável técnico'), M, y + 5);
+    fonte('helvetica', 'normal', 8.5); cor(COR.suave); doc.text(t(opts.registro || 'Registro profissional'), M, y + 10);
+    doc.text(t((opts.local ? opts.local + ', ' : '') + dataBR(emissao)), M, y + 15);
+
+    // ------------------------------------------------------------- rodapés
+    var n = doc.getNumberOfPages();
+    for (var i = 1; i <= n; i++) {
+      doc.setPage(i);
+      doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.line(M, H - 12, W - M, H - 12);
+      fonte('helvetica', 'normal', 7); cor(COR.suave);
+      doc.text(t('Argus Prime · Reversa · Memória de cálculo · ' + (cnpjs.map(cnpjFmt).join('; ') || '')) + (opts.exemplo ? ' · DEMONSTRAÇÃO' : ''), M, H - 7.5);
+      doc.text('Página ' + i + ' de ' + n, W - M, H - 7.5, { align: 'right' });
+    }
+    doc.setProperties({ title: 'Memória de cálculo - Créditos de PIS e COFINS', author: 'Argus Prime', creator: 'Reversa v' + res.versaoMotor });
+    return doc.output('blob');
+  }
+
+  root.GeradorMemoria = { gerar: gerar };
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+(function () {
+  'use strict';
+  var M = window.MotorCreditos;
+  var EXEMPLO = [{"nome":"A_2024-01_nc.txt","texto":"|0000|006|0|||01012024|31012024|EMPRESA TESTE LTDA|11222333000181|SC|4205407||00|1|\r\n|0110|1|1|1||\r\n|C010|11222333000181|2|\r\n|C100|1|0|PART1|55|00|1|1|44444444444444444444444444444444444444444444|15012024|15012024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|1000,00|0,00|0|000|5102||0,00|18,00|180,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|1000,00|1,6500|||0,00|01|1000,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|2|44444444444444444444444444444444444444444444|15012024|15012024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|500,00|50,00|0|000|5102||0,00|18,00|81,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|450,00|1,6500|||0,00|01|450,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|3|44444444444444444444444444444444444444444444|15012024|15012024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|1000,00|0,00|0|000|5102||0,00|18,00|120,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|880,00|1,6500|||0,00|01|880,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|4|44444444444444444444444444444444444444444444|15012024|15012024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|300,00|0,00|0|000|5102||0,00|18,00|54,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|06|0,00|0,0000|||0,00|06|0,00|0,0000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|5|44444444444444444444444444444444444444444444|15012024|15012024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|200,00|0,00|0|000|5102||0,00|18,00|0,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|200,00|1,6500|||0,00|01|200,00|7,6000|||0,00|3.01|\r\n|C100|0|0|PART1|55|00|1|6|44444444444444444444444444444444444444444444|15012024|15012024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|1000,00|0,00|0|000|5102||0,00|18,00|180,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|50|1000,00|1,6500|||0,00|50|1000,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|02|1|7|44444444444444444444444444444444444444444444|15012024|15012024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|1000,00|0,00|0|000|5102||0,00|18,00|180,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|1000,00|1,6500|||0,00|01|1000,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|8|44444444444444444444444444444444444444444444|15012024|15012024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|1000,00|0,00|0|000|5102||0,00|18,00|180,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|900,00|1,6500|||0,00|01|900,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|9|44444444444444444444444444444444444444444444|15012024|15012024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|9999|21|\r\n"},{"nome":"B_2024-02_cum_original.txt","texto":"|0000|006|0|||01022024|29022024|EMPRESA TESTE LTDA|11222333000181|SC|4205407||00|1|\r\n|0110|2|1|1||\r\n|C010|11222333000181|2|\r\n|C100|1|0|PART1|55|00|1|10|44444444444444444444444444444444444444444444|10022024|10022024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|2000,00|0,00|0|000|5102||0,00|18,00|240,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|2000,00|0,6500|||0,00|01|2000,00|3,0000|||0,00|3.01|\r\n|9999|6|\r\n"},{"nome":"C_2024-02_cum_retificadora.txt","texto":"|0000|006|1||REC123|01022024|29022024|EMPRESA TESTE LTDA|11222333000181|SC|4205407||00|1|\r\n|0110|2|1|1||\r\n|C010|11222333000181|2|\r\n|C100|1|0|PART1|55|00|1|10|44444444444444444444444444444444444444444444|10022024|10022024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|2000,00|0,00|0|000|5102||0,00|18,00|240,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|1900,00|0,6500|||0,00|01|1900,00|3,0000|||0,00|3.01|\r\n|9999|6|\r\n"},{"nome":"E_2019-01_antigo.txt","texto":"|0000|006|0|||01012019|31012019|EMPRESA TESTE LTDA|11222333000181|SC|4205407||00|1|\r\n|0110|1|1|1||\r\n|C010|11222333000181|2|\r\n|C100|1|0|PART1|55|00|1|20|44444444444444444444444444444444444444444444|15012019|15012019|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|ITEM1||1|UN|100,00|0,00|0|000|5102||0,00|18,00|18,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|100,00|1,6500|||0,00|01|100,00|7,6000|||0,00|3.01|\r\n|9999|6|\r\n"},{"nome":"F_2024-06_nc_teses.txt","texto":"|0000|006|0|||01062024|30062024|EMPRESA TESTE LTDA|11222333000181|SC|4205407||00|1|\r\n|0110|1|1|1||\r\n|0140||EMPRESA TESTE|11222333000181|SC||4205407|||\r\n|0200|P1|PERFUME 100ML|||UN|00|33030010||33||18,00|\r\n|0200|P2|CHOCOLATE 1KG|||UN|00|18069000||18||18,00|\r\n|0200|P3|MEDICAMENTO FABRICADO|||UN|00|30049069||30||18,00|\r\n|0200|P4|EMBALAGEM CAIXA|||UN|00|48191000||48||18,00|\r\n|0200|P5|MEDICAMENTO EXCECAO|||UN|00|30049046||30||18,00|\r\n|0200|P6|PNEU ARO 15|||UN|00|40111000||40||18,00|\r\n|0200|P7|BISCOITO|||UN|00|19053100||19||18,00|\r\n|C010|11222333000181|2|\r\n|C100|0|0|PART1|55|00|1|101|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P2||10,00000|UN|1000,00|0,00|0|010|1403||0,00|18,00|0,00|0,00|0,00|200,00|0|||0,00|0,00|0,00|50|1000,00|1,6500|||0,00|50|1000,00|7,6000|||0,00|3.01|\r\n|C100|0|0|PART1|55|00|1|102|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P2||10,00000|UN|1000,00|0,00|0|010|1403||0,00|18,00|0,00|0,00|0,00|100,00|0|||0,00|0,00|0,00|50|1000,00|1,6500|||0,00|50|1000,00|7,6000|||0,00|3.01|\r\n|C100|0|0|PART1|55|00|1|103|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P4||100,00000|UN|2000,00|0,00|0|000|1101||0,00|18,00|240,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|70|0,00|0,0000|||0,00|70|0,00|0,0000|||0,00|3.01|\r\n|C100|0|0|PART1|55|00|1|104|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P4||50,00000|UN|1000,00|0,00|0|000|1101||0,00|18,00|120,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|50|1000,00|1,6500|||0,00|50|1000,00|7,6000|||0,00|3.01|\r\n|C100|0|0|PART1|55|00|1|105|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P7||10,00000|UN|300,00|0,00|0|060|1102||0,00|18,00|0,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|70|0,00|0,0000|||0,00|70|0,00|0,0000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|201|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P1||5,00000|UN|500,00|0,00|0|000|5102||0,00|18,00|90,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|500,00|1,6500|||8,25|01|500,00|7,6000|||38,00|3.01|\r\n|C100|1|0|PART1|55|00|1|202|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P2||4,00000|UN|800,00|0,00|0|060|5405||0,00|18,00|0,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|800,00|1,6500|||0,00|01|800,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|203|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P2||2,00000|UN|400,00|0,00|0|060|5405||0,00|18,00|0,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|370,00|1,6500|||0,00|01|370,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|204|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P3||10,00000|UN|1000,00|0,00|0|000|5101||0,00|18,00|120,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|1000,00|1,6500|||0,00|01|1000,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|205|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P5||1,00000|UN|100,00|0,00|0|000|5102||0,00|18,00|0,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|100,00|1,6500|||0,00|01|100,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|206|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P6||4,00000|UN|1200,00|0,00|0|000|5102||0,00|18,00|0,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|04|0,00|0,0000|||0,00|04|0,00|0,0000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|207|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P7||10,00000|UN|300,00|0,00|0|060|5405||0,00|18,00|0,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|300,00|1,6500|||0,00|01|300,00|7,6000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|208|44444444444444444444444444444444444444444444|15062024|15062024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P2||1,00000|CX|200,00|0,00|0|060|5405||0,00|18,00|0,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|200,00|1,6500|||0,00|01|200,00|7,6000|||0,00|3.01|\r\n|9999|38|\r\n"},{"nome":"G_2024-07_cum_presumido.txt","texto":"|0000|006|0|||01072024|31072024|EMPRESA TESTE LTDA|11222333000181|SC|4205407||00|1|\r\n|0110|2|1|1||\r\n|0140||EMPRESA TESTE|11222333000181|SC||4205407|||\r\n|0200|P1|PERFUME 100ML|||UN|00|33030010||33||18,00|\r\n|0200|P2|CHOCOLATE 1KG|||UN|00|18069000||18||18,00|\r\n|0200|P3|MEDICAMENTO FABRICADO|||UN|00|30049069||30||18,00|\r\n|0200|P4|EMBALAGEM CAIXA|||UN|00|48191000||48||18,00|\r\n|0200|P5|MEDICAMENTO EXCECAO|||UN|00|30049046||30||18,00|\r\n|0200|P6|PNEU ARO 15|||UN|00|40111000||40||18,00|\r\n|0200|P7|BISCOITO|||UN|00|19053100||19||18,00|\r\n|C010|11222333000181|2|\r\n|C100|0|0|PART1|55|00|1|301|44444444444444444444444444444444444444444444|10072024|10072024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P4||10,00000|UN|1000,00|0,00|0|000|1101||0,00|18,00|120,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|70|0,00|0,0000|||0,00|70|0,00|0,0000|||0,00|3.01|\r\n|C100|1|0|PART1|55|00|1|302|44444444444444444444444444444444444444444444|10072024|10072024|0,00|0|0,00|0,00|0,00|9|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|0,00|\r\n|C170|1|P1||10,00000|UN|1000,00|0,00|0|000|5102||0,00|18,00|180,00|0,00|0,00|0,00|0|||0,00|0,00|0,00|01|1000,00|0,6500|||6,50|01|1000,00|3,0000|||30,00|3.01|\r\n|9999|16|\r\n"}];
+  var estado = { arquivos: [], lidos: [], res: null, exemplo: false, tese: 'tema69' };
+  var $ = function (id) { return document.getElementById(id); };
+  var R = M.formatarReais;
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function cnpjFmt(c) { return /^\d{14}$/.test(c) ? c.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5') : (c || '—'); }
+  function compFmt(c) { var p = String(c).split('-'); return p.length === 2 ? p[1] + '/' + p[0] : c; }
+  function dataFmt(d) { var p = String(d || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : (d || ''); }
+  var toastT;
+  function toast(msg) { var t = $('toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(function () { t.hidden = true; }, 3200); }
+
+  // --------------------------------------------------------------- entrada
+  function lerArquivo(f) {
+    return new Promise(function (ok, err) {
+      var r = new FileReader();
+      r.onload = function () {
+        var bytes = new Uint8Array(r.result);
+        ok({ nome: f.name, texto: new TextDecoder('windows-1252').decode(bytes), bytes: bytes }); // SPED usa ISO-8859-1
+      };
+      r.onerror = function () { err(new Error('Não foi possível ler ' + f.name)); };
+      r.readAsArrayBuffer(f);
+    });
+  }
+  function latin1(texto) { var b = new Uint8Array(texto.length); for (var i = 0; i < texto.length; i++) b[i] = texto.charCodeAt(i) & 255; return b; }
+  function calcularHashes(arquivos) {
+    estado.hashes = {};
+    if (!(window.crypto && crypto.subtle)) return;
+    arquivos.forEach(function (a) {
+      crypto.subtle.digest('SHA-256', a.bytes || latin1(a.texto)).then(function (h) {
+        estado.hashes[a.nome] = Array.prototype.map.call(new Uint8Array(h), function (x) { return (x < 16 ? '0' : '') + x.toString(16); }).join('');
+      }, function () { /* fica "indisponível" no PDF */ });
+    });
+  }
+  function ncmsExtras() { return $('ncm-extra').value.split(/[,;\s]+/).map(function (x) { return x.replace(/\D/g, ''); }).filter(function (x) { return x.length >= 4; }); }
+  function apurar() { estado.res = M.apurar(estado.lidos, { ncmsExtras: ncmsExtras() }); render(); }
+  function processar(arquivos, exemplo) {
+    calcularHashes(arquivos);
+    estado.arquivos = arquivos;
+    estado.lidos = arquivos.map(function (a) { return M.lerEfdContribuicoes(a.texto, a.nome); });
+    estado.exemplo = !!exemplo;
+    apurar();
+  }
+  function aoEscolher(lista) {
+    var fs = Array.prototype.slice.call(lista || []);
+    if (!fs.length) return;
+    Promise.all(fs.map(lerArquivo)).then(function (a) { processar(a, false); toast(a.length + ' arquivo(s) processado(s)'); })
+      .catch(function (e) { toast(e.message); });
+  }
+  $('arquivos').addEventListener('change', function (e) { aoEscolher(e.target.files); e.target.value = ''; });
+  var drop = $('drop');
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function (e) { aoEscolher(e.dataTransfer && e.dataTransfer.files); });
+  $('btn-exemplo').addEventListener('click', function () { processar(EXEMPLO, true); toast('Exemplo carregado'); });
+  $('ncm-extra').addEventListener('change', function () { if (estado.lidos.length) { apurar(); toast('Monofásicos recalculados'); } });
+
+  // ---------------------------------------------------------------- render
+  function tese(id) { return estado.res.teses.filter(function (t) { return t.id === id; })[0]; }
+  function natureza(n) {
+    return n === 'credito' ? '<span class="pill ok">RECUPERÁVEL</span>' : n === 'potencial' ? '<span class="pill warn">POTENCIAL</span>' :
+      n === 'risco' ? '<span class="pill bad">RISCO</span>' : '<span class="pill neu">MONITORAR</span>';
+  }
+  function render() {
+    var res = estado.res, z = res.resumo;
+    $('banner').innerHTML = estado.exemplo
+      ? '<span class="pill warn">EXEMPLO</span><span>Arquivos sintéticos da EMPRESA TESTE LTDA, gerados para demonstrar o motor. Envie os SPEDs do cliente para substituir.</span>'
+      : '<span class="pill ok">DADOS DO CLIENTE</span><span>' + estado.lidos.length + ' arquivo(s) carregado(s) nesta sessão do navegador.</span>';
+    $('gerado').textContent = 'Motor v' + res.versaoMotor + ' · calculado em ' + new Date(res.geradoEm).toLocaleString('pt-BR');
+
+    var noPrazo = z.recuperavelNoPrazo.pis + z.recuperavelNoPrazo.cofins;
+    var fora = z.recuperavel.pis + z.recuperavel.cofins - noPrazo;
+    $('kpis').innerHTML =
+      kpi('main', 'Recuperável no prazo', R(noPrazo), fora > 0 ? R(fora) + ' em competências possivelmente prescritas' : 'Teses pacificadas, sem Selic') +
+      kpi('', 'PIS', R(z.recuperavelNoPrazo.pis), 'COFINS ' + R(z.recuperavelNoPrazo.cofins)) +
+      kpi('pot', 'Potencial a validar', R(z.potencial.pis + z.potencial.cofins), 'Insumos, depende de análise') +
+      kpi('risk', 'Risco identificado', R(z.risco.pis + z.risco.cofins), 'Crédito sobre ICMS após 05/2023');
+
+    // quadro das teses
+    var linhas = res.teses.map(function (t) {
+      var tot = t.totalNoPrazo.pis + t.totalNoPrazo.cofins;
+      return '<tr class="clic" data-tese="' + t.id + '"><td><strong>' + esc(t.curto) + '</strong></td><td>' + natureza(t.natureza) + '</td><td>' + esc(t.classificacao) + '</td><td>' + esc(t.regimes) + '</td>' +
+        '<td class="r">' + (t.aplicavel ? t.total.itensComValor + ' / ' + t.total.itens : '—') + '</td><td class="r">' + R(t.totalNoPrazo.pis) + '</td><td class="r">' + R(t.totalNoPrazo.cofins) + '</td><td class="r"><strong>' + R(tot) + '</strong></td></tr>';
+    }).join('') + res.catalogo.filter(function (c) { return !c.calculada; }).map(function (c) {
+      return '<tr><td>' + esc(c.curto) + '</td><td>' + natureza(c.natureza) + '</td><td>' + esc(c.classificacao) + '</td><td>' + esc(c.regimes) + '</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td></tr>';
+    }).join('');
+    $('tab-teses').innerHTML = '<thead><tr><th>Tese</th><th>Natureza</th><th>Classificação</th><th>Regimes</th><th class="r">Itens c/ valor</th><th class="r">PIS no prazo</th><th class="r">COFINS no prazo</th><th class="r">Total no prazo</th></tr></thead><tbody>' + linhas +
+      '</tbody><tfoot><tr><td colspan="5">Recuperável no prazo (só teses pacificadas)</td><td class="r">' + R(z.recuperavelNoPrazo.pis) + '</td><td class="r">' + R(z.recuperavelNoPrazo.cofins) + '</td><td class="r">' + R(noPrazo) + '</td></tr></tfoot>';
+    Array.prototype.forEach.call(document.querySelectorAll('#tab-teses tr.clic'), function (tr) {
+      tr.addEventListener('click', function () { estado.tese = tr.getAttribute('data-tese'); renderTese(); $('t-det').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    });
+
+    // arquivos
+    var html = '';
+    estado.lidos.forEach(function (l) {
+      var st = l.erros.length ? '<span class="pill bad">ERRO</span>' : l.avisos.length ? '<span class="pill warn">COM AVISOS</span>' : '<span class="pill ok">OK</span>';
+      var meta = l.meta ? (esc(l.meta.nome) + ' · ' + cnpjFmt(l.meta.cnpj) + ' · ' + compFmt(l.meta.competencia) + ' · ' + esc(l.meta.regime || 'regime não informado') + (l.meta.retificadora ? ' · retificadora' : '')) : '';
+      var msgs = l.erros.map(function (m) { return '<li class="e">' + esc(m) + '</li>'; }).join('') + l.avisos.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('');
+      html += '<div class="file"><div class="file-top">' + st + '<span class="file-name">' + esc(l.arquivo) + '</span><span class="file-meta">' + meta + '</span></div>' +
+        (l.meta ? '<div class="file-meta num">' + l.estatisticas.linhas.toLocaleString('pt-BR') + ' linhas · ' + l.estatisticas.c100Saida + ' notas de saída (' + l.itens.length + ' itens) · ' +
+          l.estatisticas.c100Entrada + ' notas de entrada (' + (l.entradas || []).length + ' itens) · ' + (l.produtos || 0) + ' produtos no cadastro</div>' : '') +
+        (msgs ? '<ul class="msgs">' + msgs + '</ul>' : '') + '</div>';
+    });
+    res.avisos.forEach(function (m) { html += '<div class="file"><div class="file-top"><span class="pill neu">LOTE</span><span class="file-meta">' + esc(m) + '</span></div></div>'; });
+    $('files').innerHTML = html || '<div class="empty">Nenhum arquivo lido.</div>';
+
+    $('tabs').innerHTML = res.teses.map(function (t) {
+      return '<button type="button" role="tab" data-tese="' + t.id + '">' + esc(t.curto) + '</button>';
+    }).join('');
+    Array.prototype.forEach.call($('tabs').querySelectorAll('button'), function (b) {
+      b.addEventListener('click', function () { estado.tese = b.getAttribute('data-tese'); renderTese(); });
+    });
+    renderTese();
+    $('rodape').textContent = 'Reversa · Argus Prime · motor v' + res.versaoMotor + ' · Estimativa técnica sujeita a revisão tributária, sem atualização pela Selic.';
+  }
+  function kpi(cls, lbl, val, sub) { return '<div class="kpi ' + cls + '"><span class="lbl">' + lbl + '</span><span class="val">' + val + '</span><span class="sub">' + sub + '</span></div>'; }
+
+  function renderTese() {
+    var t = tese(estado.tese) || estado.res.teses[0];
+    estado.tese = t.id;
+    Array.prototype.forEach.call($('tabs').querySelectorAll('button'), function (b) { b.setAttribute('aria-selected', b.getAttribute('data-tese') === t.id ? 'true' : 'false'); });
+    $('fund').innerHTML = natureza(t.natureza) + ' <strong>' + esc(t.nome) + '.</strong> ' + esc(t.fundamento);
+    $('tese-avisos').innerHTML = t.avisos.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('');
+    var rotulo = t.natureza === 'risco' ? 'Em risco' : t.natureza === 'potencial' ? 'Potencial' : 'Crédito';
+    var rows = t.competencias.map(function (c) {
+      var sit = c.possivelmentePrescrito ? '<span class="pill warn">POSSIVELMENTE PRESCRITO</span>' : '<span class="pill ok">NO PRAZO</span>';
+      if (c.retificadora) sit += ' <span class="pill neu">RETIFICADORA</span>';
+      return '<tr><td class="num">' + compFmt(c.competencia) + '</td><td class="num">' + cnpjFmt(c.cnpj) + '</td><td>' + esc(c.regime) + '</td>' +
+        '<td class="r">' + c.itensComValor + ' / ' + c.itens + '</td><td class="r">' + R(c.pis) + '</td><td class="r">' + R(c.cofins) + '</td><td class="r"><strong>' + R(c.pis + c.cofins) + '</strong></td><td>' + sit + '</td></tr>';
+    }).join('');
+    $('tab-comp').innerHTML = t.competencias.length
+      ? '<thead><tr><th>Competência</th><th>CNPJ</th><th>Regime</th><th class="r">Itens c/ valor</th><th class="r">' + rotulo + ' PIS</th><th class="r">' + rotulo + ' COFINS</th><th class="r">Total</th><th>Situação</th></tr></thead><tbody>' + rows +
+        '</tbody><tfoot><tr><td colspan="4">Total geral (inclui competências possivelmente prescritas)</td><td class="r">' + R(t.total.pis) + '</td><td class="r">' + R(t.total.cofins) + '</td><td class="r">' + R(t.total.pis + t.total.cofins) + '</td><td></td></tr></tfoot>'
+      : '<tbody><tr><td class="empty">Nenhum item enquadrado nesta tese nos arquivos carregados.</td></tr></tbody>';
+    renderMemoria();
+  }
+
+  var LIMITE = 400;
+  function filtrados() {
+    var t = tese(estado.tese), so = $('so-credito').checked, q = $('busca').value.trim().toLowerCase();
+    return t.detalhes.filter(function (d) {
+      if (so && !(d.pis || d.cofins)) return false;
+      if (q && [d.doc, d.serie, d.cfop, d.codItem, d.ncm, d.descricao, d.chave, d.status, d.estab].join(' ').toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+  }
+  function celula(d, c) {
+    var v = d[c[0]];
+    if (c[2] === 'm') return '<td class="r">' + R(v || 0) + '</td>';
+    if (c[2] === 'n') return '<td class="r">' + Number(v || 0).toLocaleString('pt-BR', { maximumFractionDigits: 4 }) + '</td>';
+    if (c[0] === 'status') {
+      var cls = /^Crédito/.test(v) ? 'ok' : /risco/i.test(v) ? 'bad' : /^A validar/.test(v) ? 'warn' : /já|Já|Coberto/.test(v) ? 'neu' : 'warn';
+      return '<td><span class="pill ' + cls + '">' + esc(v) + '</span></td>';
+    }
+    if (c[0] === 'data') return '<td class="num">' + dataFmt(v) + '</td>';
+    if (c[0] === 'descricao') return '<td class="wrapc">' + esc(v) + '</td>';
+    return '<td class="num">' + esc(v) + '</td>';
+  }
+  function renderMemoria() {
+    var t = tese(estado.tese), lst = filtrados(), vis = lst.slice(0, LIMITE);
+    $('contagem').textContent = lst.length.toLocaleString('pt-BR') + ' item(ns)' + (lst.length > LIMITE ? ' · exibindo os primeiros ' + LIMITE + ' (a exportação traz todos)' : '');
+    if (!vis.length) { $('tab-mem').innerHTML = '<tbody><tr><td class="empty">Nenhum item com esses filtros.</td></tr></tbody>'; return; }
+    $('tab-mem').innerHTML = '<thead><tr><th>Comp.</th><th class="r">Linha SPED</th>' + t.colunas.map(function (c) { return '<th' + (c[2] !== 't' ? ' class="r"' : '') + '>' + esc(c[1]) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      vis.map(function (d) { return '<tr><td class="num">' + compFmt(d.competencia) + '</td><td class="r">' + d.linha + '</td>' + t.colunas.map(function (c) { return celula(d, c); }).join('') + '</tr>'; }).join('') + '</tbody>';
+  }
+  $('so-credito').addEventListener('change', renderMemoria);
+  $('busca').addEventListener('input', renderMemoria);
+
+  // -------------------------------------------------------------- exportar
+  function reais(c) { return Math.round(c || 0) / 100; }
+  function linhasTese(t, lst) {
+    return lst.map(function (d) {
+      var o = { 'Competência': compFmt(d.competencia), 'CNPJ matriz': cnpjFmt(d.cnpjMatriz), 'Estabelecimento': cnpjFmt(d.estab), 'Arquivo': d.arquivo, 'Linha SPED (C170)': d.linha,
+        'Nota': d.doc, 'Série': d.serie, 'Chave NF-e': d.chave, 'Data': dataFmt(d.data), 'Item': d.item, 'Código item': d.codItem, 'Descrição': d.descricao, 'NCM': d.ncm,
+        'CFOP': d.cfop, 'CST ICMS': d.cstIcms, 'Quantidade': d.qtd, 'Unidade': d.unid, 'Valor item': reais(d.vlItem), 'Desconto': reais(d.vlDesc), 'ICMS': reais(d.vlIcms), 'ICMS-ST': reais(d.vlIcmsSt),
+        'CST PIS': d.cstPis, 'BC PIS declarada': reais(d.bcPis), 'Alíq. PIS %': d.aliqPis, 'PIS informado': reais(d.vlPis),
+        'CST COFINS': d.cstCofins, 'BC COFINS declarada': reais(d.bcCofins), 'Alíq. COFINS %': d.aliqCofins, 'COFINS informada': reais(d.vlCofins) };
+      if ('baseCorreta' in d) o['Base correta'] = reais(d.baseCorreta);
+      if ('stAtribuido' in d) o['ICMS-ST atribuído'] = reais(d.stAtribuido);
+      if ('base' in d && typeof d.base === 'number') o['Base potencial'] = reais(d.base);
+      if ('grupo' in d) { o['Grupo monofásico'] = d.grupo; o['Base legal'] = d.base; }
+      if ('excessoPis' in d) { o['Excesso base PIS'] = reais(d.excessoPis); o['Excesso base COFINS'] = reais(d.excessoCofins); }
+      o['Resultado PIS'] = reais(d.pis); o['Resultado COFINS'] = reais(d.cofins); o['Situação'] = d.status;
+      o['Prazo'] = d.possivelmentePrescrito ? 'Possivelmente prescrito' : 'No prazo';
+      return o;
+    });
+  }
+  function nomeBase() {
+    var l = estado.lidos.filter(function (x) { return x.meta; })[0];
+    return 'reversa' + (l ? '-' + l.meta.cnpj : '') + (estado.exemplo ? '-EXEMPLO' : '');
+  }
+  async function salvar(nome, dados) {
+    try {
+      if (window.claude && window.claude.use) {
+        var d = await window.claude.use('downloads');
+        if (d) {
+          try { await d.save({ filename: nome, data: dados }); toast('Arquivo salvo'); }
+          catch (e) { if (e && e.code !== 'declined') toast('Não foi possível salvar: ' + (e.message || e.code)); }
+          return;
+        }
+      }
+    } catch (e) { /* segue para o download comum */ }
+    var blob = dados instanceof Blob ? dados : new Blob([dados]);
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nome;
+    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+  $('btn-xlsx').addEventListener('click', function () {
+    if (!window.XLSX) { toast('A biblioteca do Excel não carregou. Use Exportar CSV em cada tese.'); return; }
+    var res = estado.res, z = res.resumo, wb = XLSX.utils.book_new();
+    var resumo = [
+      ['Reversa · Argus Prime — motor v' + res.versaoMotor], ['Calculado em', new Date(res.geradoEm).toLocaleString('pt-BR')],
+      estado.exemplo ? ['ATENÇÃO', 'Dados sintéticos de exemplo'] : [], [],
+      ['Tese', 'Natureza', 'Classificação', 'PIS no prazo', 'COFINS no prazo', 'Total no prazo', 'Total geral']
+    ];
+    res.teses.forEach(function (t) {
+      resumo.push([t.curto, t.natureza, t.classificacao, reais(t.totalNoPrazo.pis), reais(t.totalNoPrazo.cofins), reais(t.totalNoPrazo.pis + t.totalNoPrazo.cofins), reais(t.total.pis + t.total.cofins)]);
+    });
+    resumo.push([], ['Recuperável no prazo', '', '', reais(z.recuperavelNoPrazo.pis), reais(z.recuperavelNoPrazo.cofins), reais(z.recuperavelNoPrazo.pis + z.recuperavelNoPrazo.cofins)],
+      ['Potencial a validar (insumos)', '', '', reais(z.potencial.pis), reais(z.potencial.cofins), reais(z.potencial.pis + z.potencial.cofins)],
+      ['Risco identificado (Lei 14.592)', '', '', reais(z.risco.pis), reais(z.risco.cofins), reais(z.risco.pis + z.risco.cofins)], [],
+      ['Estimativa técnica sem atualização Selic, sujeita a revisão tributária.']);
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(resumo), 'Resumo');
+    var comp = [];
+    res.teses.forEach(function (t) {
+      t.competencias.forEach(function (c) {
+        comp.push({ 'Tese': t.curto, 'Competência': compFmt(c.competencia), 'CNPJ': cnpjFmt(c.cnpj), 'Regime': c.regime, 'Arquivo': c.arquivo, 'Itens': c.itens, 'Itens com valor': c.itensComValor,
+          'PIS': reais(c.pis), 'COFINS': reais(c.cofins), 'Total': reais(c.pis + c.cofins), 'Situação': c.possivelmentePrescrito ? 'Possivelmente prescrito' : 'No prazo' });
+      });
+    });
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(comp.length ? comp : [{ Mensagem: 'Sem competências' }]), 'Competências');
+    res.teses.forEach(function (t) {
+      var rows = linhasTese(t, t.detalhes);
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows.length ? rows : [{ Mensagem: 'Nenhum item enquadrado' }]), t.curto.replace(/[\\\/\?\*\[\]:]/g, ' ').slice(0, 31));
+    });
+    var av = [];
+    estado.lidos.forEach(function (l) { l.erros.forEach(function (m) { av.push({ Origem: l.arquivo, Tipo: 'Erro', Mensagem: m }); }); l.avisos.forEach(function (m) { av.push({ Origem: l.arquivo, Tipo: 'Aviso', Mensagem: m }); }); });
+    res.avisos.forEach(function (m) { av.push({ Origem: '(lote)', Tipo: 'Aviso', Mensagem: m }); });
+    res.teses.forEach(function (t) { t.avisos.forEach(function (m) { av.push({ Origem: t.curto, Tipo: 'Aviso', Mensagem: m }); }); });
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(av.length ? av : [{ Mensagem: 'Sem avisos' }]), 'Avisos');
+    var buf = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    salvar(nomeBase() + '.xlsx', new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+  });
+  function csv(rows) {
+    if (!rows.length) return '';
+    var cols = Object.keys(rows[0]);
+    var cel = function (v) { if (typeof v === 'number') return String(v).replace('.', ','); v = String(v == null ? '' : v); return /[;"\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    return '﻿' + [cols.join(';')].concat(rows.map(function (r) { return cols.map(function (c) { return cel(r[c]); }).join(';'); })).join('\r\n');
+  }
+  $('btn-csv').addEventListener('click', function () {
+    var t = tese(estado.tese), rows = linhasTese(t, t.detalhes);
+    if (!rows.length) { toast('Nenhum item nesta tese'); return; }
+    salvar(nomeBase() + '-' + t.id + '.csv', csv(rows));
+  });
+  $('form-pdf').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!estado.res || !estado.res.competencias.length) { toast('Carregue ao menos um arquivo válido antes de gerar o PDF.'); return; }
+    var btn = $('btn-pdf'); btn.disabled = true; btn.textContent = 'Gerando…';
+    setTimeout(function () {
+      try {
+        var blob = window.GeradorMemoria.gerar(estado.res, estado.lidos, {
+          responsavel: $('pdf-resp').value.trim(), registro: $('pdf-reg').value.trim(), local: $('pdf-local').value.trim(),
+          hashes: estado.hashes, exemplo: estado.exemplo, ncmsExtras: ncmsExtras()
+        });
+        salvar('memoria-de-calculo-' + nomeBase() + '.pdf', blob);
+      } catch (err) { toast(err.message); }
+      btn.disabled = false; btn.textContent = 'Gerar memória de cálculo';
+    }, 30);
+  });
+  $('btn-copiar').addEventListener('click', function () {
+    var rows = linhasTese(tese(estado.tese), filtrados()); if (!rows.length) { toast('Nada para copiar'); return; }
+    var cols = Object.keys(rows[0]);
+    var tsv = [cols.join('\t')].concat(rows.map(function (r) { return cols.map(function (c) { return typeof r[c] === 'number' ? String(r[c]).replace('.', ',') : (r[c] == null ? '' : r[c]); }).join('\t'); })).join('\n');
+    var fallback = function () { var ta = document.createElement('textarea'); ta.value = tsv; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('Tabela copiada. Cole no Excel.'); } catch (e) { toast('Selecione e copie manualmente.'); } ta.remove(); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(tsv).then(function () { toast(rows.length + ' linhas copiadas. Cole no Excel.'); }, fallback); else fallback();
+  });
+
+  processar(EXEMPLO, true);
+})();
+</script>
+
+</body>
+</html>
