@@ -136,12 +136,12 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     <h2 id="envio" hidden>Arquivos</h2>
     <div class="drop" id="drop">
       <div>
-        <strong>Arraste os arquivos da EFD-Contribuições aqui</strong>
-        <p class="hint">Um arquivo .txt por competência, como baixado do ReceitanetBX. Envie todos os meses do período: as compras de um mês ajudam a calcular o ICMS-ST das vendas de outro.</p>
+        <strong>Arraste os arquivos da EFD-Contribuições aqui (.txt ou .zip)</strong>
+        <p class="hint">Um arquivo .txt por competência, como baixado do ReceitanetBX, ou uma pasta compactada (.zip) com todos eles. Envie todos os meses do período: as compras de um mês ajudam a calcular o ICMS-ST das vendas de outro.</p>
       </div>
       <div class="btns">
         <label class="btn" for="arquivos">Selecionar arquivos</label>
-        <input type="file" id="arquivos" multiple accept=".txt,.TXT,text/plain">
+        <input type="file" id="arquivos" multiple accept=".txt,.TXT,.zip,.ZIP,text/plain,application/zip,application/x-zip-compressed">
         <button class="sec" id="btn-exemplo" type="button">Carregar exemplo</button>
       </div>
     </div>
@@ -257,6 +257,7 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
 <div class="toast" id="toast" hidden></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
 <script>
@@ -1155,10 +1156,32 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     estado.exemplo = !!exemplo;
     apurar();
   }
+  function ehZip(f) { return /\.zip$/i.test(f.name) || /zip/.test(f.type || ''); }
+  function decodificar(bytes) { return new TextDecoder('windows-1252').decode(bytes); } // SPED usa ISO-8859-1
+  function ehSped(bytes) { var c = decodificar(bytes.subarray(0, 8)); return c.indexOf('|0000|') === 0; }
+  function abrirZip(f) {
+    if (!window.JSZip) return Promise.reject(new Error('A biblioteca de .zip não carregou. Verifique a internet ou descompacte e envie os .txt.'));
+    return f.arrayBuffer().then(function (buf) { return JSZip.loadAsync(buf); }).then(function (zip) {
+      var nomes = Object.keys(zip.files).filter(function (n) { return !zip.files[n].dir && n.indexOf('__MACOSX') < 0 && !/(^|\/)\./.test(n); });
+      return Promise.all(nomes.map(function (n) {
+        var e = zip.files[n];
+        if (/\.zip$/i.test(n)) return e.async('blob').then(function (b) { return abrirZip(new File([b], n.split('/').pop())); });
+        return e.async('uint8array').then(function (bytes) {
+          return ehSped(bytes) ? [{ nome: n.split('/').pop(), texto: decodificar(bytes), bytes: bytes }] : [];
+        });
+      })).then(function (listas) { return [].concat.apply([], listas); });
+    });
+  }
   function aoEscolher(lista) {
     var fs = Array.prototype.slice.call(lista || []);
     if (!fs.length) return;
-    Promise.all(fs.map(lerArquivo)).then(function (a) { processar(a, false); toast(a.length + ' arquivo(s) processado(s)'); })
+    toast('Lendo ' + fs.length + ' arquivo(s)…');
+    Promise.all(fs.map(function (f) { return ehZip(f) ? abrirZip(f) : lerArquivo(f).then(function (a) { return [a]; }); }))
+      .then(function (listas) {
+        var a = [].concat.apply([], listas);
+        if (!a.length) { toast('Nenhum arquivo SPED (começando por |0000|) encontrado.'); return; }
+        processar(a, false); toast(a.length + ' arquivo(s) SPED processado(s)');
+      })
       .catch(function (e) { toast(e.message); });
   }
   $('arquivos').addEventListener('change', function (e) { aoEscolher(e.target.files); e.target.value = ''; });
