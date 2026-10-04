@@ -10,6 +10,7 @@
     "postgres": "^3.4.5"
   },
   "scripts": {
+    "build": "npm run migrate && npm run seed:opportunities",
     "migrate": "node scripts/migrate.js",
     "seed:opportunities": "node scripts/seed-opportunities.js",
     "bootstrap:legacy-users": "node scripts/bootstrap-legacy-users.js",
