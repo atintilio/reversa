@@ -1,0 +1,810 @@
+# Catálogo de oportunidades — Argus Prime / Reversa Tax
+# Gerado a partir de Argus_Prime_Base_de_Conhecimento_COMPLETA_v1.0(1).docx
+# Este catálogo descreve oportunidades; não autoriza cálculo ou oferta sem regra, fonte e evidência validadas.
+version: "1.0.0"
+source_date: "2026-09-10"
+implementation_status: "catalog_only_needs_rule_workshops"
+policy:
+  opportunity_is_not_credit: true
+  potential_requires_validation: true
+  approved_requires_human_review: true
+  never_claim_credit_without_evidence: true
+  formulas_must_be_versioned: true
+  risk_gate_precedes_score: true
+scoring:
+  opportunity_score_formula: "financial_potential*0.40 + scalability*0.30 + eligibility*0.15 + legal_security*0.10 + execution*0.05"
+  thesis_market_score_formula: "financial_potential*0.25 + scalability*0.25 + market_size*0.20 + legal_security*0.15 + automation*0.15"
+  risk_gate:
+    - condition: "legal_security < 40"
+      action: manual_review
+    - condition: "eligibility < 50"
+      action: do_not_offer
+    - condition: "financial_potential < 2"
+      action: low_priority
+    - condition: "legal_status == controversa"
+      action: legal_review_required
+eligibility_states: [eligible, probably_eligible, needs_validation, not_eligible]
+lifecycle:
+  positive: [discovered, screening, probably_eligible, document_validation, calculated, qualified, decision_maker, proposal, converted]
+  exceptions: [not_eligible, rejected, duplicated, insufficient_data, legal_review]
+opportunities:
+
+  - id: T001
+    name: "Exclusão do ICMS da base do PIS/COFINS"
+    category: judicial
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T002
+    name: "Exclusão do ICMS-ST da base do PIS/COFINS"
+    category: judicial
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T003
+    name: "PIS/COFINS monofásico não segregado no Simples Nacional"
+    category: administrativa
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T004
+    name: "Contribuição previdenciária sobre salário-maternidade"
+    category: judicial
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T005
+    name: "Contribuição previdenciária sobre aviso-prévio indenizado"
+    category: judicial
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T006
+    name: "Contribuição previdenciária sobre primeiros 15 dias de afastamento"
+    category: judicial
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T007
+    name: "Terço constitucional de férias — tratamento conforme situação jurídica"
+    category: judicial
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T008
+    name: "Limitação da base das contribuições destinadas a terceiros"
+    category: judicial
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T009
+    name: "Revisão do FAP"
+    category: administrativa
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T010
+    name: "Revisão do RAT/GILRAT"
+    category: administrativa
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T011
+    name: "Créditos de PIS/COFINS não utilizados"
+    category: operacional
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T012
+    name: "Créditos extemporâneos de PIS/COFINS"
+    category: administrativa
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T013
+    name: "Créditos de ICMS sobre ativo imobilizado"
+    category: operacional
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T014
+    name: "Créditos de ICMS sobre energia elétrica em hipóteses legais"
+    category: operacional
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T015
+    name: "Créditos de ICMS sobre ativos/insumos com apropriação incorreta"
+    category: operacional
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T016
+    name: "Insumos de PIS/COFINS — essencialidade e relevância"
+    category: judicial_administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T017
+    name: "Créditos de PIS/COFINS sobre fretes e armazenagem"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T018
+    name: "Créditos de PIS/COFINS sobre energia elétrica"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T019
+    name: "Créditos de PIS/COFINS sobre depreciação"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T020
+    name: "Créditos de PIS/COFINS sobre serviços essenciais"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T021
+    name: "ICMS-ST pago indevidamente por erro de apuração"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T022
+    name: "ICMS-ST — diferença entre base presumida e efetiva"
+    category: judicial_administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T023
+    name: "Créditos relacionados ao ICMS-ST no PIS/COFINS"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T024
+    name: "Créditos de ICMS sobre fretes"
+    category: operacional
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T025
+    name: "Créditos de ICMS sobre produtos intermediários"
+    category: operacional
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T026
+    name: "Revisão de NCM/classificação fiscal com impacto tributário"
+    category: operacional
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T027
+    name: "Retenções federais indevidas ou excessivas"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T028
+    name: "INSS sobre verbas de natureza indenizatória"
+    category: judicial_administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T029
+    name: "IRPJ/CSLL sobre Selic recebida em repetição de indébito"
+    category: judicial
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T030
+    name: "IRPJ/CSLL — serviços hospitalares em condições legalmente previstas"
+    category: judicial_administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T031
+    name: "ISS na base do PIS/COFINS"
+    category: judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T032
+    name: "PIS/COFINS sobre a própria base"
+    category: judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T033
+    name: "Créditos presumidos de ICMS e PIS/COFINS"
+    category: judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T034
+    name: "Incentivos fiscais de ICMS na base do IRPJ/CSLL"
+    category: judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T035
+    name: "Incentivos de ICMS — efeitos no Lucro Presumido"
+    category: judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T036
+    name: "ISS no IRPJ/CSLL — Lucro Presumido"
+    category: judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T037
+    name: "TUSD/TUST e ICMS sobre energia elétrica"
+    category: judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T038
+    name: "Alíquotas majoradas de ICMS sobre energia/telecom"
+    category: judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T039
+    name: "FUNCEP e adicionais estaduais na carga tributária"
+    category: judicial_administrativa
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T040
+    name: "Dedutibilidade extemporânea de JCP"
+    category: judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T041
+    name: "Funrural"
+    category: judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T042
+    name: "PIS/COFINS-Importação — base e adicionais"
+    category: judicial_administrativa
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T043
+    name: "REINTEGRA"
+    category: administrativa_judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T044
+    name: "CIDE sobre remessas ao exterior"
+    category: judicial_administrativa
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T045
+    name: "Tributação de lucros de controladas/coligadas no exterior"
+    category: judicial_administrativa
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T046
+    name: "PIS/COFINS monofásico — segregação por produto/NCM"
+    category: operacional
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T047
+    name: "ICMS-ST — ressarcimento e complementação por operações subsequentes"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T048
+    name: "Créditos de IPI sobre insumos e produtos tributados"
+    category: operacional
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T049
+    name: "IPI — classificação, alíquota e enquadramento fiscal"
+    category: operacional
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T050
+    name: "IPI — créditos decorrentes de devoluções e ajustes"
+    category: operacional
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T051
+    name: "ICMS — benefícios fiscais, créditos outorgados e subvenções"
+    category: administrativa_judicial
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T052
+    name: "ICMS — diferencial de alíquotas (DIFAL) em operações aplicáveis"
+    category: judicial_administrativa
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T053
+    name: "ICMS — diferencial de alíquotas para consumidor final não contribuinte"
+    category: judicial_administrativa
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T054
+    name: "ICMS — transferências entre estabelecimentos e manutenção de créditos"
+    category: judicial_administrativa
+    risk_level: alto
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T055
+    name: "PIS/COFINS — créditos sobre bens e serviços utilizados na atividade"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T056
+    name: "PIS/COFINS — créditos sobre embalagens e materiais de acondicionamento"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T057
+    name: "PIS/COFINS — créditos sobre manutenção e conservação de ativos"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T058
+    name: "PIS/COFINS — créditos sobre combustíveis em hipóteses legalmente admitidas"
+    category: administrativa
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T059
+    name: "Contribuições previdenciárias — revisão de rubricas e incidências"
+    category: operacional
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]
+
+  - id: T060
+    name: "Tributação indireta — revisão integrada de NCM, ICMS, IPI, PIS/COFINS e regime fiscal"
+    category: operacional
+    risk_level: medio
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]

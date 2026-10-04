@@ -1,0 +1,18 @@
+{
+  "name": "reversa-tax",
+  "private": true,
+  "version": "0.3.0",
+  "description": "Reversa Tax — plataforma de análise e recuperação de oportunidades de PIS/Cofins",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "bcryptjs": "^3.0.2",
+    "postgres": "^3.4.5"
+  },
+  "scripts": {
+    "migrate": "node scripts/migrate.js",
+    "seed:opportunities": "node scripts/seed-opportunities.js",
+    "bootstrap:legacy-users": "node scripts/bootstrap-legacy-users.js",
+    "check": "node scripts/check-runtime.js"
+  }
+}
