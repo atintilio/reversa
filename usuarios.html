@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Usuários · Reversa Tax</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+</head>
+<body class="rv">
+<main>
+  <div class="cab">
+    <div>
+      <h1>Usuários</h1>
+      <p class="sub">Convide pessoas da equipe e parceiros e defina o perfil de cada uma. O convite chega por e-mail (Office 365) com um link de uso único, válido por 48 horas, para a pessoa criar a própria senha. Ninguém vê a senha de ninguém.</p>
+    </div>
+  </div>
+
+  <section class="card" aria-labelledby="t-conv">
+    <h2 id="t-conv">Convidar usuário</h2>
+    <form class="form" id="f-conv">
+      <label>Nome<input id="c-nome" required maxlength="180" placeholder="Nome completo" autocomplete="off"></label>
+      <label>E-mail<input id="c-email" type="email" required placeholder="pessoa@empresa.com.br" autocomplete="off"></label>
+      <label>Perfil
+        <select id="c-papel">
+          <option value="analyst">Analista: calcula, cria empresas e casos</option>
+          <option value="admin">Administrador: também revisa e gerencia usuários</option>
+          <option value="viewer">Leitor: só consulta</option>
+          <option value="support">Suporte: só consulta</option>
+        </select>
+      </label>
+      <div class="acoes"><button type="submit" id="b-conv">Enviar convite</button></div>
+    </form>
+    <div id="m-conv" class="msg" role="status" hidden style="margin-top:14px"></div>
+  </section>
+
+  <section class="card" aria-labelledby="t-lista">
+    <h2 id="t-lista">Equipe</h2>
+    <div class="tabela"><table>
+      <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Situação</th><th>Último acesso</th><th></th></tr></thead>
+      <tbody id="lista"><tr><td colspan="6" class="vazio">Carregando…</td></tr></tbody>
+    </table></div>
+  </section>
+</main>
+
+<dialog id="dlg" aria-labelledby="ed-t">
+  <form method="dialog" id="f-ed">
+    <h2 id="ed-t">Editar usuário</h2>
+    <p class="muted" id="ed-email"></p>
+    <label>Nome<input id="ed-nome" maxlength="180" required></label>
+    <label>Perfil<select id="ed-papel"><option value="analyst">Analista</option><option value="admin">Administrador</option><option value="viewer">Leitor</option><option value="support">Suporte</option><option value="owner">Proprietário</option></select></label>
+    <div class="acoes" style="justify-content:space-between">
+      <div class="acoes">
+        <button type="button" class="sec" id="ed-ativo"></button>
+        <button type="button" class="sec" id="ed-reenviar">Reenviar convite</button>
+        <button type="button" class="perigo" id="ed-del">Remover</button>
+      </div>
+      <div class="acoes"><button type="button" class="sec" id="ed-cancel">Cancelar</button><button type="submit">Salvar</button></div>
+    </div>
+  </form>
+</dialog>
+
+<script src="/shell.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var membros = [], atual = null;
+  var SIT = { active: ['ativo', 'ok'], invited: ['convite pendente', 'warn'], suspended: ['suspenso', 'bad'] };
+
+  function mostrar(tipo, html) { var m = $('m-conv'); m.className = 'msg ' + tipo; m.innerHTML = html; m.hidden = false; }
+  function render() {
+    if (!membros.length) { $('lista').innerHTML = '<tr><td colspan="6" class="vazio">Nenhum usuário ainda.</td></tr>'; return; }
+    $('lista').innerHTML = membros.map(function (u) {
+      var s = SIT[u.status] || [u.status, ''];
+      return '<tr><td><strong>' + RV.esc(u.name) + '</strong>' + (u.isYou ? ' <span class="pill">você</span>' : '') + '</td>' +
+        '<td>' + RV.esc(u.email) + '</td><td>' + RV.esc(RV.PAPEIS[u.role] || u.role) + '</td>' +
+        '<td><span class="pill ' + s[1] + '">' + s[0] + '</span></td><td>' + RV.data(u.lastLoginAt, true) + '</td>' +
+        '<td class="num"><button class="mini sec" data-editar="' + u.id + '">Editar</button></td></tr>';
+    }).join('');
+  }
+  function carregar() {
+    return RV.api('GET', '/api/v1/members').then(function (j) { membros = j.members; render(); })
+      .catch(function (e) { $('lista').innerHTML = '<tr><td colspan="6" class="vazio">' + RV.esc(e.message) + '</td></tr>'; });
+  }
+  function resultado(j, email) {
+    if (j.linkedExistingAccount) mostrar('ok', '<strong>' + RV.esc(email) + '</strong> já tinha conta ativa e foi vinculado à equipe.');
+    else if (j.emailSent) mostrar('ok', 'Convite enviado para <strong>' + RV.esc(email) + '</strong>. O link vale por 48 horas.');
+    else mostrar('warn', 'O usuário foi cadastrado, mas o e-mail não pôde ser enviado agora. Tente "Reenviar convite" em instantes.');
+  }
+
+  $('f-conv').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = $('c-email').value.trim(), b = $('b-conv');
+    b.disabled = true; b.textContent = 'Enviando…';
+    RV.api('POST', '/api/v1/members', { name: $('c-nome').value.trim(), email: email, role: $('c-papel').value })
+      .then(function (j) { resultado(j, email); $('f-conv').reset(); return carregar(); })
+      .catch(function (e) { mostrar('bad', RV.esc(e.message)); })
+      .then(function () { b.disabled = false; b.textContent = 'Enviar convite'; });
+  });
+
+  $('lista').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-editar]'); if (!b) return;
+    atual = membros.filter(function (x) { return x.id === b.dataset.editar; })[0];
+    $('ed-email').textContent = atual.email + ' · ' + (SIT[atual.status] || [atual.status])[0];
+    $('ed-nome').value = atual.name; $('ed-papel').value = atual.role;
+    $('ed-ativo').hidden = atual.status === 'invited';
+    $('ed-ativo').textContent = atual.status === 'suspended' ? 'Reativar acesso' : 'Suspender acesso';
+    $('ed-reenviar').hidden = atual.status !== 'invited';
+    $('ed-del').hidden = !!atual.isYou;
+    $('dlg').showModal();
+  });
+  function aplicar(p, msg) {
+    return p.then(function (j) { $('dlg').close(); if (msg) RV.toast(msg); if (j && (j.emailSent !== undefined)) resultado(j, atual.email); return carregar(); })
+      .catch(function (e) { RV.toast(e.message); });
+  }
+  $('ed-cancel').onclick = function () { $('dlg').close(); };
+  $('f-ed').addEventListener('submit', function (e) {
+    e.preventDefault();
+    aplicar(RV.api('PATCH', '/api/v1/members/' + atual.id, { name: $('ed-nome').value.trim(), role: $('ed-papel').value }), 'Usuário atualizado');
+  });
+  $('ed-ativo').onclick = function () {
+    var novo = atual.status === 'suspended' ? 'active' : 'suspended';
+    if (novo === 'suspended' && !confirm('Suspender o acesso de ' + atual.name + '? As sessões abertas serão encerradas.')) return;
+    aplicar(RV.api('PATCH', '/api/v1/members/' + atual.id, { status: novo }), novo === 'active' ? 'Acesso reativado' : 'Acesso suspenso');
+  };
+  $('ed-reenviar').onclick = function () { aplicar(RV.api('POST', '/api/v1/members/' + atual.id + '/resend')); };
+  $('ed-del').onclick = function () {
+    if (!confirm('Remover ' + atual.name + ' (' + atual.email + ') da equipe? O acesso é encerrado na hora.')) return;
+    aplicar(RV.api('DELETE', '/api/v1/members/' + atual.id), 'Usuário removido');
+  };
+
+  RV.eu.then(function () {
+    if (!RV.pode('manageMembers')) { location.href = '/'; return; }
+    carregar();
+  });
+})();
+</script>
+</body>
+</html>

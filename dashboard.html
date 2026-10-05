@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard · Reversa Tax</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<style>
+  .dois { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 960px) { .dois { grid-template-columns: 1fr; } }
+  .funil .barra { grid-template-columns: minmax(150px, 200px) 1fr minmax(120px, auto); }
+  details { margin-top: 14px; font-size: 14px; }
+  summary { cursor: pointer; color: var(--muted); font-weight: 600; }
+  .carimbo { font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body class="rv">
+<main>
+  <div class="cab">
+    <div>
+      <h1>Dashboard <em>executivo</em></h1>
+      <p class="sub">Soma do diagnóstico mais recente de cada caso. PIS e COFINS sem correção pela Selic. Crédito só é “aprovado” depois da revisão humana; o resto é estimativa.</p>
+    </div>
+    <span class="carimbo" id="carimbo"></span>
+  </div>
+
+  <div class="grid-kpi" id="kpis">
+    <div class="kpi destaque"><div class="r">Créditos identificados</div><div class="v">…</div></div>
+  </div>
+
+  <div class="dois">
+    <section class="card" aria-labelledby="t-tese">
+      <h2 id="t-tese">Créditos por tese</h2>
+      <div class="legenda" aria-hidden="true">
+        <span><i style="background:var(--s-credito)"></i>Crédito no prazo (pendente + aprovado)</span>
+        <span><i style="background:var(--s-potencial)"></i>Potencial a validar</span>
+        <span><i style="background:var(--s-risco)"></i>Risco</span>
+      </div>
+      <div class="barras" id="g-tese"></div>
+      <details><summary>Ver como tabela</summary><div class="tabela"><table><thead><tr><th>Tese</th><th>Natureza</th><th class="num">Valor</th><th class="num">Clientes</th></tr></thead><tbody id="t-tese-tab"></tbody></table></div></details>
+    </section>
+    <section class="card funil" aria-labelledby="t-fase">
+      <h2 id="t-fase">Funil por fase</h2>
+      <p class="muted" style="margin:-6px 0 14px;font-size:14px">Crédito estimado no prazo dos casos em cada fase.</p>
+      <div class="barras" id="g-fase"></div>
+      <details><summary>Ver como tabela</summary><div class="tabela"><table><thead><tr><th>Fase</th><th class="num">Clientes</th><th class="num">Valor</th></tr></thead><tbody id="t-fase-tab"></tbody></table></div></details>
+    </section>
+  </div>
+
+  <section class="card" aria-labelledby="t-cli">
+    <h2 id="t-cli">Clientes por valor</h2>
+    <div class="tabela"><table>
+      <thead><tr><th>Cliente</th><th>Fase</th><th class="num">Aprovado</th><th class="num">Pendente de aprovação</th><th class="num">Potencial</th></tr></thead>
+      <tbody id="t-cli-tab"><tr><td colspan="5" class="vazio">Carregando…</td></tr></tbody>
+    </table></div>
+  </section>
+</main>
+<div class="tip" id="tip" hidden></div>
+
+<script src="/shell.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var NAT = { credito: 'Crédito', potencial: 'Potencial', risco: 'Risco' };
+  var COR = { credito: 'var(--s-credito)', potencial: 'var(--s-potencial)', risco: 'var(--s-risco)' };
+  var FUNIL = ['var(--f1)', 'var(--f2)', 'var(--f3)', 'var(--f4)', 'var(--muted)'];
+
+  function barras(el, itens) {
+    var max = Math.max.apply(null, itens.map(function (i) { return i.valor; }).concat([1]));
+    el.innerHTML = itens.map(function (i, k) {
+      var pct = Math.max(0, i.valor) / max * 100;
+      return '<div class="barra" data-k="' + k + '"><div class="rot" title="' + RV.esc(i.rotulo) + '">' + RV.esc(i.rotulo) + '</div>' +
+        '<div class="trilho"><div class="fill" style="width:' + pct.toFixed(2) + '%;background:' + i.cor + '"></div></div>' +
+        '<div class="val">' + RV.reaisCurto(i.valor) + (i.nota ? '<small>' + RV.esc(i.nota) + '</small>' : '') + '</div></div>';
+    }).join('');
+    el.onmousemove = function (e) {
+      var b = e.target.closest('.barra'), t = $('tip');
+      if (!b) { t.hidden = true; return; }
+      var i = itens[b.dataset.k];
+      t.innerHTML = '<strong>' + RV.esc(i.rotulo) + '</strong><br>' + RV.reais(i.valor) + (i.detalhe ? '<br><span class="muted">' + RV.esc(i.detalhe) + '</span>' : '');
+      t.hidden = false;
+      t.style.left = Math.min(e.clientX + 14, innerWidth - t.offsetWidth - 8) + 'px'; t.style.top = (e.clientY + 14) + 'px';
+    };
+    el.onmouseleave = function () { $('tip').hidden = true; };
+  }
+
+  function render(d) {
+    var T = d.total;
+    var contrato = d.stages.filter(function (f) { return f.id === 'contrato'; })[0] || { value: 0, cases: 0 };
+    $('kpis').innerHTML = [
+      ['destaque', 'Crédito aprovado', RV.reais(T.approved), 'Revisado e aprovado'],
+      ['', 'Pendente de aprovação', RV.reais(T.pendingApproval), T.withAnalysis + ' de ' + T.cases + ' casos com diagnóstico'],
+      ['', 'Em contrato', RV.reais(contrato.value), contrato.cases + ' caso(s)'],
+      ['', 'Potencial a validar', RV.reais(T.potential), 'Risco identificado: ' + RV.reais(T.risk)]
+    ].map(function (k) { return '<div class="kpi ' + k[0] + '"><div class="r">' + k[1] + '</div><div class="v">' + k[2] + '</div><div class="n">' + k[3] + '</div></div>'; }).join('');
+
+    var teses = d.theses.filter(function (t) { return t.value > 0; });
+    if (teses.length) barras($('g-tese'), teses.map(function (t) {
+      return { rotulo: t.name, valor: t.value, cor: COR[t.nature] || COR.credito, nota: t.cases + ' caso(s)', detalhe: NAT[t.nature] + (t.approved ? ' · aprovado ' + RV.reais(t.approved) : '') };
+    }));
+    else $('g-tese').innerHTML = '<p class="vazio">Nenhum diagnóstico salvo ainda.</p>';
+    $('t-tese-tab').innerHTML = d.theses.map(function (t) { return '<tr><td>' + RV.esc(t.name) + '</td><td>' + (NAT[t.nature] || '') + '</td><td class="num">' + RV.reais(t.value) + '</td><td class="num">' + t.cases + '</td></tr>'; }).join('') || '<tr><td colspan="4" class="vazio">—</td></tr>';
+
+    barras($('g-fase'), d.stages.map(function (f, k) {
+      return { rotulo: RV.nomeFase(f.id), valor: f.value, cor: FUNIL[Math.min(k, FUNIL.length - 1)], nota: f.cases + ' caso(s)', detalhe: f.cases + ' caso(s)' };
+    }));
+    $('t-fase-tab').innerHTML = d.stages.map(function (f) { return '<tr><td>' + RV.esc(RV.nomeFase(f.id)) + '</td><td class="num">' + f.cases + '</td><td class="num">' + RV.reais(f.value) + '</td></tr>'; }).join('');
+
+    $('t-cli-tab').innerHTML = d.cases.length ? d.cases.map(function (c) {
+      var t = c.taxpayer || {};
+      return '<tr class="click" data-id="' + RV.esc(t.id || '') + '"><td><a href="/clientes.html?id=' + RV.esc(t.id || '') + '"><strong>' + RV.esc(t.legalName || '—') + '</strong></a><div class="muted mono">' + RV.cnpj(t.cnpj) + '</div></td>' +
+        '<td><span class="pill fase-' + c.stage + '">' + RV.esc(RV.nomeFase(c.stage)) + '</span></td><td class="num">' + RV.reais(c.approved) + '</td><td class="num">' + RV.reais(c.pendingApproval) + '</td><td class="num">' + RV.reais(c.potential) + '</td></tr>';
+    }).join('') : '<tr><td colspan="5" class="vazio">Nenhum caso ainda. Calcule um diagnóstico e salve na pasta do cliente.</td></tr>';
+    $('carimbo').textContent = 'Atualizado em ' + RV.data(d.generatedAt, true);
+  }
+  $('t-cli-tab').addEventListener('click', function (e) { var tr = e.target.closest('tr[data-id]'); if (tr && !e.target.closest('a')) location.href = '/clientes.html?id=' + tr.dataset.id; });
+
+  RV.api('GET', '/api/v1/dashboard').then(render).catch(function (e) { $('kpis').innerHTML = '<div class="msg bad">' + RV.esc(e.message) + '</div>'; });
+})();
+</script>
+</body>
+</html>

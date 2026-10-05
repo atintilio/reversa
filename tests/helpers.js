@@ -29,7 +29,7 @@ function freshRequire(modulePath) {
   return require(path.join(ROOT, modulePath));
 }
 
-function call(handler, { method = 'GET', body, query = {}, cookie = '', headers = {} } = {}) {
+function call(handler, { method = 'GET', body, query = {}, cookie = '', headers = {}, url = '/' } = {}) {
   return new Promise((resolve, reject) => {
     const res = {
       statusCode: 200,
@@ -39,6 +39,7 @@ function call(handler, { method = 'GET', body, query = {}, cookie = '', headers 
     };
     const req = {
       method,
+      url,
       body,
       query,
       headers: { cookie, 'content-type': 'application/json', 'user-agent': 'node-test', 'x-forwarded-for': headers.ip || '10.0.0.1', ...headers },

@@ -12,9 +12,10 @@
     "postgres": "^3.4.5"
   },
   "scripts": {
-    "build": "npm run migrate && npm run seed:opportunities && npm run bootstrap:first-owner",
+    "build": "npm run migrate && npm run seed:opportunities && npm run bootstrap:owner",
     "migrate": "node scripts/migrate.js",
     "seed:opportunities": "node scripts/seed-opportunities.js",
+    "bootstrap:owner": "node scripts/bootstrap-owner.js",
     "bootstrap:legacy-users": "node scripts/bootstrap-legacy-users.js",
     "bootstrap:first-owner": "node scripts/bootstrap-first-owner.js",
     "check": "node scripts/check-runtime.js",

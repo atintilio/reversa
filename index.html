@@ -221,7 +221,9 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
       <label for="pdf-reg">Registro profissional<input type="text" id="pdf-reg" placeholder="Ex.: CRC SC-000000/O-0"></label>
       <label for="pdf-local">Local<input type="text" id="pdf-local" placeholder="Florianópolis/SC"></label>
       <button type="submit" id="btn-pdf">Gerar memória de cálculo</button>
+      <button type="button" id="btn-pasta" class="sec" hidden>Salvar na pasta do cliente</button>
     </form>
+    <p class="note" id="pasta-status" role="status" aria-live="polite" hidden></p>
   </section>
 
   <section aria-labelledby="t-met">
@@ -1439,7 +1441,37 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(tsv).then(function () { toast(rows.length + ' linhas copiadas. Cole no Excel.'); }, fallback); else fallback();
   });
 
-  if (/^https:$/.test(location.protocol) && !/claude|anthropic/.test(location.hostname)) $('sair').hidden = false;
+  // ---------------------------------------------------- pasta do cliente (versão hospedada; grava só resultados, nunca o SPED)
+  var hospedado = /^https:$/.test(location.protocol) && !/claude|anthropic/.test(location.hostname);
+  if (hospedado) {
+    $('btn-pasta').hidden = false;
+    var sc = document.createElement('script'); sc.src = '/shell.js'; document.body.appendChild(sc); // barra de navegação da Reversa
+  }
+  $('btn-pasta').addEventListener('click', function () {
+    if (!estado.res || !estado.res.competencias.length) { toast('Carregue os arquivos do cliente antes de salvar.'); return; }
+    if (estado.exemplo) { toast('Estes são os dados de exemplo. Carregue os SPEDs do cliente para salvar na pasta.'); return; }
+    var lidos = estado.lidos.filter(function (x) { return x.meta && x.meta.cnpj; });
+    if (!lidos.length) { toast('Não encontrei o CNPJ do contribuinte nos arquivos.'); return; }
+    var conta = {}; lidos.forEach(function (l) { conta[l.meta.cnpj] = (conta[l.meta.cnpj] || 0) + 1; });
+    var cnpj = Object.keys(conta).sort(function (a, b) { return conta[b] - conta[a]; })[0];
+    var ref = lidos.filter(function (l) { return l.meta.cnpj === cnpj; })[0].meta;
+    var comps = lidos.map(function (l) { return l.meta.competencia; }).filter(Boolean).sort();
+    var res = estado.res, btn = $('btn-pasta'), st = $('pasta-status');
+    btn.disabled = true; btn.textContent = 'Salvando…'; st.hidden = true;
+    var corpo = {
+      taxpayer: { cnpj: cnpj, legalName: ref.nome, taxRegime: ref.regime },
+      periodStart: comps[0], periodEnd: comps[comps.length - 1], files: lidos.length, engineVersion: res.versaoMotor,
+      teses: res.teses.map(function (t) { return { id: t.id, nome: t.nome, curto: t.curto, natureza: t.natureza, itens: t.total.itensComValor, total: t.total, totalNoPrazo: t.totalNoPrazo }; })
+    };
+    fetch('/api/v1/analyses', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) })
+      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (r.status === 401) location.href = '/login.html'; if (!r.ok) throw new Error((j.error && j.error.message) || ('Erro ' + r.status)); return j; }); })
+      .then(function (j) {
+        st.innerHTML = 'Diagnóstico salvo na pasta de <strong>' + esc(ref.nome || cnpjFmt(cnpj)) + '</strong>. Os créditos ficam <em>pendentes de aprovação</em> até a revisão. <a href="/clientes.html?id=' + encodeURIComponent(j.taxpayerId) + '">Abrir a pasta</a>';
+        st.hidden = false; toast('Diagnóstico salvo na pasta do cliente');
+      })
+      .catch(function (e) { st.textContent = 'Não foi possível salvar: ' + e.message; st.hidden = false; })
+      .then(function () { btn.disabled = false; btn.textContent = 'Salvar na pasta do cliente'; });
+  });
   window.REVERSA_LOGO = document.querySelector('.logo.escuro').src;
   processar(EXEMPLO, true);
 })();

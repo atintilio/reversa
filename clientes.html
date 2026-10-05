@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clientes · Reversa Tax</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<style>
+  .filtros { display: flex; gap: 10px; flex-wrap: wrap; }
+  .filtros input { max-width: 320px; }
+  .filtros select { max-width: 240px; }
+  .ficha { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px 24px; }
+  .ficha .r { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 700; }
+  .ficha .v { margin-top: 3px; }
+  .dois { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 900px) { .dois { grid-template-columns: 1fr; } }
+  .hist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; font-size: 14px; }
+  .hist li { border-left: 2px solid var(--line); padding-left: 12px; }
+  .hist .q { color: var(--muted); font-size: 13px; }
+  .fase-sel { display: flex; gap: 6px; flex-wrap: wrap; }
+  .fase-sel button { background: var(--card); color: var(--muted); border-color: var(--line); font-weight: 600; }
+  .fase-sel button[aria-pressed="true"] { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .teses-mini td:first-child { max-width: 380px; }
+</style>
+</head>
+<body class="rv">
+<main id="v-lista" hidden>
+  <div class="cab">
+    <div>
+      <h1>Clientes</h1>
+      <p class="sub">Cada empresa tem uma pasta com o caso, a fase comercial e os diagnósticos salvos. Para incluir um diagnóstico, calcule na aba <a href="/">Calcular</a> e use “Salvar na pasta do cliente”. Os arquivos SPED não são armazenados.</p>
+    </div>
+    <button id="b-novo" type="button" data-write hidden>+ Nova empresa</button>
+  </div>
+  <div class="filtros">
+    <input id="busca" type="search" placeholder="Buscar por nome ou CNPJ" aria-label="Buscar empresa">
+    <select id="f-fase" aria-label="Filtrar por fase"><option value="">Todas as fases</option></select>
+  </div>
+  <section class="card" style="padding:6px 8px">
+    <div class="tabela"><table>
+      <thead><tr><th>Empresa</th><th>CNPJ</th><th>Fase</th><th class="num">Crédito estimado no prazo</th><th>Atualizado</th></tr></thead>
+      <tbody id="lista"><tr><td colspan="5" class="vazio">Carregando…</td></tr></tbody>
+    </table></div>
+    <p class="muted" style="font-size:13px;margin:8px 10px">Valor estimado pelo último diagnóstico. Não é crédito reconhecido até a revisão e a aprovação.</p>
+  </section>
+</main>
+
+<main id="v-pasta" hidden>
+  <a class="voltar" href="/clientes.html">← Todos os clientes</a>
+  <div class="cab">
+    <div><h1 id="p-nome"></h1><p class="sub" id="p-sub"></p></div>
+    <div class="acoes"><a class="btn" href="/">Novo diagnóstico</a><button class="sec" id="p-editar" type="button" data-write hidden>Editar dados</button></div>
+  </div>
+  <section class="card" aria-labelledby="t-fase">
+    <h2 id="t-fase">Fase comercial</h2>
+    <div class="fase-sel" id="p-fases" role="group" aria-label="Fase comercial do caso"></div>
+    <p class="muted" id="p-caso" style="font-size:13px;margin:10px 0 0"></p>
+  </section>
+  <div class="grid-kpi" id="p-kpis"></div>
+  <div class="dois">
+    <section class="card" aria-labelledby="t-diag">
+      <h2 id="t-diag">Diagnósticos</h2>
+      <div id="p-diags"></div>
+    </section>
+    <div style="display:grid;gap:24px">
+      <section class="card" aria-labelledby="t-dados"><h2 id="t-dados">Dados</h2><div class="ficha" id="p-ficha"></div></section>
+      <section class="card" aria-labelledby="t-hist"><h2 id="t-hist">Histórico</h2><ul class="hist" id="p-hist"></ul></section>
+    </div>
+  </div>
+</main>
+
+<dialog id="dlg" aria-labelledby="dlg-t">
+  <form method="dialog" id="f-cli">
+    <h2 id="dlg-t">Nova empresa</h2>
+    <label>Razão social<input id="c-nome" required maxlength="240"></label>
+    <label>CNPJ<input id="c-cnpj" inputmode="numeric" placeholder="00.000.000/0000-00"></label>
+    <label>Regime<select id="c-regime"><option value="">—</option><option>Lucro Real</option><option>Lucro Presumido</option></select></label>
+    <div class="acoes" style="justify-content:flex-end"><button type="button" class="sec" id="c-cancel">Cancelar</button><button type="submit">Salvar</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlg-rev" aria-labelledby="rev-t">
+  <form method="dialog" id="f-rev">
+    <h2 id="rev-t">Revisar tese</h2>
+    <p class="muted" id="rev-info"></p>
+    <label>Decisão<select id="rev-dec"><option value="approve">Aprovar</option><option value="return">Devolver para análise</option><option value="reject">Rejeitar</option></select></label>
+    <label>Observação<textarea id="rev-nota" rows="3" maxlength="2000" placeholder="Obrigatória para devolver ou rejeitar"></textarea></label>
+    <div class="acoes" style="justify-content:flex-end"><button type="button" class="sec" id="rev-cancel">Cancelar</button><button type="submit">Registrar</button></div>
+  </form>
+</dialog>
+
+<script src="/shell.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var id = new URLSearchParams(location.search).get('id');
+  var lista = [], pasta = null, revAtual = null;
+  var NAT = { credito: 'Crédito', potencial: 'Potencial a validar', risco: 'Risco a regularizar' };
+  var STATUS = {
+    recoverable_pending_approval: ['pendente de aprovação', 'warn'], recoverable_approved: ['aprovado', 'ok'],
+    potential_to_validate: ['potencial a validar', ''], risk_to_regularize: ['risco a regularizar', 'bad'], not_applicable: ['sem valor', '']
+  };
+  var REV = { pending: 'aguardando revisão', in_review: 'devolvido', approved: 'aprovado', rejected: 'rejeitado' };
+
+  RV.FASES.forEach(function (f) { var o = document.createElement('option'); o.value = f.id; o.textContent = f.nome; $('f-fase').appendChild(o); });
+  function pill(f) { return '<span class="pill fase-' + f + '">' + RV.esc(RV.nomeFase(f)) + '</span>'; }
+  function per(a, b) { var f = function (d) { d = String(d || '').slice(0, 7); return RV.comp(d); }; return a ? f(a) + (b && String(b).slice(0, 7) !== String(a).slice(0, 7) ? ' a ' + f(b) : '') : '—'; }
+  function podeEscrever() { document.querySelectorAll('[data-write]').forEach(function (el) { el.hidden = !RV.pode('write'); }); }
+
+  // ---------- lista
+  function renderLista() {
+    var f = $('f-fase').value;
+    var vis = lista.filter(function (t) { return !f || (t.currentCase && t.currentCase.stage === f); });
+    if (!lista.length) { $('lista').innerHTML = '<tr><td colspan="5" class="vazio">Nenhuma empresa ainda. Calcule um diagnóstico e salve na pasta do cliente, ou use “+ Nova empresa”.</td></tr>'; return; }
+    if (!vis.length) { $('lista').innerHTML = '<tr><td colspan="5" class="vazio">Nenhuma empresa nesta fase.</td></tr>'; return; }
+    $('lista').innerHTML = vis.map(function (t) {
+      var c = t.currentCase;
+      return '<tr class="click" data-id="' + t.id + '"><td><a href="/clientes.html?id=' + t.id + '"><strong>' + RV.esc(t.legalName) + '</strong></a></td><td class="mono">' + RV.cnpj(t.cnpj) + '</td>' +
+        '<td>' + (c ? pill(c.stage) : '—') + '</td><td class="num">' + (c && c.estimatedValue != null ? RV.reais(Math.round(c.estimatedValue * 100)) : '<span class="muted">sem diagnóstico</span>') + '</td><td>' + RV.data(t.updatedAt) + '</td></tr>';
+    }).join('');
+  }
+  var tBusca;
+  function carregarLista() {
+    $('v-lista').hidden = false;
+    return RV.api('GET', '/api/v1/taxpayers?q=' + encodeURIComponent($('busca').value.trim())).then(function (j) { lista = j.taxpayers; renderLista(); })
+      .catch(function (e) { $('lista').innerHTML = '<tr><td colspan="5" class="vazio">' + RV.esc(e.message) + '</td></tr>'; });
+  }
+  $('busca').addEventListener('input', function () { clearTimeout(tBusca); tBusca = setTimeout(carregarLista, 250); });
+  $('f-fase').addEventListener('change', renderLista);
+  $('lista').addEventListener('click', function (e) { var tr = e.target.closest('tr[data-id]'); if (tr && !e.target.closest('a')) location.href = '/clientes.html?id=' + tr.dataset.id; });
+
+  // ---------- pasta
+  function lotes(analyses) {
+    var g = {}, ordem = [];
+    analyses.forEach(function (a) { var k = (a.summary && a.summary.batch_id) || a.id; if (!g[k]) { g[k] = []; ordem.push(k); } g[k].push(a); });
+    return ordem.map(function (k) { return g[k]; });
+  }
+  function renderPasta(j) {
+    pasta = j; var t = j.taxpayer, caso = j.cases[0];
+    document.title = t.legalName + ' · Reversa Tax';
+    $('p-nome').textContent = t.legalName;
+    $('p-sub').innerHTML = 'CNPJ <span class="mono">' + RV.cnpj(t.cnpj) + '</span>' + (t.taxRegime ? ' · ' + RV.esc(t.taxRegime) : '') + ' · pasta criada em ' + RV.data(t.createdAt);
+    var pode = RV.pode('write');
+    $('p-fases').innerHTML = caso ? RV.FASES.map(function (f) { return '<button type="button" data-fase="' + f.id + '" aria-pressed="' + (f.id === caso.stage) + '"' + (pode ? '' : ' disabled') + '>' + RV.esc(f.nome) + '</button>'; }).join('') : '<span class="muted">Sem caso aberto.</span>';
+    $('p-caso').textContent = caso ? caso.title : '';
+    var ult = lotes(j.analyses)[0] || [];
+    var soma = function (fn) { return ult.reduce(function (s, a) { return s + (fn(a) || 0); }, 0); };
+    var pend = soma(function (a) { return a.status === 'recoverable_pending_approval' ? a.summary.no_prazo : 0; });
+    var apr = soma(function (a) { return a.status === 'recoverable_approved' ? a.summary.no_prazo : 0; });
+    var pot = soma(function (a) { return a.status === 'potential_to_validate' ? a.summary.no_prazo : 0; });
+    var risco = soma(function (a) { return a.status === 'risk_to_regularize' ? a.summary.total : 0; });
+    $('p-kpis').innerHTML = [
+      ['destaque', 'Crédito aprovado', ult.length ? RV.reais(apr) : '—', 'Após revisão humana'],
+      ['', 'Pendente de aprovação', ult.length ? RV.reais(pend) : '—', 'Estimado no prazo, a revisar'],
+      ['', 'Potencial a validar', ult.length ? RV.reais(pot) : '—', 'Insumos: depende de prova'],
+      ['', 'Risco identificado', ult.length ? RV.reais(risco) : '—', 'Regularizar antes do pedido']
+    ].map(function (k) { return '<div class="kpi ' + k[0] + '"><div class="r">' + k[1] + '</div><div class="v">' + k[2] + '</div><div class="n">' + k[3] + '</div></div>'; }).join('');
+    var revisa = RV.pode('review');
+    $('p-diags').innerHTML = j.analyses.length ? lotes(j.analyses).map(function (lote, n) {
+      var a0 = lote[0];
+      return '<div style="margin-bottom:22px"><h3 style="font-size:1rem;margin:0 0 4px">' + (n === 0 ? 'Mais recente · ' : '') + RV.data(a0.calculatedAt, true) + '</h3>' +
+        '<p class="muted" style="font-size:13px;margin:0 0 8px">Período ' + per(a0.periodStart, a0.periodEnd) + ' · ' + (a0.summary.arquivos || 0) + ' arquivo(s) · motor ' + RV.esc(a0.engineVersion) + ' · por ' + RV.esc(a0.createdBy || '—') + '</p>' +
+        '<div class="tabela"><table><thead><tr><th>Tese</th><th>Situação</th><th class="num">No prazo</th><th class="num">Total</th><th>Revisão</th><th></th></tr></thead><tbody>' +
+        lote.map(function (a) {
+          var s = STATUS[a.status] || [a.status, ''];
+          var podeRev = revisa && /^(recoverable_|potential_|risk_)/.test(a.status);
+          return '<tr><td>' + RV.esc(a.summary.nome) + '<div class="muted" style="font-size:12px">' + (NAT[a.summary.natureza] || '') + '</div></td>' +
+            '<td><span class="pill ' + s[1] + '">' + s[0] + '</span></td><td class="num">' + RV.reais(a.summary.no_prazo) + '</td><td class="num">' + RV.reais(a.summary.total) + '</td>' +
+            '<td>' + RV.esc(REV[a.reviewStatus] || a.reviewStatus) + (a.reviewedBy ? '<div class="muted" style="font-size:12px">' + RV.esc(a.reviewedBy) + ' · ' + RV.data(a.reviewedAt) + '</div>' : '') + '</td>' +
+            '<td class="num">' + (podeRev ? '<button class="mini sec" data-rev="' + a.id + '">Revisar</button>' : '') + '</td></tr>';
+        }).join('') + '</tbody></table></div></div>';
+    }).join('') : '<p class="vazio">Nenhum diagnóstico salvo. Calcule na aba Calcular e clique em “Salvar na pasta do cliente”.</p>';
+    $('p-ficha').innerHTML = [['Regime', t.taxRegime || '—'], ['Caso', caso ? caso.title : '—'], ['Situação técnica do caso', caso ? caso.status : '—']]
+      .map(function (x) { return '<div><div class="r">' + x[0] + '</div><div class="v">' + RV.esc(x[1]) + '</div></div>'; }).join('');
+    $('p-hist').innerHTML = j.history.length ? j.history.map(function (h) {
+      var m = h.metadata || {};
+      return '<li>' + (h.event_type === 'case.created' ? 'Caso aberto em <strong>' + RV.esc(RV.nomeFase(m.stage)) + '</strong>' : 'De <strong>' + RV.esc(RV.nomeFase(m.from)) + '</strong> para <strong>' + RV.esc(RV.nomeFase(m.to)) + '</strong>') +
+        '<div class="q">' + RV.data(h.created_at, true) + (m.by ? ' · ' + RV.esc(m.by) : '') + '</div></li>';
+    }).join('') : '<li class="muted">Sem registros.</li>';
+    podeEscrever();
+  }
+  function carregarPasta() {
+    $('v-pasta').hidden = false;
+    return RV.api('GET', '/api/v1/taxpayers/' + encodeURIComponent(id)).then(renderPasta)
+      .catch(function (e) { $('p-nome').textContent = 'Pasta não encontrada'; $('p-sub').textContent = e.message; });
+  }
+  $('p-fases').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-fase]'); var caso = pasta && pasta.cases[0];
+    if (!b || !caso || b.dataset.fase === caso.stage) return;
+    RV.api('PATCH', '/api/v1/cases/' + caso.id, { stage: b.dataset.fase }).then(function () { RV.toast('Fase: ' + RV.nomeFase(b.dataset.fase)); carregarPasta(); })
+      .catch(function (e) { RV.toast(e.message); });
+  });
+  $('p-diags').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-rev]'); if (!b) return;
+    revAtual = pasta.analyses.filter(function (a) { return a.id === b.dataset.rev; })[0];
+    $('rev-info').textContent = revAtual.summary.nome + ' · no prazo ' + RV.reais(revAtual.summary.no_prazo);
+    $('rev-nota').value = ''; $('dlg-rev').showModal();
+  });
+  $('rev-cancel').onclick = function () { $('dlg-rev').close(); };
+  $('f-rev').addEventListener('submit', function (e) {
+    e.preventDefault();
+    RV.api('POST', '/api/v1/analyses/' + revAtual.id + '/review', { decision: $('rev-dec').value, note: $('rev-nota').value.trim() })
+      .then(function () { $('dlg-rev').close(); RV.toast('Revisão registrada'); carregarPasta(); }).catch(function (e) { RV.toast(e.message); });
+  });
+
+  // ---------- criar / editar empresa
+  function abrir(t) {
+    $('dlg-t').textContent = t ? 'Editar dados da empresa' : 'Nova empresa';
+    $('c-nome').value = t ? t.legalName : ''; $('c-cnpj').value = t ? RV.cnpj(t.cnpj) : ''; $('c-cnpj').disabled = !!t;
+    $('c-regime').value = t && t.taxRegime && /Real|Presumido/.test(t.taxRegime) ? (/Real/.test(t.taxRegime) ? 'Lucro Real' : 'Lucro Presumido') : '';
+    $('dlg').showModal(); $('c-nome').focus();
+  }
+  $('b-novo').onclick = function () { abrir(null); };
+  $('p-editar').onclick = function () { abrir(pasta.taxpayer); };
+  $('c-cancel').onclick = function () { $('dlg').close(); };
+  $('f-cli').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var dados = { legalName: $('c-nome').value.trim(), taxRegime: $('c-regime').value };
+    var p = pasta ? RV.api('PATCH', '/api/v1/taxpayers/' + pasta.taxpayer.id, dados) : RV.api('POST', '/api/v1/taxpayers', Object.assign({ cnpj: $('c-cnpj').value }, dados));
+    p.then(function (j) { $('dlg').close(); if (pasta) { RV.toast('Dados atualizados'); carregarPasta(); } else location.href = '/clientes.html?id=' + j.id; })
+      .catch(function (e) { RV.toast(e.message); });
+  });
+
+  RV.eu.then(function () { podeEscrever(); if (id) carregarPasta(); else carregarLista(); });
+})();
+</script>
+</body>
+</html>
