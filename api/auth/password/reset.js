@@ -28,7 +28,8 @@ module.exports = async function handler(req, res) {
       return json(res, 410, { error: { code: 'RESET_TOKEN_EXPIRED', message: 'O link expirou ou já foi utilizado. Solicite um novo link.' } });
     }
     const passwordHash = await bcrypt.hash(password, 12);
-    await sql`update users set password_hash = ${passwordHash}, session_version = session_version + 1, updated_at = now() where id = ${claimed[0].user_id}`;
+    await sql`update users set password_hash = ${passwordHash}, status = 'active', email_verified_at = coalesce(email_verified_at, now()), session_version = session_version + 1, updated_at = now() where id = ${claimed[0].user_id}`;
+    await sql`update organization_members set status = 'active', updated_at = now() where user_id = ${claimed[0].user_id} and status = 'invited'`;
     await sql`update auth_sessions set revoked_at = now() where user_id = ${claimed[0].user_id} and revoked_at is null`;
     await audit('auth.password_reset.completed', { actorUserId: claimed[0].user_id, entityType: 'user', entityId: claimed[0].user_id });
     res.statusCode = 204;
