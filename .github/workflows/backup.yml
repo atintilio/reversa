@@ -1,0 +1,27 @@
+# Backup semanal do banco (Neon): pg_dump criptografado com senha (AES-256) e guardado 30 dias como artefato privado.
+# Requer os secrets BACKUP_DATABASE_URL e BACKUP_PASSPHRASE no repositório. Sem eles, o job só avisa e termina.
+# Restaurar: gpg -d reversa-AAAAMMDD.dump.gpg > r.dump && pg_restore --no-owner -d "$URL_DESTINO" r.dump
+name: backup-banco
+on:
+  schedule: [{ cron: '23 6 * * 1' }]
+  workflow_dispatch:
+permissions: { contents: read }
+jobs:
+  dump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container: postgres:17
+    steps:
+      - name: pg_dump + gpg
+        env:
+          DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+          PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          if [ -z "$DATABASE_URL" ] || [ -z "$PASSPHRASE" ]; then echo "::warning::secrets de backup ausentes"; exit 0; fi
+          apt-get update -qq && apt-get install -y -qq gnupg >/dev/null
+          f="reversa-$(date -u +%Y%m%d).dump"
+          pg_dump --format=custom --no-owner --no-privileges "$DATABASE_URL" > "$f"
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$PASSPHRASE" --symmetric --cipher-algo AES256 -o "$f.gpg" "$f"
+          rm -f "$f"; mkdir -p out; mv "$f.gpg" out/; ls -l out
+      - uses: actions/upload-artifact@v4
+        with: { name: backup-banco, path: out/, retention-days: 30, if-no-files-found: ignore }

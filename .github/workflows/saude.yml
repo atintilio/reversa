@@ -1,0 +1,16 @@
+# Monitor de disponibilidade: chama /api/health a cada hora. Se falhar, o GitHub envia e-mail ao dono do repositório.
+name: saude-producao
+on:
+  schedule: [{ cron: '17 * * * *' }]
+  workflow_dispatch:
+permissions: {}
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: /api/health
+        run: |
+          body=$(curl -fsS --max-time 20 --retry 2 --retry-delay 10 https://reversa.argusprime.com.br/api/health)
+          echo "$body"
+          echo "$body" | grep -q '"status":"ok"'

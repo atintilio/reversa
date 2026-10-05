@@ -43,7 +43,7 @@ async function dbSessionValid(token) {
 
 // Mesma regra de lib/security.js: sem segredo literal e com data de desligamento do legado.
 function legacyEnabled() {
-  const flag = String(process.env.LEGACY_AUTH_UNTIL || '2026-11-05').trim().toLowerCase();
+  const flag = String(process.env.LEGACY_AUTH_UNTIL || 'off').trim().toLowerCase();
   if (flag === 'off' || flag === 'false' || flag === '0') return false;
   const until = new Date(`${flag}T23:59:59-03:00`);
   if (Number.isNaN(until.getTime()) || Date.now() > until.getTime()) return false;

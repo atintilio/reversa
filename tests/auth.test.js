@@ -179,3 +179,10 @@ test('logs técnicos não contêm senha, token ou e-mail', () => {
   const t = logs.join('\n');
   for (const s of [SENHA, 'Nova-senha-forte-1', 'ana@argusprime.com.br', 'senha-legada-1']) assert.ok(!t.includes(s), s);
 });
+
+test('login legado desligado por padrão (sem LEGACY_AUTH_UNTIL)', () => {
+  const salvo = process.env.LEGACY_AUTH_UNTIL;
+  delete process.env.LEGACY_AUTH_UNTIL;
+  try { assert.equal(require('../lib/security').legacyAuthEnabled(), false); }
+  finally { process.env.LEGACY_AUTH_UNTIL = salvo; }
+});
