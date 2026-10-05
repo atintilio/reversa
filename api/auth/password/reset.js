@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const { getSql } = require('../../../lib/db');
 const { parseBody, json, method } = require('../../../lib/http');
 const { hashToken } = require('../../../lib/security');
+const { audit } = require('../../../lib/audit');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return method(res, ['POST']);
@@ -22,10 +23,14 @@ module.exports = async function handler(req, res) {
         and used_at is null
         and expires_at > now()
       returning user_id`;
-    if (!claimed[0]) return json(res, 410, { error: { code: 'RESET_TOKEN_EXPIRED', message: 'O link expirou ou já foi utilizado. Solicite um novo link.' } });
+    if (!claimed[0]) {
+      await audit('auth.password_reset.completed', { outcome: 'failure', metadata: { reason: 'token_expired_or_used' } });
+      return json(res, 410, { error: { code: 'RESET_TOKEN_EXPIRED', message: 'O link expirou ou já foi utilizado. Solicite um novo link.' } });
+    }
     const passwordHash = await bcrypt.hash(password, 12);
     await sql`update users set password_hash = ${passwordHash}, session_version = session_version + 1, updated_at = now() where id = ${claimed[0].user_id}`;
     await sql`update auth_sessions set revoked_at = now() where user_id = ${claimed[0].user_id} and revoked_at is null`;
+    await audit('auth.password_reset.completed', { actorUserId: claimed[0].user_id, entityType: 'user', entityId: claimed[0].user_id });
     res.statusCode = 204;
     return res.end();
   } catch (error) {

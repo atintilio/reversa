@@ -41,9 +41,18 @@ async function dbSessionValid(token) {
   }
 }
 
+// Mesma regra de lib/security.js: sem segredo literal e com data de desligamento do legado.
+function legacyEnabled() {
+  const flag = String(process.env.LEGACY_AUTH_UNTIL || '2026-11-05').trim().toLowerCase();
+  if (flag === 'off' || flag === 'false' || flag === '0') return false;
+  const until = new Date(`${flag}T23:59:59-03:00`);
+  if (Number.isNaN(until.getTime()) || Date.now() > until.getTime()) return false;
+  return Boolean(process.env.REVERSA_USERS) && Boolean(process.env.REVERSA_SECRET || process.env.SESSION_SECRET);
+}
+
 async function legacyKey() {
   const users = process.env.REVERSA_USERS || '';
-  const secret = process.env.REVERSA_SECRET || 'reversa-tax';
+  const secret = process.env.REVERSA_SECRET || process.env.SESSION_SECRET;
   const digest = await crypto.subtle.digest('SHA-256', enc.encode(`${users}|${secret}`));
   return crypto.subtle.importKey('raw', digest, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
 }
@@ -55,7 +64,7 @@ async function legacySign(value) {
 }
 
 async function legacySessionValid(token) {
-  if (!token || token.startsWith('s1.')) return false;
+  if (!token || token.startsWith('s1.') || !legacyEnabled()) return false;
   const last = token.lastIndexOf('~');
   const previous = token.lastIndexOf('~', last - 1);
   if (last < 0 || previous < 0) return false;
