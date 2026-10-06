@@ -15,7 +15,9 @@ function deny(ctx, permission, action) {
 }
 
 function segments(req) {
-  const path = String(req.url || '').split('?')[0].replace(/^\/api\/v1\/?/, '');
+  // Rotas de vários níveis chegam reescritas (vercel.json) com o caminho original em ?rvpath=.
+  const rv = req.query && req.query.rvpath;
+  const path = rv ? String(rv) : String(req.url || '').split('?')[0].replace(/^\/api\/v1\/?/, '');
   return path.split('/').filter(Boolean).map(decodeURIComponent);
 }
 

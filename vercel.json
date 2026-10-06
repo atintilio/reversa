@@ -22,6 +22,16 @@
     "api/v1/[...route].js": {
       "maxDuration": 60,
       "includeFiles": "assets/**"
+    },
+    "api/v1/rota.js": {
+      "maxDuration": 60,
+      "includeFiles": "assets/**"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/api/v1/([^/]+)/(.+)",
+      "destination": "/api/v1/rota?rvpath=$1/$2"
+    }
+  ]
 }
