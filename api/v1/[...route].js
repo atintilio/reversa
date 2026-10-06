@@ -5,6 +5,7 @@ const { context, can, permissions, HttpError } = require('../../lib/authz');
 const { audit } = require('../../lib/audit');
 const members = require('../../lib/domain/members');
 const tax = require('../../lib/domain/tax');
+const crm = require('../../lib/domain/crm');
 
 function deny(ctx, permission, action) {
   if (can(ctx, permission)) return;
@@ -64,6 +65,30 @@ async function route(req, res) {
       if (!id && m === 'POST') { deny(ctx, 'write', 'analysis.create'); return json(res, 201, await tax.saveAnalyses(ctx, body)); }
       if (id && action === 'review' && m === 'POST') { deny(ctx, 'review', 'analysis.review'); return json(res, 200, await tax.review(ctx, id, body)); }
       return method(res, ['POST']);
+
+    case 'crm': {
+      // /crm/pipeline · /crm/tasks · /crm/members · /crm/clients/:id[/cnpj|/agent] · /crm/contacts[/:id] · /crm/activities[/:id]
+      const [, sub, sid, sact] = segments(req);
+      if (sub === 'pipeline' && m === 'GET') return json(res, 200, await crm.pipeline(ctx));
+      if (sub === 'tasks' && m === 'GET') return json(res, 200, await crm.tasks(ctx, query));
+      if (sub === 'members' && m === 'GET') return json(res, 200, await crm.members(ctx));
+      if (sub === 'clients' && sid && !sact && m === 'GET') return json(res, 200, await crm.client(ctx, sid));
+      if (sub === 'clients' && sid && sact === 'cnpj' && m === 'POST') { deny(ctx, 'write', 'crm.cnpj'); return json(res, 200, await crm.refreshCnpj(ctx, sid)); }
+      if (sub === 'clients' && sid && sact === 'agent' && m === 'POST') { deny(ctx, 'write', 'crm.agent'); return json(res, 200, await crm.runAgent(ctx, sid, body)); }
+      if (sub === 'contacts') {
+        deny(ctx, 'write', 'crm.contact');
+        if (!sid && m === 'POST') return json(res, 201, await crm.createContact(ctx, body));
+        if (sid && m === 'PATCH') { await crm.updateContact(ctx, sid, body); return json(res, 200, { ok: true }); }
+        if (sid && m === 'DELETE') { await crm.deleteContact(ctx, sid); return json(res, 200, { ok: true }); }
+      }
+      if (sub === 'activities') {
+        deny(ctx, 'write', 'crm.activity');
+        if (!sid && m === 'POST') return json(res, 201, await crm.createActivity(ctx, body));
+        if (sid && m === 'PATCH') { await crm.updateActivity(ctx, sid, body); return json(res, 200, { ok: true }); }
+        if (sid && m === 'DELETE') { await crm.deleteActivity(ctx, sid); return json(res, 200, { ok: true }); }
+      }
+      return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
+    }
 
     case 'dashboard':
       if (m !== 'GET') return method(res, ['GET']);

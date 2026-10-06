@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM · Reversa Tax</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<style>
+  .abas { display: flex; gap: 6px; border-bottom: 1px solid var(--line); }
+  .rv .abas button { background: transparent; color: var(--muted); border: 0; border-bottom: 2px solid transparent; border-radius: 0; padding: 10px 14px; }
+  .rv .abas button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--teal); }
+  .filtros { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .filtros input { max-width: 320px; }
+  .filtros select { width: auto; }
+
+  .kanban { display: grid; grid-template-columns: repeat(5, minmax(220px, 1fr)); gap: 12px; overflow-x: auto; padding-bottom: 6px; }
+  .coluna { background: var(--soft); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 8px; min-height: 240px; }
+  .coluna.alvo { outline: 2px dashed var(--teal); outline-offset: -2px; }
+  .coluna header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; padding: 2px 4px 6px; }
+  .coluna header b { font: 700 13px var(--f-body); text-transform: uppercase; letter-spacing: .05em; }
+  .coluna header span { font-size: 12px; color: var(--muted); text-align: right; }
+  .cartao { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; display: grid; gap: 6px; }
+  .cartao:hover { border-color: var(--teal); }
+  .cartao:focus-visible { outline: 2px solid var(--teal); }
+  .cartao[draggable="true"] { cursor: grab; }
+  .cartao .nm { font-weight: 700; font-size: 14px; line-height: 1.25; }
+  .cartao .meta { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; gap: 6px; }
+  .cartao .val { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--fg); }
+  .cartao .passo { font-size: 12px; color: var(--fg); background: var(--soft); border-radius: 5px; padding: 4px 6px; }
+  .chips { display: flex; gap: 4px; flex-wrap: wrap; }
+  .chip { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: var(--soft); color: var(--muted); white-space: nowrap; }
+  .chip.verde { background: var(--ok-bg); color: var(--ok); }
+  .chip.amarelo { background: var(--warn-bg); color: var(--warn); }
+  .chip.vermelho { background: var(--bad-bg); color: var(--bad); }
+  .chip.atraso { background: var(--bad); color: #fff; }
+
+  /* ficha lateral */
+  .rv dialog.ficha { margin: 0 0 0 auto; height: 100vh; max-height: 100vh; width: min(760px, 100vw); border-radius: 0; border-width: 0 0 0 1px; }
+  .ficha .topo { position: sticky; top: 0; background: var(--card); border-bottom: 1px solid var(--line); padding: 16px 22px; display: grid; gap: 10px; z-index: 2; }
+  .ficha .topo .l1 { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+  .ficha .corpo { padding: 18px 22px 40px; display: grid; gap: 22px; }
+  .rv dialog.ficha form { padding: 0; }
+  .ficha .topo .acoes { flex-wrap: nowrap; white-space: nowrap; }
+  .ficha h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; }
+  .grade2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 640px) { .grade2 { grid-template-columns: 1fr; } .kanban { grid-template-columns: repeat(5, 82vw); } }
+  .pub { font-size: 13px; display: grid; gap: 4px; }
+  .pub b { font-weight: 600; }
+  .contato { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .contato small { color: var(--muted); display: block; }
+  .tipos { display: flex; gap: 6px; flex-wrap: wrap; }
+  .rv .tipos button { background: var(--soft); color: var(--muted); border-color: var(--line); padding: 6px 11px; font-size: 13px; }
+  .rv .tipos button[aria-pressed="true"] { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .linha { display: grid; gap: 0; }
+  .item { display: grid; grid-template-columns: 28px 1fr; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  .item .ic { width: 28px; height: 28px; border-radius: 50%; background: var(--soft); display: grid; place-items: center; font-size: 13px; }
+  .item.agent .ic { background: var(--navy); color: #6FD0C7; }
+  .item .cab2 { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+  .item .cab2 b { font-size: 14px; }
+  .item .txt { white-space: pre-wrap; font-size: 14px; margin-top: 4px; }
+  .item .acoes2 { display: flex; gap: 10px; margin-top: 6px; font-size: 12px; }
+  .rv .item .acoes2 button { background: none; border: 0; color: var(--teal-ink); padding: 0; font-size: 12px; font-weight: 600; }
+  .feito .txt, .feito b { text-decoration: line-through; color: var(--muted); }
+  .agente { background: var(--navy); color: #E8EEF4; border-radius: 10px; padding: 16px; display: grid; gap: 10px; }
+  .agente h3 { color: #6FD0C7; margin: 0; }
+  .agente p { margin: 0; font-size: 13px; color: #AFC0D2; }
+  .agente .acoes input { background: #16212E; color: #fff; border-color: #273546; flex: 1; min-width: 200px; }
+  .sug { display: grid; gap: 6px; font-size: 13px; }
+  .tese { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+  .tese summary { cursor: pointer; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .tese summary b { font-weight: 600; }
+  .tese .det { margin-top: 6px; display: grid; gap: 3px; color: var(--muted); }
+  .grupo-diag { display: grid; gap: 6px; }
+  .tarefas td.atraso { color: var(--bad); font-weight: 700; }
+</style>
+</head>
+<body class="rv">
+<main>
+  <div class="cab">
+    <div>
+      <h1>CRM <em>comercial</em></h1>
+      <p class="sub">Funil de clientes, contatos, histórico e tarefas, com o diagnóstico preliminar de cada empresa. Arraste o card para mudar a fase. Diagnóstico não é crédito: o valor só existe após cálculo e revisão humana.</p>
+    </div>
+  </div>
+
+  <div class="grid-kpi" id="kpis"></div>
+
+  <div class="abas" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-aba="funil">Funil</button>
+    <button type="button" role="tab" aria-selected="false" data-aba="tarefas">Tarefas</button>
+  </div>
+
+  <section id="aba-funil" class="card" style="display:grid;gap:14px">
+    <div class="filtros">
+      <input id="busca" type="search" placeholder="Buscar por nome ou CNPJ" aria-label="Buscar">
+      <select id="f-grupo" aria-label="Grupo">
+        <option value="">Todos os grupos</option><option value="fiscal">Com teses Fiscal</option><option value="prev">Com teses Previdenciário</option>
+      </select>
+      <label style="display:flex;flex-direction:row;align-items:center;gap:6px;font-weight:600"><input type="checkbox" id="f-atraso" style="width:auto"> Só com tarefa atrasada</label>
+    </div>
+    <div class="kanban" id="kanban"></div>
+  </section>
+
+  <section id="aba-tarefas" class="card" hidden>
+    <div class="filtros" style="margin-bottom:12px">
+      <select id="t-escopo" aria-label="Escopo"><option value="mine">Minhas tarefas</option><option value="all">Todas da equipe</option></select>
+    </div>
+    <div class="tabela"><table class="tarefas"><thead><tr><th>Prazo</th><th>Tarefa</th><th>Cliente</th><th>Responsável</th><th></th></tr></thead><tbody id="t-lista"></tbody></table></div>
+  </section>
+</main>
+
+<dialog class="ficha" id="ficha" aria-label="Ficha do cliente">
+  <div class="topo">
+    <div class="l1">
+      <div><h2 id="f-nome">—</h2><div class="muted" id="f-sub" style="font-size:13px"></div></div>
+      <div class="acoes"><a class="btn sec" id="f-pasta" href="#">Abrir pasta</a><button class="sec" type="button" id="f-fechar" aria-label="Fechar">✕</button></div>
+    </div>
+    <div class="grade2">
+      <label>Fase<select id="f-fase" data-write></select></label>
+      <label>Previsão de fechamento<input type="date" id="f-prev" data-write></label>
+    </div>
+    <label>Próximo passo<input id="f-passo" maxlength="240" placeholder="Ex.: enviar proposta até sexta" data-write></label>
+  </div>
+  <div class="corpo">
+    <section class="agente" id="f-agente"></section>
+
+    <section>
+      <h3>Registrar</h3>
+      <form id="f-nova" style="display:grid;gap:10px" data-write>
+        <div class="tipos" id="f-tipos"></div>
+        <input id="f-assunto" maxlength="240" placeholder="Assunto">
+        <textarea id="f-texto" rows="3" placeholder="O que aconteceu, o que foi combinado"></textarea>
+        <div class="grade2" id="f-tarefa" hidden>
+          <label>Prazo<input type="datetime-local" id="f-prazo"></label>
+          <label>Responsável<select id="f-resp"></select></label>
+        </div>
+        <div class="acoes"><button type="submit">Salvar</button></div>
+      </form>
+    </section>
+
+    <section><h3>Linha do tempo</h3><div class="linha" id="f-linha"></div></section>
+
+    <section>
+      <h3>Contatos</h3>
+      <div id="f-contatos"></div>
+      <form id="f-novo-contato" class="grade2" style="margin-top:10px" data-write>
+        <input id="k-nome" maxlength="160" placeholder="Nome" required>
+        <input id="k-cargo" maxlength="120" placeholder="Cargo">
+        <input id="k-email" type="email" maxlength="240" placeholder="E-mail">
+        <input id="k-tel" maxlength="40" placeholder="Telefone">
+        <div class="acoes"><button type="submit" class="sec">Adicionar contato</button></div>
+      </form>
+    </section>
+
+    <section>
+      <h3>Dados públicos do CNPJ</h3>
+      <div id="f-pub" class="pub"></div>
+    </section>
+
+    <section><h3>Diagnóstico preliminar</h3><div id="f-diag" style="display:grid;gap:14px"></div></section>
+  </div>
+</dialog>
+
+<script src="/shell.js"></script>
+<script src="/teses-regras.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = RV.esc;
+  var dados = [], membros = [], atual = null, arrastando = null, tipo = 'note';
+  var TIPOS = [['note', 'Nota', '✎'], ['call', 'Ligação', '☎'], ['meeting', 'Reunião', '◷'], ['email', 'E-mail', '✉'], ['task', 'Tarefa', '☐']];
+  var ICONE = { note: '✎', call: '☎', meeting: '◷', email: '✉', task: '☐', agent: '✦', fase: '→' };
+  var NOME_TIPO = { note: 'Nota', call: 'Ligação', meeting: 'Reunião', email: 'E-mail', task: 'Tarefa', agent: 'Agente de IA' };
+  var SEG = { verde: 'Verde', amarelo: 'Amarelo', vermelho: 'Vermelho' };
+  var ABERTAS = ['a_apresentar', 'apresentado', 'aguardando_autorizacao'];
+  var centavos = function (v) { return Math.round((Number(v) || 0) * 100); };
+  var ROT = {}; (window.TesesRegras ? TesesRegras.PERFIL : []).forEach(function (p) { ROT[p.id] = p.rotulo.split(' (')[0]; });
+  var rotulo = function (k) { return ROT[k] || k; };
+
+  // ------------------------------------------------------------ abas
+  document.querySelectorAll('[data-aba]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('[data-aba]').forEach(function (x) { x.setAttribute('aria-selected', String(x === b)); });
+      $('aba-funil').hidden = b.dataset.aba !== 'funil'; $('aba-tarefas').hidden = b.dataset.aba !== 'tarefas';
+      if (b.dataset.aba === 'tarefas') carregarTarefas();
+    });
+  });
+
+  // ------------------------------------------------------------ funil
+  function carregar() {
+    return RV.api('GET', '/api/v1/crm/pipeline').then(function (j) { dados = j.clientes; render(); }).catch(function (e) { RV.toast(e.message); });
+  }
+
+  function chipsDiag(d) {
+    return d.filter(function (g) { return g.total; }).map(function (g) {
+      return '<span class="chip" title="' + g.provavel + ' prováveis, ' + g.verificar + ' a verificar">' + esc(g.nome) + ' ' + g.total + '</span>' +
+        (g.verde ? '<span class="chip verde" title="Teses de alta segurança">' + g.verde + ' verde</span>' : '');
+    }).join('');
+  }
+
+  function visiveis() {
+    var q = $('busca').value.trim().toLowerCase(), qd = q.replace(/\D/g, ''), g = $('f-grupo').value, at = $('f-atraso').checked;
+    return dados.filter(function (c) {
+      if (q && c.legalName.toLowerCase().indexOf(q) < 0 && !(qd && c.cnpj.indexOf(qd) >= 0)) return false;
+      if (g && !c.diagnostico.some(function (x) { return x.id === g && x.total; })) return false;
+      if (at && !c.overdueTasks) return false;
+      return true;
+    });
+  }
+
+  function render() {
+    var lista = visiveis();
+    var abertos = dados.filter(function (c) { return ABERTAS.indexOf(c.stage) >= 0; });
+    var valor = abertos.reduce(function (s, c) { return s + centavos(c.estimatedValue); }, 0);
+    var atrasos = dados.reduce(function (s, c) { return s + c.overdueTasks; }, 0);
+    var contratos = dados.filter(function (c) { return c.stage === 'contrato'; }).length;
+    $('kpis').innerHTML =
+      '<div class="kpi destaque"><div class="r">Em negociação</div><div class="v">' + abertos.length + '</div><div class="n">clientes nas fases abertas</div></div>' +
+      '<div class="kpi"><div class="r">Valor calculado em aberto</div><div class="v">' + RV.reaisCurto(valor) + '</div><div class="n">motor, pendente de revisão</div></div>' +
+      '<div class="kpi"><div class="r">Contratos</div><div class="v">' + contratos + '</div><div class="n">clientes em contrato</div></div>' +
+      '<div class="kpi"><div class="r">Tarefas atrasadas</div><div class="v"' + (atrasos ? ' style="color:var(--bad)"' : '') + '>' + atrasos + '</div><div class="n">da equipe</div></div>';
+    var pode = RV.pode('write');
+    $('kanban').innerHTML = RV.FASES.map(function (f) {
+      var col = lista.filter(function (c) { return c.stage === f.id; });
+      var soma = col.reduce(function (s, c) { return s + centavos(c.estimatedValue); }, 0);
+      return '<div class="coluna" data-fase="' + f.id + '"><header><b>' + esc(f.nome) + ' · ' + col.length + '</b><span>' + (soma ? RV.reaisCurto(soma) : '') + '</span></header>' +
+        (col.length ? col.map(function (c) {
+          return '<article class="cartao" tabindex="0" data-id="' + c.id + '"' + (pode && c.caseId ? ' draggable="true"' : '') + '>' +
+            '<div class="nm">' + esc(c.legalName) + '</div>' +
+            '<div class="meta"><span class="mono">' + RV.cnpj(c.cnpj) + '</span></div>' +
+            '<div class="meta"><span>' + RV.nomeFase(c.stage) + '</span><span class="val">' + (c.estimatedValue ? RV.reaisCurto(centavos(c.estimatedValue)) : 'sem cálculo') + '</span></div>' +
+            '<div class="chips">' + chipsDiag(c.diagnostico) + (c.overdueTasks ? '<span class="chip atraso">' + c.overdueTasks + ' atrasada' + (c.overdueTasks > 1 ? 's' : '') + '</span>' : c.openTasks ? '<span class="chip">' + c.openTasks + ' tarefa' + (c.openTasks > 1 ? 's' : '') + '</span>' : '') + '</div>' +
+            (c.nextStep ? '<div class="passo">→ ' + esc(c.nextStep) + '</div>' : '') +
+            '<div class="meta"><span>' + esc(c.owner || '') + '</span><span>' + (c.lastActivityAt ? RV.data(c.lastActivityAt) : '') + '</span></div></article>';
+        }).join('') : '<p class="muted" style="font-size:13px;text-align:center;margin:18px 0">Nenhum cliente</p>') + '</div>';
+    }).join('');
+  }
+
+  ['busca', 'f-grupo', 'f-atraso'].forEach(function (id) { $(id).addEventListener('input', render); });
+
+  $('kanban').addEventListener('click', function (e) { var c = e.target.closest('.cartao'); if (c) abrir(c.dataset.id); });
+  $('kanban').addEventListener('keydown', function (e) { var c = e.target.closest('.cartao'); if (c && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); abrir(c.dataset.id); } });
+  $('kanban').addEventListener('dragstart', function (e) { var c = e.target.closest('.cartao'); if (c) { arrastando = c.dataset.id; e.dataTransfer.effectAllowed = 'move'; } });
+  $('kanban').addEventListener('dragover', function (e) { var col = e.target.closest('.coluna'); if (col && arrastando) { e.preventDefault(); document.querySelectorAll('.coluna.alvo').forEach(function (x) { if (x !== col) x.classList.remove('alvo'); }); col.classList.add('alvo'); } });
+  $('kanban').addEventListener('dragleave', function (e) { var col = e.target.closest('.coluna'); if (col && !col.contains(e.relatedTarget)) col.classList.remove('alvo'); });
+  $('kanban').addEventListener('drop', function (e) {
+    var col = e.target.closest('.coluna'); if (!col || !arrastando) return; e.preventDefault(); col.classList.remove('alvo');
+    var c = dados.filter(function (x) { return x.id === arrastando; })[0]; arrastando = null;
+    if (!c || c.stage === col.dataset.fase) return;
+    mudarFase(c, col.dataset.fase);
+  });
+
+  function mudarFase(c, fase) {
+    var antes = c.stage; c.stage = fase; render();
+    return RV.api('PATCH', '/api/v1/cases/' + c.caseId, { stage: fase }).then(function () { RV.toast(c.legalName + ' → ' + RV.nomeFase(fase)); })
+      .catch(function (e) { c.stage = antes; render(); RV.toast(e.message); });
+  }
+
+  // ------------------------------------------------------------ tarefas
+  function carregarTarefas() {
+    RV.api('GET', '/api/v1/crm/tasks?scope=' + $('t-escopo').value).then(function (j) {
+      var agora = Date.now();
+      $('t-lista').innerHTML = j.tarefas.length ? j.tarefas.map(function (t) {
+        var atrasada = t.dueAt && new Date(t.dueAt).getTime() < agora;
+        return '<tr><td class="' + (atrasada ? 'atraso' : '') + '">' + RV.data(t.dueAt, true) + '</td><td><strong>' + esc(t.subject || '') + '</strong>' + (t.body ? '<div class="muted" style="font-size:13px">' + esc(t.body.slice(0, 140)) + '</div>' : '') + '</td>' +
+          '<td><a href="#" data-cli="' + t.taxpayerId + '">' + esc(t.legalName) + '</a></td><td>' + esc(t.assignee || '') + '</td>' +
+          '<td>' + (RV.pode('write') ? '<button class="mini sec" type="button" data-feito="' + t.id + '">Concluir</button>' : '') + '</td></tr>';
+      }).join('') : '<tr><td colspan="5" class="vazio">Nenhuma tarefa em aberto.</td></tr>';
+    }).catch(function (e) { RV.toast(e.message); });
+  }
+  $('t-escopo').addEventListener('change', carregarTarefas);
+  $('t-lista').addEventListener('click', function (e) {
+    var a = e.target.closest('[data-cli]'); if (a) { e.preventDefault(); abrir(a.dataset.cli); return; }
+    var b = e.target.closest('[data-feito]'); if (b) RV.api('PATCH', '/api/v1/crm/activities/' + b.dataset.feito, { done: true }).then(function () { RV.toast('Tarefa concluída'); carregarTarefas(); carregar(); }).catch(function (er) { RV.toast(er.message); });
+  });
+
+  // ------------------------------------------------------------ ficha
+  $('f-fase').innerHTML = RV.FASES.map(function (f) { return '<option value="' + f.id + '">' + esc(f.nome) + '</option>'; }).join('');
+  $('f-tipos').innerHTML = TIPOS.map(function (t) { return '<button type="button" data-tipo="' + t[0] + '" aria-pressed="' + (t[0] === 'note') + '">' + t[2] + ' ' + t[1] + '</button>'; }).join('');
+  $('f-tipos').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-tipo]'); if (!b) return; tipo = b.dataset.tipo;
+    $('f-tipos').querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+    $('f-tarefa').hidden = tipo !== 'task';
+  });
+  $('f-fechar').addEventListener('click', function () { $('ficha').close(); });
+  $('ficha').addEventListener('close', function () { atual = null; history.replaceState(null, '', location.pathname); carregar(); });
+
+  function abrir(id) {
+    history.replaceState(null, '', '?id=' + id);
+    return RV.api('GET', '/api/v1/crm/clients/' + id).then(function (j) { atual = j; renderFicha(); if (!$('ficha').open) $('ficha').showModal(); })
+      .catch(function (e) { RV.toast(e.message); });
+  }
+  function recarregar() { return atual && abrir(atual.cliente.id); }
+
+  function renderFicha() {
+    var c = atual.cliente, caso = c.caso || {};
+    $('f-nome').textContent = c.legalName;
+    $('f-sub').textContent = RV.cnpj(c.cnpj) + ' · ' + (c.taxRegime || 'regime não informado') + (caso.owner ? ' · ' + caso.owner : '') + (caso.estimatedValue ? ' · ' + RV.reais(centavos(caso.estimatedValue)) + ' calculados (pendente de revisão)' : '');
+    $('f-pasta').href = '/clientes.html?id=' + c.id;
+    $('f-fase').value = caso.stage || 'a_apresentar'; $('f-fase').disabled = !caso.id;
+    $('f-passo').value = caso.nextStep || ''; $('f-prev').value = caso.expectedCloseDate ? String(caso.expectedCloseDate).slice(0, 10) : '';
+    $('f-resp').innerHTML = membros.map(function (m) { return '<option value="' + m.id + '">' + esc(m.name) + '</option>'; }).join('');
+    var eu = RV.usuario && RV.usuario.user; var meu = membros.filter(function (m) { return eu && m.name === eu.name; })[0]; if (meu) $('f-resp').value = meu.id;
+    renderAgente(); renderLinha(); renderContatos(); renderPub(); renderDiag();
+    document.querySelectorAll('#ficha [data-write]').forEach(function (el) { if (!RV.pode('write')) { el.hidden = el.tagName === 'FORM'; el.disabled = true; } });
+  }
+
+  function salvarCaso(campos) {
+    var caso = atual.cliente.caso; if (!caso) return;
+    RV.api('PATCH', '/api/v1/cases/' + caso.id, campos).then(function () { RV.toast('Salvo'); recarregar(); }).catch(function (e) { RV.toast(e.message); });
+  }
+  $('f-fase').addEventListener('change', function () { salvarCaso({ stage: $('f-fase').value }); });
+  $('f-passo').addEventListener('change', function () { salvarCaso({ nextStep: $('f-passo').value }); });
+  $('f-prev').addEventListener('change', function () { salvarCaso({ expectedCloseDate: $('f-prev').value }); });
+
+  // agente
+  function renderAgente() {
+    var a = atual.agente, pode = RV.pode('write');
+    var ultima = atual.atividades.filter(function (x) { return x.type === 'agent' && x.meta && x.meta.analise; })[0];
+    var sug = ultima && ultima.meta.analise.perfilSugerido.filter(function (p) { return atual.cliente.perfil[p.flag] !== p.valor; });
+    $('f-agente').innerHTML = '<h3>✦ Agente de IA</h3>' +
+      (a.configurado ? '<p>Lê o CNPJ público, o perfil, o diagnóstico e o histórico e sugere como conduzir a conversa. Modelo: ' + esc(a.modelo) + '. Não calcula nem afirma crédito.</p>' +
+        (pode ? '<div class="acoes"><button type="button" id="ag-analisar">Analisar cliente</button><input id="ag-pergunta" maxlength="1000" placeholder="Ou pergunte algo sobre este cliente"><button type="button" class="sec" id="ag-perguntar" style="color:#6FD0C7;border-color:#3DB8AE">Perguntar</button></div>' : '')
+        : '<p>Ainda não configurado. Defina LLM_API_KEY (Qwen no Alibaba Model Studio) no Vercel para ativar.</p>') +
+      (sug && sug.length && pode ? '<div class="sug"><b>Perfil sugerido na última análise:</b>' + sug.map(function (p) { return '<label style="flex-direction:row;display:flex;gap:6px;align-items:center;font-weight:500;color:#E8EEF4"><input type="checkbox" style="width:auto" data-flag="' + p.flag + '" data-valor="' + p.valor + '" checked> ' + esc(rotulo(p.flag)) + ': ' + (p.valor ? 'sim' : 'não') + ' <span style="color:#AFC0D2">— ' + esc(p.evidencia) + '</span></label>'; }).join('') + '<div><button type="button" class="mini" id="ag-aplicar">Aplicar ao perfil</button></div></div>' : '');
+    var b1 = $('ag-analisar'), b2 = $('ag-perguntar'), b3 = $('ag-aplicar');
+    if (b1) b1.addEventListener('click', function () { rodarAgente({}, b1); });
+    if (b2) b2.addEventListener('click', function () { var q = $('ag-pergunta').value.trim(); if (q) rodarAgente({ pergunta: q }, b2); });
+    if (b3) b3.addEventListener('click', function () {
+      var perfil = Object.assign({}, atual.cliente.perfil);
+      $('f-agente').querySelectorAll('[data-flag]').forEach(function (x) { if (x.checked) perfil[x.dataset.flag] = x.dataset.valor === 'true'; });
+      RV.api('PATCH', '/api/v1/taxpayers/' + atual.cliente.id, { perfil: perfil }).then(function () { RV.toast('Perfil atualizado; diagnóstico recalculado'); recarregar(); }).catch(function (e) { RV.toast(e.message); });
+    });
+  }
+  function rodarAgente(corpo, botao) {
+    var t = botao.textContent; botao.disabled = true; botao.textContent = 'Pensando…';
+    RV.api('POST', '/api/v1/crm/clients/' + atual.cliente.id + '/agent', corpo).then(function () { RV.toast('Análise registrada na linha do tempo'); recarregar(); })
+      .catch(function (e) { RV.toast(e.message, 6000); botao.disabled = false; botao.textContent = t; });
+  }
+
+  // registrar atividade
+  $('f-nova').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var corpo = { taxpayerId: atual.cliente.id, type: tipo, subject: $('f-assunto').value, body: $('f-texto').value };
+    if (tipo === 'task') { if (!$('f-prazo').value) { RV.toast('Informe o prazo da tarefa.'); return; } corpo.dueAt = new Date($('f-prazo').value).toISOString(); corpo.assigneeId = $('f-resp').value; }
+    RV.api('POST', '/api/v1/crm/activities', corpo).then(function () { $('f-assunto').value = ''; $('f-texto').value = ''; $('f-prazo').value = ''; RV.toast(NOME_TIPO[tipo] + ' registrada'); recarregar(); })
+      .catch(function (er) { RV.toast(er.message); });
+  });
+
+  function renderLinha() {
+    var itens = atual.atividades.map(function (a) { return { k: 'a', at: a.dueAt && !a.doneAt ? a.dueAt : a.createdAt, a: a }; })
+      .concat(atual.fases.map(function (f) { return { k: 'f', at: f.at, f: f }; }))
+      .sort(function (x, y) { return new Date(y.at) - new Date(x.at); });
+    var pode = RV.pode('write'), agora = Date.now();
+    $('f-linha').innerHTML = itens.length ? itens.map(function (i) {
+      if (i.k === 'f') return '<div class="item"><div class="ic">' + ICONE.fase + '</div><div><div class="cab2"><b>Fase: ' + esc(RV.nomeFase(i.f.from)) + ' → ' + esc(RV.nomeFase(i.f.to)) + '</b><span class="muted">' + esc(i.f.by || '') + ' · ' + RV.data(i.at, true) + '</span></div></div></div>';
+      var a = i.a, tarefa = a.type === 'task', feito = tarefa && a.doneAt, atrasada = tarefa && !a.doneAt && a.dueAt && new Date(a.dueAt).getTime() < agora;
+      return '<div class="item ' + a.type + (feito ? ' feito' : '') + '"><div class="ic">' + ICONE[a.type] + '</div><div>' +
+        '<div class="cab2"><b>' + esc(a.subject || NOME_TIPO[a.type]) + '</b><span class="muted">' + esc(NOME_TIPO[a.type]) + ' · ' + esc(a.createdBy || '') + ' · ' + RV.data(a.createdAt, true) + '</span></div>' +
+        (tarefa ? '<div style="font-size:13px;margin-top:4px"><span class="chip' + (atrasada ? ' atraso' : '') + '">' + (atrasada ? 'Atrasada · ' : '') + 'Prazo ' + RV.data(a.dueAt, true) + (a.assignee ? ' · ' + esc(a.assignee) : '') + (feito ? ' · concluída' : '') + '</span></div>' : '') +
+        (a.body ? '<div class="txt">' + esc(a.body) + '</div>' : '') +
+        (pode ? '<div class="acoes2">' + (tarefa ? '<button type="button" data-done="' + a.id + '" data-v="' + (!feito) + '">' + (feito ? 'Reabrir' : 'Concluir') + '</button>' : '') + '<button type="button" data-del="' + a.id + '">Excluir</button></div>' : '') +
+        '</div></div>';
+    }).join('') : '<p class="muted">Nada registrado ainda.</p>';
+  }
+  $('f-linha').addEventListener('click', function (e) {
+    var d = e.target.closest('[data-done]');
+    if (d) { RV.api('PATCH', '/api/v1/crm/activities/' + d.dataset.done, { done: d.dataset.v === 'true' }).then(recarregar).catch(function (er) { RV.toast(er.message); }); return; }
+    var x = e.target.closest('[data-del]');
+    if (x) {
+      if (x.dataset.confirma !== '1') { x.dataset.confirma = '1'; x.textContent = 'Confirmar exclusão'; return; }
+      RV.api('DELETE', '/api/v1/crm/activities/' + x.dataset.del).then(function () { RV.toast('Excluído'); recarregar(); }).catch(function (er) { RV.toast(er.message); });
+    }
+  });
+
+  // contatos
+  function renderContatos() {
+    var pode = RV.pode('write');
+    $('f-contatos').innerHTML = atual.contatos.length ? atual.contatos.map(function (k) {
+      return '<div class="contato"><div><strong>' + esc(k.name) + '</strong>' + (k.primary ? ' <span class="chip verde">principal</span>' : '') + '<small>' + esc([k.role, k.email, k.phone].filter(Boolean).join(' · ')) + '</small></div>' +
+        (pode ? '<div class="acoes">' + (k.primary ? '' : '<button class="mini sec" type="button" data-prim="' + k.id + '">Tornar principal</button>') + '<button class="mini perigo" type="button" data-kdel="' + k.id + '">Remover</button></div>' : '') + '</div>';
+    }).join('') : '<p class="muted">Nenhum contato cadastrado.</p>';
+  }
+  $('f-contatos').addEventListener('click', function (e) {
+    var p = e.target.closest('[data-prim]');
+    if (p) { var k = atual.contatos.filter(function (x) { return x.id === p.dataset.prim; })[0]; RV.api('PATCH', '/api/v1/crm/contacts/' + k.id, Object.assign({}, k, { primary: true })).then(recarregar).catch(function (er) { RV.toast(er.message); }); return; }
+    var d = e.target.closest('[data-kdel]');
+    if (d) {
+      if (d.dataset.confirma !== '1') { d.dataset.confirma = '1'; d.textContent = 'Confirmar'; return; }
+      RV.api('DELETE', '/api/v1/crm/contacts/' + d.dataset.kdel).then(recarregar).catch(function (er) { RV.toast(er.message); });
+    }
+  });
+  $('f-novo-contato').addEventListener('submit', function (e) {
+    e.preventDefault();
+    RV.api('POST', '/api/v1/crm/contacts', { taxpayerId: atual.cliente.id, name: $('k-nome').value, role: $('k-cargo').value, email: $('k-email').value, phone: $('k-tel').value, primary: !atual.contatos.length })
+      .then(function () { ['k-nome', 'k-cargo', 'k-email', 'k-tel'].forEach(function (i) { $(i).value = ''; }); RV.toast('Contato adicionado'); recarregar(); })
+      .catch(function (er) { RV.toast(er.message); });
+  });
+
+  // dados públicos
+  function renderPub() {
+    var p = atual.cliente.publico, pode = RV.pode('write');
+    $('f-pub').innerHTML = (p ? [
+      ['Razão social', p.razaoSocial], ['Situação', p.situacao], ['Abertura', p.abertura ? RV.data(p.abertura + 'T12:00:00') : null], ['Porte', p.porte],
+      ['Município', p.municipio ? p.municipio + '/' + (p.uf || '') : null], ['Capital social', p.capitalSocial != null ? RV.reais(centavos(p.capitalSocial)) : null],
+      ['CNAE principal', p.cnae ? p.cnae.codigo + ' — ' + p.cnae.descricao : null], ['CNAEs secundárias', p.cnaesSecundarios.length ? p.cnaesSecundarios.length + ' atividades' : null],
+      ['Simples Nacional', p.simples ? 'optante' : 'não optante']
+    ].filter(function (x) { return x[1]; }).map(function (x) { return '<div><b>' + x[0] + ':</b> ' + esc(x[1]) + '</div>'; }).join('') +
+      '<div class="muted">Consultado em ' + RV.data(p.consultadoEm, true) + ' (BrasilAPI / Receita Federal)</div>'
+      : '<p class="muted" style="margin:0">Ainda não consultado.</p>') +
+      (pode ? '<div class="acoes" style="margin-top:6px"><button type="button" class="sec mini" id="pub-atualizar">' + (p ? 'Atualizar' : 'Consultar CNPJ') + '</button></div><div id="pub-sug"></div>' : '');
+    var b = $('pub-atualizar');
+    if (b) b.addEventListener('click', function () {
+      b.disabled = true; b.textContent = 'Consultando…';
+      RV.api('POST', '/api/v1/crm/clients/' + atual.cliente.id + '/cnpj').then(function (j) {
+        atual.cliente.publico = j.publico; renderPub();
+        var perfil = atual.cliente.perfil, sug = Object.keys(j.sugestaoPerfil).filter(function (k) { return perfil[k] !== j.sugestaoPerfil[k].valor; });
+        if (sug.length) {
+          $('pub-sug').innerHTML = '<p style="margin:8px 0 4px"><b>Pela CNAE, o perfil pode incluir:</b> ' + sug.map(function (k) { return esc(rotulo(k)); }).join(', ') + '</p><button type="button" class="mini" id="pub-aplicar">Aplicar ao perfil</button>';
+          $('pub-aplicar').addEventListener('click', function () {
+            var p2 = Object.assign({}, perfil); sug.forEach(function (k) { p2[k] = true; });
+            RV.api('PATCH', '/api/v1/taxpayers/' + atual.cliente.id, { perfil: p2 }).then(function () { RV.toast('Perfil atualizado'); recarregar(); }).catch(function (e) { RV.toast(e.message); });
+          });
+        }
+      }).catch(function (e) { RV.toast(e.message); b.disabled = false; b.textContent = 'Tentar de novo'; });
+    });
+  }
+
+  // diagnóstico
+  function renderDiag() {
+    $('f-diag').innerHTML = atual.diagnostico.map(function (g) {
+      return '<div class="grupo-diag"><div><b>' + esc(g.nome) + '</b> <span class="muted">· ' + g.total + ' teses (' + g.provavel + ' prováveis, ' + g.verificar + ' a verificar) · ' + g.verde + ' verde, ' + g.amarelo + ' amarelo, ' + g.vermelho + ' vermelho</span></div>' +
+        (g.teses.length ? g.teses.slice().sort(function (a, b) { return (a.estado === b.estado ? 0 : a.estado === 'provavel' ? -1 : 1) || ['verde', 'amarelo', 'vermelho'].indexOf(a.seguranca) - ['verde', 'amarelo', 'vermelho'].indexOf(b.seguranca); }).map(function (t) {
+          return '<details class="tese"><summary><span class="chip ' + (t.seguranca || '') + '">' + (SEG[t.seguranca] || '?') + '</span><b>' + t.id + ' · ' + esc(t.nome) + '</b><span class="chip">' + (t.estado === 'provavel' ? 'provável' : 'verificar') + '</span></summary>' +
+            '<div class="det">' + (t.faltam.length ? '<div>Confirmar: ' + esc(t.faltam.join(', ')) + '</div>' : '') + (t.maturidade ? '<div>Maturidade: ' + esc(t.maturidade) + '</div>' : '') +
+            (t.origem ? '<div>Origem: ' + esc(t.origem) + '</div>' : '') + (t.base ? '<div>Base legal: ' + esc(t.base) + '</div>' : '') + (t.precedente ? '<div>Precedente: ' + esc(t.precedente) + '</div>' : '') +
+            (t.docs.length ? '<div>Documentos: ' + esc(t.docs.join('; ')) + '</div>' : '') + (t.nota ? '<div>' + esc(t.nota) + '</div>' : '') + '</div></details>';
+        }).join('') : '<p class="muted" style="margin:0">Nenhuma tese aplicável com o perfil atual.</p>') + '</div>';
+    }).join('') + '<p class="muted" style="margin:0;font-size:13px">Preencha o perfil na <a href="/teses.html">tela de Teses</a> ou aplique as sugestões acima para refinar.</p>';
+  }
+
+  RV.eu.then(function () {
+    RV.api('GET', '/api/v1/crm/members').then(function (j) { membros = j.membros; }).catch(function () {});
+    carregar().then(function () { var id = new URLSearchParams(location.search).get('id'); if (id) abrir(id); });
+  });
+})();
+</script>
+</body>
+</html>
