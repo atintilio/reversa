@@ -11,6 +11,12 @@
 <style>
   :root { --e-prov: #12968B; --e-ver: #E2B04A; --e-nao: #E6EBF0; --r-baixo: #1E7A4C; --r-medio: #8A5A12; --r-alto: #A33A2B; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --e-prov: #2EB3A7; --e-ver: #C9973A; --e-nao: #223142; --r-baixo: #7FD1A4; --r-medio: #E8B86A; --r-alto: #F0998B; } }
+  .areas { display: flex; gap: 8px; flex-wrap: wrap; }
+  .rv .areas button { background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-size: 14px; }
+  .rv .areas button small { font-weight: 600; color: var(--muted); margin-left: 4px; }
+  .rv .areas button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .rv .areas button[aria-pressed="true"] small { color: #6FD0C7; }
+  .nota-area { font-size: 13px; }
   .abas { display: flex; gap: 6px; border-bottom: 1px solid var(--line); }
   .abas button { background: transparent; color: var(--muted); border: 0; border-bottom: 3px solid transparent; border-radius: 0; padding: 10px 14px; }
   .abas button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--teal); }
@@ -93,7 +99,11 @@
     <span class="muted" id="versao" style="font-size:13px"></span>
   </div>
 
+  <nav class="areas" id="areas" aria-label="Área tributária"></nav>
+
   <div class="grid-kpi" id="kpis"></div>
+
+  <div class="msg warn nota-area" id="nota-area" hidden></div>
 
   <div class="msg warn banner" id="banner-exemplo" hidden>
     <span class="pill warn">EXEMPLO</span>
@@ -181,10 +191,22 @@
     { id: 'ex5', nome: 'Loja Virtual Exemplo Ltda', regime: 'presumido', perfil: { comercio: true, ecommerce: true, st: true, multiuf: false, folha: false, monofasico: false, industria: false, servicos: false } },
     { id: 'ex6', nome: 'Autopeças Exemplo ME', regime: 'simples', perfil: { comercio: true, monofasico: true, st: true, folha: false } }
   ];
-  var estado = { reais: [], exemplo: false, cruz: null, clientes: [] };
+  var estado = { reais: [], exemplo: false, cruz: null, clientes: [], area: 'PIS/COFINS' };
+  var AREAS = [['PIS/COFINS', 'PIS/COFINS'], ['Previdenciário', 'Previdenciário'], ['ICMS', 'ICMS'], ['IPI', 'IPI'], ['IRPJ/CSLL', 'IRPJ/CSLL'], ['Outros', 'Outros federais e indiretos'], ['todas', 'Todas']];
+  var NOTA = {
+    'Previdenciário': 'Previdenciário segue regras próprias: apuração e compensação pela DCTFWeb/eSocial (Lei 11.457, art. 26-A), rubrica a rubrica da folha. Não se mistura com o fluxo do PIS/COFINS. Confira a jurisprudência de cada tese antes de oferecer: terço de férias (STF Tema 985) e limite de 20 salários mínimos para terceiros (STJ Tema 1.079) foram decididos contra o contribuinte.'
+  };
+  function areaDe(t) { return t.tributo === 'Indiretos' || t.tributo === 'Federais diversos' ? 'Outros' : t.tributo; }
+  function naArea(i) { return estado.area === 'todas' || areaDe(TESES[i]) === estado.area; }
+  function idxArea() { return TESES.map(function (t, i) { return i; }).filter(naArea); }
+  function contA(m) {
+    var c = { provavel: 0, verificar: 0, nao: 0, score: 0 };
+    idxArea().forEach(function (i) { var e = m.resultados[i].estado; c[e]++; if (e === 'provavel') c.score += TR.PESO_RISCO[TESES[i].risco] || 1; });
+    return c;
+  }
 
   function clientesAtivos() { return estado.exemplo ? EXEMPLOS : estado.reais; }
-  function teseVisivel(i) { return !$('f-so-aplic').checked || estado.cruz.porTese[i].contagem.provavel > 0; }
+  function teseVisivel(i) { return naArea(i) && (!$('f-so-aplic').checked || estado.cruz.porTese[i].contagem.provavel > 0); }
 
   // ---------------------------------------------------------------- dados
   function carregar() {
@@ -199,7 +221,7 @@
   function render() {
     estado.clientes = clientesAtivos();
     estado.cruz = TR.cruzar(estado.clientes);
-    renderBanner(); renderKpis(); renderMatriz(); renderRanks(); renderMapa();
+    renderAreas(); renderBanner(); renderKpis(); renderMatriz(); renderRanks(); renderMapa();
   }
 
   function renderBanner() {
@@ -217,17 +239,26 @@
     if (estado.exemplo) { b.className = 'msg warn banner'; b.style.background = ''; b.querySelector('.pill').hidden = false; }
   }
 
+  function renderAreas() {
+    $('areas').innerHTML = AREAS.map(function (a) {
+      var n = a[0] === 'todas' ? TESES.length : TESES.filter(function (t) { return areaDe(t) === a[0]; }).length;
+      return '<button type="button" data-area="' + RV.esc(a[0]) + '" aria-pressed="' + (estado.area === a[0]) + '">' + RV.esc(a[1]) + '<small>' + n + '</small></button>';
+    }).join('');
+    var nota = NOTA[estado.area];
+    $('nota-area').hidden = !nota; if (nota) $('nota-area').textContent = nota;
+  }
   function renderKpis() {
-    var tot = { provavel: 0, verificar: 0 };
-    estado.cruz.matriz.forEach(function (m) { tot.provavel += m.contagem.provavel; tot.verificar += m.contagem.verificar; });
-    var cobertas = estado.cruz.porTese.filter(function (p) { return p.contagem.provavel > 0; }).length;
-    var motor = TESES.filter(function (t) { return t.motor; }).length;
+    var tot = { provavel: 0, verificar: 0 }, ids = idxArea();
+    estado.cruz.matriz.forEach(function (m) { var c = contA(m); tot.provavel += c.provavel; tot.verificar += c.verificar; });
+    var cobertas = ids.filter(function (i) { return estado.cruz.porTese[i].contagem.provavel > 0; }).length;
+    var motor = ids.filter(function (i) { return TESES[i].motor; }).length;
+    var rotArea = estado.area === 'todas' ? 'catálogo' : estado.area;
     $('kpis').innerHTML =
-      kpi('destaque', 'Teses no catálogo', '60', motor + ' já ligadas ao motor de cálculo') +
+      kpi('destaque', 'Teses · ' + rotArea, ids.length + (estado.area === 'todas' ? '' : ' de 60'), motor ? motor + ' já ligada(s) ao motor de cálculo' : 'nenhuma ainda no motor de cálculo') +
       kpi('', 'Clientes cruzados', String(estado.clientes.length), estado.exemplo ? 'clientes fictícios de exemplo' : 'cadastrados na organização') +
       kpi('', 'Oportunidades prováveis', String(tot.provavel), 'pares cliente × tese') +
       kpi('', 'A verificar', String(tot.verificar), 'falta informação no perfil') +
-      kpi('', 'Teses com cliente provável', cobertas + ' de 60', 'demanda real na carteira');
+      kpi('', 'Teses com cliente provável', cobertas + ' de ' + ids.length, 'demanda real na carteira');
     $('versao').textContent = 'Regras v' + TR.VERSAO;
   }
   function kpi(cls, r, v, n) { return '<div class="kpi ' + cls + '"><div class="r">' + r + '</div><div class="v">' + v + '</div><div class="n">' + RV.esc(n) + '</div></div>'; }
@@ -246,8 +277,9 @@
     var m = estado.cruz.matriz.slice(), o = $('f-ordem').value;
     m.sort(function (a, b) {
       if (o === 'nome') return a.cliente.nome.localeCompare(b.cliente.nome);
-      if (o === 'verificar') return b.contagem.verificar - a.contagem.verificar;
-      return b.score - a.score || b.contagem.provavel - a.contagem.provavel;
+      var ca = contA(a), cb = contA(b);
+      if (o === 'verificar') return cb.verificar - ca.verificar;
+      return cb.score - ca.score || cb.provavel - ca.provavel;
     });
     return m;
   }
@@ -270,13 +302,13 @@
       var reg = TR.regimeDe(m.cliente.regime) || (TR.REGIMES[m.cliente.regime] ? m.cliente.regime : null);
       h += '<tr><td class="cli"><button type="button" data-cli="' + ci + '"><b>' + RV.esc(m.cliente.nome) + '</b><small>' + (reg ? TR.REGIMES[reg] : 'Regime não informado') + (m.cliente.cnpj ? ' · ' + RV.cnpj(m.cliente.cnpj) : '') + '</small></button></td>' +
         cols.map(function (i) { var r = m.resultados[i]; return '<td class="cel' + (primeiro[i] ? ' g0' : '') + '"><i class="e-' + r.estado + '" data-c="' + ci + '" data-t="' + i + '"></i></td>'; }).join('') +
-        '<td class="tot"><b>' + m.contagem.provavel + '</b> · <span class="muted">' + m.contagem.verificar + '</span></td></tr>';
+        '<td class="tot"><b>' + contA(m).provavel + '</b> · <span class="muted">' + contA(m).verificar + '</span></td></tr>';
     });
     w.innerHTML = h + '</tbody></table>';
   }
 
   function renderRanks() {
-    var pt = estado.cruz.porTese.slice().filter(function (p) { return p.contagem.provavel + p.contagem.verificar > 0; })
+    var pt = estado.cruz.porTese.filter(function (p, i) { return naArea(i) && p.contagem.provavel + p.contagem.verificar > 0; })
       .sort(function (a, b) { return b.contagem.provavel - a.contagem.provavel || (TR.PESO_RISCO[b.tese.risco] - TR.PESO_RISCO[a.tese.risco]) || b.contagem.verificar - a.contagem.verificar; }).slice(0, 12);
     var n = Math.max(1, estado.clientes.length);
     $('rank-teses').innerHTML = pt.length ? pt.map(function (p) {
@@ -285,12 +317,12 @@
         '<span class="trilho"><i class="e-provavel" style="width:' + (100 * p.contagem.provavel / n) + '%"></i><i class="e-verificar" style="width:' + (100 * p.contagem.verificar / n) + '%"></i></span>' +
         '<span class="n">' + p.contagem.provavel + ' <small>+' + p.contagem.verificar + '</small></span></div>';
     }).join('') : '<div class="vazio">Sem dados.</div>';
-    var mx = Math.max.apply(null, estado.cruz.matriz.map(function (m) { return m.contagem.provavel + m.contagem.verificar; }).concat([1]));
+    var mx = Math.max.apply(null, estado.cruz.matriz.map(function (m) { var c = contA(m); return c.provavel + c.verificar; }).concat([1]));
     $('rank-cli').innerHTML = ordemClientes().slice(0, 12).map(function (m) {
       var ci = estado.cruz.matriz.indexOf(m);
       return '<div class="lin"><span class="rot"><a href="#" data-cli="' + ci + '">' + RV.esc(m.cliente.nome) + '</a></span>' +
-        '<span class="trilho"><i class="e-provavel" style="width:' + (100 * m.contagem.provavel / mx) + '%"></i><i class="e-verificar" style="width:' + (100 * m.contagem.verificar / mx) + '%"></i></span>' +
-        '<span class="n">' + m.contagem.provavel + ' <small>+' + m.contagem.verificar + '</small></span></div>';
+        '<span class="trilho"><i class="e-provavel" style="width:' + (100 * contA(m).provavel / mx) + '%"></i><i class="e-verificar" style="width:' + (100 * contA(m).verificar / mx) + '%"></i></span>' +
+        '<span class="n">' + contA(m).provavel + ' <small>+' + contA(m).verificar + '</small></span></div>';
     }).join('');
   }
 
@@ -299,7 +331,7 @@
     var q = $('m-busca').value.trim().toLowerCase(), trib = $('m-tributo').value, risco = $('m-risco').value, reg = $('m-regime').value, via = $('m-via').value;
     var lista = TESES.map(function (t, i) { return i; }).filter(function (i) {
       var t = TESES[i];
-      return (!q || (t.id + ' ' + t.nome).toLowerCase().indexOf(q) >= 0) && (!trib || t.tributo === trib) && (!risco || t.risco === risco) &&
+      return naArea(i) && (!q || (t.id + ' ' + t.nome).toLowerCase().indexOf(q) >= 0) && (!trib || t.tributo === trib) && (!risco || t.risco === risco) &&
         (!reg || t.regimes.indexOf(reg) >= 0) && (!via || t.via === via);
     });
     var n = Math.max(1, estado.clientes.length);
@@ -400,6 +432,7 @@
   $('matriz-wrap').addEventListener('mouseleave', function () { tip.hidden = true; });
   ['f-ordem', 'f-so-aplic'].forEach(function (id) { $(id).addEventListener('change', function () { renderMatriz(); renderRanks(); }); });
   ['m-busca', 'm-tributo', 'm-risco', 'm-regime', 'm-via'].forEach(function (id) { $(id).addEventListener('input', renderMapa); });
+  $('areas').addEventListener('click', function (e) { var b = e.target.closest('button[data-area]'); if (!b) return; estado.area = b.getAttribute('data-area'); render(); });
   $('b-alternar').addEventListener('click', function () { estado.exemplo = !estado.exemplo; render(); });
   function aba(qual) {
     var cruz = qual === 'cruz';
