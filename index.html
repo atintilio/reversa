@@ -214,13 +214,14 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
   </section>
 
   <section aria-labelledby="t-pdf">
-    <div class="sec-head"><h2 id="t-pdf">Memória de cálculo em <em>PDF</em></h2></div>
+    <div class="sec-head"><h2 id="t-pdf">Diagnóstico Técnico Inicial — <em>DTI</em></h2></div>
     <p class="lede">Documento formal com identificação do contribuinte, quadro das teses, fundamentação, fonte dos dados com a impressão digital SHA-256 de cada arquivo, metodologia, resumo por competência e detalhamento por nota de cada tese, e bloco de assinatura.</p>
     <form class="pdf-form" id="form-pdf">
-      <label for="pdf-resp">Responsável técnico<input type="text" id="pdf-resp" placeholder="Nome completo" autocomplete="name"></label>
-      <label for="pdf-reg">Registro profissional<input type="text" id="pdf-reg" placeholder="Ex.: CRC SC-000000/O-0"></label>
+      <label class="chk" for="pdf-resp-on" style="display:flex;flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:.9rem"><input type="checkbox" id="pdf-resp-on" style="width:auto"> Incluir responsável técnico</label>
+      <label for="pdf-resp">Responsável técnico<input type="text" id="pdf-resp" placeholder="Nome completo" autocomplete="name" disabled></label>
+      <label for="pdf-reg">Registro profissional<input type="text" id="pdf-reg" placeholder="Ex.: CRC SC-000000/O-0" disabled></label>
       <label for="pdf-local">Local<input type="text" id="pdf-local" placeholder="Florianópolis/SC"></label>
-      <button type="submit" id="btn-pdf">Gerar memória de cálculo</button>
+      <button type="submit" id="btn-pdf">Gerar Diagnóstico</button>
       <button type="button" id="btn-pasta" class="sec" hidden>Salvar na pasta do cliente</button>
     </form>
     <p class="note" id="pasta-status" role="status" aria-live="polite" hidden></p>
@@ -969,13 +970,43 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
       return t(v);
     }
 
+    // ------------------------------------------------------------- capa introdutória (foto) e classificação
+    var nomeCli = cnpjs.map(function (c) { return contribuintes[c]; }).join('; ') || '';
+    doc.setFillColor(COR.tinta[0], COR.tinta[1], COR.tinta[2]); doc.rect(0, 0, W, H, 'F');
+    if (root.REVERSA_CAPA) { try { var iw = H * 16 / 9; doc.addImage(root.REVERSA_CAPA, 'JPEG', (W - iw) / 2, 0, iw, H); } catch (e) { /* segue sem foto */ } }
+    doc.setFillColor(COR.tinta[0], COR.tinta[1], COR.tinta[2]); doc.rect(0, H - 34, W, 34, 'F');
+    doc.setFillColor(COR.bronze[0], COR.bronze[1], COR.bronze[2]); doc.rect(0, H - 34, W, 1.2, 'F');
+    fonte('helvetica', 'bold', 18); doc.setTextColor(255, 255, 255); doc.text(t('Diagnóstico Técnico Inicial - DTI'), M, H - 20);
+    fonte('helvetica', 'normal', 10); doc.setTextColor(201, 214, 227); doc.text(t((nomeCli ? nomeCli + '  ·  ' : '') + dataBR(emissao)), M, H - 12);
+    fonte('helvetica', 'bold', 9); doc.setTextColor(111, 208, 199); doc.text(t('REVERSA TAX  ·  ARGUS PRIME'), W - M, H - 16, { align: 'right' });
+
+    doc.addPage(); y = M;
+    doc.setFillColor(COR.cobre[0], COR.cobre[1], COR.cobre[2]); doc.rect(M, M + 4, 1.6, 14, 'F');
+    fonte('helvetica', 'bold', 24); cor(COR.tinta); doc.text(t('Como é feita a classificação'), M + 6, M + 15);
+    var colE = (W - 2 * M) * 0.36;
+    fonte('helvetica', 'normal', 12); cor(COR.suave);
+    var intro = doc.splitTextToSize(t('O levantamento das Oportunidades Tributárias levará em conta as seguintes classificações, embasadas no conceito da Deliberação CVM n.º 489 e do Pronunciamento do IBRACON NPC n.º 22, que determinam o reconhecimento do ativo e do correspondente ganho.'), colE);
+    doc.text(intro, M, M + 46, { lineHeightFactor: 1.9 });
+    var xD = M + colE + 22;
+    fonte('helvetica', 'bold', 22); cor(COR.tinta); doc.text('Administrativo', xD + 18, M + 44);
+    [['A', [26, 188, 166], 'Possível (> 80%)', 'Existe a possibilidade de ganho, mas o assunto não está pacificado.'],
+     ['B', COR.cobre, 'Provável (> 50%)', 'Oportunidades onde existe maior possibilidade de ganho e risco baixo de autuação.'],
+     ['C', [158, 166, 179], 'Remoto (< 40%)', 'Menor possibilidade de ganho, assunto embrionário ou pouco explorado.']].forEach(function (c, i) {
+      var cy = M + 70 + i * 30;
+      doc.setFillColor(c[1][0], c[1][1], c[1][2]); doc.circle(xD + 6, cy, 8.5, 'F');
+      fonte('helvetica', 'bold', 13); doc.setTextColor(255, 255, 255); doc.text(c[0], xD + 6, cy + 1.6, { align: 'center' });
+      fonte('helvetica', 'bold', 12); cor(COR.tinta); doc.text(t(c[2]), xD + 18, cy - 2.5);
+      fonte('helvetica', 'normal', 9.5); cor(COR.suave); doc.text(doc.splitTextToSize(t(c[3]), W - M - xD - 20), xD + 18, cy + 4);
+    });
+    doc.addPage(); y = M;
+
     // ------------------------------------------------------------- capa
     fonte('helvetica', 'bold', 8); cor(COR.bronze);
     doc.setDrawColor(COR.cobre[0], COR.cobre[1], COR.cobre[2]); doc.setLineWidth(0.6); doc.line(M, y + 3, M + 10, y + 3);
     doc.setCharSpace(1.2); doc.text('REVERSA TAX  ·  UMA FERRAMENTA ARGUS PRIME', M + 13, y + 4); doc.setCharSpace(0);
     if (root.REVERSA_LOGO) { try { doc.addImage(root.REVERSA_LOGO, 'PNG', W - M - 60, M - 4, 60, 12); } catch (e) { /* segue sem logo */ } }
     y += 18;
-    fonte('helvetica', 'bold', 28); cor(COR.tinta); doc.text(t('Memória de cálculo'), M, y); y += 10;
+    fonte('helvetica', 'bold', 28); cor(COR.tinta); doc.text(t('Diagnóstico Técnico Inicial - DTI'), M, y); y += 10;
     fonte('helvetica', 'normal', 14); cor(COR.bronze); doc.text(t('Créditos de PIS e COFINS · ' + teses.length + ' tese(s) analisada(s)'), M, y); y += 12;
 
     var ficha = [
@@ -1116,23 +1147,27 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
 
     // ------------------------------------------------------------- encerramento
     titulo(++sec, 'Responsabilidade técnica');
-    paragrafo('Os valores acima foram apurados de forma automatizada a partir das escriturações informadas e conferidos segundo a metodologia descrita. A utilização deste documento em pedido de restituição, compensação ou medida judicial depende de revisão e validação pelo responsável técnico abaixo identificado.');
-    espaco(34); y += 18;
-    doc.setDrawColor(COR.tinta[0], COR.tinta[1], COR.tinta[2]); doc.setLineWidth(0.3); doc.line(M, y, M + 95, y);
-    fonte('helvetica', 'bold', 9.5); cor(COR.tinta); doc.text(t(opts.responsavel || 'Responsável técnico'), M, y + 5);
-    fonte('helvetica', 'normal', 8.5); cor(COR.suave); doc.text(t(opts.registro || 'Registro profissional'), M, y + 10);
-    doc.text(t((opts.local ? opts.local + ', ' : '') + dataBR(emissao)), M, y + 15);
+    paragrafo('Os valores acima foram apurados de forma automatizada a partir das escriturações informadas e conferidos segundo a metodologia descrita. A utilização deste documento em pedido de restituição, compensação ou medida judicial depende de revisão e validação ' + (opts.responsavel ? 'pelo responsável técnico abaixo identificado.' : 'por responsável técnico habilitado.'));
+    if (opts.responsavel) {
+      espaco(34); y += 18;
+      doc.setDrawColor(COR.tinta[0], COR.tinta[1], COR.tinta[2]); doc.setLineWidth(0.3); doc.line(M, y, M + 95, y);
+      fonte('helvetica', 'bold', 9.5); cor(COR.tinta); doc.text(t(opts.responsavel), M, y + 5);
+      fonte('helvetica', 'normal', 8.5); cor(COR.suave); if (opts.registro) doc.text(t(opts.registro), M, y + 10);
+      doc.text(t((opts.local ? opts.local + ', ' : '') + dataBR(emissao)), M, y + (opts.registro ? 15 : 10));
+    } else {
+      fonte('helvetica', 'normal', 8.5); cor(COR.suave); doc.text(t((opts.local ? opts.local + ', ' : '') + dataBR(emissao)), M, y + 2);
+    }
 
     // ------------------------------------------------------------- rodapés
     var n = doc.getNumberOfPages();
-    for (var i = 1; i <= n; i++) {
+    for (var i = 2; i <= n; i++) {
       doc.setPage(i);
       doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.line(M, H - 12, W - M, H - 12);
       fonte('helvetica', 'normal', 7); cor(COR.suave);
-      doc.text(t('Reversa Tax · uma ferramenta Argus Prime · Memória de cálculo · ' + (cnpjs.map(cnpjFmt).join('; ') || '')) + (opts.exemplo ? ' · DEMONSTRAÇÃO' : ''), M, H - 7.5);
+      doc.text(t('Reversa Tax · uma ferramenta Argus Prime · Diagnóstico Técnico Inicial - DTI · ' + (cnpjs.map(cnpjFmt).join('; ') || '')) + (opts.exemplo ? ' · DEMONSTRAÇÃO' : ''), M, H - 7.5);
       doc.text('Página ' + i + ' de ' + n, W - M, H - 7.5, { align: 'right' });
     }
-    doc.setProperties({ title: 'Memória de cálculo - Créditos de PIS e COFINS', author: 'Argus Prime', creator: 'Reversa Tax v' + res.versaoMotor });
+    doc.setProperties({ title: 'Diagnóstico Técnico Inicial - DTI', author: 'Argus Prime', creator: 'Reversa Tax v' + res.versaoMotor });
     return doc.output('blob');
   }
 
@@ -1418,6 +1453,8 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     if (!rows.length) { toast('Nenhum item nesta tese'); return; }
     salvar(nomeBase() + '-' + t.id + '.csv', csv(rows));
   });
+  // Responsável técnico é opcional: o checkbox habilita os campos.
+  $('pdf-resp-on').addEventListener('change', function () { var on = this.checked; $('pdf-resp').disabled = !on; $('pdf-reg').disabled = !on; if (on) $('pdf-resp').focus(); });
   $('form-pdf').addEventListener('submit', function (e) {
     e.preventDefault();
     if (!estado.res || !estado.res.competencias.length) { toast('Carregue ao menos um arquivo válido antes de gerar o PDF.'); return; }
@@ -1425,12 +1462,12 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     setTimeout(function () {
       try {
         var blob = window.GeradorMemoria.gerar(estado.res, estado.lidos, {
-          responsavel: $('pdf-resp').value.trim(), registro: $('pdf-reg').value.trim(), local: $('pdf-local').value.trim(),
+          responsavel: $('pdf-resp-on').checked ? $('pdf-resp').value.trim() : '', registro: $('pdf-resp-on').checked ? $('pdf-reg').value.trim() : '', local: $('pdf-local').value.trim(),
           hashes: estado.hashes, exemplo: estado.exemplo, ncmsExtras: ncmsExtras()
         });
-        salvar('memoria-de-calculo-' + nomeBase() + '.pdf', blob);
+        salvar('DTI-' + nomeBase() + '.pdf', blob);
       } catch (err) { toast(err.message); }
-      btn.disabled = false; btn.textContent = 'Gerar memória de cálculo';
+      btn.disabled = false; btn.textContent = 'Gerar Diagnóstico';
     }, 30);
   });
   $('btn-copiar').addEventListener('click', function () {
@@ -1473,6 +1510,8 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
       .then(function () { btn.disabled = false; btn.textContent = 'Salvar na pasta do cliente'; });
   });
   window.REVERSA_LOGO = document.querySelector('.logo.escuro').src;
+  // foto da capa do DTI, carregada uma vez para o PDF
+  fetch('/assets/capa-dti.jpg').then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) { if (!b) return; var fr = new FileReader(); fr.onload = function () { window.REVERSA_CAPA = fr.result; }; fr.readAsDataURL(b); }).catch(function () {});
   processar(EXEMPLO, true);
 })();
 </script>
