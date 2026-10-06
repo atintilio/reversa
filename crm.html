@@ -43,6 +43,13 @@
   .ficha .topo .l1 { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
   .ficha .corpo { padding: 18px 22px 40px; display: grid; gap: 22px; }
   .rv dialog.ficha form { padding: 0; }
+  .exportar { position: relative; }
+  .exportar summary { list-style: none; cursor: pointer; }
+  .exportar summary::-webkit-details-marker { display: none; }
+  .menu-exp { position: absolute; right: 0; top: calc(100% + 6px); background: var(--card); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 10px 28px rgba(0,0,0,.16); display: grid; min-width: 250px; z-index: 5; overflow: hidden; }
+  .menu-exp a { padding: 10px 14px; text-decoration: none; color: var(--fg); font-size: 14px; white-space: normal; }
+  .menu-exp a small { display: block; color: var(--muted); font-size: 12px; }
+  .menu-exp a:hover { background: var(--soft); }
   .ficha .topo .acoes { flex-wrap: nowrap; white-space: nowrap; }
   .ficha h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; }
   .grade2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -116,7 +123,7 @@
   <div class="topo">
     <div class="l1">
       <div><h2 id="f-nome">—</h2><div class="muted" id="f-sub" style="font-size:13px"></div></div>
-      <div class="acoes"><a class="btn sec" id="f-pasta" href="#">Abrir pasta</a><button class="sec" type="button" id="f-fechar" aria-label="Fechar">✕</button></div>
+      <div class="acoes"><details class="exportar"><summary class="btn">Exportar PDF</summary><div class="menu-exp" id="f-exportar"></div></details><a class="btn sec" id="f-pasta" href="#">Abrir pasta</a><button class="sec" type="button" id="f-fechar" aria-label="Fechar">✕</button></div>
     </div>
     <div class="grade2">
       <label>Fase<select id="f-fase" data-write></select></label>
@@ -301,6 +308,11 @@
     $('f-nome').textContent = c.legalName;
     $('f-sub').textContent = RV.cnpj(c.cnpj) + ' · ' + (c.taxRegime || 'regime não informado') + (caso.owner ? ' · ' + caso.owner : '') + (caso.estimatedValue ? ' · ' + RV.reais(centavos(caso.estimatedValue)) + ' calculados (pendente de revisão)' : '');
     $('f-pasta').href = '/clientes.html?id=' + c.id;
+    var base = '/api/v1/crm/clients/' + c.id + '/report';
+    $('f-exportar').innerHTML = '<a href="' + base + '" download><b>Diagnóstico completo</b><small>Fiscal e Previdenciário</small></a>' +
+      '<a href="' + base + '?grupo=fiscal" download><b>Somente Fiscal</b><small>Faturamento, PIS/COFINS, ICMS, IPI, IRPJ/CSLL</small></a>' +
+      '<a href="' + base + '?grupo=prev" download><b>Somente Previdenciário</b><small>Folha de pagamento</small></a>';
+    $('f-exportar').onclick = function () { $('f-exportar').parentElement.open = false; RV.toast('Gerando o PDF…'); };
     $('f-fase').value = caso.stage || 'a_apresentar'; $('f-fase').disabled = !caso.id;
     $('f-passo').value = caso.nextStep || ''; $('f-prev').value = caso.expectedCloseDate ? String(caso.expectedCloseDate).slice(0, 10) : '';
     $('f-resp').innerHTML = membros.map(function (m) { return '<option value="' + m.id + '">' + esc(m.name) + '</option>'; }).join('');

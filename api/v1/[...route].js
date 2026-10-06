@@ -73,6 +73,14 @@ async function route(req, res) {
       if (sub === 'tasks' && m === 'GET') return json(res, 200, await crm.tasks(ctx, query));
       if (sub === 'members' && m === 'GET') return json(res, 200, await crm.members(ctx));
       if (sub === 'clients' && sid && !sact && m === 'GET') return json(res, 200, await crm.client(ctx, sid));
+      if (sub === 'clients' && sid && sact === 'report' && m === 'GET') {
+        const r = await crm.report(ctx, sid, query);
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${r.nome}"`);
+        res.setHeader('Cache-Control', 'no-store');
+        return res.end(r.pdf);
+      }
       if (sub === 'clients' && sid && sact === 'cnpj' && m === 'POST') { deny(ctx, 'write', 'crm.cnpj'); return json(res, 200, await crm.refreshCnpj(ctx, sid)); }
       if (sub === 'clients' && sid && sact === 'agent' && m === 'POST') { deny(ctx, 'write', 'crm.agent'); return json(res, 200, await crm.runAgent(ctx, sid, body)); }
       if (sub === 'contacts') {

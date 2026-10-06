@@ -52,7 +52,7 @@
   <a class="voltar" href="/clientes.html">← Todos os clientes</a>
   <div class="cab">
     <div><h1 id="p-nome"></h1><p class="sub" id="p-sub"></p></div>
-    <div class="acoes"><a class="btn sec" id="p-crm" href="/crm.html">Abrir no CRM</a><a class="btn" href="/">Novo diagnóstico</a><button class="sec" id="p-editar" type="button" data-write hidden>Editar dados</button></div>
+    <div class="acoes"><a class="btn" id="p-pdf" href="#" download title="Diagnóstico executivo: Fiscal e Previdenciário">Exportar PDF</a><a class="btn sec" id="p-crm" href="/crm.html">Abrir no CRM</a><a class="btn" href="/">Novo diagnóstico</a><button class="sec" id="p-editar" type="button" data-write hidden>Editar dados</button></div>
   </div>
   <section class="card" aria-labelledby="t-fase">
     <h2 id="t-fase">Fase comercial</h2>
@@ -141,6 +141,7 @@
   function renderPasta(j) {
     pasta = j; var t = j.taxpayer, caso = j.cases[0];
     $('p-crm').href = '/crm.html?id=' + t.id;
+    $('p-pdf').href = '/api/v1/crm/clients/' + t.id + '/report';
     document.title = t.legalName + ' · Reversa Tax';
     $('p-nome').textContent = t.legalName;
     $('p-sub').innerHTML = 'CNPJ <span class="mono">' + RV.cnpj(t.cnpj) + '</span>' + (t.taxRegime ? ' · ' + RV.esc(t.taxRegime) : '') + ' · pasta criada em ' + RV.data(t.createdAt);

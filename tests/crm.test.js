@@ -151,3 +151,24 @@ test('CRM-007 diagnóstico: grupos separados, segurança e base legal em cada te
   assert.equal(t1.seguranca, 'verde'); assert.ok(t1.base && t1.maturidade && t1.origem);
   assert.equal(fiscal.verde + fiscal.amarelo + fiscal.vermelho, fiscal.total);
 });
+
+test('CRM-008 exportar diagnóstico: PDF executivo completo e por grupo; outra organização não acessa', async () => {
+  const r = await v1('crm/clients/' + cliente + '/report', { cookie: leitor });
+  assert.equal(r.statusCode, 200);
+  assert.equal(r.headers['content-type'], 'application/pdf');
+  assert.match(r.headers['content-disposition'], /attachment; filename="Diagnostico-Metalurgica-Teste-Ltda\.pdf"/);
+  const pdf = Buffer.from(r.body, 'latin1');
+  assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
+  const prev = await v1('crm/clients/' + cliente + '/report', { cookie: admin, query: { grupo: 'prev' } });
+  assert.match(prev.headers['content-disposition'], /Previdenciario\.pdf/);
+  assert.equal((await v1('crm/clients/' + cliente + '/report', { cookie: outro })).statusCode, 404);
+});
+
+test('CRM-009 falha do serviço externo vira 502 com mensagem clara', async () => {
+  const orig = global.fetch;
+  global.fetch = async () => { throw new TypeError('fetch failed'); };
+  const r = await v1('crm/clients/' + cliente + '/cnpj', { method: 'POST', cookie: admin });
+  global.fetch = orig;
+  assert.equal(r.statusCode, 502);
+  assert.match(J(r).error.message, /indisponível/);
+});

@@ -9,6 +9,7 @@
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
     "bcryptjs": "^3.0.2",
+    "pdfkit": "^0.17.2",
     "postgres": "^3.4.5"
   },
   "scripts": {
