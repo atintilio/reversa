@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teses · Reversa Tax</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<style>
+  :root { --e-prov: #12968B; --e-ver: #E2B04A; --e-nao: #E6EBF0; --r-baixo: #1E7A4C; --r-medio: #8A5A12; --r-alto: #A33A2B; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --e-prov: #2EB3A7; --e-ver: #C9973A; --e-nao: #223142; --r-baixo: #7FD1A4; --r-medio: #E8B86A; --r-alto: #F0998B; } }
+  .abas { display: flex; gap: 6px; border-bottom: 1px solid var(--line); }
+  .abas button { background: transparent; color: var(--muted); border: 0; border-bottom: 3px solid transparent; border-radius: 0; padding: 10px 14px; }
+  .abas button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--teal); }
+  .filtros { display: grid; grid-template-columns: minmax(200px, 2fr) repeat(4, minmax(140px, 1fr)); gap: 10px; }
+  @media (max-width: 900px) { .filtros { grid-template-columns: 1fr 1fr; } }
+  .grupo { display: grid; gap: 10px; }
+  .grupo > h2 { display: flex; align-items: baseline; gap: 10px; }
+  .grupo > h2 small { font: 600 13px var(--f-body); color: var(--muted); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 10px; }
+  .rv button.tese { text-align: left; align-items: stretch; align-content: start; width: 100%; font-size: 14px; background: var(--card); color: var(--fg); border: 1px solid var(--line); border-left: 4px solid var(--rc, var(--line)); border-radius: 8px; padding: 12px 14px; display: grid; gap: 8px; cursor: pointer; font-weight: 500; }
+  .rv button.tese:hover { filter: none; border-color: var(--teal); border-left-color: var(--rc); }
+  .tese .top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+  .tese .id { font: 700 12px ui-monospace, Menlo, monospace; color: var(--muted); }
+  .tese .nome { font-weight: 700; font-size: 14px; line-height: 1.35; }
+  .tese .tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  .tese .pill { font-size: 11px; padding: 2px 7px; }
+  .tese .rodape { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--muted); }
+  .medidor { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: var(--e-nao); flex: 1; margin-left: 10px; max-width: 120px; }
+  .medidor i { display: block; height: 100%; }
+  .risco-baixo { --rc: var(--r-baixo); } .risco-medio { --rc: var(--r-medio); } .risco-alto { --rc: var(--r-alto); }
+  .pill.r-baixo { background: var(--ok-bg); color: var(--ok); } .pill.r-medio { background: var(--warn-bg); color: var(--warn); } .pill.r-alto { background: var(--bad-bg); color: var(--bad); }
+  .pill.motor { background: var(--navy); color: #6FD0C7; }
+  /* matriz */
+  .matriz-wrap { overflow: auto; max-height: 72vh; border: 1px solid var(--line); border-radius: 10px; background: var(--card); }
+  table.matriz { border-collapse: separate; border-spacing: 0; width: max-content; font-size: 13px; }
+  .matriz th, .matriz td { padding: 0; border: 0; }
+  .matriz thead th { position: sticky; top: 0; background: var(--card); z-index: 2; vertical-align: bottom; }
+  .matriz thead tr.grupos th { top: 0; height: 26px; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); padding: 0 6px; text-align: left; white-space: nowrap; overflow: hidden; }
+  .matriz thead tr.ids th { top: 26px; height: 64px; border-bottom: 1px solid var(--line); }
+  .matriz thead tr.ids th span { display: block; writing-mode: vertical-rl; transform: rotate(180deg); font: 700 11px ui-monospace, Menlo, monospace; color: var(--muted); margin: 0 auto 6px; cursor: pointer; }
+  .matriz th.cli, .matriz td.cli { position: sticky; left: 0; z-index: 3; background: var(--card); border-right: 1px solid var(--line); min-width: 280px; max-width: 280px; text-align: left; padding: 6px 12px; }
+  .matriz thead th.cli { z-index: 4; vertical-align: bottom; padding-bottom: 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .matriz td.cli button { all: unset; cursor: pointer; display: grid; gap: 2px; width: 100%; }
+  .matriz td.cli b { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .matriz td.cli small { color: var(--muted); font-size: 12px; }
+  .matriz td.cel { width: 22px; height: 30px; text-align: center; border-bottom: 1px solid var(--line); }
+  .matriz td.cel.g0 { border-left: 1px solid var(--line); }
+  .matriz td.cel i { display: inline-block; width: 16px; height: 16px; border-radius: 4px; vertical-align: middle; cursor: pointer; }
+  .e-provavel { background: var(--e-prov); } .e-verificar { background: var(--e-ver); } .e-nao { background: var(--e-nao); }
+  .matriz td.tot { padding: 0 12px; white-space: nowrap; font-variant-numeric: tabular-nums; border-bottom: 1px solid var(--line); border-left: 1px solid var(--line); }
+  .matriz tr:hover td { background: var(--soft); }
+  .matriz tr:hover td.cli { background: var(--soft); }
+  .leg { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); align-items: center; }
+  .leg i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+  .dois { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  @media (max-width: 960px) { .dois { grid-template-columns: 1fr; } }
+  .rank { display: grid; grid-template-columns: minmax(140px, 1.4fr) 2fr minmax(52px, auto); gap: 8px 10px; align-items: center; font-size: 14px; }
+  .rank .lin { display: contents; }
+  .rank .lin .rot { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rank .trilho { display: flex; height: 16px; border-radius: 0 4px 4px 0; overflow: hidden; background: var(--soft); }
+  .rank .trilho i { display: block; height: 100%; }
+  .rank .n { text-align: right; font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; font-size: 13px; }
+  .rank .n small { font-weight: 500; color: var(--muted); }
+  dialog.largo { width: min(760px, calc(100vw - 32px)); }
+  .det { display: grid; gap: 10px; font-size: 14px; }
+  .det dl { display: grid; grid-template-columns: 150px 1fr; gap: 6px 12px; margin: 0; }
+  .det dt { color: var(--muted); font-weight: 700; font-size: 13px; }
+  .det dd { margin: 0; }
+  .lista-cli { display: grid; gap: 4px; max-height: 260px; overflow: auto; }
+  .lista-cli div { display: flex; gap: 8px; align-items: baseline; font-size: 13px; }
+  .perfil-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 18px; max-height: 52vh; overflow: auto; padding-right: 4px; }
+  @media (max-width: 640px) { .perfil-grid { grid-template-columns: 1fr; } }
+  .perfil-grid h3 { grid-column: 1 / -1; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 10px 0 2px; }
+  .tri { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; font-size: 13px; font-weight: 600; color: var(--fg); }
+  .tri .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+  .tri .seg button { all: unset; cursor: pointer; padding: 4px 9px; font-size: 12px; font-weight: 700; color: var(--muted); }
+  .tri .seg button[aria-pressed="true"][data-v="s"] { background: var(--ok-bg); color: var(--ok); }
+  .tri .seg button[aria-pressed="true"][data-v="n"] { background: var(--bad-bg); color: var(--bad); }
+  .tri .seg button[aria-pressed="true"][data-v="?"] { background: var(--soft); color: var(--fg); }
+  .banner { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+</style>
+</head>
+<body class="rv">
+<main>
+  <div class="cab">
+    <div>
+      <h1>Mapa de <em>teses</em></h1>
+      <p class="sub">As 60 teses do catálogo Argus Prime cruzadas com o perfil de cada cliente. É triagem: mostra onde olhar primeiro. Crédito só existe depois do cálculo e da revisão.</p>
+    </div>
+    <span class="muted" id="versao" style="font-size:13px"></span>
+  </div>
+
+  <div class="grid-kpi" id="kpis"></div>
+
+  <div class="msg warn banner" id="banner-exemplo" hidden>
+    <span class="pill warn">EXEMPLO</span>
+    <span id="banner-txt"></span>
+    <button type="button" class="sec mini" id="b-alternar"></button>
+  </div>
+
+  <div class="abas" role="tablist">
+    <button type="button" role="tab" id="aba-cruz" aria-selected="true" aria-controls="p-cruz">Cruzamento por cliente</button>
+    <button type="button" role="tab" id="aba-mapa" aria-selected="false" aria-controls="p-mapa">Mapa das 60 teses</button>
+  </div>
+
+  <section id="p-cruz" role="tabpanel" aria-labelledby="aba-cruz" style="display:grid;gap:18px">
+    <div class="cab">
+      <div class="leg">
+        <span><i class="e-provavel"></i>Provável: o perfil atende</span>
+        <span><i class="e-verificar"></i>Verificar: falta informação no perfil</span>
+        <span><i class="e-nao"></i>Não se aplica</span>
+      </div>
+      <div class="acoes">
+        <select id="f-ordem" aria-label="Ordenar clientes" style="width:auto">
+          <option value="score">Ordenar por potencial</option>
+          <option value="nome">Ordenar por nome</option>
+          <option value="verificar">Mais informação faltando</option>
+        </select>
+        <label style="display:flex;gap:6px;align-items:center;font-weight:600;color:var(--fg)"><input type="checkbox" id="f-so-aplic" style="width:auto"> Só teses com algum cliente provável</label>
+      </div>
+    </div>
+    <div class="matriz-wrap" id="matriz-wrap"><div class="vazio">Carregando…</div></div>
+    <p class="muted" style="font-size:13px;margin:0">Clique no nome do cliente para editar o perfil; clique num quadrado ou no código da tese para ver o motivo.</p>
+    <div class="dois">
+      <section class="card"><h2>Teses com mais clientes prováveis</h2><div class="rank" id="rank-teses"></div></section>
+      <section class="card"><h2>Clientes com mais oportunidades</h2><div class="rank" id="rank-cli"></div></section>
+    </div>
+  </section>
+
+  <section id="p-mapa" role="tabpanel" aria-labelledby="aba-mapa" hidden style="display:grid;gap:18px">
+    <div class="filtros">
+      <input id="m-busca" type="search" placeholder="Buscar tese (nome ou código)" aria-label="Buscar tese">
+      <select id="m-tributo" aria-label="Tributo"><option value="">Todos os tributos</option></select>
+      <select id="m-risco" aria-label="Risco"><option value="">Todos os riscos</option><option value="baixo">Risco baixo</option><option value="medio">Risco médio</option><option value="alto">Risco alto</option></select>
+      <select id="m-regime" aria-label="Regime"><option value="">Todos os regimes</option><option value="real">Lucro Real</option><option value="presumido">Lucro Presumido</option><option value="simples">Simples Nacional</option></select>
+      <select id="m-via" aria-label="Via"><option value="">Todas as vias</option></select>
+    </div>
+    <div id="mapa" style="display:grid;gap:26px"></div>
+  </section>
+</main>
+
+<dialog id="d-tese" class="largo"><form method="dialog"><div id="d-tese-corpo"></div><div class="acoes" style="justify-content:flex-end"><button value="x">Fechar</button></div></form></dialog>
+
+<dialog id="d-perfil" class="largo">
+  <form id="f-perfil" method="dialog">
+    <div><h2 id="dp-nome">Perfil</h2><p class="muted" style="margin:4px 0 0;font-size:13px">Marque o que você sabe sobre a operação. "?" deixa a tese como "verificar".</p></div>
+    <label>Regime tributário
+      <select id="dp-regime"><option value="">Não informado</option><option value="Lucro Real">Lucro Real</option><option value="Lucro Presumido">Lucro Presumido</option><option value="Simples Nacional">Simples Nacional</option></select>
+    </label>
+    <div class="perfil-grid" id="dp-grid"></div>
+    <div class="msg bad" id="dp-erro" hidden></div>
+    <div class="acoes" style="justify-content:flex-end">
+      <button type="button" class="sec" id="dp-cancelar">Cancelar</button>
+      <button type="submit" id="dp-salvar">Salvar perfil</button>
+    </div>
+  </form>
+</dialog>
+<div class="tip" id="tip" hidden></div>
+
+<script src="/shell.js"></script>
+<script src="/teses-regras.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var TR = window.TesesRegras, TESES = TR.TESES;
+  var VIA = { judicial: 'Judicial', administrativa: 'Administrativa', operacional: 'Operacional', judicial_administrativa: 'Judicial / administrativa', administrativa_judicial: 'Administrativa / judicial' };
+  var RISCO = { baixo: 'Risco baixo', medio: 'Risco médio', alto: 'Risco alto' };
+  var ORDEM_TRIB = ['PIS/COFINS', 'ICMS', 'Previdenciário', 'IRPJ/CSLL', 'IPI', 'Indiretos', 'Federais diversos'];
+  var REG_CURTO = { real: 'Real', presumido: 'Presumido', simples: 'Simples' };
+
+  // Clientes fictícios para demonstrar o cruzamento enquanto não há perfis cadastrados.
+  var EXEMPLOS = [
+    { id: 'ex1', nome: 'Distribuidora Farma Exemplo Ltda', regime: 'real', perfil: { comercio: true, industria: false, servicos: false, st: true, monofasico: true, folha: true, imobilizado: false, energia: false, multiuf: true, ecommerce: false, importador: false, exportador: false, incentivo_icms: true, transporte: false, agro: false, saude: false, jcp: false, indebito: false, exterior: false, controladas_exterior: false } },
+    { id: 'ex2', nome: 'Transportes Rodoviários Exemplo S.A.', regime: 'real', perfil: { transporte: true, comercio: false, industria: false, servicos: true, folha: true, imobilizado: true, energia: false, st: false, monofasico: false, multiuf: true, jcp: true } },
+    { id: 'ex3', nome: 'Indústria Metalúrgica Exemplo Ltda', regime: 'real', perfil: { industria: true, comercio: false, servicos: false, folha: true, imobilizado: true, energia: true, exportador: true, importador: true, st: false, monofasico: false, incentivo_icms: true, multiuf: false } },
+    { id: 'ex4', nome: 'Clínica e Hospital Exemplo Ltda', regime: 'presumido', perfil: { saude: true, servicos: true, comercio: false, industria: false, folha: true, imobilizado: true, energia: true, st: false } },
+    { id: 'ex5', nome: 'Loja Virtual Exemplo Ltda', regime: 'presumido', perfil: { comercio: true, ecommerce: true, st: true, multiuf: false, folha: false, monofasico: false, industria: false, servicos: false } },
+    { id: 'ex6', nome: 'Autopeças Exemplo ME', regime: 'simples', perfil: { comercio: true, monofasico: true, st: true, folha: false } }
+  ];
+  var estado = { reais: [], exemplo: false, cruz: null, clientes: [] };
+
+  function clientesAtivos() { return estado.exemplo ? EXEMPLOS : estado.reais; }
+  function teseVisivel(i) { return !$('f-so-aplic').checked || estado.cruz.porTese[i].contagem.provavel > 0; }
+
+  // ---------------------------------------------------------------- dados
+  function carregar() {
+    return RV.api('GET', '/api/v1/taxpayers').then(function (j) {
+      estado.reais = (j.taxpayers || []).map(function (t) { return { id: t.id, nome: t.legalName, cnpj: t.cnpj, regime: t.taxRegime, regimeTxt: t.taxRegime, perfil: t.perfil || {} }; });
+    }).catch(function () { estado.reais = []; }).then(function () {
+      estado.exemplo = estado.reais.length === 0;
+      render();
+    });
+  }
+
+  function render() {
+    estado.clientes = clientesAtivos();
+    estado.cruz = TR.cruzar(estado.clientes);
+    renderBanner(); renderKpis(); renderMatriz(); renderRanks(); renderMapa();
+  }
+
+  function renderBanner() {
+    var b = $('banner-exemplo');
+    if (estado.exemplo) {
+      b.hidden = false;
+      $('banner-txt').textContent = estado.reais.length ? 'Mostrando 6 clientes fictícios para demonstrar o cruzamento.' : 'Ainda não há clientes cadastrados. Mostrando 6 clientes fictícios para demonstrar o cruzamento.';
+      $('b-alternar').textContent = 'Ver meus clientes'; $('b-alternar').hidden = !estado.reais.length;
+    } else {
+      b.hidden = false; b.className = 'msg banner'; b.style.background = 'var(--soft)';
+      $('banner-txt').textContent = estado.reais.length + ' cliente(s) cadastrados. Clientes sem perfil aparecem com mais teses em "verificar".';
+      $('b-alternar').textContent = 'Ver exemplo'; $('b-alternar').hidden = false;
+      b.querySelector('.pill').hidden = true;
+    }
+    if (estado.exemplo) { b.className = 'msg warn banner'; b.style.background = ''; b.querySelector('.pill').hidden = false; }
+  }
+
+  function renderKpis() {
+    var tot = { provavel: 0, verificar: 0 };
+    estado.cruz.matriz.forEach(function (m) { tot.provavel += m.contagem.provavel; tot.verificar += m.contagem.verificar; });
+    var cobertas = estado.cruz.porTese.filter(function (p) { return p.contagem.provavel > 0; }).length;
+    var motor = TESES.filter(function (t) { return t.motor; }).length;
+    $('kpis').innerHTML =
+      kpi('destaque', 'Teses no catálogo', '60', motor + ' já ligadas ao motor de cálculo') +
+      kpi('', 'Clientes cruzados', String(estado.clientes.length), estado.exemplo ? 'clientes fictícios de exemplo' : 'cadastrados na organização') +
+      kpi('', 'Oportunidades prováveis', String(tot.provavel), 'pares cliente × tese') +
+      kpi('', 'A verificar', String(tot.verificar), 'falta informação no perfil') +
+      kpi('', 'Teses com cliente provável', cobertas + ' de 60', 'demanda real na carteira');
+    $('versao').textContent = 'Regras v' + TR.VERSAO;
+  }
+  function kpi(cls, r, v, n) { return '<div class="kpi ' + cls + '"><div class="r">' + r + '</div><div class="v">' + v + '</div><div class="n">' + RV.esc(n) + '</div></div>'; }
+
+  // ---------------------------------------------------------------- matriz
+  function ordemTeses() {
+    var idx = TESES.map(function (t, i) { return i; });
+    idx.sort(function (a, b) {
+      var ga = ORDEM_TRIB.indexOf(TESES[a].tributo), gb = ORDEM_TRIB.indexOf(TESES[b].tributo);
+      if (ga !== gb) return ga - gb;
+      return estado.cruz.porTese[b].contagem.provavel - estado.cruz.porTese[a].contagem.provavel || a - b;
+    });
+    return idx.filter(teseVisivel);
+  }
+  function ordemClientes() {
+    var m = estado.cruz.matriz.slice(), o = $('f-ordem').value;
+    m.sort(function (a, b) {
+      if (o === 'nome') return a.cliente.nome.localeCompare(b.cliente.nome);
+      if (o === 'verificar') return b.contagem.verificar - a.contagem.verificar;
+      return b.score - a.score || b.contagem.provavel - a.contagem.provavel;
+    });
+    return m;
+  }
+
+  function renderMatriz() {
+    var w = $('matriz-wrap');
+    if (!estado.clientes.length) { w.innerHTML = '<div class="vazio">Nenhum cliente.</div>'; return; }
+    var cols = ordemTeses();
+    if (!cols.length) { w.innerHTML = '<div class="vazio">Nenhuma tese com cliente provável. Desmarque o filtro ou complete os perfis.</div>'; return; }
+    var grupos = [], ult = null;
+    cols.forEach(function (i) { var g = TESES[i].tributo; if (g !== ult) { grupos.push({ g: g, n: 0 }); ult = g; } grupos[grupos.length - 1].n++; });
+    var h = '<table class="matriz"><thead><tr class="grupos"><th class="cli" rowspan="2">Cliente · regime</th>' +
+      grupos.map(function (g) { return '<th colspan="' + g.n + '" title="' + RV.esc(g.g) + '">' + RV.esc(g.g) + '</th>'; }).join('') +
+      '<th rowspan="2" style="padding:0 12px;border-left:1px solid var(--line);font-size:11px;text-transform:uppercase;color:var(--muted);letter-spacing:.05em">Prováveis · verificar</th></tr><tr class="ids">' +
+      cols.map(function (i) { return '<th><span data-tese="' + i + '" title="' + RV.esc(TESES[i].nome) + '">' + TESES[i].id + '</span></th>'; }).join('') + '</tr></thead><tbody>';
+    var primeiro = {}; ult = null;
+    cols.forEach(function (i) { if (TESES[i].tributo !== ult) { primeiro[i] = true; ult = TESES[i].tributo; } });
+    ordemClientes().forEach(function (m) {
+      var ci = estado.cruz.matriz.indexOf(m);
+      var reg = TR.regimeDe(m.cliente.regime) || (TR.REGIMES[m.cliente.regime] ? m.cliente.regime : null);
+      h += '<tr><td class="cli"><button type="button" data-cli="' + ci + '"><b>' + RV.esc(m.cliente.nome) + '</b><small>' + (reg ? TR.REGIMES[reg] : 'Regime não informado') + (m.cliente.cnpj ? ' · ' + RV.cnpj(m.cliente.cnpj) : '') + '</small></button></td>' +
+        cols.map(function (i) { var r = m.resultados[i]; return '<td class="cel' + (primeiro[i] ? ' g0' : '') + '"><i class="e-' + r.estado + '" data-c="' + ci + '" data-t="' + i + '"></i></td>'; }).join('') +
+        '<td class="tot"><b>' + m.contagem.provavel + '</b> · <span class="muted">' + m.contagem.verificar + '</span></td></tr>';
+    });
+    w.innerHTML = h + '</tbody></table>';
+  }
+
+  function renderRanks() {
+    var pt = estado.cruz.porTese.slice().filter(function (p) { return p.contagem.provavel + p.contagem.verificar > 0; })
+      .sort(function (a, b) { return b.contagem.provavel - a.contagem.provavel || (TR.PESO_RISCO[b.tese.risco] - TR.PESO_RISCO[a.tese.risco]) || b.contagem.verificar - a.contagem.verificar; }).slice(0, 12);
+    var n = Math.max(1, estado.clientes.length);
+    $('rank-teses').innerHTML = pt.length ? pt.map(function (p) {
+      var i = TESES.indexOf(p.tese);
+      return '<div class="lin"><span class="rot" title="' + RV.esc(p.tese.nome) + '"><a href="#" data-tese="' + i + '">' + p.tese.id + '</a> ' + RV.esc(p.tese.nome) + '</span>' +
+        '<span class="trilho"><i class="e-provavel" style="width:' + (100 * p.contagem.provavel / n) + '%"></i><i class="e-verificar" style="width:' + (100 * p.contagem.verificar / n) + '%"></i></span>' +
+        '<span class="n">' + p.contagem.provavel + ' <small>+' + p.contagem.verificar + '</small></span></div>';
+    }).join('') : '<div class="vazio">Sem dados.</div>';
+    var mx = Math.max.apply(null, estado.cruz.matriz.map(function (m) { return m.contagem.provavel + m.contagem.verificar; }).concat([1]));
+    $('rank-cli').innerHTML = ordemClientes().slice(0, 12).map(function (m) {
+      var ci = estado.cruz.matriz.indexOf(m);
+      return '<div class="lin"><span class="rot"><a href="#" data-cli="' + ci + '">' + RV.esc(m.cliente.nome) + '</a></span>' +
+        '<span class="trilho"><i class="e-provavel" style="width:' + (100 * m.contagem.provavel / mx) + '%"></i><i class="e-verificar" style="width:' + (100 * m.contagem.verificar / mx) + '%"></i></span>' +
+        '<span class="n">' + m.contagem.provavel + ' <small>+' + m.contagem.verificar + '</small></span></div>';
+    }).join('');
+  }
+
+  // ---------------------------------------------------------------- mapa
+  function renderMapa() {
+    var q = $('m-busca').value.trim().toLowerCase(), trib = $('m-tributo').value, risco = $('m-risco').value, reg = $('m-regime').value, via = $('m-via').value;
+    var lista = TESES.map(function (t, i) { return i; }).filter(function (i) {
+      var t = TESES[i];
+      return (!q || (t.id + ' ' + t.nome).toLowerCase().indexOf(q) >= 0) && (!trib || t.tributo === trib) && (!risco || t.risco === risco) &&
+        (!reg || t.regimes.indexOf(reg) >= 0) && (!via || t.via === via);
+    });
+    var n = Math.max(1, estado.clientes.length);
+    var h = '';
+    ORDEM_TRIB.forEach(function (g) {
+      var it = lista.filter(function (i) { return TESES[i].tributo === g; });
+      if (!it.length) return;
+      h += '<div class="grupo"><h2>' + RV.esc(g) + ' <small>' + it.length + ' tese(s)</small></h2><div class="cards">' + it.map(function (i) {
+        var t = TESES[i], c = estado.cruz.porTese[i].contagem;
+        var exige = (t.todos || []).map(rot).concat(t.algum && t.algum.length ? [t.algum.map(rot).join(' ou ')] : []);
+        return '<button type="button" class="tese risco-' + t.risco + '" data-tese="' + i + '">' +
+          '<div class="top"><span class="id">' + t.id + '</span><span class="tags">' + (t.motor ? '<span class="pill motor">no motor</span>' : '') + '<span class="pill r-' + t.risco + '">' + RISCO[t.risco] + '</span></span></div>' +
+          '<div class="nome">' + RV.esc(t.nome) + '</div>' +
+          '<div class="tags"><span class="pill">' + RV.esc(VIA[t.via] || t.via) + '</span>' + t.regimes.map(function (r) { return '<span class="pill">' + REG_CURTO[r] + '</span>'; }).join('') + '</div>' +
+          (exige.length ? '<div class="muted" style="font-size:12px">Exige: ' + RV.esc(exige.join(' · ')) + '</div>' : '') +
+          '<div class="rodape"><span>' + c.provavel + ' provável · ' + c.verificar + ' verificar</span><span class="medidor"><i class="e-provavel" style="width:' + (100 * c.provavel / n) + '%"></i><i class="e-verificar" style="width:' + (100 * c.verificar / n) + '%"></i></span></div>' +
+          '</button>';
+      }).join('') + '</div></div>';
+    });
+    $('mapa').innerHTML = h || '<div class="vazio">Nenhuma tese com esses filtros.</div>';
+  }
+  function rot(k) { var p = TR.PERFIL.filter(function (x) { return x.id === k; })[0]; return p ? p.rotulo.split(' (')[0] : k; }
+
+  // ---------------------------------------------------------------- detalhes
+  function abrirTese(i) {
+    var t = TESES[i], cl = estado.cruz.matriz;
+    var grupo = function (e) { return cl.filter(function (m) { return m.resultados[i].estado === e; }); };
+    var linhas = function (arr, e) {
+      return arr.length ? arr.map(function (m) { var r = m.resultados[i]; return '<div><i class="e-' + e + '" style="width:10px;height:10px;border-radius:3px;display:inline-block;flex:none"></i><b>' + RV.esc(m.cliente.nome) + '</b><span class="muted">' + RV.esc((e === 'verificar' ? 'falta: ' + r.faltam.join(', ') : r.motivos.join(' · '))) + '</span></div>'; }).join('') : '<span class="muted">Nenhum.</span>';
+    };
+    var exige = (t.todos || []).map(rot).concat(t.algum && t.algum.length ? [t.algum.map(rot).join(' ou ')] : []);
+    $('d-tese-corpo').innerHTML = '<div class="det"><div><span class="id mono muted">' + t.id + '</span><h2 style="margin-top:4px">' + RV.esc(t.nome) + '</h2></div>' +
+      '<dl><dt>Tributo</dt><dd>' + RV.esc(t.tributo) + '</dd><dt>Via</dt><dd>' + RV.esc(VIA[t.via] || t.via) + '</dd><dt>Risco</dt><dd><span class="pill r-' + t.risco + '">' + RISCO[t.risco] + '</span></dd>' +
+      '<dt>Regimes</dt><dd>' + t.regimes.map(function (r) { return TR.REGIMES[r]; }).join(', ') + '</dd><dt>Perfil exigido</dt><dd>' + (exige.length ? RV.esc(exige.join(' · ')) : 'Só o regime') + '</dd>' +
+      '<dt>Cálculo</dt><dd>' + (t.motor ? (t.motor === 'tema118' || t.motor === 'tema1067' ? 'Monitorada no motor (não entra no recuperável)' : 'Calculada no motor a partir da EFD-Contribuições') : 'Ainda sem regra de cálculo: triagem e análise manual') + '</dd></dl>' +
+      '<h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:8px 0 0">Prováveis (' + grupo('provavel').length + ')</h3><div class="lista-cli">' + linhas(grupo('provavel'), 'provavel') + '</div>' +
+      '<h3 style="font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:8px 0 0">A verificar (' + grupo('verificar').length + ')</h3><div class="lista-cli">' + linhas(grupo('verificar'), 'verificar') + '</div></div>';
+    $('d-tese').showModal();
+  }
+
+  var perfilAtual = null, draft = {};
+  function abrirPerfil(ci) {
+    var c = estado.cruz.matriz[ci].cliente;
+    perfilAtual = c; draft = Object.assign({}, c.perfil || {});
+    $('dp-nome').textContent = c.nome;
+    var reg = TR.regimeDe(c.regime) || (TR.REGIMES[c.regime] ? c.regime : '');
+    $('dp-regime').value = reg ? TR.REGIMES[reg] : '';
+    var pode = !estado.exemplo && RV.pode('write');
+    $('dp-regime').disabled = !pode; $('dp-salvar').hidden = !pode;
+    var ult = null, h = '';
+    TR.PERFIL.forEach(function (p) {
+      if (p.grupo !== ult) { h += '<h3>' + RV.esc(p.grupo) + '</h3>'; ult = p.grupo; }
+      var v = draft[p.id] === true ? 's' : draft[p.id] === false ? 'n' : '?';
+      h += '<div class="tri"><span>' + RV.esc(p.rotulo) + '</span><span class="seg" data-k="' + p.id + '">' +
+        ['s', 'n', '?'].map(function (x) { return '<button type="button" data-v="' + x + '" aria-pressed="' + (v === x) + '"' + (pode ? '' : ' disabled') + '>' + { s: 'Sim', n: 'Não', '?': '?' }[x] + '</button>'; }).join('') + '</span></div>';
+    });
+    $('dp-grid').innerHTML = h;
+    $('dp-erro').hidden = true;
+    if (estado.exemplo) { $('dp-erro').hidden = false; $('dp-erro').className = 'msg warn'; $('dp-erro').textContent = 'Cliente fictício de exemplo: perfil só para leitura.'; }
+    $('d-perfil').showModal();
+  }
+  $('dp-grid').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-v]'); if (!b || b.disabled) return;
+    var seg = b.parentNode, k = seg.getAttribute('data-k'), v = b.getAttribute('data-v');
+    seg.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+    if (v === '?') delete draft[k]; else draft[k] = v === 's';
+  });
+  $('dp-cancelar').addEventListener('click', function () { $('d-perfil').close(); });
+  $('f-perfil').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (estado.exemplo || !perfilAtual) return;
+    $('dp-salvar').disabled = true;
+    RV.api('PATCH', '/api/v1/taxpayers/' + perfilAtual.id, { taxRegime: $('dp-regime').value, perfil: draft })
+      .then(function () { $('d-perfil').close(); RV.toast('Perfil salvo'); return carregar(); })
+      .catch(function (err) { $('dp-erro').hidden = false; $('dp-erro').className = 'msg bad'; $('dp-erro').textContent = err.message; })
+      .then(function () { $('dp-salvar').disabled = false; });
+  });
+
+  // ---------------------------------------------------------------- eventos
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-tese]'); if (t) { e.preventDefault(); abrirTese(+t.getAttribute('data-tese')); return; }
+    var c = e.target.closest('[data-cli]'); if (c) { e.preventDefault(); abrirPerfil(+c.getAttribute('data-cli')); return; }
+    var q = e.target.closest('i[data-t]'); if (q) abrirTese(+q.getAttribute('data-t'));
+  });
+  var tip = $('tip');
+  $('matriz-wrap').addEventListener('mousemove', function (e) {
+    var q = e.target.closest('i[data-t]');
+    if (!q) { tip.hidden = true; return; }
+    var m = estado.cruz.matriz[+q.getAttribute('data-c')], i = +q.getAttribute('data-t'), r = m.resultados[i];
+    var est = { provavel: 'Provável', verificar: 'Verificar', nao: 'Não se aplica' }[r.estado];
+    tip.innerHTML = '<b>' + TESES[i].id + ' · ' + RV.esc(TESES[i].nome) + '</b><br>' + RV.esc(m.cliente.nome) + '<br><b>' + est + '</b>' +
+      (r.motivos.length ? '<br>' + RV.esc(r.motivos.join(' · ')) : '') + (r.faltam.length ? '<br><span class="muted">Falta: ' + RV.esc(r.faltam.join(', ')) + '</span>' : '');
+    tip.hidden = false;
+    var x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8), y = e.clientY + 14;
+    if (y + tip.offsetHeight > innerHeight - 8) y = e.clientY - tip.offsetHeight - 10;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  });
+  $('matriz-wrap').addEventListener('mouseleave', function () { tip.hidden = true; });
+  ['f-ordem', 'f-so-aplic'].forEach(function (id) { $(id).addEventListener('change', function () { renderMatriz(); renderRanks(); }); });
+  ['m-busca', 'm-tributo', 'm-risco', 'm-regime', 'm-via'].forEach(function (id) { $(id).addEventListener('input', renderMapa); });
+  $('b-alternar').addEventListener('click', function () { estado.exemplo = !estado.exemplo; render(); });
+  function aba(qual) {
+    var cruz = qual === 'cruz';
+    $('aba-cruz').setAttribute('aria-selected', String(cruz)); $('aba-mapa').setAttribute('aria-selected', String(!cruz));
+    $('p-cruz').hidden = !cruz; $('p-mapa').hidden = cruz;
+  }
+  $('aba-cruz').addEventListener('click', function () { aba('cruz'); });
+  $('aba-mapa').addEventListener('click', function () { aba('mapa'); });
+
+  ORDEM_TRIB.forEach(function (g) { $('m-tributo').insertAdjacentHTML('beforeend', '<option>' + RV.esc(g) + '</option>'); });
+  Object.keys(VIA).forEach(function (k) { $('m-via').insertAdjacentHTML('beforeend', '<option value="' + k + '">' + VIA[k] + '</option>'); });
+
+  RV.eu.then(carregar, carregar);
+})();
+</script>
+</body>
+</html>
