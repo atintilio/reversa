@@ -58,7 +58,7 @@
   }
   // barra de navegação
   var aqui = location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
-  var links = [['/', 'Diagnosticar'], ['/crm', 'CRM'], ['/clientes', 'Clientes'], ['/teses', 'Teses'], ['/dashboard', 'Dashboard'], ['/usuarios', 'Usuários']];
+  var links = [['/', 'Diagnosticar'], ['/lei-do-bem', 'Lei do Bem'], ['/crm', 'CRM'], ['/clientes', 'Clientes'], ['/teses', 'Teses'], ['/dashboard', 'Dashboard'], ['/usuarios', 'Usuários']];
   var href = function (p) { return p === '/' ? '/' : p + '.html'; };
   var nav = document.createElement('header');
   nav.className = 'rv-nav';

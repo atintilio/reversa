@@ -6,6 +6,7 @@ const { audit } = require('../../lib/audit');
 const members = require('../../lib/domain/members');
 const tax = require('../../lib/domain/tax');
 const crm = require('../../lib/domain/crm');
+const leidobem = require('../../lib/domain/leidobem');
 
 function deny(ctx, permission, action) {
   if (can(ctx, permission)) return;
@@ -95,6 +96,19 @@ async function route(req, res) {
         if (sid && m === 'PATCH') { await crm.updateActivity(ctx, sid, body); return json(res, 200, { ok: true }); }
         if (sid && m === 'DELETE') { await crm.deleteActivity(ctx, sid); return json(res, 200, { ok: true }); }
       }
+      return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
+    }
+
+    case 'leidobem': {
+      // /leidobem/casos · /leidobem/casos/:id · /leidobem/casos/:id/revisao · /leidobem/casos/:id/recibo
+      const [, sub, sid, sact] = segments(req);
+      if (sub !== 'casos') return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
+      if (!sid && m === 'GET') return json(res, 200, await leidobem.list(ctx));
+      if (!sid && m === 'POST') { deny(ctx, 'write', 'ldb.create'); return json(res, 201, await leidobem.create(ctx, body)); }
+      if (sid && !sact && m === 'GET') return json(res, 200, await leidobem.get(ctx, sid));
+      if (sid && !sact && m === 'PATCH') { deny(ctx, 'write', 'ldb.save'); return json(res, 200, await leidobem.save(ctx, sid, body)); }
+      if (sid && sact === 'revisao' && m === 'POST') { deny(ctx, 'write', 'ldb.review'); return json(res, 200, await leidobem.review(ctx, sid, body)); }
+      if (sid && sact === 'recibo' && m === 'POST') { deny(ctx, 'review', 'ldb.receipt'); return json(res, 200, await leidobem.receipt(ctx, sid, body)); }
       return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
     }
 
