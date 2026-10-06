@@ -33,7 +33,7 @@
       <h1>Clientes</h1>
       <p class="sub">Cada empresa tem uma pasta com o caso, a fase comercial e os diagnósticos salvos. Para incluir um diagnóstico, calcule na aba <a href="/">Calcular</a> e use “Salvar na pasta do cliente”. Os arquivos SPED não são armazenados.</p>
     </div>
-    <div class="acoes"><button class="sec" id="b-crm" type="button" hidden title="Envia clientes, fases e diagnóstico preliminar ao CRM">Enviar ao CRM</button><button id="b-novo" type="button" data-write hidden>+ Nova empresa</button></div>
+    <button id="b-novo" type="button" data-write hidden>+ Nova empresa</button>
   </div>
   <div class="filtros">
     <input id="busca" type="search" placeholder="Buscar por nome ou CNPJ" aria-label="Buscar empresa">
@@ -224,18 +224,7 @@
       .catch(function (e) { RV.toast(e.message); });
   });
 
-  // CRM: o envio é automático a cada mudança; o botão reenvia todos (ex.: na primeira vez).
-  $('b-crm').addEventListener('click', function () {
-    var b = $('b-crm'); b.disabled = true; b.textContent = 'Enviando…';
-    RV.api('POST', '/api/v1/crm/sync').then(function (r) {
-      RV.toast(r.clientes + ' cliente(s) no CRM · ' + (r.negocios.criados + r.negocios.atualizados) + ' negócio(s) · ' + r.notas + ' diagnóstico(s) atualizado(s)');
-    }).catch(function (e) { RV.toast(e.message); }).then(function () { b.disabled = false; b.textContent = 'Enviar ao CRM'; });
-  });
-
-  RV.eu.then(function () {
-    podeEscrever(); if (id) carregarPasta(); else carregarLista();
-    if (!id && RV.pode('write')) RV.api('GET', '/api/v1/crm').then(function (j) { $('b-crm').hidden = !j.configured; }).catch(function () {});
-  });
+  RV.eu.then(function () { podeEscrever(); if (id) carregarPasta(); else carregarLista(); });
 })();
 </script>
 </body>
