@@ -5,6 +5,11 @@ const { context, can, permissions, HttpError } = require('../../lib/authz');
 const { audit } = require('../../lib/audit');
 const members = require('../../lib/domain/members');
 const tax = require('../../lib/domain/tax');
+const crm = require('../../lib/crm');
+const { waitUntil } = require('@vercel/functions');
+
+// Envia o cliente alterado ao CRM em segundo plano, sem atrasar a resposta.
+function toCrm(ctx, taxpayerId, caseId) { if (crm.configured()) waitUntil(crm.syncOne(ctx, taxpayerId, caseId)); }
 
 function deny(ctx, permission, action) {
   if (can(ctx, permission)) return;
@@ -44,11 +49,11 @@ async function route(req, res) {
     case 'taxpayers':
       if (!id) {
         if (m === 'GET') return json(res, 200, { taxpayers: await tax.listTaxpayers(ctx, query) });
-        if (m === 'POST') { deny(ctx, 'write', 'taxpayer.create'); return json(res, 201, await tax.createTaxpayer(ctx, body)); }
+        if (m === 'POST') { deny(ctx, 'write', 'taxpayer.create'); const r = await tax.createTaxpayer(ctx, body); toCrm(ctx, r.id); return json(res, 201, r); }
         return method(res, ['GET', 'POST']);
       }
       if (m === 'GET') return json(res, 200, await tax.getTaxpayer(ctx, id));
-      if (m === 'PATCH') { deny(ctx, 'write', 'taxpayer.update'); await tax.updateTaxpayer(ctx, id, body); return json(res, 200, { ok: true }); }
+      if (m === 'PATCH') { deny(ctx, 'write', 'taxpayer.update'); await tax.updateTaxpayer(ctx, id, body); toCrm(ctx, id); return json(res, 200, { ok: true }); }
       return method(res, ['GET', 'PATCH']);
 
     case 'cases':
@@ -57,13 +62,24 @@ async function route(req, res) {
         if (m === 'POST') { deny(ctx, 'write', 'case.create'); return json(res, 201, await tax.createCase(ctx, body)); }
         return method(res, ['GET', 'POST']);
       }
-      if (m === 'PATCH') { deny(ctx, 'write', 'case.update'); await tax.updateCase(ctx, id, body); return json(res, 200, { ok: true }); }
+      if (m === 'PATCH') { deny(ctx, 'write', 'case.update'); await tax.updateCase(ctx, id, body); toCrm(ctx, null, id); return json(res, 200, { ok: true }); }
       return method(res, ['PATCH']);
 
     case 'analyses':
-      if (!id && m === 'POST') { deny(ctx, 'write', 'analysis.create'); return json(res, 201, await tax.saveAnalyses(ctx, body)); }
+      if (!id && m === 'POST') { deny(ctx, 'write', 'analysis.create'); const r = await tax.saveAnalyses(ctx, body); toCrm(ctx, r.taxpayerId); return json(res, 201, r); }
       if (id && action === 'review' && m === 'POST') { deny(ctx, 'review', 'analysis.review'); return json(res, 200, await tax.review(ctx, id, body)); }
       return method(res, ['POST']);
+
+    case 'crm':
+      if (m === 'GET') return json(res, 200, { configured: crm.configured() });
+      if (id === 'sync' && m === 'POST') {
+        deny(ctx, 'write', 'crm.sync');
+        if (!crm.configured()) throw new HttpError(503, 'CRM_NOT_CONFIGURED', 'Integração com o CRM ainda não configurada.');
+        const r = await crm.syncAll(ctx);
+        await audit('crm.synced', { organizationId: ctx.organization.id, actorUserId: ctx.user.id, metadata: { clientes: r.clientes, negocios: r.negocios.criados + r.negocios.atualizados } });
+        return json(res, 200, r);
+      }
+      return method(res, ['GET', 'POST']);
 
     case 'dashboard':
       if (m !== 'GET') return method(res, ['GET']);

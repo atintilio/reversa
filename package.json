@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
+    "@vercel/functions": "^2.2.13",
     "bcryptjs": "^3.0.2",
     "postgres": "^3.4.5"
   },
