@@ -31,7 +31,7 @@
   <div class="cab">
     <div>
       <h1>Clientes</h1>
-      <p class="sub">Cada empresa tem uma pasta com o caso, a fase comercial e os diagnósticos salvos. Para incluir um diagnóstico, calcule na aba <a href="/">Calcular</a> e use “Salvar na pasta do cliente”. Os arquivos SPED não são armazenados.</p>
+      <p class="sub">Cada empresa tem uma pasta com o caso, a fase comercial e os diagnósticos salvos. Para incluir um diagnóstico, calcule na aba <a href="/">Diagnosticar</a> e use “Salvar na pasta do cliente”. Os arquivos SPED não são armazenados.</p>
     </div>
     <button id="b-novo" type="button" data-write hidden>+ Nova empresa</button>
   </div>
@@ -174,7 +174,7 @@
             '<td>' + RV.esc(REV[a.reviewStatus] || a.reviewStatus) + (a.reviewedBy ? '<div class="muted" style="font-size:12px">' + RV.esc(a.reviewedBy) + ' · ' + RV.data(a.reviewedAt) + '</div>' : '') + '</td>' +
             '<td class="num">' + (podeRev ? '<button class="mini sec" data-rev="' + a.id + '">Revisar</button>' : '') + '</td></tr>';
         }).join('') + '</tbody></table></div></div>';
-    }).join('') : '<p class="vazio">Nenhum diagnóstico salvo. Calcule na aba Calcular e clique em “Salvar na pasta do cliente”.</p>';
+    }).join('') : '<p class="vazio">Nenhum diagnóstico salvo. Diagnostique na aba Diagnosticar e clique em “Salvar na pasta do cliente”.</p>';
     $('p-ficha').innerHTML = [['Regime', t.taxRegime || '—'], ['Caso', caso ? caso.title : '—'], ['Situação técnica do caso', caso ? caso.status : '—']]
       .map(function (x) { return '<div><div class="r">' + x[0] + '</div><div class="v">' + RV.esc(x[1]) + '</div></div>'; }).join('');
     $('p-hist').innerHTML = j.history.length ? j.history.map(function (h) {

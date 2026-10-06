@@ -24,12 +24,12 @@
 
 /* barra de navegação (todas as páginas) */
 .rv-nav { position: sticky; top: 0; z-index: 50; background: #0E2239; color: #fff; font-family: var(--f-body, "Manrope", system-ui, sans-serif); }
-.rv-nav .in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 56px; display: flex; align-items: center; gap: 22px; }
-.rv-nav .marca { display: flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; font-family: "Open Sans", system-ui, sans-serif; font-weight: 700; letter-spacing: .05em; font-size: 15px; white-space: nowrap; }
-.rv-nav .marca img { height: 26px; width: auto; }
+.rv-nav .in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 64px; display: flex; align-items: center; gap: 22px; }
+.rv-nav .marca { display: flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; font-family: "Open Sans", system-ui, sans-serif; font-weight: 700; letter-spacing: .05em; font-size: 17px; white-space: nowrap; }
+.rv-nav .marca img { height: 30px; width: auto; }
 .rv-nav .marca b { color: #3DB8AE; font-weight: 700; }
 .rv-nav .links { display: flex; gap: 4px; flex: 1; overflow-x: auto; scrollbar-width: none; }
-.rv-nav .links a { color: #C9D6E3; text-decoration: none; font-size: 14px; font-weight: 600; padding: 8px 12px; border-radius: 6px; white-space: nowrap; }
+.rv-nav .links a { color: #C9D6E3; text-decoration: none; font-size: 16px; font-weight: 700; padding: 10px 14px; border-radius: 6px; white-space: nowrap; }
 .rv-nav .links a:hover { color: #fff; background: rgba(255,255,255,.08); }
 .rv-nav .links a[aria-current="page"] { color: #fff; background: rgba(61,184,174,.22); }
 .rv-nav .eu { display: flex; align-items: center; gap: 12px; font-size: 13px; color: #AFC0D2; white-space: nowrap; }
