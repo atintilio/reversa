@@ -995,29 +995,36 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     doc.addPage();
     doc.setFillColor(COR.tinta[0], COR.tinta[1], COR.tinta[2]); doc.rect(0, 0, W, H, 'F');
     if (root.REVERSA_CAPA) { try { var iw = H * 16 / 9; doc.addImage(root.REVERSA_CAPA, 'JPEG', (W - iw) / 2, 0, iw, H); } catch (e) { /* segue sem foto */ } }
-    doc.setFillColor(COR.tinta[0], COR.tinta[1], COR.tinta[2]); doc.rect(0, H - 34, W, 34, 'F');
-    doc.setFillColor(COR.bronze[0], COR.bronze[1], COR.bronze[2]); doc.rect(0, H - 34, W, 1.2, 'F');
-    fonte('helvetica', 'bold', 18); doc.setTextColor(255, 255, 255); doc.text(t('Diagnóstico Técnico Inicial - DTI'), M, H - 20);
-    fonte('helvetica', 'normal', 10); doc.setTextColor(201, 214, 227); doc.text(t((nomeCli ? nomeCli + '  ·  ' : '') + dataBR(emissao)), M, H - 12);
-    fonte('helvetica', 'bold', 9); doc.setTextColor(111, 208, 199); doc.text(t('REVERSA TAX  ·  ARGUS PRIME'), W - M, H - 16, { align: 'right' });
+    var esc = H / 900, ox = (W - H * 16 / 9) / 2;
+    fonte('helvetica', 'bold', 24); doc.setTextColor(255, 255, 255); doc.text(t('Estratégias Tributárias'), ox + 815 * esc, 388 * esc, { align: 'center' });
+    fonte('helvetica', 'bold', 32); doc.text('RESUMO DE OPORTUNIDADES', ox + 812 * esc, 608 * esc, { align: 'center' });
+    doc.setFillColor(COR.tinta[0], COR.tinta[1], COR.tinta[2]); doc.rect(0, H - 30, W, 30, 'F');
+    doc.setFillColor(COR.cobre[0], COR.cobre[1], COR.cobre[2]); doc.rect(0, H - 30, W, 0.8, 'F');
+    fonte('helvetica', 'bold', 13); doc.setTextColor(255, 255, 255); doc.text(t('Diagnóstico Técnico Inicial - DTI'), M, H - 17);
+    fonte('helvetica', 'normal', 9.5); doc.setTextColor(201, 214, 227); doc.text(t((nomeCli ? nomeCli + '  ·  ' : '') + dataBR(emissao)), M, H - 10);
+    fonte('helvetica', 'bold', 8); doc.setTextColor(111, 208, 199); doc.text(t('REVERSA TAX  ·  UMA FERRAMENTA ARGUS PRIME'), W - M, H - 13.5, { align: 'right' });
 
+    // página 3: classificação, no mesmo padrão das demais páginas
     doc.addPage(); y = M;
-    doc.setFillColor(COR.cobre[0], COR.cobre[1], COR.cobre[2]); doc.rect(M, M + 4, 1.6, 14, 'F');
-    fonte('helvetica', 'bold', 24); cor(COR.tinta); doc.text(t('Como é feita a classificação'), M + 6, M + 15);
-    var colE = (W - 2 * M) * 0.36;
-    fonte('helvetica', 'normal', 12); cor(COR.suave);
-    var intro = doc.splitTextToSize(t('O levantamento das Oportunidades Tributárias levará em conta as seguintes classificações, embasadas no conceito da Deliberação CVM n.º 489 e do Pronunciamento do IBRACON NPC n.º 22, que determinam o reconhecimento do ativo e do correspondente ganho.'), colE);
-    doc.text(intro, M, M + 46, { lineHeightFactor: 1.9 });
-    var xD = M + colE + 22;
-    fonte('helvetica', 'bold', 22); cor(COR.tinta); doc.text('Administrativo', xD + 18, M + 44);
+    fonte('helvetica', 'bold', 8); cor(COR.bronze);
+    doc.setDrawColor(COR.cobre[0], COR.cobre[1], COR.cobre[2]); doc.setLineWidth(0.6); doc.line(M, y + 3, M + 10, y + 3);
+    doc.setCharSpace(1.2); doc.text('REVERSA TAX  ·  UMA FERRAMENTA ARGUS PRIME', M + 13, y + 4); doc.setCharSpace(0);
+    if (root.REVERSA_LOGO) { try { doc.addImage(root.REVERSA_LOGO, 'PNG', W - M - 60, M - 4, 60, 12); } catch (e) { /* segue sem logo */ } }
+    y += 18;
+    fonte('helvetica', 'bold', 28); cor(COR.tinta); doc.text(t('Como é feita a classificação'), M, y); y += 12;
+    var colE = (W - 2 * M) * 0.42, xD = M + colE + 14, y0 = y;
+    fonte('helvetica', 'normal', 9.5); cor(COR.tinta);
+    doc.text(doc.splitTextToSize(t('O levantamento das Oportunidades Tributárias levará em conta as seguintes classificações, embasadas no conceito da Deliberação CVM n.º 489 e do Pronunciamento do IBRACON NPC n.º 22, que determinam o reconhecimento do ativo e do correspondente ganho.'), colE), M, y0 + 7, { lineHeightFactor: 1.45 });
+    fonte('helvetica', 'bold', 13); cor(COR.tinta); doc.text('Administrativo', xD, y0);
+    doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.line(xD, y0 + 2.5, W - M, y0 + 2.5);
     [['A', [26, 188, 166], 'Possível (> 80%)', 'Existe a possibilidade de ganho, mas o assunto não está pacificado.'],
      ['B', COR.cobre, 'Provável (> 50%)', 'Oportunidades onde existe maior possibilidade de ganho e risco baixo de autuação.'],
      ['C', [158, 166, 179], 'Remoto (< 40%)', 'Menor possibilidade de ganho, assunto embrionário ou pouco explorado.']].forEach(function (c, i) {
-      var cy = M + 70 + i * 30;
-      doc.setFillColor(c[1][0], c[1][1], c[1][2]); doc.circle(xD + 6, cy, 8.5, 'F');
-      fonte('helvetica', 'bold', 13); doc.setTextColor(255, 255, 255); doc.text(c[0], xD + 6, cy + 1.6, { align: 'center' });
-      fonte('helvetica', 'bold', 12); cor(COR.tinta); doc.text(t(c[2]), xD + 18, cy - 2.5);
-      fonte('helvetica', 'normal', 9.5); cor(COR.suave); doc.text(doc.splitTextToSize(t(c[3]), W - M - xD - 20), xD + 18, cy + 4);
+      var cy = y0 + 13 + i * 17;
+      doc.setFillColor(c[1][0], c[1][1], c[1][2]); doc.circle(xD + 4.5, cy, 4.5, 'F');
+      fonte('helvetica', 'bold', 9.5); doc.setTextColor(255, 255, 255); doc.text(c[0], xD + 4.5, cy + 1.2, { align: 'center' });
+      fonte('helvetica', 'bold', 9.5); cor(COR.tinta); doc.text(t(c[2]), xD + 13, cy - 1.5);
+      fonte('helvetica', 'normal', 9.5); cor(COR.suave); doc.text(doc.splitTextToSize(t(c[3]), W - M - xD - 13), xD + 13, cy + 3.3);
     });
     doc.addPage(); y = M;
 
