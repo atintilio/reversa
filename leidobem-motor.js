@@ -657,39 +657,132 @@
         else pl.linhas.push([desc, proj, v, d.justificativa || '', docTxt]);
       });
     });
-    var secoes = [
-      { id: '1', titulo: '1. Identificação da empresa', campos: [['CNPJ', cnpjFmt(e.cnpj)], ['Razão social', e.nome || ''], ['Ano-base', caso.anoBase], ['Forma de tributação (ECF)', e.formaTribTexto || ''],
-        ['Prejuízo fiscal no ano?', calc.periodos.length && calc.periodos.every(function (p) { return !(num(p.limiteIRPJ) > 0); }) ? 'Sim' : 'Não'], ['Total de funcionários', e.totalFuncionarios || ''],
-        ['Receita operacional bruta', e.receitaBruta ? fmt(e.receitaBruta) : ''], ['Beneficiária da Lei 8.248/1991 (informática)?', e.leiInformatica ? 'Sim' : 'Não']] },
-      { id: '2', titulo: '2. Programa / atividades de PD&I', projetos: projs.map(function (p) {
-        var sc = scoreProjeto(p);
-        return { codigo: p.codigo, titulo: p.titulo, score: sc.score, faixa: sc.faixa, campos: [['Nome da atividade', p.titulo || ''], ['Tipo', TIPO_PESQUISA[p.tipo] || ''], ['Área predominante', p.area || ''],
-          ['Elementos tecnologicamente inovadores', p.novidade || ''], ['Desafio / barreira tecnológica', p.desafio || ''], ['Metodologia', p.metodologia || ''], ['Marcos críticos', p.marcos || ''],
-          ['Projeto contínuo (plurianual)?', p.continuo ? 'Sim' : 'Não'], ['Início', dataBR(p.inicio)], ['Previsão de término', dataBR(p.fim)], ['Resultados obtidos', p.resultados || ''],
-          ['Dispêndio no ano', fmt(calc.porProjeto[p.id] || 0)], ['Parceria com ICT / Embrapii', p.ict || 'Não']] };
-      }) },
-      { id: '3', titulo: '3. Dispêndios do programa', campos: Object.keys(calc.porRubrica).map(function (k) { return [RUBRICAS[k] ? RUBRICAS[k].nome : k, fmt(calc.porRubrica[k])]; }).concat([['Total', fmt(calc.dispendios)], ['Recursos próprios (%)', caso.formpd && caso.formpd.recursosProprios != null ? caso.formpd.recursosProprios : 100]]) },
-      { id: '4', titulo: '4. Pesquisador exclusivo', campos: [['Pesquisadores contratados no ano anterior', (caso.pesquisadores || {}).anoAnterior || 0], ['Pesquisadores contratados no ano-base', (caso.pesquisadores || {}).anoAtual || 0], ['Enquadramento', calc.motivoPercentual]] },
-      { id: '6', titulo: '6. Incentivos fiscais do programa (conferência — o formulário calcula sozinho)', campos: [['Percentual de exclusão (art. 19)', r2(calc.percentual * 100) + '%'], ['Exclusão adicional', fmt(calc.exclusao)], ['Exclusão por patente (art. 19 §3º)', fmt(calc.exclusaoPatente)], ['Aproveitada no IRPJ', fmt(calc.aproveitadaIRPJ)], ['Aproveitada na CSLL', fmt(calc.aproveitadaCSLL)], ['Economia estimada', fmt(calc.economia)]] }
-    ];
+    // listas preenchidas no formulário guiado (formpd.*)
+    var F = caso.formpd || {}, nomeP = function (id) { return nomeProj(id); };
+    planilhas.cooperadoras = { nome: 'FORMPD-COOPERADORAS', titulo: '2.2 Empresas cooperadoras', linhas: [['Projeto', 'CNPJ', 'Razão social', 'Descrição da cooperação']].concat((F.cooperadoras || []).map(function (x) { return [nomeP(x.projetoId), cnpjOuCpf(x.cnpj), x.razao || '', x.descricao || '']; })) };
+    planilhas.compartilhados = { nome: 'FORMPD-CUSTOS-COMPARTILHADOS', titulo: '2.3 Empresas com custos compartilhados', linhas: [['Projeto', 'CNPJ', 'Razão social', 'Descrição do rateio']].concat((F.compartilhados || []).map(function (x) { return [nomeP(x.projetoId), cnpjOuCpf(x.cnpj), x.razao || '', x.descricao || '']; })) };
+    planilhas.patentes_registros = { nome: 'FORMPD-PATENTES-REGISTROS', titulo: '3.1 Patentes e registros (formulário)', linhas: [['Concessão no ano-base?', 'Tipo de direito', 'Número', 'Especificação', 'Gastos', 'Valor (R$)']].concat((F.patentes || []).map(function (x) { return [x.concedida === 'sim' ? 'Sim' : 'Não', x.tipo || '', x.numero || '', x.especificacao || '', x.gastos || '', br(num(x.valor))]; })) };
+    planilhas.bens_intangiveis = { nome: 'FORMPD-BENS-INTANGIVEIS', titulo: '3.2 Bens intangíveis', linhas: [['Descrição', 'Valor (R$)']].concat((F.intangiveis || []).map(function (x) { return [x.descricao || '', br(num(x.valor))]; })) };
+    planilhas.equip_nacionais = { nome: 'FORMPD-EQUIP-NACIONAIS', titulo: '3.3 Equipamentos nacionais adquiridos', linhas: [['Projeto', 'Descrição', 'Valor (R$)']].concat((F.equipNacionais || []).map(function (x) { return [nomeP(x.projetoId), x.descricao || '', br(num(x.valor))]; })) };
+    planilhas.equip_importados = { nome: 'FORMPD-EQUIP-IMPORTADOS', titulo: '3.4 Equipamentos importados adquiridos', linhas: [['Projeto', 'Descrição', 'Valor (R$)']].concat((F.equipImportados || []).map(function (x) { return [nomeP(x.projetoId), x.descricao || '', br(num(x.valor))]; })) };
+    planilhas.pesquisadores_exclusivos = { nome: 'FORMPD-PESQUISADORES-EXCLUSIVOS', titulo: '4. Pesquisador exclusivo', linhas: [['CPF', 'Nome', 'Formação']].concat((F.pesquisadoresExclusivos || []).map(function (x) { return [cnpjOuCpf(x.cpf), x.nome || '', x.formacao || '']; })) };
+    planilhas.ict_19a = { nome: 'FORMPD-ART19A', titulo: '5. Art. 19-A (ICT)', linhas: [['Projeto', 'CNPJ', 'ICT', 'Valor transferido (R$)']].concat((F.ict19a || []).map(function (x) { return [nomeP(x.projetoId), cnpjOuCpf(x.cnpj), x.nome || '', br(num(x.valor))]; })) };
+    var prog = progressoFormpd(caso, calc);
+    var secoes = FORMPD_ETAPAS.filter(function (et) { return et.tipo !== 'conferencia'; }).map(function (et) {
+      if (et.tipo === 'projetos') return { id: et.id, titulo: et.titulo, projetos: projs.map(function (p) {
+        return { codigo: p.codigo, titulo: p.titulo, campos: et.campos.map(function (c) { return [c.rotulo, valorCampo(c, p[c.k])]; }).concat([['Dispêndio no ano', fmt(calc.porProjeto[p.id] || 0)]]) };
+      }) };
+      if (et.tipo === 'campos') return { id: et.id, titulo: et.titulo, campos: et.campos.map(function (c) { return [c.rotulo, c.auto ? c.auto(caso, calc) : valorCampo(c, pegarCaminho(caso, c.k))]; }) };
+      if (et.tipo === 'incentivos') return { id: et.id, titulo: et.titulo, campos: [['Percentual de exclusão (art. 19)', r2(calc.percentual * 100) + '%'], ['Exclusão adicional', fmt(calc.exclusao)], ['Exclusão por patente (art. 19 §3º)', fmt(calc.exclusaoPatente)], ['Aproveitada no IRPJ', fmt(calc.aproveitadaIRPJ)], ['Aproveitada na CSLL', fmt(calc.aproveitadaCSLL)], ['Economia estimada', fmt(calc.economia)]] };
+      return { id: et.id, titulo: et.titulo, campos: [['Itens informados', String(prog.etapas[et.id] ? prog.etapas[et.id].itens : 0)]] };
+    });
     var anexos = [];
     if (desp.some(function (d) { return d.rubrica === 'rh'; })) anexos.push('Recursos humanos: documentos comprobatórios (timesheets, contratos de trabalho)');
-    if (desp.some(function (d) { return d.rubrica === 'ict'; })) anexos.push('Universidades/ICTs: contrato ou convênio');
+    if (desp.some(function (d) { return d.rubrica === 'ict'; }) || (F.ict19a || []).length) anexos.push('Universidades/ICTs: contrato ou convênio');
     if (desp.some(function (d) { return d.rubrica === 'inventor'; })) anexos.push('Inventor independente: contrato');
     if (desp.some(function (d) { return d.rubrica === 'microempresa'; })) anexos.push('Microempresa/EPP: contrato');
+    if ((F.cooperadoras || []).length || (F.compartilhados || []).length) anexos.push('Empresas cooperadoras e de custos compartilhados: contrato ou acordo');
     if (desp.some(function (d) { return d.rubrica === 'servico_pj' || d.rubrica === 'servico_pf'; })) anexos.push('Serviços de apoio técnico: contratos e relatórios de entrega');
     var checklist = [
       ['Pelo menos um projeto cadastrado', projs.length > 0],
       ['Dispêndios e incentivos calculados', calc.dispendios > 0],
-      ['Descrição técnica completa em todos os projetos', projs.length > 0 && projs.every(function (p) { return String(p.desafio || '').length >= 80 && String(p.metodologia || '').length >= 60; })],
+      ['Formulário guiado completo', prog.completo],
       ['Todos os dispêndios vinculados a projeto', desp.length > 0 && desp.every(function (d) { return d.projetoId; })],
-      ['Pessoal de apoio administrativo fora da base', !desp.some(function (d) { var p = pess.filter(function (x) { return d.doc && x.cpf === d.doc.cpf; })[0]; return d.rubrica === 'rh' && p && !p.elegivel && ok(d); })],
+      ['Pessoal administrativo fora da base', !desp.some(function (d) { var p = pess.filter(function (x) { return d.doc && x.cpf === d.doc.cpf; })[0]; return d.rubrica === 'rh' && p && !p.elegivel && !p.forcarElegivel && ok(d); })],
       ['Nenhuma pendência bloqueante', !pendencias(caso, calc).some(function (x) { return x.nivel === 'bloqueio' || x.nivel === 'erro'; })],
-      ['Score de confiança ≥ 85', calc.confianca.score >= 85],
       ['Revisão humana concluída (4 etapas)', caso.status === 'aprovado' || caso.status === 'enviado']
     ];
     return { secoes: secoes, planilhas: planilhas, anexos: anexos, checklist: checklist,
       aviso: 'Rascunho de apoio ao preenchimento no portal do MCTI. O layout de importação das planilhas muda entre anos: confira o manual do FORMP&D do ano-base antes de importar. O Reversa não submete o formulário.' };
+  }
+
+  // ------------------------------------------------------------------ FORMP&D: formulário guiado (estrutura do formulário do MCTI)
+  var SIMNAO = [['', 'Selecione'], ['sim', 'Sim'], ['nao', 'Não']];
+  var FORMPD_ETAPAS = [
+    { id: 'empresa', titulo: '1. Identificação da empresa', tipo: 'campos', orientacao: 'Dados cadastrais e econômicos da empresa no ano-base. Valores da ECF/DRE do ano.', campos: [
+      { k: 'formpd.identificacao.tipoEmpresa', rotulo: 'Tipo de empresa', tipo: 'select', ops: [['', 'Selecione'], ['privada', 'Privada'], ['publica', 'Pública'], ['mista', 'Economia mista']], req: true, ajuda: 'Natureza do controle da empresa.' },
+      { k: 'formpd.identificacao.situacao', rotulo: 'Situação da empresa', tipo: 'select', ops: [['', 'Selecione'], ['normal', 'Em operação normal'], ['recuperacao', 'Em recuperação judicial'], ['outra', 'Outra']], req: true },
+      { k: 'formpd.identificacao.leiInformatica', rotulo: 'Usufrui da Lei 8.248/1991 (Lei de Informática)?', tipo: 'select', ops: SIMNAO, req: true, ajuda: 'Dispêndios já incentivados pela Lei de Informática não entram de novo na Lei do Bem.' },
+      { k: 'formpd.identificacao.origemCapital', rotulo: 'Origem do capital controlador', tipo: 'select', ops: [['', 'Selecione'], ['nacional', 'Nacional'], ['estrangeiro', 'Estrangeiro'], ['misto', 'Misto']], req: true },
+      { k: 'formpd.identificacao.grupo', rotulo: 'Relação com grupo econômico', tipo: 'select', ops: [['', 'Selecione'], ['independente', 'Independente'], ['controladora', 'Controladora'], ['controlada', 'Controlada'], ['coligada', 'Coligada']], req: true },
+      { k: 'formpd.identificacao.receitaBruta', rotulo: 'Receita operacional bruta (R$)', tipo: 'moeda', req: true, ajuda: 'Do ano-base, conforme DRE/ECF.' },
+      { k: 'formpd.identificacao.receitaLiquida', rotulo: 'Receita líquida (R$)', tipo: 'moeda', req: true },
+      { k: 'formpd.identificacao.totalFuncionarios', rotulo: 'Total de funcionários', tipo: 'numero', req: true, ajuda: 'Posição em 31/12 do ano-base.' },
+      { k: '_prejuizo', rotulo: 'Prejuízo fiscal no ano', tipo: 'auto', auto: function (c, calc) { return calc.periodos.length && calc.periodos.every(function (p) { return !(num(p.limiteIRPJ) > 0); }) ? 'Sim' : 'Não'; } },
+      { k: 'formpd.identificacao.estrutura', rotulo: 'Estrutura organizacional de P&D', tipo: 'texto', req: true, ajuda: 'Como a área de P&D está organizada: departamento, equipe, laboratório, gestão dos projetos.' }] },
+    { id: 'projetos', titulo: '2. Programa e atividades de PD&I', tipo: 'projetos', orientacao: 'Uma ficha por projeto. Descreva o problema técnico, a incerteza e o método: é o que o MCTI analisa para aceitar ou glosar.', campos: [
+      { k: 'titulo', rotulo: 'Nome da atividade', tipo: 'linha', req: true },
+      { k: 'tipo', rotulo: 'Tipo', tipo: 'select', ops: [['', 'Selecione'], ['basica', 'Pesquisa básica'], ['aplicada', 'Pesquisa aplicada'], ['experimental', 'Desenvolvimento experimental']], req: true, ajuda: 'Pesquisa básica busca conhecimento novo; aplicada, conhecimento com finalidade prática; desenvolvimento experimental, novos produtos ou processos.' },
+      { k: 'area', rotulo: 'Área predominante', tipo: 'linha', req: true },
+      { k: 'novidade', rotulo: 'Elementos tecnologicamente inovadores', tipo: 'texto', req: true, min: 40, ajuda: 'O que é novo ou significativamente melhorado em relação ao estado da técnica.' },
+      { k: 'desafio', rotulo: 'Barreira ou desafio tecnológico', tipo: 'texto', req: true, min: 80, ajuda: 'O problema técnico que não tinha solução conhecida e a incerteza envolvida. Evite descrever objetivos comerciais.' },
+      { k: 'metodologia', rotulo: 'Metodologia utilizada', tipo: 'texto', req: true, min: 60, ajuda: 'Etapas, hipóteses, testes e critérios de validação.' },
+      { k: 'marcos', rotulo: 'Marcos críticos', tipo: 'texto', req: true, ajuda: 'Entregas ou resultados intermediários com data.' },
+      { k: 'continuo', rotulo: 'Projeto contínuo (plurianual)?', tipo: 'select', ops: SIMNAO, req: true },
+      { k: 'inicio', rotulo: 'Data de início', tipo: 'data', req: true },
+      { k: 'fim', rotulo: 'Previsão de término', tipo: 'data', req: true },
+      { k: 'politicaPublica', rotulo: 'Alinhado a política pública?', tipo: 'select', ops: SIMNAO },
+      { k: 'resultados', rotulo: 'Resultados obtidos no ano', tipo: 'texto', ajuda: 'Resultados técnicos mensuráveis.' }] },
+    { id: 'parcerias', titulo: '3. Parcerias do projeto', tipo: 'listas', orientacao: 'Empresas cooperadoras e com custos compartilhados, universidades/ICTs, inventores independentes e microempresas contratadas. Cada item exige o contrato ou convênio em PDF no portal.', listas: [
+      { k: 'formpd.cooperadoras', titulo: 'Empresas cooperadoras', cols: [['projetoId', 'Projeto', 'projeto'], ['cnpj', 'CNPJ', 'linha'], ['razao', 'Razão social', 'linha'], ['descricao', 'Descrição da cooperação', 'linha']] },
+      { k: 'formpd.compartilhados', titulo: 'Empresas com custos compartilhados', cols: [['projetoId', 'Projeto', 'projeto'], ['cnpj', 'CNPJ', 'linha'], ['razao', 'Razão social', 'linha'], ['descricao', 'Descrição do rateio', 'linha']] }],
+      despesas: [{ rubrica: 'ict', titulo: 'Universidades e instituições de pesquisa' }, { rubrica: 'inventor', titulo: 'Inventor independente' }, { rubrica: 'microempresa', titulo: 'Microempresa ou EPP contratada' }] },
+    { id: 'rh', titulo: '4. Recursos humanos', tipo: 'rh', orientacao: 'Pessoas que atuaram diretamente nos projetos, com horas e dedicação. Pessoal administrativo e de apoio genérico não entra. Gere os dispêndios de pessoal na aba Dispêndios.' },
+    { id: 'terceiros', titulo: '5. Serviços de apoio técnico e material de consumo', tipo: 'listas', orientacao: 'Serviços técnicos contratados e materiais consumidos nos projetos. A descrição precisa ligar o gasto ao projeto: notas com descrição genérica são glosadas.', listas: [],
+      despesas: [{ rubrica: 'servico_pj', titulo: 'Serviços de apoio técnico — pessoa jurídica' }, { rubrica: 'servico_pf', titulo: 'Serviços de apoio técnico — pessoa física' }, { rubrica: 'material', titulo: 'Material de consumo' }] },
+    { id: 'dispendios', titulo: '6. Dispêndios do programa', tipo: 'listas', orientacao: 'Origem dos recursos, patentes e registros, bens intangíveis e equipamentos adquiridos para P&D.', campos: [
+      { k: 'formpd.recursosProprios', rotulo: 'Recursos próprios (%)', tipo: 'numero', req: true },
+      { k: 'formpd.financiamentos', rotulo: 'Financiamentos (%)', tipo: 'numero', req: true },
+      { k: 'formpd.fontes', rotulo: 'Fontes de financiamento', tipo: 'linha', ajuda: 'Ex.: Finep, BNDES, subvenção. Dispêndio custeado por subvenção não entra na Lei do Bem.' }], listas: [
+      { k: 'formpd.patentes', titulo: 'Patentes e registros', cols: [['concedida', 'Concedida no ano-base?', 'simnao'], ['tipo', 'Tipo de direito', 'linha'], ['numero', 'Número', 'linha'], ['especificacao', 'Especificação', 'linha'], ['valor', 'Gastos (R$)', 'moeda']] },
+      { k: 'formpd.intangiveis', titulo: 'Bens intangíveis', cols: [['descricao', 'Descrição', 'linha'], ['valor', 'Valor (R$)', 'moeda']] },
+      { k: 'formpd.equipNacionais', titulo: 'Equipamentos nacionais adquiridos', cols: [['projetoId', 'Projeto', 'projeto'], ['descricao', 'Descrição', 'linha'], ['valor', 'Valor (R$)', 'moeda']] },
+      { k: 'formpd.equipImportados', titulo: 'Equipamentos importados adquiridos', cols: [['projetoId', 'Projeto', 'projeto'], ['descricao', 'Descrição', 'linha'], ['valor', 'Valor (R$)', 'moeda']] }] },
+    { id: 'pesquisadores', titulo: '7. Pesquisador exclusivo', tipo: 'listas', orientacao: 'Pesquisadores contratados com dedicação exclusiva a P&D. O aumento em relação ao ano anterior eleva a exclusão para 70% ou 80%.', campos: [
+      { k: 'formpd.contratouExclusivos', rotulo: 'Contratou pesquisadores com dedicação exclusiva?', tipo: 'select', ops: SIMNAO, req: true },
+      { k: 'pesquisadores.anoAnterior', rotulo: 'Pesquisadores contratados no ano anterior', tipo: 'numero', req: true },
+      { k: 'pesquisadores.anoAtual', rotulo: 'Pesquisadores contratados no ano-base', tipo: 'numero', req: true }], listas: [
+      { k: 'formpd.pesquisadoresExclusivos', titulo: 'Pesquisadores com dedicação exclusiva', cols: [['cpf', 'CPF', 'linha'], ['nome', 'Nome', 'linha'], ['formacao', 'Formação', 'linha']] }] },
+    { id: 'ict19a', titulo: '8. Art. 19-A (projetos executados por ICT)', tipo: 'listas', orientacao: 'Só preencha se houve transferência a ICT para projeto aprovado na forma do art. 19-A da Lei 11.196/2005.', campos: [
+      { k: 'formpd.possuiIct19a', rotulo: 'Houve dispêndio na forma do art. 19-A?', tipo: 'select', ops: SIMNAO, req: true }], listas: [
+      { k: 'formpd.ict19a', titulo: 'ICTs', cols: [['projetoId', 'Projeto', 'projeto'], ['cnpj', 'CNPJ', 'linha'], ['nome', 'ICT', 'linha'], ['valor', 'Valor transferido (R$)', 'moeda']] }] },
+    { id: 'incentivos', titulo: '9. Incentivos fiscais', tipo: 'incentivos', orientacao: 'O portal calcula esta seção a partir dos dispêndios. Use os valores abaixo para conferir.' },
+    { id: 'conferencia', titulo: '10. Conferência e exportação', tipo: 'conferencia', orientacao: 'Confira as pendências de cada etapa, baixe as planilhas e o rascunho e transcreva no portal do MCTI.' }
+  ];
+  function pegarCaminho(o, path) { return String(path).split('.').reduce(function (x, k) { return x == null ? undefined : x[k]; }, o); }
+  function valorCampo(c, v) {
+    if (v == null || v === '') return '';
+    if (c.tipo === 'select') { var o = (c.ops || []).filter(function (x) { return x[0] === String(v); })[0]; return o ? o[1] : String(v); }
+    if (c.tipo === 'moeda') return fmt(num(v));
+    if (c.tipo === 'data') return dataBR(v);
+    return String(v);
+  }
+  function vazio(c, v) { if (v == null || String(v).trim() === '') return true; if (c.min && String(v).trim().length < c.min) return true; return false; }
+  function progressoFormpd(caso, calc) {
+    var out = { etapas: {}, completo: true, faltam: 0 };
+    FORMPD_ETAPAS.forEach(function (et) {
+      var falta = [], itens = 0;
+      if (et.tipo === 'campos' || et.campos && et.tipo === 'listas') (et.campos || []).forEach(function (c) { if (c.req && c.tipo !== 'auto' && vazio(c, pegarCaminho(caso, c.k))) falta.push(c.rotulo); });
+      if (et.tipo === 'projetos') {
+        if (!(caso.projetos || []).length) falta.push('Cadastre ao menos um projeto');
+        (caso.projetos || []).forEach(function (p) { et.campos.forEach(function (c) { if (c.req && vazio(c, p[c.k])) falta.push((p.codigo || p.titulo || 'Projeto') + ': ' + c.rotulo + (c.min ? ' (mínimo ' + c.min + ' caracteres)' : '')); }); });
+      }
+      if (et.tipo === 'rh') {
+        var rh = (caso.despesas || []).filter(function (d) { return d.rubrica === 'rh'; }); itens = rh.length;
+        rh.forEach(function (d) { var p = (caso.pessoas || []).filter(function (x) { return d.doc && x.cpf === d.doc.cpf; })[0] || {};
+          if (!p.formacao) falta.push((p.nome || d.descricao) + ': última formação'); if (!p.sexo) falta.push((p.nome || d.descricao) + ': sexo');
+          if (!d.atividades) falta.push((p.nome || d.descricao) + ': descrição das atividades'); });
+      }
+      (et.listas || []).forEach(function (l) { itens += (pegarCaminho(caso, l.k) || []).length; });
+      (et.despesas || []).forEach(function (dd) { (caso.despesas || []).filter(function (d) { return d.rubrica === dd.rubrica; }).forEach(function (d) {
+        itens++; if (!d.projetoId) falta.push(dd.titulo + ': ' + (d.descricao || 'item') + ' sem projeto');
+        if (String(d.descricao || '').trim().length < 15) falta.push(dd.titulo + ': descrição curta em ' + ((d.doc && d.doc.nome) || 'um item')); }); });
+      if (et.id === 'ict19a' && pegarCaminho(caso, 'formpd.possuiIct19a') === 'sim' && !(pegarCaminho(caso, 'formpd.ict19a') || []).length) falta.push('Informe a ICT');
+      if (et.id === 'pesquisadores' && pegarCaminho(caso, 'formpd.contratouExclusivos') === 'sim' && !(pegarCaminho(caso, 'formpd.pesquisadoresExclusivos') || []).length) falta.push('Liste os pesquisadores exclusivos');
+      out.etapas[et.id] = { falta: falta, itens: itens, ok: !falta.length };
+      if (et.tipo !== 'conferencia' && et.tipo !== 'incentivos' && falta.length) { out.completo = false; out.faltam += falta.length; }
+    });
+    return out;
   }
   function cnpjOuCpf(v) { v = soDigitos(v); if (v.length === 14) return cnpjFmt(v); if (v.length === 11) return v.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4'); return v; }
 
@@ -756,10 +849,10 @@
       var el = calc.elegibilidade;
       corpo = '<h2>1. Objetivo</h2><p>Avaliar a elegibilidade de ' + h(e.nome || '') + ' aos incentivos da Lei nº 11.196/2005 no ano-calendário ' + h(ano) + '.</p>' +
         '<h2>2. Requisitos verificados</h2>' + tabela(['Requisito', 'Situação'], [['Regime tributário', e.formaTribTexto || '—'], ['Regularidade fiscal', ({ cnd: 'CND', cpen: 'CPEN', positiva: 'Positiva (débitos exigíveis)' })[(e.regularidade || {}).situacao] || 'Não verificada'], ['Lucro tributável (IRPJ, soma dos períodos)', fmt(calc.periodos.reduce(function (s, p) { return s + Math.max(0, num(p.limiteIRPJ)); }, 0))], ['Projetos analisados', projs.length], ['Conciliação contábil', calc.conciliacao.texto], ['Prazo do FORMP&D', calc.prazo ? dataBR(calc.prazo.data) : '—']]) +
-        '<h2>3. Projetos</h2>' + tabela(['Projeto', 'Score técnico', 'Situação'], projs.map(function (p) { var s = scoreProjeto(p); return [(p.codigo || '') + ' ' + (p.titulo || ''), s.score + '/100', s.faixa]; })) +
+        '<h2>3. Projetos</h2>' + tabela(['Projeto', 'Critérios técnicos', 'Situação'], projs.map(function (p) { var s = scoreProjeto(p); return [(p.codigo || '') + ' ' + (p.titulo || ''), CRITERIOS.filter(function (c) { return (p.criterios || {})[c.id]; }).length + ' de ' + CRITERIOS.length, s.elegivel ? 'Elegível' : 'Requer evidências'];})) +
         '<h2>4. Dispêndios elegíveis</h2>' + tabela(['Rubrica', 'Valor'], Object.keys(calc.porRubrica).map(function (k) { return [RUBRICAS[k] ? RUBRICAS[k].nome : k, fmt(calc.porRubrica[k])]; }).concat([['Total', fmt(calc.dispendios)]])) +
         '<h2>5. Cálculo do benefício</h2>' + tabela(['Item', 'Valor'], [['Percentual de exclusão', r2(calc.percentual * 100) + '%'], ['Exclusão adicional', fmt(calc.exclusao + calc.exclusaoPatente)], ['Aproveitada no IRPJ', fmt(calc.aproveitadaIRPJ)], ['Aproveitada na CSLL', fmt(calc.aproveitadaCSLL)], ['Excedente perdido (IRPJ)', fmt(calc.perdidaIRPJ)], ['Economia estimada', fmt(calc.economia)]]) +
-        '<h2>6. Conclusão</h2><p><b>' + h(el.rotulo) + '.</b> ' + h(el.motivos.map(function (m) { return m.texto; }).join(' ')) + '</p><p>Score de confiança: ' + calc.confianca.score + '/100 — ' + h(calc.confianca.politica) + '.</p>' +
+        '<h2>6. Conclusão</h2><p><b>' + h(el.rotulo) + '.</b> ' + h(el.motivos.map(function (m) { return m.texto; }).join(' ')) + '</p>' +
         '<p class="nota">Diagnóstico preliminar sujeito à revisão humana e à documentação comprobatória. Não constitui crédito reconhecido.</p>' + ass(['Responsável técnico-tributário', 'Contador']);
     } else if (id === 'evidencias') {
       corpo = '<h2>Projeto</h2><p>' + h((proj.codigo || '') + ' — ' + (proj.titulo || '')) + '</p><h2>Evidências por critério</h2>' +
@@ -805,7 +898,7 @@
     TIPO_PESQUISA: TIPO_PESQUISA, FORMA_TRIB: FORMA_TRIB,
     identificarArquivo: identificarArquivo, parseECF: parseECF, parseECD: parseECD, parseFolha: parseFolha, parseNFe: parseNFe, parseNFSe: parseNFSe,
     classificarPessoa: classificarPessoa, cpfValido: cpfValido, scoreProjeto: scoreProjeto, validarDespesas: validarDespesas, calcular: calcular,
-    elegibilidade: elegibilidade, confianca: confianca, pendencias: pendencias, formpd: formpd, csv: csv, retroativo: retroativo, documento: documento,
+    elegibilidade: elegibilidade, confianca: confianca, pendencias: pendencias, formpd: formpd, FORMPD_ETAPAS: FORMPD_ETAPAS, progressoFormpd: progressoFormpd, valorCampo: valorCampo, csv: csv, retroativo: retroativo, documento: documento,
     irpjDevido: irpjDevido, num: num, r2: r2, fmt: fmt, cnpjFmt: cnpjFmt, dataBR: dataBR, mascaraCpf: mascaraCpf, uid: uid, regimeDaForma: regimeDaForma
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

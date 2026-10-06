@@ -9,14 +9,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
 <link rel="stylesheet" href="/shell.css">
 <style>
-  .heroi { background: radial-gradient(circle at 20% 0%, #17365A 0%, #0E2239 62%); color: #fff; border-radius: 12px; padding: 26px 28px; display: grid; gap: 10px; border-bottom: 3px solid #1E8F88; }
-  .heroi .eyebrow { font: 700 12px var(--f-body); letter-spacing: .14em; text-transform: uppercase; color: #AFC0D2; display: flex; align-items: center; gap: 10px; }
-  .heroi .eyebrow::before { content: ""; width: 26px; height: 2px; background: var(--cobre); }
-  .rv .heroi h1 { color: #fff; font-size: clamp(1.5rem, 3vw, 2.1rem); }
-  .rv .heroi h1 em { color: #5CCDC3; }
-  .heroi p { color: #C9D6E3; margin: 0; max-width: 80ch; }
-  .heroi .acoes { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
-  .rv .heroi .acoes button.sec { background: transparent; color: #fff; border-color: rgba(255,255,255,.35); }
   .abas { display: flex; gap: 2px; border-bottom: 1px solid var(--line); overflow-x: auto; scrollbar-width: thin; }
   .rv .abas button { background: transparent; color: var(--muted); border: 0; border-bottom: 2px solid transparent; border-radius: 0; padding: 10px 13px; white-space: nowrap; font-size: 14px; }
   .rv .abas button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--teal); }
@@ -59,43 +51,35 @@
   .salvo { font-size: 12px; color: var(--muted); }
   .topo-caso { display: flex; justify-content: space-between; align-items: flex-end; gap: 14px; flex-wrap: wrap; }
   .aviso-rascunho { background: var(--warn-bg); color: var(--warn); padding: 10px 14px; border-radius: 8px; font-size: 14px; }
+  @media (max-width: 860px) { .wizard { grid-template-columns: 1fr !important; } }
+  .wizard .grade label { align-content: start; }
   .formula { background: var(--soft); border-radius: 8px; padding: 12px 14px; font-size: 13px; line-height: 1.7; }
 </style>
 </head>
 <body class="rv">
 <main>
-  <section class="heroi">
-    <div class="eyebrow">Incentivo à inovação · Lei nº 11.196/2005</div>
-    <h1>Lei do Bem <em>PD&amp;I</em></h1>
-    <p>Envie a ECF, a ECD, a folha e as notas fiscais. O Reversa identifica cada arquivo, verifica a elegibilidade, valida os dispêndios, calcula a exclusão de IRPJ e CSLL e monta o rascunho do FORMP&amp;D e o dossiê, com revisão humana em quatro etapas antes de qualquer envio.</p>
-    <div class="acoes" id="heroi-acoes">
-      <button type="button" id="novo">Novo caso</button>
-      <button type="button" class="sec" data-ir="kb">Base de conhecimento</button>
-      <a class="sec" href="/docs/lei-do-bem/modelo-folha.csv" download style="color:#fff;align-self:center;font-size:14px">Baixar modelo de folha (CSV)</a>
+  <div class="cab">
+    <div>
+      <h1>Lei do <em>Bem</em></h1>
+      <p class="sub">Incentivo à inovação tecnológica (Lei nº 11.196/2005): elegibilidade, dispêndios, cálculo da exclusão de IRPJ e CSLL, FORMP&amp;D e dossiê, com revisão humana antes do envio.</p>
     </div>
-  </section>
+    <button type="button" id="novo">Novo caso</button>
+  </div>
 
   <!-- ===================================================== lista -->
   <section id="v-lista" style="display:grid;gap:18px">
     <div class="grid-kpi" id="kpis"></div>
     <div class="card">
       <h2>Casos</h2>
-      <div class="tabela"><table><thead><tr><th>Empresa</th><th>Ano-base</th><th>Situação</th><th>Elegibilidade</th><th class="r">Dispêndios</th><th class="r">Economia estimada</th><th>Confiança</th><th>Prazo FORMP&amp;D</th></tr></thead><tbody id="lista"></tbody></table></div>
+      <div class="tabela"><table><thead><tr><th>Empresa</th><th>Ano-base</th><th>Situação</th><th>Elegibilidade</th><th class="r">Dispêndios</th><th class="r">Economia estimada</th><th>Pendências</th><th>Prazo FORMP&amp;D</th></tr></thead><tbody id="lista"></tbody></table></div>
     </div>
-  </section>
-
-  <!-- ===================================================== base de conhecimento (fora de um caso) -->
-  <section id="v-kb" class="card" hidden>
-    <div class="topo-caso"><h2>Base de conhecimento</h2><button type="button" class="sec" data-voltar>Voltar</button></div>
-    <div id="kb-nav" class="acoes" style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0"></div>
-    <div class="md" id="kb"></div>
   </section>
 
   <!-- ===================================================== caso -->
   <section id="v-caso" hidden style="display:grid;gap:16px">
     <div class="topo-caso">
       <div>
-        <button type="button" class="sec mini" data-voltar>← Casos</button>
+        <button type="button" class="sec mini" data-voltar>Voltar aos casos</button>
         <h2 id="c-nome" style="margin-top:8px"></h2>
         <div class="sub" id="c-sub"></div>
       </div>
@@ -122,20 +106,30 @@
       <button type="button" role="tab" data-aba="formpd">FORMP&amp;D</button>
       <button type="button" role="tab" data-aba="retroativo">Retroativo</button>
       <button type="button" role="tab" data-aba="documentos">Documentos</button>
-      <button type="button" role="tab" data-aba="kb">Base de conhecimento</button>
     </div>
     <div id="painel" class="card" style="display:grid;gap:16px"></div>
   </section>
 </main>
 
 <dialog id="dlg-novo">
-  <form method="dialog" id="f-novo" style="display:grid;gap:12px;min-width:min(440px,90vw)">
+  <form method="dialog" id="f-novo" style="display:grid;gap:12px;min-width:min(460px,90vw)">
     <h2>Novo caso da Lei do Bem</h2>
-    <label>Cliente cadastrado (opcional)<select id="n-cliente"><option value="">— não vincular —</option></select></label>
-    <label>CNPJ<input id="n-cnpj" inputmode="numeric" placeholder="00.000.000/0000-00"></label>
-    <label>Razão social<input id="n-nome"></label>
+    <div style="display:flex;gap:18px;flex-wrap:wrap">
+      <label class="c"><input type="radio" name="modo" value="existente" checked> Cliente já cadastrado</label>
+      <label class="c"><input type="radio" name="modo" value="novo"> Novo cliente</label>
+    </div>
+    <div id="m-existente" style="display:grid;gap:10px">
+      <label>Buscar cliente<input id="n-busca" placeholder="Nome ou CNPJ" autocomplete="off"></label>
+      <label>Cliente<select id="n-cliente" size="6"></select></label>
+      <p class="sub" id="n-vazio" style="margin:0" hidden>Nenhum cliente cadastrado ainda. Use “Novo cliente”.</p>
+    </div>
+    <div id="m-novo" style="display:grid;gap:10px" hidden>
+      <label>CNPJ<input id="n-cnpj" inputmode="numeric" placeholder="00.000.000/0000-00"></label>
+      <label>Razão social<input id="n-nome"></label>
+      <p class="sub" style="margin:0">O cliente também passa a aparecer em Clientes e no CRM.</p>
+    </div>
     <label>Ano-base<input id="n-ano" type="number" min="2006"></label>
-    <p class="sub" style="margin:0">Dica: crie o caso e envie a ECF do ano; o Reversa preenche regime, lucro e base da CSLL.</p>
+    <p class="sub" id="n-erro" style="margin:0;color:var(--bad)" hidden></p>
     <div style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="sec" id="n-cancelar">Cancelar</button><button type="submit" id="n-criar">Criar caso</button></div>
   </form>
 </dialog>
@@ -159,10 +153,9 @@
   function prazoCor(p) { return !p ? '' : p.nivel === 'vencido' || p.nivel === 'critico' ? 'vermelho' : p.nivel === 'atencao' || p.nivel === 'aviso' ? 'amarelo' : 'verde'; }
 
   // ================================================================== navegação entre vistas
-  function mostrar(v) { ['lista', 'kb', 'caso'].forEach(function (k) { $('v-' + k).hidden = k !== v; }); document.querySelector('.heroi').hidden = v === 'caso'; window.scrollTo(0, 0); }
+  function mostrar(v) { ['lista', 'caso'].forEach(function (k) { $('v-' + k).hidden = k !== v; }); document.querySelector('main > .cab').hidden = v === 'caso'; window.scrollTo(0, 0); }
   document.addEventListener('click', function (ev) {
     var t = ev.target.closest('[data-voltar]'); if (t) { history.pushState(null, '', '/lei-do-bem.html'); C = null; listar(); mostrar('lista'); return; }
-    var k = ev.target.closest('[data-ir="kb"]'); if (k && !C) { mostrar('kb'); kb($('kb'), $('kb-nav')); }
   });
   window.addEventListener('popstate', rota);
   function rota() { var m = /[?&]caso=([0-9a-f-]{36})/.exec(location.search); if (m) abrir(m[1]); else { C = null; listar(); mostrar('lista'); } }
@@ -176,28 +169,50 @@
       $('lista').innerHTML = cs.length ? cs.map(function (c) {
         var s = c.resumo || {}, st = STATUS[c.status] || [c.status, ''], el = s.elegibilidade || {};
         return '<tr data-id="' + c.id + '" style="cursor:pointer"><td><b>' + esc(c.legalName) + '</b><br><small class="sub">' + esc(RV.cnpj(c.cnpj)) + '</small></td><td>' + c.anoBase + '</td><td>' + chip(st[0], st[1]) + '</td><td>' +
-          (el.rotulo ? chip(el.rotulo, ELEG[el.status]) : '—') + '</td><td class="r">' + fmt(s.dispendios || 0) + '</td><td class="r"><b>' + fmt(s.economia || 0) + '</b></td><td>' + (s.confianca != null ? s.confianca + '/100' : '—') + '</td><td>' +
+          (el.rotulo ? chip(el.rotulo, ELEG[el.status]) : '—') + '</td><td class="r">' + fmt(s.dispendios || 0) + '</td><td class="r"><b>' + fmt(s.economia || 0) + '</b></td><td>' + (s.bloqueios != null ? (s.bloqueios ? s.bloqueios + ' bloqueante(s)' : 'Nenhuma bloqueante') : '—') + '</td><td>' +
           (s.prazo ? chip(prazoTxt(s.prazo), c.status === 'enviado' ? '' : prazoCor(s.prazo)) : '—') + '</td></tr>';
       }).join('') : '<tr><td colspan="8" class="sub">Nenhum caso ainda. Clique em “Novo caso”.</td></tr>';
     }).catch(function (e) { RV.toast(e.message); });
   }
   $('lista').addEventListener('click', function (ev) { var tr = ev.target.closest('tr[data-id]'); if (tr) { history.pushState(null, '', '?caso=' + tr.dataset.id); abrir(tr.dataset.id); } });
 
-  // novo caso
+  // novo caso: cliente já cadastrado ou novo cliente
+  var clientes = [];
+  function modo() { return document.querySelector('input[name="modo"]:checked').value; }
+  function listaClientes() {
+    var q = $('n-busca').value.trim().toLowerCase(), qd = q.replace(/\D/g, '');
+    var f = clientes.filter(function (t) { return !q || String(t.legalName || '').toLowerCase().indexOf(q) >= 0 || (qd && String(t.cnpj || '').indexOf(qd) >= 0); });
+    $('n-cliente').innerHTML = f.map(function (t) { return '<option value="' + t.id + '">' + esc(t.legalName) + ' — ' + esc(RV.cnpj(t.cnpj)) + '</option>'; }).join('');
+    if (f.length) $('n-cliente').selectedIndex = 0;
+    $('n-vazio').hidden = clientes.length > 0;
+  }
+  document.querySelectorAll('input[name="modo"]').forEach(function (r) { r.addEventListener('change', function () { $('m-existente').hidden = modo() !== 'existente'; $('m-novo').hidden = modo() !== 'novo'; }); });
+  $('n-busca').addEventListener('input', listaClientes);
   $('novo').addEventListener('click', function () {
     if (!RV.pode('write')) return RV.toast('Seu perfil não permite criar casos.');
-    $('n-ano').value = new Date().getFullYear() - 1;
+    $('n-ano').value = new Date().getFullYear() - 1; $('n-erro').hidden = true; $('n-busca').value = '';
     RV.api('GET', '/api/v1/taxpayers').then(function (r) {
-      $('n-cliente').innerHTML = '<option value="">— não vincular —</option>' + (r.taxpayers || []).map(function (t) { return '<option value="' + t.id + '" data-cnpj="' + esc(t.cnpj || t.cnpjNormalized || '') + '" data-nome="' + esc(t.legalName || t.legal_name || '') + '">' + esc(t.legalName || t.legal_name) + '</option>'; }).join('');
-    }).catch(function () {});
+      clientes = r.taxpayers || [];
+      var m = clientes.length ? 'existente' : 'novo';
+      document.querySelector('input[name="modo"][value="' + m + '"]').checked = true;
+      $('m-existente').hidden = m !== 'existente'; $('m-novo').hidden = m !== 'novo';
+      listaClientes();
+    }).catch(function (e) { $('n-erro').textContent = e.message; $('n-erro').hidden = false; });
     $('dlg-novo').showModal();
   });
   $('n-cancelar').addEventListener('click', function () { $('dlg-novo').close(); });
-  $('n-cliente').addEventListener('change', function () { var o = this.selectedOptions[0]; if (o && o.value) { $('n-cnpj').value = RV.cnpj(o.dataset.cnpj); $('n-nome').value = o.dataset.nome; } });
   $('f-novo').addEventListener('submit', function (ev) {
     ev.preventDefault();
-    RV.api('POST', '/api/v1/leidobem/casos', { taxpayerId: $('n-cliente').value || undefined, cnpj: $('n-cnpj').value, legalName: $('n-nome').value, anoBase: Number($('n-ano').value) })
-      .then(function (r) { $('dlg-novo').close(); history.pushState(null, '', '?caso=' + r.id); abrir(r.id); }).catch(function (e) { RV.toast(e.message); });
+    var corpo = { anoBase: Number($('n-ano').value) };
+    if (modo() === 'existente') {
+      if (!$('n-cliente').value) { $('n-erro').textContent = 'Selecione um cliente ou use “Novo cliente”.'; $('n-erro').hidden = false; return; }
+      corpo.taxpayerId = $('n-cliente').value;
+    } else { corpo.novoCliente = true; corpo.cnpj = $('n-cnpj').value; corpo.legalName = $('n-nome').value; }
+    $('n-criar').disabled = true;
+    RV.api('POST', '/api/v1/leidobem/casos', corpo)
+      .then(function (r) { $('dlg-novo').close(); history.pushState(null, '', '?caso=' + r.id); abrir(r.id); })
+      .catch(function (e) { $('n-erro').textContent = e.message; $('n-erro').hidden = false; })
+      .then(function () { $('n-criar').disabled = false; });
   });
 
   // ================================================================== caso
@@ -238,7 +253,7 @@
     $('c-kpis').innerHTML = kpi('Dispêndios elegíveis', fmt(calc.dispendios), Object.keys(calc.porRubrica).length + ' rubrica(s)') +
       kpi('Exclusão adicional', fmt(calc.exclusao + calc.exclusaoPatente), r2(calc.percentual * 100) + '% (art. 19)') +
       kpi('Economia estimada', fmt(calc.economia), 'IRPJ ' + fmt(calc.economiaIRPJ) + ' · CSLL ' + fmt(calc.economiaCSLL), true) +
-      kpi('Confiança', calc.confianca.score + '/100', calc.confianca.politica) + kpi('Prazo FORMP&D', prazoTxt(calc.prazo), C.status === 'enviado' ? 'Enviado — recibo ' + (C.recibo || '') : '');
+      kpi('Pendências', String(L.pendencias(caso(), calc).filter(function (p) { return p.nivel !== 'alerta'; }).length), 'bloqueios e erros a resolver') + kpi('Prazo FORMP&D', prazoTxt(calc.prazo), C.status === 'enviado' ? 'Enviado — recibo ' + (C.recibo || '') : '');
     var pend = L.pendencias(caso(), calc).filter(function (p) { return p.nivel !== 'alerta'; }).length;
     var b = document.querySelector('[data-aba="pendencias"]'); b.innerHTML = 'Pendências' + (pend ? '<span class="n">' + pend + '</span>' : '');
   }
@@ -249,7 +264,7 @@
   });
   function painel() {
     var p = $('painel');
-    ({ empresa: pEmpresa, projetos: pProjetos, dispendios: pDispendios, calculo: pCalculo, pendencias: pPendencias, revisao: pRevisao, formpd: pFormpd, retroativo: pRetro, documentos: pDocs, kb: function (el) { el.innerHTML = '<div id="kb-nav2" style="display:flex;gap:8px;flex-wrap:wrap"></div><div class="md" id="kb2"></div>'; kb($('kb2'), $('kb-nav2')); } })[aba](p);
+    ({ empresa: pEmpresa, projetos: pProjetos, dispendios: pDispendios, calculo: pCalculo, pendencias: pPendencias, revisao: pRevisao, formpd: pFormpd, retroativo: pRetro, documentos: pDocs})[aba](p);
     if (!podeEditar()) p.querySelectorAll('input,select,textarea').forEach(function (x) { if (!x.dataset.livre) x.disabled = true; });
   }
 
@@ -371,13 +386,15 @@
   }
   // pessoal: transforma as alocações da folha em dispêndios de RH (um por pessoa × projeto)
   function gerarPessoal(silencioso) {
+    var antigos = {}; D.despesas.forEach(function (d) { if (d.origem === 'folha') antigos[d.id] = d; });
     D.despesas = D.despesas.filter(function (d) { return d.origem !== 'folha'; });
     D.pessoas.forEach(function (p) {
       if (!p.elegivel && !p.forcarElegivel) return;
       (p.alocacoes || []).forEach(function (a) {
         if (!a.projetoId || !(Number(a.percentual) > 0)) return;
         D.despesas.push({ id: 'f-' + (p.cpf || p.id) + '-' + a.projetoId, origem: 'folha', rubrica: 'rh', projetoId: a.projetoId, descricao: p.nome + ' — ' + (p.cargo || ''), valor: p.custoAnual,
-          percentual: Number(a.percentual), funcao: p.cargo, doc: { tipo: 'folha', cpf: p.cpf, nome: p.nome }, evidencias: { timesheet: !!p.timesheet }, atividades: a.atividades || '' });
+          percentual: Number(a.percentual), funcao: p.cargo, doc: { tipo: 'folha', cpf: p.cpf, nome: p.nome }, evidencias: { timesheet: !!p.timesheet }, atividades: (antigos['f-' + (p.cpf || p.id) + '-' + a.projetoId] || {}).atividades || a.atividades || '' });
+        var ant = antigos['f-' + (p.cpf || p.id) + '-' + a.projetoId]; if (ant && ant.funcao) D.despesas[D.despesas.length - 1].funcao = ant.funcao;
       });
     });
     if (!silencioso) { RV.toast('Dispêndios de pessoal atualizados a partir da folha.'); mudou(); }
@@ -430,20 +447,19 @@
       var s = L.scoreProjeto(p), cor = s.score >= 70 ? '' : s.score >= 50 ? 'amarelo' : 'vermelho';
       var aberto = projAberto === p.id, b = 'projetos.' + i + '.';
       return '<div class="proj"><header><div><b>' + esc((p.codigo ? p.codigo + ' — ' : '') + (p.titulo || 'Sem título')) + '</b><div class="sub">' + esc(L.TIPO_PESQUISA[p.tipo] || '') + ' · dispêndio ' + fmt(calc.porProjeto[p.id] || 0) + '</div></div>' +
-        '<div style="display:flex;gap:8px;align-items:center">' + chip(s.score + '/100 · ' + s.faixa, cor === 'vermelho' ? 'vermelho' : cor === 'amarelo' ? 'amarelo' : 'verde') +
+        '<div style="display:flex;gap:8px;align-items:center">' + chip(L.CRITERIOS.filter(function (c) { return (p.criterios || {})[c.id]; }).length + ' de ' + L.CRITERIOS.length + ' critérios técnicos', cor === 'vermelho' ? 'vermelho' : cor === 'amarelo' ? 'amarelo' : 'verde') +
         '<button type="button" class="sec mini" data-proj="' + p.id + '">' + (aberto ? 'Fechar' : 'Editar') + '</button></div></header>' +
-        '<div class="barra ' + cor + '"><i style="width:' + s.score + '%"></i></div>' +
         (s.alertas.length ? '<div class="sub">' + s.alertas.map(esc).join(' ') + '</div>' : '') +
         (aberto ? '<div class="grade">' + campo('Código', b + 'codigo') + campo('Título (nome da atividade)', b + 'titulo') +
           campo('Tipo', b + 'tipo', 'select', [['basica', 'Pesquisa básica'], ['aplicada', 'Pesquisa aplicada'], ['experimental', 'Desenvolvimento experimental']]) + campo('Área predominante', b + 'area') +
           campo('Início', b + 'inicio', 'date') + campo('Término (previsto/real)', b + 'fim', 'date') + campo('Responsável técnico', b + 'responsavel') + campo('ICT / universidade / Embrapii parceira', b + 'ict') + '</div>' +
           campo('Objetivo tecnológico', b + 'objetivo', 'area', 2) + campo('Desafio tecnológico / incerteza (o problema técnico sem solução óbvia)', b + 'desafio', 'area', 4) +
           campo('Elementos tecnologicamente inovadores / novidade', b + 'novidade', 'area', 3) + campo('Metodologia', b + 'metodologia', 'area', 3) + campo('Marcos críticos', b + 'marcos', 'area', 2) +
-          campo('Resultados obtidos', b + 'resultados', 'area', 2) + campo('Evidências disponíveis (relatórios, commits, testes, protótipos, atas)', b + 'evidencias', 'area', 2) + campo('Projeto contínuo (plurianual)', b + 'continuo', 'check') +
-          '<h3>Critérios técnicos (score)</h3><div class="grade">' + L.CRITERIOS.map(function (c) { return '<div>' + campo(c.rotulo + ' (' + c.peso + ')', b + 'criterios.' + c.id, 'check') + '<input placeholder="Evidência deste critério" data-k="' + b + 'evidenciasPorCriterio.' + c.id + '" value="' + esc((p.evidenciasPorCriterio || {})[c.id] || '') + '"></div>'; }).join('') + '</div>' +
+          campo('Resultados obtidos', b + 'resultados', 'area', 2) + campo('Evidências disponíveis (relatórios, commits, testes, protótipos, atas)', b + 'evidencias', 'area', 2) +
+          '<h3>Critérios técnicos (score)</h3><div class="grade">' + L.CRITERIOS.map(function (c) { return '<div>' + campo(c.rotulo, b + 'criterios.' + c.id, 'check') + '<input placeholder="Evidência deste critério" data-k="' + b + 'evidenciasPorCriterio.' + c.id + '" value="' + esc((p.evidenciasPorCriterio || {})[c.id] || '') + '"></div>'; }).join('') + '</div>' +
           '<div style="display:flex;justify-content:flex-end"><button type="button" class="sec mini" data-del-proj="' + p.id + '">Excluir projeto</button></div>' : '') + '</div>';
     }).join('');
-    el.innerHTML = '<div class="topo-caso"><div><h2>Projetos de PD&amp;I</h2><p class="sub">Cada projeto precisa de desafio técnico, incerteza, metodologia e evidências. Score abaixo de 50 tira os dispêndios do projeto da base.</p></div><button type="button" id="add-proj">Novo projeto</button></div>' +
+    el.innerHTML = '<div class="topo-caso"><div><h2>Projetos de PD&amp;I</h2><p class="sub">Cada projeto precisa de desafio técnico, incerteza, metodologia e evidências. Projetos sem desafio técnico, incerteza e evidências saem da base.</p></div><button type="button" id="add-proj">Novo projeto</button></div>' +
       (lista || '<p class="sub">Nenhum projeto ainda.</p>') +
       '<details><summary class="sub">Atividades normalmente inelegíveis</summary><ul class="sub">' + L.NAO_ELEGIVEIS.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul></details>';
     var add = $('add-proj'); if (add) add.onclick = function () { var p = novoProjeto(); projAberto = p.id; mudou(); };
@@ -483,9 +499,9 @@
         '<td style="font-size:12px;white-space:nowrap">' + [['timesheet', 'timesheet'], ['contrato', 'contrato'], ['nf', 'NF']].map(function (k) { return '<label class="c"><input type="checkbox" data-k="' + b + 'evidencias.' + k[0] + '"' + (ev[k[0]] ? ' checked' : '') + '> ' + k[1] + '</label>'; }).join('') + '</td>' +
         '<td style="font-size:12px;white-space:nowrap">' + [['ativado', 'ativado (CPC 04)'], ['capex', 'equipamento'], ['outroIncentivo', 'subvenção']].map(function (k) { return '<label class="c"><input type="checkbox" data-k="' + b + k[0] + '"' + (d[k[0]] ? ' checked' : '') + '> ' + k[1] + '</label>'; }).join('') + '</td>' +
         '<td>' + chip(ROT[v.status], COR[v.status]) + '<div class="motivos">' + esc(v.motivos.join(' ')) + '</div>' + (v.valorConsiderado ? '<small>' + fmt(v.valorConsiderado) + '</small>' : '') + '</td>' +
-        '<td><button type="button" class="sec mini" data-del-d="' + d.id + '" title="Excluir">✕</button></td></tr>';
+        '<td><button type="button" class="sec mini" data-del-d="' + d.id + '">Excluir</button></td></tr>';
     }).join('');
-    el.innerHTML = '<div class="topo-caso"><div><h2>Equipe (folha)</h2><p class="sub">Envie a folha (CSV/XLSX com CPF, nome, cargo, custo total e, se houver, projeto e dedicação). Ajuste a dedicação por projeto e gere os dispêndios de pessoal.</p></div>' +
+    el.innerHTML = '<div class="topo-caso"><div><h2>Equipe (folha)</h2><p class="sub">Envie a folha (CSV/XLSX com CPF, nome, cargo, custo total e, se houver, projeto e dedicação). Ajuste a dedicação por projeto e gere os dispêndios de pessoal. <a href="#" id="modelo-folha">Baixar modelo de planilha</a></p></div>' +
       '<button type="button" id="gerar-rh"' + (D.pessoas.length ? '' : ' disabled') + '>Gerar dispêndios de pessoal</button></div>' +
       (pessoas ? '<div class="tabela"><table><thead><tr><th>Pessoa</th><th>Classificação</th><th class="r">Custo anual</th><th>Horas/ano</th><th>Evidência</th><th>Dedicação por projeto</th></tr></thead><tbody>' + pessoas + '</tbody></table></div>' : '<p class="sub">Nenhuma folha importada.</p>') +
       '<div class="topo-caso"><div><h2>Lançamentos</h2><p class="sub">Notas fiscais importadas viram lançamentos automaticamente. Vincule cada um a um projeto e marque as evidências. Despesa ativada, compra de equipamento ou com subvenção sai da base.</p></div><button type="button" id="add-d" class="sec">Adicionar lançamento</button></div>' +
@@ -496,6 +512,7 @@
       if (x.value !== '') pe.alocacoes.push({ projetoId: p[1], percentual: Number(x.value) }); mudou(true);
     }); });
     $('gerar-rh').onclick = function () { gerarPessoal(false); };
+    $('modelo-folha').onclick = function (e) { e.preventDefault(); baixar('modelo-folha-lei-do-bem.csv', L.csv([['CPF', 'Nome', 'Sexo', 'Cargo', 'Departamento', 'Centro de custo', 'Formação', 'Competência', 'Custo total', 'Horas', 'Projeto', 'Dedicação', 'Timesheet']]), 'text/csv;charset=utf-8'); };
     $('add-d').onclick = function () { D.despesas.push({ id: L.uid('d'), origem: 'manual', rubrica: 'outros', projetoId: D.projetos[0] ? D.projetos[0].id : '', descricao: '', valor: 0, percentual: 100, evidencias: {} }); mudou(); };
     el.querySelectorAll('[data-del-d]').forEach(function (b) { b.onclick = function () { if (confirm('Excluir este lançamento?')) { D.despesas = D.despesas.filter(function (d) { return d.id !== b.dataset.delD; }); mudou(); } }; });
   }
@@ -520,10 +537,9 @@
 
   // ================================================================== aba Pendências e confiança
   function pPendencias(el) {
-    var pend = L.pendencias(caso(), calc), COR = { bloqueio: 'vermelho', erro: 'vermelho', alerta: 'amarelo' };
-    el.innerHTML = '<h2>Score de confiança: ' + calc.confianca.score + '/100</h2><p class="sub">' + esc(calc.confianca.politica) + '</p>' +
-      '<div class="grade">' + calc.confianca.dimensoes.map(function (d) { var cor = d.valor >= 85 ? '' : d.valor >= 50 ? 'amarelo' : 'vermelho'; return '<div><div style="display:flex;justify-content:space-between;font-size:13px"><span>' + esc(d.rotulo) + ' <small class="sub">(' + Math.round(d.peso * 100) + '%)</small></span><b>' + Math.round(d.valor) + '</b></div><div class="barra ' + cor + '"><i style="width:' + d.valor + '%"></i></div></div>'; }).join('') + '</div>' +
-      '<h2>Pendências (' + pend.length + ')</h2>' + (pend.length ? pend.map(function (p) { return '<div class="pend"><div>' + chip(p.nivel, COR[p.nivel]) + '</div><div class="sub">' + esc(p.area) + '</div><div>' + esc(p.texto) + '</div></div>'; }).join('') : '<p class="sub">Nenhuma pendência.</p>');
+    var pend = L.pendencias(caso(), calc), COR = { bloqueio: 'vermelho', erro: 'vermelho', alerta: 'amarelo' }, ROT = { bloqueio: 'Bloqueio', erro: 'Erro', alerta: 'Alerta' };
+    el.innerHTML = '<h2>Pendências (' + pend.length + ')</h2><p class="sub">Bloqueios e erros impedem a aprovação final. Alertas devem ser conferidos na revisão.</p>' +
+      (pend.length ? pend.map(function (p) { return '<div class="pend"><div>' + chip(ROT[p.nivel], COR[p.nivel]) + '</div><div class="sub">' + esc(p.area) + '</div><div>' + esc(p.texto) + '</div></div>'; }).join('') : '<p class="sub">Nenhuma pendência.</p>');
   }
 
   // ================================================================== aba Revisão humana
@@ -572,31 +588,123 @@
     return '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>Rascunho FORMP&D ' + h(C.anoBase) + '</title><style>body{font-family:Arial,sans-serif;max-width:900px;margin:30px auto;padding:0 20px;color:#0E2239;font-size:13px}h1{font-size:20px}h2{font-size:15px;border-bottom:1px solid #DCE3EA;padding-bottom:3px;margin-top:24px}table{width:100%;border-collapse:collapse}td{border:1px solid #DCE3EA;padding:5px 7px;vertical-align:top}td:first-child{width:260px;color:#5A6878}.aviso{background:#F7EBD3;padding:8px 10px}</style></head><body>' +
       '<h1>Rascunho do FORMP&amp;D — ano-base ' + h(C.anoBase) + '</h1><p class="aviso">' + h(f.aviso) + (C.status !== 'aprovado' && C.status !== 'enviado' ? ' Situação: NÃO APROVADO na revisão humana.' : '') + '</p>' +
       f.secoes.map(function (s) {
-        if (s.projetos) return '<h2>' + h(s.titulo) + '</h2>' + s.projetos.map(function (p) { return '<h3>' + h((p.codigo || '') + ' — ' + (p.titulo || '')) + ' (score ' + p.score + ')</h3><table>' + p.campos.map(function (c) { return '<tr><td>' + h(c[0]) + '</td><td>' + h(c[1]) + '</td></tr>'; }).join('') + '</table>'; }).join('');
+        if (s.projetos) return '<h2>' + h(s.titulo) + '</h2>' + s.projetos.map(function (p) { return '<h3>' + h((p.codigo || '') + ' — ' + (p.titulo || '')) + '</h3><table>' + p.campos.map(function (c) { return '<tr><td>' + h(c[0]) + '</td><td>' + h(c[1]) + '</td></tr>'; }).join('') + '</table>'; }).join('');
         return '<h2>' + h(s.titulo) + '</h2><table>' + s.campos.map(function (c) { return '<tr><td>' + h(c[0]) + '</td><td>' + h(c[1]) + '</td></tr>'; }).join('') + '</table>';
       }).join('') + '<h2>Anexos exigidos</h2><ul>' + f.anexos.map(function (a) { return '<li>' + h(a) + '</li>'; }).join('') + '</ul></body></html>';
   }
+  // FORMP&D: formulário guiado em etapas, na ordem do formulário do MCTI. Os campos gravam no próprio caso.
+  var etapaF = 0;
+  function campoF(c, path, valor) {
+    var v = valor == null ? '' : valor, req = c.req ? '<b style="color:var(--bad)"> *</b>' : '';
+    var aj = c.ajuda ? '<small class="sub" style="font-weight:500">' + esc(c.ajuda) + '</small>' : '';
+    var falta = c.req && (String(v).trim() === '' || (c.min && String(v).trim().length < c.min));
+    var est = falta ? ' style="border-color:#D9A23A"' : '';
+    if (c.tipo === 'auto') return '<label><span>' + esc(c.rotulo) + '</span><input value="' + esc(c.auto(caso(), calc)) + '" disabled data-livre="1"></label>';
+    if (c.tipo === 'select') return '<label><span>' + esc(c.rotulo) + req + '</span><select data-k="' + path + '"' + est + '>' + c.ops.map(function (o) { return '<option value="' + o[0] + '"' + (String(v) === o[0] || (v === true && o[0] === 'sim') || (v === false && o[0] === 'nao' && v !== '') ? ' selected' : '') + '>' + esc(o[1]) + '</option>'; }).join('') + '</select>' + aj + '</label>';
+    if (c.tipo === 'texto') return '<label style="grid-column:1/-1"><span>' + esc(c.rotulo) + req + (c.min ? ' <small class="sub">(' + String(v).trim().length + ' de ' + c.min + ' caracteres mínimos)</small>' : '') + '</span><textarea rows="3" data-k="' + path + '"' + est + '>' + esc(v) + '</textarea>' + aj + '</label>';
+    var t = c.tipo === 'data' ? 'date' : c.tipo === 'moeda' || c.tipo === 'numero' ? 'number' : 'text';
+    return '<label><span>' + esc(c.rotulo) + req + '</span><input type="' + t + '"' + (c.tipo === 'moeda' ? ' step="0.01"' : '') + ' data-k="' + path + '" value="' + esc(v) + '"' + est + '>' + aj + '</label>';
+  }
+  function opcoesProjeto(sel) { return '<option value="">Selecione</option>' + D.projetos.map(function (p) { return '<option value="' + p.id + '"' + (p.id === sel ? ' selected' : '') + '>' + esc(p.codigo || p.titulo) + '</option>'; }).join(''); }
+  function listaF(l) {
+    var arr = pegar(l.k) || [];
+    var linhas = arr.map(function (item, i) {
+      return '<tr>' + l.cols.map(function (c) {
+        var path = l.k + '.' + i + '.' + c[0], v = item[c[0]] == null ? '' : item[c[0]];
+        if (c[2] === 'projeto') return '<td><select data-k="' + path + '">' + opcoesProjeto(v) + '</select></td>';
+        if (c[2] === 'simnao') return '<td><select data-k="' + path + '"><option value="">Selecione</option><option value="sim"' + (v === 'sim' ? ' selected' : '') + '>Sim</option><option value="nao"' + (v === 'nao' ? ' selected' : '') + '>Não</option></select></td>';
+        return '<td><input data-k="' + path + '"' + (c[2] === 'moeda' ? ' type="number" step="0.01"' : '') + ' value="' + esc(v) + '"></td>';
+      }).join('') + '<td><button type="button" class="sec mini" data-del-l="' + l.k + '|' + i + '">Excluir</button></td></tr>';
+    }).join('');
+    return '<div style="display:grid;gap:8px"><div class="topo-caso"><h3>' + esc(l.titulo) + '</h3><button type="button" class="sec mini" data-add-l="' + l.k + '">Adicionar</button></div>' +
+      (linhas ? '<div class="tabela"><table><thead><tr>' + l.cols.map(function (c) { return '<th>' + esc(c[1]) + '</th>'; }).join('') + '<th></th></tr></thead><tbody>' + linhas + '</tbody></table></div>' : '<p class="sub" style="margin:0">Nenhum item. Se não houver, deixe em branco.</p>') + '</div>';
+  }
+  function despesasF(dd) {
+    var idx = []; D.despesas.forEach(function (d, i) { if (d.rubrica === dd.rubrica) idx.push(i); });
+    var pf = dd.rubrica === 'servico_pf' || dd.rubrica === 'inventor', mat = dd.rubrica === 'material';
+    var linhas = idx.map(function (i) {
+      var d = D.despesas[i], b = 'despesas.' + i + '.';
+      if (!d.doc) d.doc = {};
+      return '<tr>' + (mat ? '' : '<td><input data-k="' + b + 'doc.' + (pf ? 'cpf' : 'cnpj') + '" value="' + esc(d.doc[pf ? 'cpf' : 'cnpj'] || '') + '" placeholder="' + (pf ? 'CPF' : 'CNPJ') + '"></td><td><input data-k="' + b + 'doc.nome" value="' + esc(d.doc.nome || '') + '"></td>') +
+        (dd.rubrica === 'ict' || dd.rubrica === 'microempresa' || dd.rubrica === 'servico_pj' || dd.rubrica === 'inventor' ? '<td><select data-k="' + b + 'situacao">' + ['', 'Contratado', 'Em execução', 'Terminado'].map(function (o) { return '<option' + ((d.situacao || '') === o ? ' selected' : '') + '>' + o + '</option>'; }).join('') + '</select></td>' : '') +
+        (dd.rubrica === 'ict' ? '<td><select data-k="' + b + 'embrapii"><option value="">Não</option><option value="sim"' + (d.embrapii ? ' selected' : '') + '>Sim</option></select></td>' : '') +
+        (dd.rubrica === 'servico_pf' ? '<td><input data-k="' + b + 'funcao" value="' + esc(d.funcao || '') + '"></td><td><input type="number" data-k="' + b + 'horas" value="' + esc(d.horas || '') + '" style="width:80px"></td>' : '') +
+        '<td><select data-k="' + b + 'projetoId">' + opcoesProjeto(d.projetoId) + '</select></td><td><input data-k="' + b + 'descricao" value="' + esc(d.descricao || '') + '" style="min-width:220px"></td>' +
+        '<td><input type="number" step="0.01" data-k="' + b + 'valor" value="' + esc(d.valor) + '" style="width:120px"></td><td><button type="button" class="sec mini" data-del-d="' + d.id + '">Excluir</button></td></tr>';
+    }).join('');
+    var cab = (mat ? '' : '<th>' + (pf ? 'CPF' : 'CNPJ') + '</th><th>' + (pf ? 'Nome' : 'Razão social / nome') + '</th>') + (dd.rubrica === 'ict' || dd.rubrica === 'microempresa' || dd.rubrica === 'servico_pj' || dd.rubrica === 'inventor' ? '<th>Situação</th>' : '') + (dd.rubrica === 'ict' ? '<th>Embrapii</th>' : '') + (dd.rubrica === 'servico_pf' ? '<th>Função</th><th>Horas</th>' : '') + '<th>Projeto</th><th>' + (mat ? 'Identificação e vinculação ao projeto' : 'Descrição técnica do serviço') + '</th><th>Valor (R$)</th><th></th>';
+    return '<div style="display:grid;gap:8px"><div class="topo-caso"><h3>' + esc(dd.titulo) + '</h3><button type="button" class="sec mini" data-add-d="' + dd.rubrica + '">Adicionar</button></div>' +
+      (linhas ? '<div class="tabela"><table><thead><tr>' + cab + '</tr></thead><tbody>' + linhas + '</tbody></table></div>' : '<p class="sub" style="margin:0">Nenhum item. Notas fiscais importadas aparecem aqui conforme a rubrica.</p>') + '</div>';
+  }
+  function rhF() {
+    var idx = []; D.despesas.forEach(function (d, i) { if (d.rubrica === 'rh') idx.push(i); });
+    if (!idx.length) return '<p class="sub">Nenhum dispêndio de pessoal. Envie a folha e use “Gerar dispêndios de pessoal” na aba Dispêndios.</p>';
+    return '<div class="tabela"><table><thead><tr><th>Pessoa</th><th>Sexo</th><th>Última formação</th><th>Função no projeto</th><th>Projeto</th><th>Horas no ano</th><th>Dedicação (%)</th><th class="r">Valor</th><th>Descrição das atividades</th></tr></thead><tbody>' + idx.map(function (i) {
+      var d = D.despesas[i], j = D.pessoas.findIndex(function (x) { return d.doc && x.cpf === d.doc.cpf; }), p = D.pessoas[j] || {}, b = 'despesas.' + i + '.', pb = 'pessoas.' + j + '.';
+      var proj = D.projetos.filter(function (x) { return x.id === d.projetoId; })[0] || {};
+      return '<tr><td><b>' + esc(p.nome || d.descricao) + '</b><br><small class="sub">' + esc(L.mascaraCpf(p.cpf || '')) + '</small></td>' +
+        '<td>' + (j >= 0 ? '<select data-k="' + pb + 'sexo"><option value=""></option><option value="F"' + (p.sexo === 'F' ? ' selected' : '') + '>F</option><option value="M"' + (p.sexo === 'M' ? ' selected' : '') + '>M</option></select>' : '') + '</td>' +
+        '<td>' + (j >= 0 ? '<input data-k="' + pb + 'formacao" value="' + esc(p.formacao || '') + '">' : '') + '</td><td><input data-k="' + b + 'funcao" value="' + esc(d.funcao || p.cargo || '') + '"></td><td>' + esc(proj.codigo || proj.titulo || '—') + '</td>' +
+        '<td>' + (j >= 0 ? '<input type="number" data-k="' + pb + 'horas" value="' + esc(p.horas || '') + '" style="width:80px">' : '') + '</td><td><input type="number" data-k="' + b + 'percentual" value="' + esc(d.percentual == null ? 100 : d.percentual) + '" style="width:70px"></td>' +
+        '<td class="r">' + fmt(L.num(d.valor) * (d.percentual == null ? 100 : d.percentual) / 100) + '</td><td><textarea rows="2" data-k="' + b + 'atividades" style="min-width:240px">' + esc(d.atividades || '') + '</textarea></td></tr>';
+    }).join('') + '</tbody></table></div>';
+  }
   function pFormpd(el) {
+    var ETs = L.FORMPD_ETAPAS, prog = L.progressoFormpd(caso(), calc), et = ETs[etapaF], st = prog.etapas[et.id];
+    var nav = '<div style="display:grid;gap:4px;align-content:start">' + ETs.map(function (x, i) {
+      var e2 = prog.etapas[x.id], fim = x.tipo === 'conferencia' || x.tipo === 'incentivos';
+      return '<button type="button" class="sec" data-etapa="' + i + '" style="justify-content:space-between;text-align:left;' + (i === etapaF ? 'background:var(--soft);border-color:var(--teal)' : 'border-color:var(--line)') + '"><span>' + esc(x.titulo) + '</span>' + (fim ? '' : chip(e2.ok ? 'Completa' : e2.falta.length + ' pendente(s)', e2.ok ? 'verde' : 'amarelo')) + '</button>';
+    }).join('') + '</div>';
+    var corpo = '<div style="display:grid;gap:14px;align-content:start"><div><h2>' + esc(et.titulo) + '</h2><p class="sub">' + esc(et.orientacao) + '</p></div>';
+    if (et.tipo === 'campos' || (et.tipo === 'listas' && et.campos)) corpo += '<div class="grade">' + et.campos.map(function (c) { return campoF(c, c.k, pegar(c.k)); }).join('') + '</div>';
+    if (et.tipo === 'projetos') {
+      corpo += D.projetos.length ? D.projetos.map(function (p, i) {
+        return '<div class="proj"><b>' + esc((p.codigo ? p.codigo + ' — ' : '') + (p.titulo || 'Projeto sem nome')) + '</b><div class="grade">' + et.campos.map(function (c) {
+          var v = p[c.k]; if (c.k === 'continuo' && typeof v === 'boolean') v = v ? 'sim' : 'nao';
+          return campoF(c, 'projetos.' + i + '.' + c.k, v);
+        }).join('') + '</div></div>';
+      }).join('') : '<p class="sub">Nenhum projeto. Cadastre na aba Projetos.</p>';
+      corpo += '<div><button type="button" class="sec" id="f-add-proj">Adicionar projeto</button></div>';
+    }
+    (et.listas || []).forEach(function (l) { corpo += listaF(l); });
+    (et.despesas || []).forEach(function (dd) { corpo += despesasF(dd); });
+    if (et.tipo === 'rh') corpo += rhF();
+    if (et.tipo === 'incentivos') corpo += '<div class="tabela"><table><tbody>' + [['Dispêndios elegíveis', fmt(calc.dispendios)], ['Percentual de exclusão (art. 19)', r2(calc.percentual * 100) + '%'], ['Exclusão adicional', fmt(calc.exclusao)], ['Exclusão por patente (art. 19 §3º)', fmt(calc.exclusaoPatente)], ['Aproveitada no IRPJ', fmt(calc.aproveitadaIRPJ)], ['Aproveitada na CSLL', fmt(calc.aproveitadaCSLL)], ['Excedente sem aproveitamento', fmt(calc.perdidaIRPJ)], ['Economia estimada de IRPJ e CSLL', fmt(calc.economia)]].map(function (x) { return '<tr><td>' + esc(x[0]) + '</td><td class="r"><b>' + esc(x[1]) + '</b></td></tr>'; }).join('') + '</tbody></table></div>';
+    if (et.tipo === 'conferencia') corpo += conferenciaF(prog);
+    if (st && st.falta.length && et.tipo !== 'conferencia') corpo += '<div class="aviso-rascunho"><b>Falta preencher:</b><br>' + st.falta.map(esc).join('<br>') + '</div>';
+    corpo += '<div style="display:flex;justify-content:space-between;gap:8px"><button type="button" class="sec" id="f-ant"' + (etapaF ? '' : ' disabled') + '>Etapa anterior</button>' + (etapaF < ETs.length - 1 ? '<button type="button" id="f-prox">Próxima etapa</button>' : '') + '</div></div>';
+    el.innerHTML = '<div style="display:grid;grid-template-columns:minmax(220px,280px) 1fr;gap:20px" class="wizard">' + nav + corpo + '</div>';
+    el.querySelectorAll('[data-etapa]').forEach(function (b) { b.onclick = function () { etapaF = +b.dataset.etapa; painel(); window.scrollTo(0, $('abas').offsetTop - 70); }; });
+    var a = $('f-ant'); if (a) a.onclick = function () { etapaF = Math.max(0, etapaF - 1); painel(); window.scrollTo(0, $('abas').offsetTop - 70); };
+    var n = $('f-prox'); if (n) n.onclick = function () { etapaF = Math.min(ETs.length - 1, etapaF + 1); painel(); window.scrollTo(0, $('abas').offsetTop - 70); };
+    var ap = $('f-add-proj'); if (ap) ap.onclick = function () { novoProjeto(); mudou(); };
+    el.querySelectorAll('[data-add-l]').forEach(function (b) { b.onclick = function () { var arr = pegar(b.dataset.addL); if (!Array.isArray(arr)) { por(b.dataset.addL, []); arr = pegar(b.dataset.addL); } arr.push({}); mudou(); }; });
+    el.querySelectorAll('[data-del-l]').forEach(function (b) { b.onclick = function () { var p = b.dataset.delL.split('|'); if (confirm('Excluir este item?')) { pegar(p[0]).splice(+p[1], 1); mudou(); } }; });
+    el.querySelectorAll('[data-add-d]').forEach(function (b) { b.onclick = function () { D.despesas.push({ id: L.uid('d'), origem: 'formpd', rubrica: b.dataset.addD, projetoId: D.projetos.length === 1 ? D.projetos[0].id : '', descricao: '', valor: 0, percentual: 100, doc: {}, evidencias: {} }); mudou(); }; });
+    el.querySelectorAll('[data-del-d]').forEach(function (b) { b.onclick = function () { if (confirm('Excluir este item?')) { D.despesas = D.despesas.filter(function (d) { return d.id !== b.dataset.delD; }); mudou(); } }; });
+    wireConferencia(el);
+  }
+  function conferenciaF(prog) {
     var f = L.formpd(caso(), calc), aprovado = C.status === 'aprovado' || C.status === 'enviado';
-    var linhaCampo = function (c) { return '<div class="campo-f"><div class="sub">' + esc(c[0]) + '</div><div class="v">' + esc(c[1]) + '</div><button type="button" class="sec mini" data-copiar="' + esc(c[1]) + '">Copiar</button></div>'; };
-    el.innerHTML = (aprovado ? '' : '<div class="aviso-rascunho"><b>Rascunho não aprovado.</b> Conclua as quatro etapas de revisão antes de transcrever para o portal do MCTI.</div>') +
-      '<p class="sub">' + esc(f.aviso) + '</p>' +
-      '<div class="topo-caso"><h2>Planilhas de apoio</h2><button type="button" id="pacote">Baixar pacote completo (.zip)</button></div>' +
-      '<div class="tabela"><table><thead><tr><th>Seção do formulário</th><th class="r">Linhas</th><th></th></tr></thead><tbody>' + Object.keys(f.planilhas).map(function (k) { var pl = f.planilhas[k]; return '<tr><td>' + esc(pl.titulo) + '</td><td class="r">' + (pl.linhas.length - 1) + '</td><td><button type="button" class="sec mini" data-pl="' + k + '"' + (pl.linhas.length > 1 ? '' : ' disabled') + '>Baixar</button></td></tr>'; }).join('') + '</tbody></table></div>' +
-      '<h2>Checklist antes do envio</h2><ul style="list-style:none;padding:0">' + f.checklist.map(function (c) { return '<li>' + (c[1] ? '✅' : '⬜') + ' ' + esc(c[0]) + '</li>'; }).join('') + '</ul>' +
-      (f.anexos.length ? '<h2>Anexos exigidos</h2><ul>' + f.anexos.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '') +
-      f.secoes.map(function (s) {
-        if (s.projetos) return '<h2>' + esc(s.titulo) + '</h2>' + (s.projetos.length ? s.projetos.map(function (p) { return '<h3>' + esc((p.codigo || '') + ' — ' + (p.titulo || '')) + ' ' + chip('score ' + p.score, p.score >= 70 ? 'verde' : p.score >= 50 ? 'amarelo' : 'vermelho') + '</h3>' + p.campos.map(linhaCampo).join(''); }).join('') : '<p class="sub">Sem projetos.</p>');
-        return '<h2>' + esc(s.titulo) + '</h2>' + s.campos.map(linhaCampo).join('');
-      }).join('') +
-      '<h2>Passo a passo no portal</h2><ol class="sub"><li>Entre no FORMP&amp;D do MCTI com a conta gov.br do representante legal (ou de quem ele autorizou).</li><li>Preencha a identificação da empresa e cadastre cada projeto copiando os campos acima.</li><li>Importe ou transcreva as planilhas de recursos humanos, serviços e materiais.</li><li>Anexe os documentos comprobatórios exigidos.</li><li>Confira a seção de incentivos com a memória de cálculo do Reversa e envie.</li><li>Registre o número do recibo na aba Revisão humana.</li></ol>';
-    el.querySelectorAll('[data-copiar]').forEach(function (b) { b.onclick = function () { navigator.clipboard.writeText(b.dataset.copiar).then(function () { RV.toast('Copiado.'); }); }; });
-    el.querySelectorAll('[data-pl]').forEach(function (b) { b.onclick = function () { var a = planilhaArquivo(f.planilhas[b.dataset.pl]); baixar(a.nome, a.blob); }; });
-    $('pacote').onclick = function () {
-      if (!window.JSZip) return RV.toast('Biblioteca de .zip indisponível.');
-      var z = new JSZip();
-      Object.keys(f.planilhas).forEach(function (k) { if (f.planilhas[k].linhas.length > 1) { var a = planilhaArquivo(f.planilhas[k]); z.file('planilhas/' + a.nome, a.blob); } });
-      z.file('Rascunho-FORMPD-' + nomeBase() + '.html', rascunhoHtml(f));
+    var pend = L.FORMPD_ETAPAS.filter(function (x) { return prog.etapas[x.id] && prog.etapas[x.id].falta.length; });
+    return (aprovado ? '' : '<div class="aviso-rascunho">O caso ainda não passou pelas quatro etapas de revisão humana. Transcreva no portal só depois da aprovação final.</div>') +
+      '<h3>Etapas</h3>' + (pend.length ? '<ul>' + pend.map(function (x) { return '<li><a href="#" data-ir-etapa="' + L.FORMPD_ETAPAS.indexOf(x) + '">' + esc(x.titulo) + '</a>: ' + prog.etapas[x.id].falta.length + ' item(ns) a preencher</li>'; }).join('') + '</ul>' : '<p class="sub">Todas as etapas preenchidas.</p>') +
+      '<h3>Antes de enviar</h3><ul style="list-style:none;padding:0;display:grid;gap:6px">' + f.checklist.map(function (c) { return '<li>' + chip(c[1] ? 'OK' : 'Pendente', c[1] ? 'verde' : 'amarelo') + ' ' + esc(c[0]) + '</li>'; }).join('') + '</ul>' +
+      (f.anexos.length ? '<h3>Documentos para anexar no portal</h3><ul>' + f.anexos.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ul>' : '') +
+      '<h3>Exportar</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" id="rascunho">Abrir rascunho para impressão</button><button type="button" class="sec" id="pacote">Baixar pacote (.zip)</button></div>' +
+      '<div class="tabela"><table><thead><tr><th>Planilha</th><th class="r">Linhas</th><th></th></tr></thead><tbody>' + Object.keys(f.planilhas).filter(function (k) { return f.planilhas[k].linhas.length > 1; }).map(function (k) { var pl = f.planilhas[k]; return '<tr><td>' + esc(pl.titulo) + '</td><td class="r">' + (pl.linhas.length - 1) + '</td><td><button type="button" class="sec mini" data-pl="' + k + '">Baixar</button></td></tr>'; }).join('') + '</tbody></table></div>' +
+      '<p class="sub">O layout de importação do portal pode mudar de um ano para outro: confira o manual do FORMP&amp;D do ano-base. Depois do envio, registre o recibo na aba Revisão humana.</p>';
+  }
+  function wireConferencia(el) {
+    var f = null, F = function () { return f || (f = L.formpd(caso(), calc)); };
+    el.querySelectorAll('[data-ir-etapa]').forEach(function (a) { a.onclick = function (e) { e.preventDefault(); etapaF = +a.dataset.irEtapa; painel(); }; });
+    el.querySelectorAll('[data-pl]').forEach(function (b) { b.onclick = function () { var a = planilhaArquivo(F().planilhas[b.dataset.pl]); baixar(a.nome, a.blob); }; });
+    var r = $('rascunho'); if (r) r.onclick = function () { var w = window.open('', '_blank'); if (!w) return RV.toast('Permita pop-ups para abrir o rascunho.'); w.document.write(rascunhoHtml(F())); w.document.close(); };
+    var pz = $('pacote'); if (pz) pz.onclick = function () {
+      if (!window.JSZip) return RV.toast('Não foi possível gerar o .zip agora.');
+      var z = new JSZip(), ff = F();
+      Object.keys(ff.planilhas).forEach(function (k) { if (ff.planilhas[k].linhas.length > 1) { var a = planilhaArquivo(ff.planilhas[k]); z.file('planilhas/' + a.nome, a.blob); } });
+      z.file('Rascunho-FORMPD-' + nomeBase() + '.html', rascunhoHtml(ff));
       L.MODELOS.forEach(function (m) {
         if (m.porProjeto) D.projetos.forEach(function (p) { z.file('documentos/' + m.id + '-' + (p.codigo || p.id) + '.html', L.documento(m.id, caso(), calc, { projetoId: p.id }).html); });
         else if (!m.porPessoa) z.file('documentos/' + m.id + '.html', L.documento(m.id, caso(), calc).html);
@@ -613,7 +721,7 @@
         D.retroativo.map(function (a, i) { var r = res[i], b = 'retroativo.' + i + '.'; return '<tr><td>' + a.ano + '</td><td>' + esc(a.formaTribTexto || a.regime) + '</td><td class="r">' + fmt(a.lucroIRPJ || 0) + '</td>' +
           '<td><input type="number" step="0.01" data-k="' + b + 'dispendios" value="' + esc(a.dispendios) + '" style="width:130px"></td><td><input type="number" data-k="' + b + 'percentual" value="' + esc(a.percentual || 60) + '" style="width:70px"></td>' +
           '<td><input type="checkbox" data-k="' + b + 'formpdNoPrazo"' + (a.formpdNoPrazo ? ' checked' : '') + '></td><td><input type="checkbox" data-k="' + b + 'fiscalizacao"' + (a.fiscalizacao ? ' checked' : '') + '></td>' +
-          '<td class="r"><b>' + fmt(r.credito || 0) + '</b></td><td>' + chip(r.risco || '—', COR[r.risco]) + '</td><td class="motivos">' + esc(r.acao) + (r.avisos.length ? ' ' + esc(r.avisos.join(' ')) : '') + '</td><td><button type="button" class="sec mini" data-del-r="' + i + '">✕</button></td></tr>'; }).join('') +
+          '<td class="r"><b>' + fmt(r.credito || 0) + '</b></td><td>' + chip(r.risco || '—', COR[r.risco]) + '</td><td class="motivos">' + esc(r.acao) + (r.avisos.length ? ' ' + esc(r.avisos.join(' ')) : '') + '</td><td><button type="button" class="sec mini" data-del-r="' + i + '">Excluir</button></td></tr>'; }).join('') +
         '<tr><td colspan="7"><b>Total estimado</b></td><td class="r"><b>' + fmt(total) + '</b></td><td colspan="3"></td></tr></tbody></table></div>' : '<p class="sub">Nenhum ano anterior. Envie ECFs de anos anteriores ou adicione manualmente.</p>') +
       '<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="sec" id="add-r">Adicionar ano manualmente</button><button type="button" class="sec" id="memo-r"' + (D.retroativo.length ? '' : ' disabled') + '>Memorando de recuperação</button></div>' +
       '<h2>Regras aplicadas</h2><ul class="sub"><li>Sem lucro real no ano, não há benefício; o excesso não passa para os anos seguintes.</li><li>Uso retroativo sem FORMP&amp;D entregue no prazo do ano é tratado como risco alto e exige parecer jurídico antes de retificar.</li><li>Restituição e compensação: 5 anos contados do pagamento (CTN, art. 168) — confirme a data de cada recolhimento.</li><li>Retificar a ECD pode exigir nova ECF: o Reversa sinaliza, a decisão é do contador.</li><li>Ano sob fiscalização: retificação bloqueada.</li></ul>';
@@ -634,33 +742,6 @@
     var opc = function (id) { var s = $('sel-' + id); if (!s) return {}; return { projetoId: s.value, pessoaId: s.value }; };
     el.querySelectorAll('[data-doc]').forEach(function (b) { b.onclick = function () { abrirDoc(b.dataset.doc, opc(b.dataset.doc)); }; });
     el.querySelectorAll('[data-word]').forEach(function (b) { b.onclick = function () { var d = L.documento(b.dataset.word, caso(), calc, opc(b.dataset.word)); baixar(b.dataset.word + '-' + nomeBase() + '.doc', '﻿' + d.html, 'application/msword'); }; });
-  }
-
-  // ================================================================== base de conhecimento (markdown)
-  var DOCS = [['manual.md', 'Manual do módulo'], ['base-de-conhecimento.md', 'Base de conhecimento'], ['formpd.md', 'FORMP&D passo a passo'], ['contabil.md', 'Parte contábil'], ['retificacoes.md', 'Retificações e modelos'], ['sistemas-do-governo.md', 'Sistemas do governo'], ['ingestao.md', 'Ingestão de arquivos'], ['api.md', 'API e integração']];
-  function md(t) {
-    var linhas = String(t).replace(/\r/g, '').split('\n'), out = [], i = 0;
-    var inl = function (s) { return esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>'); };
-    while (i < linhas.length) {
-      var l = linhas[i];
-      if (/^```/.test(l)) { var buf = []; i++; while (i < linhas.length && !/^```/.test(linhas[i])) buf.push(linhas[i++]); i++; out.push('<pre>' + esc(buf.join('\n')) + '</pre>'); continue; }
-      if (/^\|/.test(l)) { var rows = []; while (i < linhas.length && /^\|/.test(linhas[i])) rows.push(linhas[i++]); rows = rows.filter(function (r) { return !/^\|[\s:|-]+\|$/.test(r); });
-        out.push('<div class="tabela"><table>' + rows.map(function (r, k) { var c = r.replace(/^\||\|$/g, '').split('|'); return '<tr>' + c.map(function (x) { return (k ? '<td>' : '<th>') + inl(x.trim()) + (k ? '</td>' : '</th>'); }).join('') + '</tr>'; }).join('') + '</table></div>'); continue; }
-      var h = /^(#{1,4})\s+(.*)/.exec(l); if (h) { out.push('<h' + h[1].length + '>' + inl(h[2]) + '</h' + h[1].length + '>'); i++; continue; }
-      if (/^\s*[-*]\s+/.test(l)) { var it = []; while (i < linhas.length && /^\s*[-*]\s+/.test(linhas[i])) it.push('<li>' + inl(linhas[i++].replace(/^\s*[-*]\s+/, '')) + '</li>'); out.push('<ul>' + it.join('') + '</ul>'); continue; }
-      if (/^\s*\d+\.\s+/.test(l)) { var ol = []; while (i < linhas.length && /^\s*\d+\.\s+/.test(linhas[i])) ol.push('<li>' + inl(linhas[i++].replace(/^\s*\d+\.\s+/, '')) + '</li>'); out.push('<ol>' + ol.join('') + '</ol>'); continue; }
-      if (/^>\s?/.test(l)) { out.push('<blockquote>' + inl(l.replace(/^>\s?/, '')) + '</blockquote>'); i++; continue; }
-      if (/^---+$/.test(l.trim())) { out.push('<hr>'); i++; continue; }
-      if (l.trim()) out.push('<p>' + inl(l) + '</p>');
-      i++;
-    }
-    return out.join('');
-  }
-  function kb(alvo, nav, arq) {
-    nav.innerHTML = DOCS.map(function (d) { return '<button type="button" class="sec mini" data-kb="' + d[0] + '">' + esc(d[1]) + '</button>'; }).join('');
-    nav.querySelectorAll('[data-kb]').forEach(function (b) { b.onclick = function () { kb(alvo, nav, b.dataset.kb); }; });
-    fetch('/docs/lei-do-bem/' + (arq || DOCS[0][0]), { credentials: 'same-origin' }).then(function (r) { return r.ok ? r.text() : Promise.reject(new Error('Documento indisponível')); })
-      .then(function (t) { alvo.innerHTML = md(t); }).catch(function (e) { alvo.innerHTML = '<p class="sub">' + esc(e.message) + '</p>'; });
   }
 
   RV.eu.then(function () { if (!RV.pode('write')) $('novo').hidden = true; rota(); });
