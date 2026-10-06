@@ -156,7 +156,7 @@ test('CRM-008 exportar diagnóstico: PDF executivo completo e por grupo; outra o
   const r = await v1('crm/clients/' + cliente + '/report', { cookie: leitor });
   assert.equal(r.statusCode, 200);
   assert.equal(r.headers['content-type'], 'application/pdf');
-  assert.match(r.headers['content-disposition'], /attachment; filename="Diagnostico-Metalurgica-Teste-Ltda\.pdf"/);
+  assert.match(r.headers['content-disposition'], /attachment; filename="Diagnostico-Preliminar-Metalurgica-Teste-Ltda\.pdf"/);
   const pdf = Buffer.from(r.body, 'latin1');
   assert.equal(pdf.subarray(0, 5).toString(), '%PDF-');
   const prev = await v1('crm/clients/' + cliente + '/report', { cookie: admin, query: { grupo: 'prev' } });
