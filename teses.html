@@ -11,11 +11,19 @@
 <style>
   :root { --e-prov: #12968B; --e-ver: #E2B04A; --e-nao: #E6EBF0; --r-baixo: #1E7A4C; --r-medio: #8A5A12; --r-alto: #A33A2B; }
   @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --e-prov: #2EB3A7; --e-ver: #C9973A; --e-nao: #223142; --r-baixo: #7FD1A4; --r-medio: #E8B86A; --r-alto: #F0998B; } }
+  .grupos-topo { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 700px) { .grupos-topo { grid-template-columns: 1fr; } }
+  .rv .grupos-topo button { display: grid; gap: 4px; justify-items: start; text-align: left; background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 12px; padding: 16px 20px; font-weight: 500; }
+  .rv .grupos-topo button b { font: 700 1.2rem var(--f-head); display: flex; gap: 10px; align-items: baseline; }
+  .rv .grupos-topo button b small { font: 600 13px var(--f-body); color: var(--muted); }
+  .rv .grupos-topo button span { font-size: 13px; color: var(--muted); }
+  .rv .grupos-topo button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
+  .rv .grupos-topo button[aria-pressed="true"] span, .rv .grupos-topo button[aria-pressed="true"] b small { color: #AFC0D2; }
+  .rv .grupos-topo button[aria-pressed="true"] b { color: #6FD0C7; }
   .areas { display: flex; gap: 8px; flex-wrap: wrap; }
   .rv .areas button { background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; font-size: 14px; }
   .rv .areas button small { font-weight: 600; color: var(--muted); margin-left: 4px; }
-  .rv .areas button[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: #fff; }
-  .rv .areas button[aria-pressed="true"] small { color: #6FD0C7; }
+  .rv .areas button[aria-pressed="true"] { background: var(--soft); border-color: var(--teal); color: var(--teal-ink); }
   .nota-area { font-size: 13px; }
   .abas { display: flex; gap: 6px; border-bottom: 1px solid var(--line); }
   .abas button { background: transparent; color: var(--muted); border: 0; border-bottom: 3px solid transparent; border-radius: 0; padding: 10px 14px; }
@@ -99,6 +107,7 @@
     <span class="muted" id="versao" style="font-size:13px"></span>
   </div>
 
+  <div class="grupos-topo" id="grupos" role="group" aria-label="Grupo"></div>
   <nav class="areas" id="areas" aria-label="Área tributária"></nav>
 
   <div class="grid-kpi" id="kpis"></div>
@@ -113,7 +122,7 @@
 
   <div class="abas" role="tablist">
     <button type="button" role="tab" id="aba-cruz" aria-selected="true" aria-controls="p-cruz">Cruzamento por cliente</button>
-    <button type="button" role="tab" id="aba-mapa" aria-selected="false" aria-controls="p-mapa">Mapa das 60 teses</button>
+    <button type="button" role="tab" id="aba-mapa" aria-selected="false" aria-controls="p-mapa">Mapa das teses</button>
   </div>
 
   <section id="p-cruz" role="tabpanel" aria-labelledby="aba-cruz" style="display:grid;gap:18px">
@@ -191,13 +200,25 @@
     { id: 'ex5', nome: 'Loja Virtual Exemplo Ltda', regime: 'presumido', perfil: { comercio: true, ecommerce: true, st: true, multiuf: false, folha: false, monofasico: false, industria: false, servicos: false } },
     { id: 'ex6', nome: 'Autopeças Exemplo ME', regime: 'simples', perfil: { comercio: true, monofasico: true, st: true, folha: false } }
   ];
-  var estado = { reais: [], exemplo: false, cruz: null, clientes: [], area: 'PIS/COFINS' };
-  var AREAS = [['PIS/COFINS', 'PIS/COFINS'], ['Previdenciário', 'Previdenciário'], ['ICMS', 'ICMS'], ['IPI', 'IPI'], ['IRPJ/CSLL', 'IRPJ/CSLL'], ['Outros', 'Outros federais e indiretos'], ['todas', 'Todas']];
+  var estado = { reais: [], exemplo: false, cruz: null, clientes: [], grupo: 'fiscal', area: 'fiscal' };
+  // Dois grupos: Fiscal (oportunidades do faturamento e das políticas sobre ele) e Previdenciário (folha).
+  var GRUPOS = [
+    { id: 'fiscal', nome: 'Fiscal', desc: 'PIS/COFINS, ICMS, IPI, IRPJ/CSLL e demais tributos sobre o faturamento',
+      areas: [['fiscal', 'Todo o fiscal'], ['PIS/COFINS', 'PIS/COFINS'], ['ICMS', 'ICMS'], ['IPI', 'IPI'], ['IRPJ/CSLL', 'IRPJ/CSLL'], ['Outros', 'Outros federais e indiretos']] },
+    { id: 'prev', nome: 'Previdenciário', desc: 'Contribuições sobre a folha: rubricas, FAP/RAT, terceiros e Funrural',
+      areas: [['Previdenciário', 'Todo o previdenciário']] }
+  ];
+  var AREAS = GRUPOS.reduce(function (a, g) { return a.concat(g.areas); }, []);
   var NOTA = {
     'Previdenciário': 'Previdenciário segue regras próprias: apuração e compensação pela DCTFWeb/eSocial (Lei 11.457, art. 26-A), rubrica a rubrica da folha. Não se mistura com o fluxo do PIS/COFINS. Confira a jurisprudência de cada tese antes de oferecer: terço de férias (STF Tema 985) e limite de 20 salários mínimos para terceiros (STJ Tema 1.079) foram decididos contra o contribuinte.'
   };
   function areaDe(t) { return t.tributo === 'Indiretos' || t.tributo === 'Federais diversos' ? 'Outros' : t.tributo; }
-  function naArea(i) { return estado.area === 'todas' || areaDe(TESES[i]) === estado.area; }
+  function grupoDe(t) { return t.tributo === 'Previdenciário' ? 'prev' : 'fiscal'; }
+  function naArea(i) {
+    var t = TESES[i];
+    if (estado.area === 'fiscal') return grupoDe(t) === 'fiscal';
+    return areaDe(t) === estado.area;
+  }
   function idxArea() { return TESES.map(function (t, i) { return i; }).filter(naArea); }
   function contA(m) {
     var c = { provavel: 0, verificar: 0, nao: 0, score: 0 };
@@ -240,9 +261,15 @@
   }
 
   function renderAreas() {
-    $('areas').innerHTML = AREAS.map(function (a) {
-      var n = a[0] === 'todas' ? TESES.length : TESES.filter(function (t) { return areaDe(t) === a[0]; }).length;
-      return '<button type="button" data-area="' + RV.esc(a[0]) + '" aria-pressed="' + (estado.area === a[0]) + '">' + RV.esc(a[1]) + '<small>' + n + '</small></button>';
+    var conta = function (a) { return a === 'fiscal' ? TESES.filter(function (t) { return grupoDe(t) === 'fiscal'; }).length : TESES.filter(function (t) { return areaDe(t) === a; }).length; };
+    $('grupos').innerHTML = GRUPOS.map(function (g) {
+      var n = TESES.filter(function (t) { return grupoDe(t) === g.id; }).length;
+      return '<button type="button" class="grupo-btn" data-grupo="' + g.id + '" aria-pressed="' + (estado.grupo === g.id) + '"><b>' + g.nome + '<small>' + n + ' teses</small></b><span>' + RV.esc(g.desc) + '</span></button>';
+    }).join('');
+    var g = GRUPOS.filter(function (x) { return x.id === estado.grupo; })[0];
+    $('areas').hidden = g.areas.length < 2;
+    $('areas').innerHTML = g.areas.map(function (a) {
+      return '<button type="button" data-area="' + RV.esc(a[0]) + '" aria-pressed="' + (estado.area === a[0]) + '">' + RV.esc(a[1]) + '<small>' + conta(a[0]) + '</small></button>';
     }).join('');
     var nota = NOTA[estado.area];
     $('nota-area').hidden = !nota; if (nota) $('nota-area').textContent = nota;
@@ -252,7 +279,7 @@
     estado.cruz.matriz.forEach(function (m) { var c = contA(m); tot.provavel += c.provavel; tot.verificar += c.verificar; });
     var cobertas = ids.filter(function (i) { return estado.cruz.porTese[i].contagem.provavel > 0; }).length;
     var motor = ids.filter(function (i) { return TESES[i].motor; }).length;
-    var rotArea = estado.area === 'todas' ? 'catálogo' : estado.area;
+    var rotArea = estado.area === 'fiscal' ? 'Fiscal' : estado.area;
     $('kpis').innerHTML =
       kpi('destaque', 'Teses · ' + rotArea, ids.length + (estado.area === 'todas' ? '' : ' de 60'), motor ? motor + ' já ligada(s) ao motor de cálculo' : 'nenhuma ainda no motor de cálculo') +
       kpi('', 'Clientes cruzados', String(estado.clientes.length), estado.exemplo ? 'clientes fictícios de exemplo' : 'cadastrados na organização') +
@@ -432,6 +459,12 @@
   $('matriz-wrap').addEventListener('mouseleave', function () { tip.hidden = true; });
   ['f-ordem', 'f-so-aplic'].forEach(function (id) { $(id).addEventListener('change', function () { renderMatriz(); renderRanks(); }); });
   ['m-busca', 'm-tributo', 'm-risco', 'm-regime', 'm-via'].forEach(function (id) { $(id).addEventListener('input', renderMapa); });
+  $('grupos').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-grupo]'); if (!b) return;
+    estado.grupo = b.getAttribute('data-grupo');
+    estado.area = GRUPOS.filter(function (g) { return g.id === estado.grupo; })[0].areas[0][0];
+    render();
+  });
   $('areas').addEventListener('click', function (e) { var b = e.target.closest('button[data-area]'); if (!b) return; estado.area = b.getAttribute('data-area'); render(); });
   $('b-alternar').addEventListener('click', function () { estado.exemplo = !estado.exemplo; render(); });
   function aba(qual) {
