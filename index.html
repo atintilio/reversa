@@ -972,6 +972,27 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
 
     // ------------------------------------------------------------- capa introdutória (foto) e classificação
     var nomeCli = cnpjs.map(function (c) { return contribuintes[c]; }).join('; ') || '';
+    // página 1: capa com a mesma arte do login (fundo navy + emblema com sombra)
+    var pX = M + 14;
+    doc.setFillColor(14, 34, 57); doc.rect(0, 0, W, H, 'F');
+    if (root.REVERSA_EMBLEMA) { try { doc.addImage(root.REVERSA_EMBLEMA, 'PNG', pX - 18, 14, 74, 74 * 416 / 426); } catch (e) { /* segue sem emblema */ } }
+    fonte('helvetica', 'bold', 44); doc.setTextColor(255, 255, 255); doc.text('DTI', pX, 104);
+    fonte('helvetica', 'bold', 20); doc.text(t('Diagnóstico Técnico Inicial'), pX, 116);
+    doc.setTextColor(92, 205, 195); doc.text('Reversa Tax', pX, 126);
+    doc.setFillColor(COR.cobre[0], COR.cobre[1], COR.cobre[2]); doc.rect(pX, 134, 30, 1.2, 'F');
+    fonte('helvetica', 'bold', 8); doc.setTextColor(143, 162, 184); doc.text('CLIENTE', pX, 146);
+    fonte('helvetica', 'bold', 13); doc.setTextColor(255, 255, 255);
+    var nomeL = doc.splitTextToSize(t(nomeCli || '-'), W - pX - M).slice(0, 2); doc.text(nomeL, pX, 153, { lineHeightFactor: 1.3 });
+    var yC = 153 + nomeL.length * 6 + 4;
+    fonte('helvetica', 'bold', 8); doc.setTextColor(143, 162, 184); doc.text('CNPJ', pX, yC);
+    fonte('helvetica', 'normal', 12); doc.setTextColor(255, 255, 255);
+    doc.text(doc.splitTextToSize(t(cnpjs.map(cnpjFmt).join('; ') || '-'), W - pX - M).slice(0, 2), pX, yC + 7, { lineHeightFactor: 1.3 });
+    fonte('helvetica', 'bold', 7.5); doc.setTextColor(143, 162, 184); doc.text(t('UMA FERRAMENTA '), pX, H - 12);
+    doc.setTextColor(COR.cobre[0], COR.cobre[1], COR.cobre[2]); doc.text('ARGUS PRIME', pX + doc.getTextWidth(t('UMA FERRAMENTA ')), H - 12);
+    doc.setTextColor(143, 162, 184); doc.text(t(' · ENGENHARIA TRIBUTÁRIA  ·  ') + t(dataBR(emissao)), pX + doc.getTextWidth(t('UMA FERRAMENTA ARGUS PRIME')), H - 12);
+
+    // página 2: foto (slide da mulher), como estava
+    doc.addPage();
     doc.setFillColor(COR.tinta[0], COR.tinta[1], COR.tinta[2]); doc.rect(0, 0, W, H, 'F');
     if (root.REVERSA_CAPA) { try { var iw = H * 16 / 9; doc.addImage(root.REVERSA_CAPA, 'JPEG', (W - iw) / 2, 0, iw, H); } catch (e) { /* segue sem foto */ } }
     doc.setFillColor(COR.tinta[0], COR.tinta[1], COR.tinta[2]); doc.rect(0, H - 34, W, 34, 'F');
@@ -1168,7 +1189,7 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
 
     // ------------------------------------------------------------- rodapés
     var n = doc.getNumberOfPages();
-    for (var i = 2; i < n; i++) {
+    for (var i = 3; i < n; i++) {
       doc.setPage(i);
       doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.line(M, H - 12, W - M, H - 12);
       fonte('helvetica', 'normal', 7); cor(COR.suave);
@@ -1518,6 +1539,8 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
       .then(function () { btn.disabled = false; btn.textContent = 'Salvar na pasta do cliente'; });
   });
   window.REVERSA_LOGO = document.querySelector('.logo.escuro').src;
+  // emblema do login (com sombra) para a capa do DTI
+  fetch('/assets/logo-login.png').then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) { if (!b) return; var fr = new FileReader(); fr.onload = function () { window.REVERSA_EMBLEMA = fr.result; }; fr.readAsDataURL(b); }).catch(function () {});
   // foto da capa do DTI, carregada uma vez para o PDF
   fetch('/assets/capa-dti.jpg').then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) { if (!b) return; var fr = new FileReader(); fr.onload = function () { window.REVERSA_CAPA = fr.result; }; fr.readAsDataURL(b); }).catch(function () {});
   fetch('/assets/proximos-passos.jpg').then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) { if (!b) return; var fr = new FileReader(); fr.onload = function () { window.REVERSA_PASSOS = fr.result; }; fr.readAsDataURL(b); }).catch(function () {});
