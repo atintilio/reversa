@@ -1158,9 +1158,17 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
       fonte('helvetica', 'normal', 8.5); cor(COR.suave); doc.text(t((opts.local ? opts.local + ', ' : '') + dataBR(emissao)), M, y + 2);
     }
 
+    // ------------------------------------------------------------- próximos passos (página final)
+    doc.addPage();
+    fonte('helvetica', 'bold', 10); cor(COR.bronze); doc.text('REVERSA TAX', W / 2, 30, { align: 'center' });
+    fonte('helvetica', 'bold', 34); cor(COR.tinta); doc.text(t('Próximos passos'), W / 2, 58, { align: 'center' });
+    fonte('helvetica', 'normal', 14); cor(COR.suave);
+    doc.text(doc.splitTextToSize(t('Assinatura do contrato de prestação de serviços para aprofundamento técnico.'), W - 4 * M), W / 2, 78, { align: 'center' });
+    if (root.REVERSA_PASSOS) { try { var ph = W * 338 / 1600; doc.addImage(root.REVERSA_PASSOS, 'JPEG', 0, H - ph, W, ph); } catch (e) { /* segue sem foto */ } }
+
     // ------------------------------------------------------------- rodapés
     var n = doc.getNumberOfPages();
-    for (var i = 2; i <= n; i++) {
+    for (var i = 2; i < n; i++) {
       doc.setPage(i);
       doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.line(M, H - 12, W - M, H - 12);
       fonte('helvetica', 'normal', 7); cor(COR.suave);
@@ -1512,6 +1520,7 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
   window.REVERSA_LOGO = document.querySelector('.logo.escuro').src;
   // foto da capa do DTI, carregada uma vez para o PDF
   fetch('/assets/capa-dti.jpg').then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) { if (!b) return; var fr = new FileReader(); fr.onload = function () { window.REVERSA_CAPA = fr.result; }; fr.readAsDataURL(b); }).catch(function () {});
+  fetch('/assets/proximos-passos.jpg').then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) { if (!b) return; var fr = new FileReader(); fr.onload = function () { window.REVERSA_PASSOS = fr.result; }; fr.readAsDataURL(b); }).catch(function () {});
   processar(EXEMPLO, true);
 })();
 </script>
