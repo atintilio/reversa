@@ -278,7 +278,12 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
       <label for="pdf-resp">Responsável técnico<input type="text" id="pdf-resp" placeholder="Nome completo" autocomplete="name" disabled></label>
       <label for="pdf-reg">Registro profissional<input type="text" id="pdf-reg" placeholder="Ex.: CRC SC-000000/O-0" disabled></label>
       <label for="pdf-local">Local<input type="text" id="pdf-local" placeholder="Florianópolis/SC"></label>
-      <button type="submit" id="btn-pdf">Gerar Diagnóstico</button>
+      <label><input type="checkbox" id="cliente-identificado" checked> Exibir valor identificado na amostra</label>
+      <label><input type="checkbox" id="cliente-projetado"> Exibir projeção de 60 competências</label>
+      <label for="amostra-ano">Primeiro dos cinco anos civis<input type="number" id="amostra-ano" min="2000" max="2100" required></label>
+      <p class="note">A apresentação ao cliente mostra somente os valores selecionados. A projeção inclui a amostra e exige ao menos três meses por ano, por empresa e tese. Confirme o período e a representatividade da amostra. Este módulo usa EFD-Contribuições; folha e 13º salário exigem apuração própria.</p>
+      <button type="button" id="btn-cliente">Gerar apresentação ao cliente</button>
+      <button type="submit" id="btn-pdf">Gerar memória técnica completa</button>
       <button type="button" id="btn-pasta" class="sec" hidden>Salvar na pasta do cliente</button>
     </form>
     <p class="note" id="pasta-status" role="status" aria-live="polite" hidden></p>
@@ -337,6 +342,7 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
 </div>
 <div class="toast" id="toast" hidden></div>
 
+<script src="diagnostico-amostra.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
@@ -1264,7 +1270,35 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     return doc.output('blob');
   }
 
-  root.GeradorMemoria = { gerar: gerar };
+  function apresentar(res, inicio, selecao) {
+    if (!root.jspdf || !root.jspdf.jsPDF) throw new Error('Biblioteca de PDF indisponível.');
+    var rows = [];
+    res.teses.filter(function (tese) { return tese.natureza === 'credito' && tese.aplicavel; }).forEach(function (tese) {
+      res.competencias.forEach(function (c) {
+        var apurado = tese.competencias.find(function (x) { return x.cnpj === c.cnpj && x.competencia === c.competencia; });
+        rows.push({ cnpj: c.cnpj, tese: tese.curto, competencia: c.competencia, regime: c.regime, valor: apurado ? apurado.pis + apurado.cofins : 0 });
+      });
+    });
+    var resultado = root.DiagnosticoAmostra.calcular(rows, inicio, false);
+    var valores = root.DiagnosticoAmostra.apresentar(resultado, selecao);
+    var doc = new root.jspdf.jsPDF({ unit: 'mm', format: 'a4' });
+    doc.setFontSize(18); doc.text('Reversa Tax — Diagnóstico preliminar', 16, 22);
+    doc.setFontSize(10);
+    doc.text('Período da estimativa: ' + inicio + ' a ' + (inicio + 4) + ' · PIS/Cofins', 16, 34);
+    doc.text('CNPJ: ' + Array.from(new Set(rows.map(function (r) { return r.cnpj; }))).map(cnpjFmt).join('; '), 16, 42, { maxWidth: 178 });
+    doc.autoTable({ startY: 58, head: [['Apresentação selecionada', 'Valor histórico']],
+      body: valores.map(function (v) { return [v.titulo, R(v.valor)]; }), styles: { fontSize: 10 }, margin: 16 });
+    var y = doc.lastAutoTable.finalY + 10;
+    var notas = [
+      'Estimativa preliminar, sem Selic. Não representa crédito constituído ou saldo disponível para compensação.',
+      'Projeção: média dos meses disponíveis de cada ano x 12, somada nos cinco anos. Inclui os valores da amostra; não some identificado e projetado.',
+      'A média pressupõe representatividade. Mudanças de atividade, incidência, regime, legislação ou sazonalidade exigem revisão dos estratos antes de apresentar a projeção.',
+      'A janela comercial de cinco anos não comprova elegibilidade nem prazo de recuperação. Apuração definitiva, documentos e pagamentos serão conferidos após autorização do cliente.'
+    ];
+    notas.forEach(function (nota) { var linhas = doc.splitTextToSize(nota, 178); if (y + linhas.length * 5 > 275) { doc.addPage(); y = 20; } doc.text(linhas, 16, y); y += linhas.length * 5 + 5; });
+    return doc.output('blob');
+  }
+  root.GeradorMemoria = { gerar: gerar, apresentar: apresentar };
 })(typeof window !== 'undefined' ? window : this);
 
 </script>
@@ -1546,6 +1580,16 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     if (!rows.length) { toast('Nenhum item nesta tese'); return; }
     salvar(nomeBase() + '-' + t.id + '.csv', csv(rows));
   });
+  $('amostra-ano').value = new Date().getFullYear() - 5;
+  $('btn-cliente').addEventListener('click', function () {
+    try {
+      if (!estado.res || estado.exemplo) throw new Error('Carregue os arquivos do cliente antes de gerar a apresentação.');
+      var blob = window.GeradorMemoria.apresentar(estado.res, Number($('amostra-ano').value), {
+        identificado: $('cliente-identificado').checked, projetado: $('cliente-projetado').checked
+      });
+      salvar('Apresentacao-' + nomeBase() + '.pdf', blob);
+    } catch (err) { toast(err.message); }
+  });
   // Responsável técnico é opcional: o checkbox habilita os campos.
   $('pdf-resp-on').addEventListener('change', function () { var on = this.checked; $('pdf-resp').disabled = !on; $('pdf-reg').disabled = !on; if (on) $('pdf-resp').focus(); });
   $('form-pdf').addEventListener('submit', function (e) {
@@ -1560,7 +1604,7 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
         });
         salvar('DTI-' + nomeBase() + '.pdf', blob);
       } catch (err) { toast(err.message); }
-      btn.disabled = false; btn.textContent = 'Gerar Diagnóstico';
+      btn.disabled = false; btn.textContent = 'Gerar memória técnica completa';
     }, 30);
   });
   $('btn-copiar').addEventListener('click', function () {

@@ -7,6 +7,7 @@ const members = require('../../lib/domain/members');
 const tax = require('../../lib/domain/tax');
 const crm = require('../../lib/domain/crm');
 const leidobem = require('../../lib/domain/leidobem');
+const clientAuthorizations = require('../../lib/domain/client-authorizations');
 
 function deny(ctx, permission, action) {
   if (can(ctx, permission)) return;
@@ -26,6 +27,12 @@ async function route(req, res) {
   const m = req.method;
   const query = req.query || {};
   const body = ['POST', 'PATCH', 'PUT'].includes(m) ? parseBody(req) : {};
+  // Exceção pública limitada a um snapshot: credencial aleatória do link, sem sessão da equipe.
+  if (resource === 'client-approval' && !id) {
+    if (m === 'GET') return json(res, 200, await clientAuthorizations.readPublic(req));
+    if (m === 'POST') return json(res, 200, await clientAuthorizations.acceptPublic(req, body));
+    return method(res, ['GET', 'POST']);
+  }
   const ctx = await context(req);
 
   switch (resource) {
@@ -56,6 +63,11 @@ async function route(req, res) {
       return method(res, ['GET', 'PATCH']);
 
     case 'cases':
+      if (id && action === 'authorizations') {
+        if (m === 'GET') return json(res, 200, await clientAuthorizations.list(ctx, id));
+        if (m === 'POST') { deny(ctx, 'write', 'client.authorization.create'); return json(res, 201, await clientAuthorizations.create(ctx, id, body)); }
+        return method(res, ['GET', 'POST']);
+      }
       if (!id) {
         if (m === 'GET') return json(res, 200, await tax.listCases(ctx, query));
         if (m === 'POST') { deny(ctx, 'write', 'case.create'); return json(res, 201, await tax.createCase(ctx, body)); }
@@ -63,6 +75,10 @@ async function route(req, res) {
       }
       if (m === 'PATCH') { deny(ctx, 'write', 'case.update'); await tax.updateCase(ctx, id, body); return json(res, 200, { ok: true }); }
       return method(res, ['PATCH']);
+
+    case 'client-authorizations':
+      if (id && m === 'DELETE') { deny(ctx, 'write', 'client.authorization.revoke'); return json(res, 200, await clientAuthorizations.revoke(ctx, id)); }
+      return method(res, ['DELETE']);
 
     case 'analyses':
       if (!id && m === 'POST') { deny(ctx, 'write', 'analysis.create'); return json(res, 201, await tax.saveAnalyses(ctx, body)); }

@@ -1,6 +1,9 @@
 const { parseBody, redirect, method } = require('../lib/http');
 const { authenticate, createSession, legacyCookie } = require('../lib/auth');
 const { audit } = require('../lib/audit');
+const { getSql } = require('../lib/db');
+const { hit } = require('../lib/rate-limit');
+const { normalizeEmail, hashSession } = require('../lib/security');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return method(res, ['POST']);
@@ -9,6 +12,15 @@ module.exports = async function handler(req, res) {
   const password = body.senha || body.password || '';
   let result;
   try {
+    const sql = getSql();
+    const ip = String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown').split(',')[0].trim();
+    const byIp = await hit(sql, `login:ip:${hashSession(ip)}`, 60);
+    const byAccount = await hit(sql, `login:account:${hashSession(normalizeEmail(identifier))}`, 20);
+    if (byIp || byAccount) {
+      await audit('auth.login.rate_limited', { outcome: 'denied' });
+      res.setHeader('Retry-After', '900');
+      return redirect(res, '/login.html?erro=1');
+    }
     result = await authenticate(identifier, password);
   } catch (error) {
     console.error('auth_login_database_error', error.name || 'Error');

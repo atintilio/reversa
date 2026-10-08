@@ -16,24 +16,39 @@ module.exports = async function handler(req, res) {
   try {
     const sql = getSql();
     const digest = hashToken(token);
+    // Evita trabalho bcrypt para tokens inventados; a validade é rechecada no consumo atômico.
+    const valid = await sql`select id from password_reset_tokens
+      where token_hash = decode(${digest}, 'hex') and used_at is null and expires_at > now() limit 1`;
+    if (!valid[0]) {
+      await audit('auth.password_reset.completed', { outcome: 'failure', metadata: { reason: 'token_expired_or_used' } });
+      return json(res, 410, { error: { code: 'RESET_TOKEN_EXPIRED', message: 'O link expirou ou já foi utilizado. Solicite um novo link.' } });
+    }
+    // Um único comando PostgreSQL: qualquer falha desfaz todas as alterações.
+    const passwordHash = await bcrypt.hash(password, 12);
     const claimed = await sql`
+      with claimed as (
       update password_reset_tokens
       set used_at = now()
       where token_hash = decode(${digest}, 'hex')
         and used_at is null
         and expires_at > now()
-      returning user_id`;
+      returning user_id
+      ), changed_user as (
+        update users set password_hash = ${passwordHash}, session_version = session_version + 1,
+          status = case when status = 'pending' then 'active' else status end,
+          email_verified_at = coalesce(email_verified_at, now()), updated_at = now()
+        where id in (select user_id from claimed) returning id
+      ), activated_members as (
+        update organization_members set status = 'active', updated_at = now()
+        where user_id in (select id from changed_user) and status = 'invited' returning user_id
+      ), revoked_sessions as (
+        update auth_sessions set revoked_at = now()
+        where user_id in (select id from changed_user) and revoked_at is null returning user_id
+      ) select id as user_id from changed_user`;
     if (!claimed[0]) {
       await audit('auth.password_reset.completed', { outcome: 'failure', metadata: { reason: 'token_expired_or_used' } });
       return json(res, 410, { error: { code: 'RESET_TOKEN_EXPIRED', message: 'O link expirou ou já foi utilizado. Solicite um novo link.' } });
     }
-    const passwordHash = await bcrypt.hash(password, 12);
-    await sql`update users set password_hash = ${passwordHash}, session_version = session_version + 1,
-      status = case when status = 'pending' then 'active' else status end,
-      email_verified_at = coalesce(email_verified_at, now()), updated_at = now() where id = ${claimed[0].user_id}`;
-    // Convite aceito: o vínculo convidado passa a ativo.
-    await sql`update organization_members set status = 'active', updated_at = now() where user_id = ${claimed[0].user_id} and status = 'invited'`;
-    await sql`update auth_sessions set revoked_at = now() where user_id = ${claimed[0].user_id} and revoked_at is null`;
     await audit('auth.password_reset.completed', { actorUserId: claimed[0].user_id, entityType: 'user', entityId: claimed[0].user_id });
     res.statusCode = 204;
     return res.end();

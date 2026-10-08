@@ -60,6 +60,13 @@
     <p class="muted" id="p-caso" style="font-size:13px;margin:10px 0 0"></p>
   </section>
   <div class="grid-kpi" id="p-kpis"></div>
+  <section class="card" aria-labelledby="t-autorizacao">
+    <h2 id="t-autorizacao">Autorização do cliente</h2>
+    <p class="muted">Link exclusivo com seleção de teses verdes, amarelas e vermelhas. A autorização do cliente é separada da revisão técnica do crédito.</p>
+    <button type="button" id="preparar-autorizacao" data-write hidden>Preparar página de aprovação</button>
+    <p id="link-autorizacao" role="status" aria-live="polite"></p>
+    <div id="autorizacoes"></div>
+  </section>
   <div class="dois">
     <section class="card" aria-labelledby="t-diag">
       <h2 id="t-diag">Diagnósticos</h2>
@@ -92,6 +99,19 @@
   </form>
 </dialog>
 
+<dialog id="dlg-autorizacao" aria-labelledby="autorizacao-titulo">
+  <form id="f-autorizacao">
+    <h2 id="autorizacao-titulo">Teses e classificação apresentadas ao cliente</h2>
+    <p>Edite a classificação antes de emitir o link. A classificação original e a justificativa permanecerão visíveis ao cliente. Cada link conserva sua versão.</p>
+    <label>Início do período<input type="month" id="autorizacao-inicio" required></label>
+    <label>Fim do período<input type="month" id="autorizacao-fim" required></label>
+    <div id="autorizacao-teses" style="max-height:45vh;overflow:auto"></div>
+    <label>Justificativa para classificações alteradas<textarea id="autorizacao-motivo" maxlength="2000" rows="3" placeholder="Obrigatória quando uma cor for alterada"></textarea></label>
+    <div class="acoes"><button type="button" id="autorizacao-cancelar" class="sec">Cancelar</button><button id="autorizacao-gerar" type="submit">Gerar link exclusivo</button></div>
+  </form>
+</dialog>
+<script src="/teses-regras.js"></script>
+<script src="/teses-diagnostico.js"></script>
 <script src="/shell.js"></script>
 <script>
 (function () {
@@ -183,12 +203,63 @@
         '<div class="q">' + RV.data(h.created_at, true) + (m.by ? ' · ' + RV.esc(m.by) : '') + '</div></li>';
     }).join('') : '<li class="muted">Sem registros.</li>';
     podeEscrever();
+    carregarAutorizacoes();
   }
   function carregarPasta() {
     $('v-pasta').hidden = false;
     return RV.api('GET', '/api/v1/taxpayers/' + encodeURIComponent(id)).then(renderPasta)
       .catch(function (e) { $('p-nome').textContent = 'Pasta não encontrada'; $('p-sub').textContent = e.message; });
   }
+  function carregarAutorizacoes() {
+    var caso = pasta && pasta.cases[0];
+    if (!caso) { $('autorizacoes').textContent = 'Sem caso aberto.'; return; }
+    RV.api('GET', '/api/v1/cases/' + caso.id + '/authorizations').then(function (r) {
+      $('autorizacoes').innerHTML = r.authorizations.map(function (a) {
+        return '<p>' + (a.accepted_at ? 'Autorizado em ' + RV.data(a.accepted_at, true) + ' · ' + RV.esc(a.representative_name) + ' · ' + RV.esc((a.selected_theses || []).join(', ')) : 'Aguardando cliente · criado em ' + RV.data(a.created_at, true)) +
+          (a.revoked_at ? ' · acesso revogado' : new Date(a.expires_at) < new Date() ? ' · acesso expirado' : ' · acesso até ' + RV.data(a.expires_at, true)) +
+          '<br><small>Documento: ' + RV.esc(a.snapshot_hash) + '</small>' +
+          '<details><summary>Versão apresentada e alterações de risco</summary>' + a.snapshot.theses.map(function (t) {
+            return '<p>' + RV.esc(t.name) + ' · ' + RV.esc(t.color) + (t.riskEdit ? ' · original: ' + RV.esc(t.originalColor) + '<br>' + RV.esc(t.riskEdit.reason) + ' · por ' + RV.esc(t.riskEdit.by) : '') + '</p>';
+          }).join('') + '</details>' +
+          (!a.revoked_at && RV.pode('write') ? ' <button type="button" class="mini sec" data-revogar-link="' + a.id + '">Revogar acesso</button>' : '') + '</p>';
+      }).join('') || '<p>Nenhum link emitido.</p>';
+    }).catch(function (e) { $('autorizacoes').textContent = e.message; });
+  }
+  $('preparar-autorizacao').onclick = function () {
+    var year = new Date().getFullYear();
+    $('autorizacao-inicio').value = (year - 5) + '-01'; $('autorizacao-fim').value = (year - 1) + '-12';
+    $('autorizacao-motivo').value = '';
+    $('autorizacao-teses').innerHTML = window.TesesRegras.TESES.map(function (t) {
+      var d = window.TesesDiagnostico.de(t.id) || {}, color = d.seguranca || 'amarelo';
+      return '<div style="padding:10px;border-bottom:1px solid #ddd"><label><input type="checkbox" name="oferta-tese" value="' + t.id + '" checked> ' + RV.esc(t.nome) + '</label><label>Classificação (original: ' + color + ')<select data-cor-tese="' + t.id + '">' +
+        ['verde','amarelo','vermelho'].map(function (c) { return '<option value="' + c + '"' + (c === color ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select></label></div>';
+    }).join('');
+    $('dlg-autorizacao').showModal();
+  };
+  $('autorizacao-cancelar').onclick = function () { $('dlg-autorizacao').close(); };
+  $('f-autorizacao').addEventListener('submit', function (e) {
+    e.preventDefault(); var caso = pasta && pasta.cases[0]; if (!caso) return;
+    var ids = Array.from(document.querySelectorAll('[name=oferta-tese]:checked')).map(function (el) { return el.value; });
+    var risks = {};
+    ids.forEach(function (id) {
+      var color = document.querySelector('[data-cor-tese="' + id + '"]').value;
+      risks[id] = { color: color, reason: $('autorizacao-motivo').value.trim() };
+    });
+    $('autorizacao-gerar').disabled = true;
+    RV.api('POST', '/api/v1/cases/' + caso.id + '/authorizations', { theses: ids, risks: risks,
+      periodStart: $('autorizacao-inicio').value, periodEnd: $('autorizacao-fim').value
+    }).then(function (r) {
+      $('dlg-autorizacao').close(); $('link-autorizacao').textContent = '';
+      var input = document.createElement('input'); input.type = 'text'; input.readOnly = true; input.value = r.url;
+      input.setAttribute('aria-label', 'Link exclusivo de aprovação; copie e compartilhe com o representante');
+      input.style.width = '100%'; $('link-autorizacao').appendChild(input); input.select();
+      RV.toast('Link gerado. Copie e compartilhe com o representante autorizado.'); carregarAutorizacoes();
+    }).catch(function (err) { RV.toast(err.message); }).finally(function () { $('autorizacao-gerar').disabled = false; });
+  });
+  $('autorizacoes').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-revogar-link]'); if (!b) return;
+    RV.api('DELETE', '/api/v1/client-authorizations/' + b.dataset.revogarLink).then(function () { carregarAutorizacoes(); RV.toast('Acesso pelo link revogado.'); }).catch(function (err) { RV.toast(err.message); });
+  });
   $('p-fases').addEventListener('click', function (e) {
     var b = e.target.closest('[data-fase]'); var caso = pasta && pasta.cases[0];
     if (!b || !caso || b.dataset.fase === caso.stage) return;

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow">
+  <title>Autorização do cliente · Reversa Tax</title>
+  <style>
+    body{margin:0;background:#eef2f6;color:#14283f;font:16px/1.55 system-ui,sans-serif}main{max-width:860px;margin:40px auto;padding:24px;background:white;border-radius:16px}h1{font-size:28px}h2{font-size:18px}label{display:block}input[type=text],input[type=email]{box-sizing:border-box;width:100%;padding:10px;border:1px solid #aebbc7;border-radius:6px}article{border:1px solid #d2dbe3;border-radius:8px;padding:16px;margin:14px 0}article label{font-weight:650}input[type=checkbox]{width:18px;height:18px;vertical-align:middle;margin-right:8px}.badge{padding:2px 10px;border-radius:12px;display:inline-block}.verde{background:#d8f2e1;color:#164d2a}.amarelo{background:#fff0bb;color:#684b00}.vermelho{background:#ffe0df;color:#822c2a}button{background:#116c69;color:white;padding:12px 20px;border:0;border-radius:6px;font:inherit;cursor:pointer}button:disabled{opacity:.55}.muted{color:#536476;font-size:14px}#status{white-space:pre-wrap}[hidden]{display:none!important}@media(max-width:600px){main{margin:12px;padding:18px}}
+  </style>
+  <script src="/aprovacao.js" defer></script>
+</head>
+<body><main>
+  <p>REVERSA TAX</p><h1>Autorização para recuperação administrativa</h1>
+  <p id="status" role="status" aria-live="polite">Carregando seu diagnóstico…</p>
+  <section id="conteudo" hidden>
+    <h2 id="cliente"></h2><p id="periodo"></p>
+    <p>Selecione as teses para as quais deseja autorizar o trabalho. Todas as cores podem ser selecionadas. A cor indica a classificação apresentada; ela não confirma direito ao crédito.</p>
+    <p class="muted">Este link dá acesso apenas a esta autorização. Compartilhe somente com o representante autorizado. Nome, e-mail e vínculo são declarados pelo portador do link; este registro não é assinatura digital certificada.</p>
+    <form id="form">
+      <div id="teses"></div>
+      <h2>Representante da empresa</h2>
+      <label>Nome completo<input id="nome" type="text" required minlength="3" maxlength="240" autocomplete="name"></label>
+      <label>E-mail<input id="email" type="email" required maxlength="254" autocomplete="email"></label>
+      <label>Cargo/vínculo e poder de representação<input id="vinculo" type="text" required minlength="3" maxlength="240" placeholder="Ex.: sócio-administrador"></label>
+      <p id="termos"></p>
+      <label><input id="aceite" type="checkbox" required> Li as classificações, ressalvas e condições acima; declaro ter poderes para autorizar em nome da empresa.</label>
+      <p><button id="enviar" type="submit">Registrar minha autorização</button></p>
+    </form>
+    <p class="muted" id="versao"></p>
+  </section>
+</main></body></html>

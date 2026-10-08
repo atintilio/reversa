@@ -163,7 +163,7 @@ test('membros: sem auto-rebaixamento, sem remover o último admin, remoção rev
   assert.equal((await v1(`members/${eu.id}`, { method: 'PATCH', cookie: admin, body: { role: 'viewer' } })).statusCode, 409);
   assert.equal((await v1(`members/${eu.id}`, { method: 'DELETE', cookie: admin })).statusCode, 409);
   assert.equal((await v1(`members/${ana.id}`, { method: 'PATCH', cookie: admin, body: { status: 'suspended' } })).statusCode, 200);
-  assert.equal((await v1('me', { cookie: analista })).statusCode, 401, 'suspensão revoga sessões');
+  assert.equal((await v1('me', { cookie: analista })).statusCode, 403, 'suspensão impede acesso à organização');
   assert.equal((await v1(`members/${ana.id}`, { method: 'DELETE', cookie: admin })).statusCode, 200);
   assert.equal((await sql`select status from users where email_normalized = 'ana@argus.com'`)[0].status, 'archived');
   assert.equal((await v1(`members/${ana.id}`, { cookie: outro, method: 'DELETE' })).statusCode, 404, 'admin de outra org não enxerga');
