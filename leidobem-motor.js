@@ -811,6 +811,7 @@
 
   // ------------------------------------------------------------------ modelos de documentos (KB §18)
   var MODELOS = [
+    { id: 'diagnostico', nome: 'Diagnóstico Lei do Bem (relatório ao cliente)' },
     { id: 'projeto', nome: 'Projeto técnico de P&D', porProjeto: true },
     { id: 'rateio', nome: 'Memorial de cálculo de rateio' },
     { id: 'parecer', nome: 'Parecer de elegibilidade' },
@@ -825,6 +826,7 @@
   function h(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function tabela(cab, linhas) { return '<table><thead><tr>' + cab.map(function (c) { return '<th>' + h(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + (linhas.length ? linhas.map(function (l) { return '<tr>' + l.map(function (c) { return '<td>' + h(c) + '</td>'; }).join('') + '</tr>'; }).join('') : '<tr><td colspan="' + cab.length + '">[preencher]</td></tr>') + '</tbody></table>'; }
   function documento(id, caso, calc, opc) {
+    if (id === 'diagnostico') return diagnostico(caso, calc, opc);
     opc = opc || {}; var e = caso.empresa || {}, ano = caso.anoBase, projs = caso.projetos || [];
     var cab = '<p class="id"><b>Empresa:</b> ' + h(e.nome || '[RAZÃO SOCIAL]') + ' · <b>CNPJ:</b> ' + h(cnpjFmt(e.cnpj)) + ' · <b>Ano-calendário:</b> ' + h(ano) + '</p>';
     var ass = function (papeis) { return '<div class="ass">' + papeis.map(function (p) { return '<div><span></span>' + h(p) + '<br>Data: ___/___/______</div>'; }).join('') + '</div>'; };
@@ -893,12 +895,195 @@
       '@media print{body{margin:0}}</style></head><body><h1>' + h(titulo) + '</h1><p class="sub">Lei nº 11.196/2005 — Lei do Bem · Reversa Tax · uma ferramenta Argus Prime</p>' + cab + corpo + '</body></html>' };
   }
 
+  // ------------------------------------------------------------------ Diagnóstico Lei do Bem: relatório completo ao cliente
+  // Estrutura de mercado para projetos de Lei do Bem: diagnóstico fiscal, qualificação técnica, quantificação,
+  // cálculo e cenários, adequação contábil-documental, revisão e FORMP&D, acompanhamento e defesa.
+  function diagnostico(caso, calc, opc) {
+    opc = opc || {}; var e = caso.empresa || {}, ano = Number(caso.anoBase), projs = caso.projetos || [], desp = caso.despesas || [];
+    var P = params(ano), st = caso.status || 'rascunho', pend = pendencias(caso, calc), conf = calc.confianca || { score: 0, dimensoes: [] };
+    var el = calc.elegibilidade, rf = e.regularidade || {}, f = formpd(caso, calc);
+    var bloqueios = pend.filter(function (p) { return p.nivel === 'bloqueio' || p.nivel === 'erro'; }), alertas = pend.filter(function (p) { return p.nivel === 'alerta'; });
+    var itens = calc.validacao.itens, excecoes = itens.filter(function (x) { return x.status !== 'ELEGIVEL'; }).length;
+    var scores = projs.map(function (p) { return scoreProjeto(p); }), projOk = scores.filter(function (s) { return s.elegivel; }).length;
+    var pctTxt = function (v) { return r2(v * 100).toLocaleString('pt-BR') + '%'; };
+    var ST = { ok: ['Concluída', 'ok'], and: ['Em andamento', 'and'], pen: ['Pendente', 'pen'], blq: ['Bloqueada', 'blq'] };
+    var selo = function (k) { return '<span class="selo ' + ST[k][1] + '">' + ST[k][0] + '</span>'; };
+    var tab = function (cab, linhas, cls) { return '<table' + (cls ? ' class="' + cls + '"' : '') + '><thead><tr>' + cab.map(function (c) { return '<th>' + h(c) + '</th>'; }).join('') + '</tr></thead><tbody>' + (linhas.length ? linhas.map(function (l) { return '<tr>' + l.map(function (c) { return '<td>' + (c && c.html != null ? c.html : h(c)) + '</td>'; }).join('') + '</tr>'; }).join('') : '<tr><td colspan="' + cab.length + '">Sem informações no caso.</td></tr>') + '</tbody></table>'; };
+    var H = function (s) { return { html: s }; };
+
+    // fases e status
+    var fiscalOk = calc.periodos.length && (e.regime === 'lucro_real' || e.regime === 'misto') && (rf.situacao === 'cnd' || rf.situacao === 'cpen');
+    var fases = [
+      { n: 1, nome: 'Diagnóstico de elegibilidade fiscal', obj: 'Confirmar regime de lucro real, lucro tributável e base da CSLL suficientes, regularidade fiscal federal e prazos do ano-base.',
+        ativ: 'Leitura da ECF (0010, N500/N630/N650/N670, M300/M350), consulta de CND/CPEN, apuração do limite de aproveitamento por período.',
+        status: el.status === 'BLOQUEADO' || (el.status === 'INELEGIVEL' && e.regime && e.regime !== 'lucro_real' && e.regime !== 'misto') ? 'blq' : fiscalOk ? 'ok' : calc.periodos.length ? 'and' : 'pen' },
+      { n: 2, nome: 'Mapeamento e qualificação técnica dos projetos', obj: 'Identificar as atividades de PD&I e enquadrá-las como pesquisa básica, aplicada ou desenvolvimento experimental, com incerteza tecnológica demonstrável.',
+        ativ: 'Entrevistas com as áreas técnicas, análise dos oito critérios de elegibilidade, exclusão de atividades rotineiras, score técnico por projeto.',
+        status: !projs.length ? 'pen' : projOk === projs.length ? 'ok' : 'and' },
+      { n: 3, nome: 'Levantamento e validação dos dispêndios', obj: 'Quantificar pessoal, serviços de terceiros, ICTs, materiais, depreciação e amortização vinculados a cada projeto, com documento hábil.',
+        ativ: 'Leitura da folha, NF-e/NFS-e e ECD; vínculo de cada lançamento a projeto; checagem de timesheet, contratos, duplicidade, ativação (CPC 04) e dupla contagem.',
+        status: !(calc.dispendios > 0) ? 'pen' : excecoes ? 'and' : 'ok' },
+      { n: 4, nome: 'Cálculo do benefício e simulação de cenários', obj: 'Calcular a exclusão adicional e a economia de IRPJ e CSLL respeitando o limite do lucro de cada período.',
+        ativ: 'Aplicação do percentual do art. 19 (60%, 70% ou 80%) e do adicional de patente, limite por período (IN RFB 1.187/2011, art. 8º), adicional de IRPJ.',
+        status: calc.economia > 0 ? 'ok' : calc.dispendios > 0 ? 'and' : 'pen' },
+      { n: 5, nome: 'Adequação contábil e documental', obj: 'Garantir contas e centros de custo de P&D segregados, rateios com memorial e dossiê de evidências pronto para fiscalização.',
+        ativ: 'Conciliação ECD × dispêndios × ECF, memorial de rateio, organização de timesheets, contratos, relatórios técnicos e notas fiscais.',
+        status: calc.conciliacao.status === 'ok' ? 'ok' : calc.conciliacao.status === 'erro' ? 'pen' : 'and' },
+      { n: 6, nome: 'Revisão técnica, aprovação e envio do FORMP&D', obj: 'Revisar o caso em quatro etapas (fiscal, técnica, contábil e final) e transmitir o FORMP&D ao MCTI dentro do prazo.',
+        ativ: 'Revisões com trilha de auditoria, preenchimento guiado das 10 etapas do FORMP&D, planilhas de apoio, registro do recibo e reflexo da exclusão na ECF.',
+        status: st === 'enviado' ? 'ok' : (st === 'aprovado' || st === 'em_revisao') ? 'and' : 'pen' },
+      { n: 7, nome: 'Acompanhamento, defesa e recuperação retroativa', obj: 'Acompanhar o parecer do MCTI, responder questionamentos, guardar a documentação pelo prazo legal e avaliar anos anteriores não aproveitados.',
+        ativ: 'Monitoramento do parecer técnico, contestação e recurso quando cabíveis, dossiê de defesa, análise dos últimos cinco anos para retificação de ECF e PER/DCOMP.',
+        status: st === 'enviado' ? 'and' : 'pen' }
+    ];
+    var concluidas = fases.filter(function (x) { return x.status === 'ok'; }).length;
+
+    // cenários: mesmo lucro por período, percentual de exclusão alternativo e patente
+    function simular(pct) {
+      var eco = 0, excl = 0;
+      calc.periodos.forEach(function (p) {
+        if (!p.lucroReal) return;
+        var x = p.dispendios * pct + p.exclusaoPatente;
+        var limI = Math.max(0, num(p.limiteIRPJ)), limC = Math.max(0, num(p.limiteCSLL));
+        var aI = Math.min(x, limI), aC = Math.min(x, limC);
+        eco += irpjDevido(limI, p.meses, P) - irpjDevido(limI - aI, p.meses, P) + aC * calc.aliquotaCsll; excl += x;
+      });
+      return { excl: r2(excl), eco: r2(eco) };
+    }
+    var cen = [
+      ['Atual (' + pctTxt(calc.percentual) + ')', calc.motivoPercentual, { excl: r2(calc.exclusao + calc.exclusaoPatente), eco: calc.economia }],
+      ['Aumento de pesquisadores até 5% (70%)', 'Decreto 5.798/2006, art. 8º §1º, I', simular(P.exclusaoAte5)],
+      ['Aumento de pesquisadores acima de 5% (80%)', 'Decreto 5.798/2006, art. 8º §1º, II', simular(P.exclusaoAcima5)]
+    ];
+
+    // cronograma
+    var prazoF = calc.prazo ? dataBR(calc.prazo.data) : '31/07/' + (ano + 1);
+    var crono = [
+      ['Ano-base ' + ano, 'Apontar horas por projeto (timesheet mensal), manter contas de P&D segregadas e contratos com escopo técnico', 'Empresa (P&D e contabilidade)'],
+      ['Jan–mar/' + (ano + 1), 'Fechamento contábil, ECD com contas de P&D, levantamento dos dispêndios e evidências', 'Contabilidade + Reversa'],
+      ['Abr–jun/' + (ano + 1), 'Qualificação técnica dos projetos, cálculo, revisões em quatro etapas e preenchimento do FORMP&D', 'Reversa + áreas técnicas'],
+      ['Até o último dia útil de jul/' + (ano + 1), 'Transmitir a ECF com a exclusão adicional no e-Lalur e no e-Lacs (Parte A)', 'Contabilidade'],
+      ['Até ' + prazoF, 'Enviar o FORMP&D ao MCTI e registrar o recibo', 'Empresa + Reversa'],
+      ['Após o envio', 'Acompanhar o parecer técnico do MCTI e responder no prazo indicado na notificação', 'Reversa'],
+      ['Até o fim do prazo decadencial', 'Guardar a documentação comprobatória (projetos, timesheets, contratos, notas, relatórios)', 'Empresa']
+    ];
+
+    // entregáveis por fase
+    var temRet = (caso.retroativo || []).length > 0, enviado = st === 'enviado';
+    var disp = function (ok) { return ok ? 'Disponível' : 'Aguardando dados'; };
+    var ent = [
+      [1, 'Parecer de elegibilidade', 'Documentos → Parecer de elegibilidade', disp(calc.periodos.length)],
+      [1, 'Comprovação de regularidade fiscal (CND/CPEN)', 'Anexo do cliente', rf.situacao === 'cnd' || rf.situacao === 'cpen' ? 'Recebido' : 'Pendente'],
+      [2, 'Ficha técnica de cada projeto (' + projs.length + ')', 'Documentos → Projeto técnico de P&D', disp(projs.length)],
+      [2, 'Relatório de evidências técnicas por projeto', 'Documentos → Relatório de evidências', disp(projs.length)],
+      [3, 'Base de dispêndios validada por rubrica e projeto', 'Aba Dispêndios + planilhas do FORMP&D (CSV)', disp(calc.dispendios > 0)],
+      [3, 'Timesheets mensais por colaborador', 'Documentos → Timesheet mensal', disp((caso.pessoas || []).length)],
+      [3, 'Minuta de contrato de serviços de P&D', 'Documentos → Contrato (minuta)', 'Disponível'],
+      [3, 'Declaração de não dupla contagem', 'Documentos → Declaração', disp(calc.dispendios > 0)],
+      [4, 'Memória de cálculo e simulação de cenários', 'Este relatório + aba Cálculo', disp(calc.economia > 0)],
+      [5, 'Memorial de cálculo de rateio', 'Documentos → Memorial de rateio', desp.some(function (d) { return d.rateio; }) ? 'Disponível' : 'Não se aplica'],
+      [5, 'Conciliação ECD × dispêndios', 'Aba Cálculo', calc.conciliacao.status === 'ok' ? 'Conciliado' : 'Pendente'],
+      [5, 'Checklist de auditoria', 'Documentos → Checklist de auditoria', 'Disponível'],
+      [6, 'Trilha de revisão em quatro etapas', 'Aba Revisão humana', enviado || st === 'aprovado' ? 'Concluída' : 'Em andamento'],
+      [6, 'Rascunho do FORMP&D (10 etapas) e planilhas de importação', 'Aba FORMP&D', enviado ? 'Enviado' : f.checklist.every(function (c) { return c[1]; }) ? 'Completo' : 'Em preenchimento'],
+      [6, 'Termo de responsabilidade', 'Documentos → Termo de responsabilidade', 'Disponível'],
+      [6, 'Recibo de envio do FORMP&D', 'Registro no caso', enviado ? 'Recibo ' + (opc.recibo || '') : 'Após o envio'],
+      [7, 'Dossiê de defesa para o MCTI e a Receita', 'Evidências organizadas por projeto', enviado ? 'Em acompanhamento' : 'Após o envio'],
+      [7, 'Memorando de recuperação retroativa (últimos 5 anos)', 'Documentos → Memorando retroativo', temRet ? 'Disponível' : 'A avaliar']
+    ];
+
+    // plano de ação
+    var acoes = bloqueios.map(function (p) { return ['Alta', p.area, p.texto]; }).concat(alertas.slice(0, 8).map(function (p) { return ['Média', p.area, p.texto]; }));
+    if (!temRet) acoes.push(['Média', 'Retroativo', 'Avaliar os últimos cinco anos: dispêndios de P&D não aproveitados podem ser recuperados por retificação da ECF e PER/DCOMP.']);
+    if (calc.percentual < P.exclusaoAcima5) acoes.push(['Oportunidade', 'Planejamento', 'Planejar contratações de pesquisadores: aumento acima de 5% eleva a exclusão para 80% (ver cenários).']);
+    acoes.push(['Rotina', 'Governança', 'Manter timesheet mensal, centro de custo de P&D e contratos com escopo técnico durante todo o ano-base seguinte.']);
+
+    var kpi = function (r, v, n, d) { return '<div class="k' + (d ? ' d' : '') + '"><span>' + h(r) + '</span><b>' + h(v) + '</b>' + (n ? '<small>' + h(n) + '</small>' : '') + '</div>'; };
+    var concl = el.status === 'ELEGIVEL'
+      ? 'A empresa atende aos requisitos da Lei do Bem no ano-calendário ' + ano + '. Os dispêndios elegíveis de ' + fmt(calc.dispendios) + ' geram exclusão adicional de ' + fmt(calc.exclusao + calc.exclusaoPatente) + ' e economia estimada de ' + fmt(calc.economia) + ' em IRPJ e CSLL.'
+      : 'Situação: ' + el.rotulo + '. ' + el.motivos.filter(function (m) { return m.nivel === 'bloqueio'; }).map(function (m) { return m.texto; }).join(' ') + ' O benefício depende da solução das pendências listadas no plano de ação.';
+
+    var corpo =
+      '<header class="capa"><div class="marca">REVERSA <em>TAX</em><small>uma ferramenta Argus Prime</small></div><h1>Diagnóstico Lei do Bem</h1><p>Lei nº 11.196/2005 · Capítulo III · ano-calendário ' + h(ano) + '</p>' +
+      '<div class="cli"><b>' + h(e.nome || '[RAZÃO SOCIAL]') + '</b><span>CNPJ ' + h(cnpjFmt(e.cnpj)) + ' · ' + h(e.formaTribTexto || '') + (e.apuracao ? ' (' + h(e.apuracao) + ')' : '') + ' · emitido em ' + h(dataBR(hoje())) + '</span></div></header>' +
+      (opc.demo ? '<p class="demo">DEMONSTRAÇÃO — caso fictício com dados sintéticos. Não utilizar como peça técnica.</p>' : '') +
+      '<h2>1. Sumário executivo</h2><div class="kpis">' + kpi('Economia estimada', fmt(calc.economia), 'IRPJ ' + fmt(calc.economiaIRPJ) + ' · CSLL ' + fmt(calc.economiaCSLL), true) +
+        kpi('Dispêndios elegíveis', fmt(calc.dispendios), Object.keys(calc.porRubrica).length + ' rubrica(s) · ' + projs.length + ' projeto(s)') +
+        kpi('Exclusão adicional', fmt(calc.exclusao + calc.exclusaoPatente), pctTxt(calc.percentual) + ' dos dispêndios (art. 19)') +
+        kpi('Confiança do caso', conf.score + '/100', conf.politica) + '</div>' +
+      '<p class="concl"><b>' + h(el.rotulo) + '.</b> ' + h(concl) + '</p>' +
+      tab(['Indicador', 'Situação'], [['Fases concluídas', concluidas + ' de ' + fases.length], ['Pendências bloqueantes', String(bloqueios.length)], ['Alertas para revisão', String(alertas.length)],
+        ['Prazo do FORMP&D', enviado ? 'Enviado em ' + dataBR(opc.enviadoEm) + (opc.recibo ? ' · recibo ' + opc.recibo : '') : prazoF + (calc.prazo && calc.prazo.dias < 0 ? ' (vencido)' : calc.prazo ? ' (' + calc.prazo.dias + ' dias)' : '')],
+        ['Excedente sem aproveitamento (IRPJ)', fmt(calc.perdidaIRPJ)]]) +
+
+      '<h2>2. Escopo, fontes e premissas</h2><p>Avaliação do aproveitamento dos incentivos à inovação tecnológica do Capítulo III da Lei nº 11.196/2005 (Lei do Bem), regulamentada pelo Decreto nº 5.798/2006 e pela IN RFB nº 1.187/2011, para o ano-calendário ' + h(ano) + '. ' +
+        'O incentivo principal é a exclusão adicional de 60% a 80% dos dispêndios de PD&I na apuração do lucro real e da base da CSLL, limitada ao lucro de cada período e sem aproveitamento do excesso em anos seguintes.</p>' +
+      tab(['Fonte', 'Uso no diagnóstico'], [['ECF (SPED)', 'Regime, forma de apuração, lucro real e base da CSLL por período'], ['ECD (SPED)', 'Contas e centros de custo de P&D, conciliação e ativação de gastos'], ['Folha de pagamento', 'Pessoal técnico, dedicação e cargos'], ['NF-e / NFS-e', 'Materiais e serviços de terceiros vinculados a projetos'], ['Entrevistas e documentos técnicos', 'Desafio tecnológico, metodologia, testes e resultados dos projetos'], ['Certidão de regularidade fiscal', 'Requisito do art. 23']]) +
+
+      '<h2>3. Metodologia e fases do trabalho</h2>' +
+      tab(['Fase', 'Objetivo', 'Principais atividades', 'Situação'], fases.map(function (x) { return [x.n + '. ' + x.nome, x.obj, x.ativ, H(selo(x.status))]; }), 'fases') +
+
+      '<h2>4. Elegibilidade fiscal</h2>' +
+      tab(['Requisito', 'Resultado', 'Base legal'], [
+        ['Regime de lucro real', e.formaTribTexto || e.regime || 'Não informado', FONTES.lucroReal],
+        ['Regularidade fiscal federal', ({ cnd: 'CND', cpen: 'CPEN', positiva: 'Positiva (débitos exigíveis)' })[rf.situacao] || 'Não verificada', FONTES.regularidade],
+        ['Lucro real no ano (soma dos períodos)', fmt(calc.periodos.reduce(function (s, p) { return s + Math.max(0, num(p.limiteIRPJ)); }, 0)), FONTES.limite],
+        ['Base da CSLL no ano', fmt(calc.periodos.reduce(function (s, p) { return s + Math.max(0, num(p.limiteCSLL)); }, 0)), FONTES.limite],
+        ['Prazo do FORMP&D', prazoF, FONTES.formpd]]) +
+
+      '<h2>5. Projetos de PD&amp;I</h2>' +
+      tab(['Projeto', 'Natureza', 'Score técnico', 'Enquadramento', 'Dispêndios'], projs.map(function (p, i) { return [(p.codigo ? p.codigo + ' — ' : '') + (p.titulo || ''), TIPO_PESQUISA[p.tipo] || 'A definir', scores[i].score + '/100', scores[i].faixa, fmt(calc.porProjeto[p.id] || 0)]; })) +
+      projs.map(function (p) { return p.desafio ? '<p class="proj"><b>' + h(p.codigo || p.titulo) + ' — desafio tecnológico:</b> ' + h(p.desafio) + '</p>' : ''; }).join('') +
+
+      '<h2>6. Dispêndios elegíveis</h2>' +
+      tab(['Rubrica', 'Valor', 'Participação', 'Campo do FORMP&D'], Object.keys(calc.porRubrica).map(function (k) { return [RUBRICAS[k] ? RUBRICAS[k].nome : k, fmt(calc.porRubrica[k]), pctTxt(calc.dispendios ? calc.porRubrica[k] / calc.dispendios : 0), RUBRICAS[k] ? RUBRICAS[k].formpd : '']; }).concat([[H('<b>Total</b>'), H('<b>' + fmt(calc.dispendios) + '</b>'), '100%', '']])) +
+      '<p class="nota">' + itens.length + ' lançamento(s) analisado(s); ' + (itens.length - excecoes) + ' elegível(is) sem ressalva' + (excecoes ? '; ' + excecoes + ' com exceção ou rejeição, fora da base até a regularização' : '') + '. Conciliação contábil: ' + h(calc.conciliacao.texto) + '</p>' +
+
+      '<h2>7. Cálculo do benefício</h2>' +
+      tab(['Período', 'Dispêndios', 'Exclusão', 'Lucro real', 'Aproveitada IRPJ', 'Economia IRPJ', 'Economia CSLL'], calc.periodos.map(function (p) { return [p.per + ' (' + dataBR(p.dtIni) + ' a ' + dataBR(p.dtFin) + ')', fmt(p.dispendios), fmt(p.exclusao + p.exclusaoPatente), fmt(p.limiteIRPJ), fmt(p.aproveitadaIRPJ), fmt(p.economiaIRPJ), fmt(p.economiaCSLL)]; })) +
+      '<p class="nota">Percentual aplicado: ' + pctTxt(calc.percentual) + ' — ' + h(calc.motivoPercentual) + ' IRPJ a 15% com adicional de 10% sobre a parcela do lucro acima de R$ 20 mil por mês; CSLL a ' + pctTxt(calc.aliquotaCsll) + '.</p>' +
+      '<h3>Simulação de cenários</h3>' +
+      tab(['Cenário', 'Fundamento', 'Exclusão', 'Economia', 'Diferença'], cen.map(function (c) { return [c[0], c[1], fmt(c[2].excl), fmt(c[2].eco), fmt(c[2].eco - calc.economia)]; })) +
+      '<p class="nota">Patente concedida ou cultivar registrado: exclusão adicional de até 20% dos dispêndios do projeto objeto da patente, no período da concessão (' + FONTES.patente + '). Cenários mantêm o lucro de cada período e a mesma base de dispêndios.</p>' +
+
+      '<h2>8. Riscos e pendências</h2>' +
+      tab(['Dimensão', 'Peso', 'Nota'], conf.dimensoes.map(function (d) { return [d.rotulo, Math.round(d.peso * 100) + '%', d.valor + '/100']; })) +
+      (pend.length ? tab(['Nível', 'Área', 'Descrição'], pend.map(function (p) { return [{ bloqueio: 'Bloqueio', erro: 'Erro', alerta: 'Alerta' }[p.nivel], p.area, p.texto]; })) : '<p>Nenhuma pendência aberta no caso.</p>') +
+
+      '<h2>9. Plano de ação</h2>' + tab(['Prioridade', 'Área', 'Ação'], acoes) +
+      '<h2>10. Cronograma de obrigações</h2>' + tab(['Quando', 'O quê', 'Responsável'], crono) +
+      '<h2>11. Entregáveis</h2><p>Itens entregues ao cliente ao longo do trabalho, todos gerados ou controlados no Reversa Tax.</p>' +
+      tab(['Fase', 'Entregável', 'Onde', 'Situação'], ent.map(function (x) { return [String(x[0]), x[1], x[2], x[3]]; })) +
+
+      '<h2>12. Próximos passos</h2><ol>' + (enviado
+        ? ['Acompanhar o parecer técnico do MCTI sobre o FORMP&D.', 'Manter o dossiê de defesa organizado por projeto.', 'Conferir o reflexo da exclusão na ECF transmitida.', 'Iniciar o ciclo do ano-base ' + (ano + 1) + ' com timesheet e centro de custo desde janeiro.', 'Avaliar a recuperação retroativa dos últimos cinco anos.']
+        : ['Resolver as pendências de prioridade alta do plano de ação.', 'Concluir as revisões fiscal, técnica, contábil e final.', 'Completar o FORMP&D e enviá-lo até ' + prazoF + '.', 'Refletir a exclusão na ECF do ano-base.', 'Avaliar a recuperação retroativa dos últimos cinco anos.']).map(function (t) { return '<li>' + h(t) + '</li>'; }).join('') + '</ol>' +
+      '<p class="nota">Diagnóstico técnico preliminar elaborado a partir das informações fornecidas pela empresa e das escriturações digitais. Não constitui crédito reconhecido nem dispensa a revisão do contador e do responsável técnico. ' +
+      'A fruição do incentivo depende da regularidade fiscal, da documentação comprobatória e da análise do MCTI.</p>' +
+      '<div class="ass"><div><span></span>Responsável técnico-tributário<br>Reversa Tax · Argus Prime</div><div><span></span>Representante legal<br>' + h(e.nome || '') + '</div></div>';
+
+    var css = 'body{font-family:Arial,Helvetica,sans-serif;color:#0E2239;max-width:860px;margin:24px auto;padding:0 24px;font-size:12.5px;line-height:1.5}' +
+      '.capa{background:#0E2239;color:#fff;padding:28px 30px;border-radius:6px;margin-bottom:18px}.capa .marca{font-weight:700;letter-spacing:.08em;font-size:14px}.capa .marca em{color:#3DB8AE;font-style:normal}.capa .marca small{display:block;font-weight:400;letter-spacing:0;color:#AFC0D2;font-size:11px}' +
+      '.capa h1{font-size:28px;margin:22px 0 2px}.capa p{margin:0;color:#C9D6E3}.capa .cli{margin-top:18px;border-top:1px solid rgba(255,255,255,.2);padding-top:12px}.capa .cli b{display:block;font-size:16px}.capa .cli span{color:#C9D6E3}' +
+      '.demo{background:#F6E8D3;color:#7A4B0E;padding:8px 12px;font-weight:700;border-radius:4px}' +
+      'h2{font-size:15px;margin:24px 0 8px;border-bottom:2px solid #1E8F88;padding-bottom:3px;break-after:avoid}h3{font-size:13px;margin:14px 0 6px}' +
+      '.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 12px}.k{border:1px solid #DCE3EA;border-radius:6px;padding:10px}.k span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#5A6878}.k b{display:block;font-size:16px;margin:4px 0}.k small{color:#5A6878;font-size:10.5px}.k.d{background:#0E2239;color:#fff;border-color:#0E2239}.k.d b{color:#3DB8AE}.k.d span,.k.d small{color:#C9D6E3}' +
+      '.concl{background:#EAF6F5;border-left:3px solid #1E8F88;padding:10px 12px}.proj{margin:6px 0}' +
+      'table{width:100%;border-collapse:collapse;margin:6px 0 10px;break-inside:auto}tr{break-inside:avoid}th,td{border:1px solid #DCE3EA;padding:5px 7px;text-align:left;vertical-align:top}th{background:#F5F7F9;font-size:11.5px}' +
+      '.fases td:first-child{font-weight:700;width:22%}.selo{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;white-space:nowrap}.selo.ok{background:#DDF2EE;color:#16705F}.selo.and{background:#FFF1D6;color:#8A5A00}.selo.pen{background:#EEF1F4;color:#5A6878}.selo.blq{background:#FBE1E1;color:#A12A2A}' +
+      '.nota{color:#5A6878;font-size:11.5px}.ass{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;margin-top:48px}.ass span{display:block;border-top:1px solid #0E2239;margin-bottom:4px}' +
+      '.imp{position:fixed;top:12px;right:12px;background:#1E8F88;color:#fff;border:0;border-radius:6px;padding:8px 14px;font-weight:700;cursor:pointer}' +
+      '@media print{body{margin:0;max-width:none}.imp{display:none}.capa,.k.d,.selo,th,.demo,.concl{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
+    var titulo = 'Diagnóstico Lei do Bem — ' + (e.nome || '') + ' — ' + ano;
+    return { titulo: titulo, html: '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>' + h(titulo) + '</title><style>' + css + '</style></head><body><button class="imp" onclick="window.print()">Imprimir / salvar PDF</button>' + corpo + '</body></html>' };
+  }
+
   var api = {
     VERSAO: VERSAO, PARAMETROS: PARAMETROS, FONTES: FONTES, RUBRICAS: RUBRICAS, CRITERIOS: CRITERIOS, ETAPAS: ETAPAS, MODELOS: MODELOS, NAO_ELEGIVEIS: NAO_ELEGIVEIS,
     TIPO_PESQUISA: TIPO_PESQUISA, FORMA_TRIB: FORMA_TRIB,
     identificarArquivo: identificarArquivo, parseECF: parseECF, parseECD: parseECD, parseFolha: parseFolha, parseNFe: parseNFe, parseNFSe: parseNFSe,
     classificarPessoa: classificarPessoa, cpfValido: cpfValido, scoreProjeto: scoreProjeto, validarDespesas: validarDespesas, calcular: calcular,
-    elegibilidade: elegibilidade, confianca: confianca, pendencias: pendencias, formpd: formpd, FORMPD_ETAPAS: FORMPD_ETAPAS, progressoFormpd: progressoFormpd, valorCampo: valorCampo, csv: csv, retroativo: retroativo, documento: documento,
+    elegibilidade: elegibilidade, confianca: confianca, pendencias: pendencias, formpd: formpd, FORMPD_ETAPAS: FORMPD_ETAPAS, progressoFormpd: progressoFormpd, valorCampo: valorCampo, csv: csv, retroativo: retroativo, documento: documento, diagnostico: diagnostico,
     irpjDevido: irpjDevido, num: num, r2: r2, fmt: fmt, cnpjFmt: cnpjFmt, dataBR: dataBR, mascaraCpf: mascaraCpf, uid: uid, regimeDaForma: regimeDaForma
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

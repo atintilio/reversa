@@ -83,7 +83,7 @@
         <h2 id="c-nome" style="margin-top:8px"></h2>
         <div class="sub" id="c-sub"></div>
       </div>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="salvo" id="salvo"></span><span id="c-status"></span></div>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="salvo" id="salvo"></span><span id="c-status"></span><button type="button" id="gerar-rel">Gerar relatório</button></div>
     </div>
     <div class="msg warn" id="demo-aviso" hidden><span class="pill warn">DEMONSTRAÇÃO</span> Caso fictício, com dados sintéticos, para apresentar o módulo. Nada aqui é gravado e os documentos não servem como peça técnica.</div>
     <div class="grid-kpi" id="c-kpis"></div>
@@ -737,7 +737,7 @@
   }
 
   // ================================================================== aba Documentos
-  function abrirDoc(id, opc) { var d = L.documento(id, caso(), calc, opc); var w = window.open('', '_blank'); if (!w) return RV.toast('Permita pop-ups para abrir o documento.'); w.document.write(d.html); w.document.close(); }
+  function abrirDoc(id, opc) { opc = Object.assign({ demo: !!C.demo, recibo: C.recibo, enviadoEm: C.enviadoEm }, opc || {}); var d = L.documento(id, caso(), calc, opc); var w = window.open('', '_blank'); if (!w) return RV.toast('Permita pop-ups para abrir o documento.'); w.document.write(d.html); w.document.close(); }
   function pDocs(el) {
     el.innerHTML = '<div><h2>Modelos de documentos</h2><p class="sub">Preenchidos com os dados do caso. Abra para imprimir ou salvar em PDF, ou baixe para editar no Word.</p></div>' +
       '<div class="tabela"><table><tbody>' + L.MODELOS.map(function (m) {
@@ -747,9 +747,10 @@
       }).join('') + '</tbody></table></div>';
     var opc = function (id) { var s = $('sel-' + id); if (!s) return {}; return { projetoId: s.value, pessoaId: s.value }; };
     el.querySelectorAll('[data-doc]').forEach(function (b) { b.onclick = function () { abrirDoc(b.dataset.doc, opc(b.dataset.doc)); }; });
-    el.querySelectorAll('[data-word]').forEach(function (b) { b.onclick = function () { var d = L.documento(b.dataset.word, caso(), calc, opc(b.dataset.word)); baixar(b.dataset.word + '-' + nomeBase() + '.doc', '﻿' + d.html, 'application/msword'); }; });
+    el.querySelectorAll('[data-word]').forEach(function (b) { b.onclick = function () { var d = L.documento(b.dataset.word, caso(), calc, Object.assign({ demo: !!C.demo, recibo: C.recibo, enviadoEm: C.enviadoEm }, opc(b.dataset.word))); baixar(b.dataset.word + '-' + nomeBase() + '.doc', '﻿' + d.html, 'application/msword'); }; });
   }
 
+  $('gerar-rel').addEventListener('click', function () { if (C) abrirDoc('diagnostico'); });
   RV.eu.then(function () { if (!RV.pode('write')) $('novo').hidden = true; rota(); });
 })();
 </script>
