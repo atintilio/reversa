@@ -811,7 +811,7 @@
 
   // ------------------------------------------------------------------ modelos de documentos (KB §18)
   var MODELOS = [
-    { id: 'diagnostico', nome: 'Diagnóstico Lei do Bem (relatório ao cliente)' },
+    { id: 'diagnostico', nome: 'Diagnóstico Lei do Bem — Potencial Real de Ganhos' },
     { id: 'projeto', nome: 'Projeto técnico de P&D', porProjeto: true },
     { id: 'rateio', nome: 'Memorial de cálculo de rateio' },
     { id: 'parecer', nome: 'Parecer de elegibilidade' },
@@ -1004,8 +1004,8 @@
       : 'Situação: ' + el.rotulo + '. ' + el.motivos.filter(function (m) { return m.nivel === 'bloqueio'; }).map(function (m) { return m.texto; }).join(' ') + ' O benefício depende da solução das pendências listadas no plano de ação.';
 
     var corpo =
-      '<header class="capa"><div class="marca">REVERSA <em>TAX</em><small>uma ferramenta Argus Prime</small></div><h1>Diagnóstico Lei do Bem</h1><p>Lei nº 11.196/2005 · Capítulo III · ano-calendário ' + h(ano) + '</p>' +
-      '<div class="cli"><b>' + h(e.nome || '[RAZÃO SOCIAL]') + '</b><span>CNPJ ' + h(cnpjFmt(e.cnpj)) + ' · ' + h(e.formaTribTexto || '') + (e.apuracao ? ' (' + h(e.apuracao) + ')' : '') + ' · emitido em ' + h(dataBR(hoje())) + '</span></div></header>' +
+      '<header class="capa"><div class="marca">REVERSA <em>TAX</em><small>uma ferramenta Argus Prime</small></div><h1>Diagnóstico Lei do Bem</h1><p class="pot">Potencial Real de Ganhos</p>' +
+      '<div class="cli"><b>' + h(e.nome || '[RAZÃO SOCIAL]') + '</b><span class="cnpj">CNPJ ' + h(cnpjFmt(e.cnpj)) + '</span><span>Lei nº 11.196/2005 · ano-calendário ' + h(ano) + ' · ' + h(e.formaTribTexto || '') + (e.apuracao ? ' (' + h(e.apuracao) + ')' : '') + ' · emitido em ' + h(dataBR(hoje())) + '</span></div></header>' +
       (opc.demo ? '<p class="demo">DEMONSTRAÇÃO — caso fictício com dados sintéticos. Não utilizar como peça técnica.</p>' : '') +
       '<h2>1. Sumário executivo</h2><div class="kpis">' + kpi('Economia estimada', fmt(calc.economia), 'IRPJ ' + fmt(calc.economiaIRPJ) + ' · CSLL ' + fmt(calc.economiaCSLL), true) +
         kpi('Dispêndios elegíveis', fmt(calc.dispendios), Object.keys(calc.porRubrica).length + ' rubrica(s) · ' + projs.length + ' projeto(s)') +
@@ -1064,7 +1064,7 @@
 
     var css = 'body{font-family:Arial,Helvetica,sans-serif;color:#0E2239;max-width:860px;margin:24px auto;padding:0 24px;font-size:12.5px;line-height:1.5}' +
       '.capa{background:#0E2239;color:#fff;padding:28px 30px;border-radius:6px;margin-bottom:18px}.capa .marca{font-weight:700;letter-spacing:.08em;font-size:14px}.capa .marca em{color:#3DB8AE;font-style:normal}.capa .marca small{display:block;font-weight:400;letter-spacing:0;color:#AFC0D2;font-size:11px}' +
-      '.capa h1{font-size:28px;margin:22px 0 2px}.capa p{margin:0;color:#C9D6E3}.capa .cli{margin-top:18px;border-top:1px solid rgba(255,255,255,.2);padding-top:12px}.capa .cli b{display:block;font-size:16px}.capa .cli span{color:#C9D6E3}' +
+      '.capa h1{font-size:28px;margin:22px 0 2px}.capa p{margin:0;color:#C9D6E3}.capa .cli{margin-top:18px;border-top:1px solid rgba(255,255,255,.2);padding-top:12px}.capa .cli b{display:block;font-size:16px}.capa .cli span{display:block;color:#C9D6E3}.capa .cli .cnpj{color:#fff;font-size:14px;margin:2px 0 6px}.capa .pot{color:#3DB8AE;font-size:18px;font-weight:700;margin:2px 0 0}' +
       '.demo{background:#F6E8D3;color:#7A4B0E;padding:8px 12px;font-weight:700;border-radius:4px}' +
       'h2{font-size:15px;margin:24px 0 8px;border-bottom:2px solid #1E8F88;padding-bottom:3px;break-after:avoid}h3{font-size:13px;margin:14px 0 6px}' +
       '.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 12px}.k{border:1px solid #DCE3EA;border-radius:6px;padding:10px}.k span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#5A6878}.k b{display:block;font-size:16px;margin:4px 0}.k small{color:#5A6878;font-size:10.5px}.k.d{background:#0E2239;color:#fff;border-color:#0E2239}.k.d b{color:#3DB8AE}.k.d span,.k.d small{color:#C9D6E3}' +
@@ -1074,7 +1074,7 @@
       '.nota{color:#5A6878;font-size:11.5px}.ass{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;margin-top:48px}.ass span{display:block;border-top:1px solid #0E2239;margin-bottom:4px}' +
       '.imp{position:fixed;top:12px;right:12px;background:#1E8F88;color:#fff;border:0;border-radius:6px;padding:8px 14px;font-weight:700;cursor:pointer}' +
       '@media print{body{margin:0;max-width:none}.imp{display:none}.capa,.k.d,.selo,th,.demo,.concl{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
-    var titulo = 'Diagnóstico Lei do Bem — ' + (e.nome || '') + ' — ' + ano;
+    var titulo = 'Diagnóstico Lei do Bem — Potencial Real de Ganhos — ' + (e.nome || '') + ' — CNPJ ' + cnpjFmt(e.cnpj);
     return { titulo: titulo, html: '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>' + h(titulo) + '</title><style>' + css + '</style></head><body><button class="imp" onclick="window.print()">Imprimir / salvar PDF</button>' + corpo + '</body></html>' };
   }
 
