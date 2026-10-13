@@ -85,6 +85,7 @@
       </div>
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><span class="salvo" id="salvo"></span><span id="c-status"></span></div>
     </div>
+    <div class="msg warn" id="demo-aviso" hidden><span class="pill warn">DEMONSTRAÇÃO</span> Caso fictício, com dados sintéticos, para apresentar o módulo. Nada aqui é gravado e os documentos não servem como peça técnica.</div>
     <div class="grid-kpi" id="c-kpis"></div>
 
     <div class="drop" id="drop">
@@ -136,6 +137,7 @@
 
 <script src="/shell.js"></script>
 <script src="/leidobem-motor.js"></script>
+<script src="/leidobem-demo.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -155,10 +157,13 @@
   // ================================================================== navegação entre vistas
   function mostrar(v) { ['lista', 'caso'].forEach(function (k) { $('v-' + k).hidden = k !== v; }); document.querySelector('main > .cab').hidden = v === 'caso'; window.scrollTo(0, 0); }
   document.addEventListener('click', function (ev) {
-    var t = ev.target.closest('[data-voltar]'); if (t) { history.pushState(null, '', '/lei-do-bem.html'); C = null; listar(); mostrar('lista'); return; }
+    var t = ev.target.closest('[data-voltar]'); if (t && DEMO) { location.href = '/demonstracao.html'; return; } if (t) { history.pushState(null, '', '/lei-do-bem.html'); C = null; listar(); mostrar('lista'); return; }
   });
   window.addEventListener('popstate', rota);
-  function rota() { var m = /[?&]caso=([0-9a-f-]{36})/.exec(location.search); if (m) abrir(m[1]); else { C = null; listar(); mostrar('lista'); } }
+  // Área de demonstração (?demo=1): caso fictício só no navegador, sem nenhuma chamada de gravação à API.
+  var DEMO = /(^|[?&])demo=1(&|$)/.test(location.search.slice(1));
+  function rota() {
+    if (DEMO) { carregar(window.LDB_DEMO()); $('demo-aviso').hidden = false; $('drop').hidden = true; document.querySelector('[data-voltar]').textContent = 'Voltar à demonstração'; mostrar('caso'); return; } var m = /[?&]caso=([0-9a-f-]{36})/.exec(location.search); if (m) abrir(m[1]); else { C = null; listar(); mostrar('lista'); } }
 
   // ================================================================== lista de casos
   function listar() {
@@ -234,6 +239,7 @@
     clearTimeout(timer); timer = setTimeout(salvar, 1200);
   }
   function salvar() {
+    if (C && C.demo) return;
     if (salvando) { pendenteSalvar = true; return; }
     salvando = true; $('salvo').textContent = 'Salvando…';
     RV.api('PATCH', '/api/v1/leidobem/casos/' + C.id, { dados: D }).then(function (r) {
@@ -253,7 +259,7 @@
     $('c-kpis').innerHTML = kpi('Dispêndios elegíveis', fmt(calc.dispendios), Object.keys(calc.porRubrica).length + ' rubrica(s)') +
       kpi('Exclusão adicional', fmt(calc.exclusao + calc.exclusaoPatente), r2(calc.percentual * 100) + '% (art. 19)') +
       kpi('Economia estimada', fmt(calc.economia), 'IRPJ ' + fmt(calc.economiaIRPJ) + ' · CSLL ' + fmt(calc.economiaCSLL), true) +
-      kpi('Pendências', String(L.pendencias(caso(), calc).filter(function (p) { return p.nivel !== 'alerta'; }).length), 'bloqueios e erros a resolver') + kpi('Prazo FORMP&D', prazoTxt(calc.prazo), C.status === 'enviado' ? 'Enviado — recibo ' + (C.recibo || '') : '');
+      kpi('Pendências', String(L.pendencias(caso(), calc).filter(function (p) { return p.nivel !== 'alerta'; }).length), 'bloqueios e erros a resolver') + kpi('Prazo FORMP&D', C.status === 'enviado' ? 'Enviado em ' + L.dataBR(C.enviadoEm) : prazoTxt(calc.prazo), C.status === 'enviado' ? 'Recibo ' + (C.recibo || '') : '');
     var pend = L.pendencias(caso(), calc).filter(function (p) { return p.nivel !== 'alerta'; }).length;
     var b = document.querySelector('[data-aba="pendencias"]'); b.innerHTML = 'Pendências' + (pend ? '<span class="n">' + pend + '</span>' : '');
   }

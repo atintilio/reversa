@@ -599,7 +599,7 @@
     var c = caso.contabil || {};
     if (c.ativacao && c.ativacao.length) out.push({ nivel: 'alerta', area: 'Contábil', texto: 'Ativação de P&D detectada na ECD: benefício só sobre a amortização do período (CPC 04). Avalie com a controladoria se os critérios de ativação foram atendidos.' });
     (calc.avisos || []).forEach(function (a) { out.push({ nivel: 'alerta', area: 'Cálculo', texto: a }); });
-    if (calc.prazo && (calc.prazo.nivel === 'critico' || calc.prazo.nivel === 'vencido')) out.push({ nivel: calc.prazo.nivel === 'vencido' ? 'erro' : 'alerta', area: 'Prazo', texto: calc.prazo.nivel === 'vencido' ? 'Prazo do FORMP&D vencido em ' + dataBR(calc.prazo.data) + '.' : 'Faltam ' + calc.prazo.dias + ' dia(s) para o prazo do FORMP&D (' + dataBR(calc.prazo.data) + ').' });
+    if (caso.status !== 'enviado' && calc.prazo && (calc.prazo.nivel === 'critico' || calc.prazo.nivel === 'vencido')) out.push({ nivel: calc.prazo.nivel === 'vencido' ? 'erro' : 'alerta', area: 'Prazo', texto: calc.prazo.nivel === 'vencido' ? 'Prazo do FORMP&D vencido em ' + dataBR(calc.prazo.data) + '.' : 'Faltam ' + calc.prazo.dias + ' dia(s) para o prazo do FORMP&D (' + dataBR(calc.prazo.data) + ').' });
     var ordem = { bloqueio: 0, erro: 1, alerta: 2 };
     return out.sort(function (a, b) { return ordem[a.nivel] - ordem[b.nivel]; });
   }
