@@ -737,7 +737,7 @@
   }
 
   // ================================================================== aba Documentos
-  function abrirDoc(id, opc) { opc = Object.assign({ demo: !!C.demo, recibo: C.recibo, enviadoEm: C.enviadoEm }, opc || {}); var d = L.documento(id, caso(), calc, opc); var w = window.open('', '_blank'); if (!w) return RV.toast('Permita pop-ups para abrir o documento.'); w.document.write(d.html); w.document.close(); }
+  function abrirDoc(id, opc) { opc = Object.assign({ demo: !!C.demo, recibo: C.recibo, enviadoEm: C.enviadoEm, logo: location.origin + '/assets/logo-login.png' }, opc || {}); var d = L.documento(id, caso(), calc, opc); var w = window.open('', '_blank'); if (!w) return RV.toast('Permita pop-ups para abrir o documento.'); w.document.write(d.html); w.document.close(); }
   function pDocs(el) {
     el.innerHTML = '<div><h2>Modelos de documentos</h2><p class="sub">Preenchidos com os dados do caso. Abra para imprimir ou salvar em PDF, ou baixe para editar no Word.</p></div>' +
       '<div class="tabela"><table><tbody>' + L.MODELOS.map(function (m) {

@@ -1004,8 +1004,6 @@
       : 'Situação: ' + el.rotulo + '. ' + el.motivos.filter(function (m) { return m.nivel === 'bloqueio'; }).map(function (m) { return m.texto; }).join(' ') + ' O benefício depende da solução das pendências listadas no plano de ação.';
 
     var corpo =
-      '<header class="capa"><div class="marca">REVERSA <em>TAX</em><small>uma ferramenta Argus Prime</small></div><h1>Diagnóstico Lei do Bem</h1><p class="pot">Potencial Real de Ganhos</p>' +
-      '<div class="cli"><b>' + h(e.nome || '[RAZÃO SOCIAL]') + '</b><span class="cnpj">CNPJ ' + h(cnpjFmt(e.cnpj)) + '</span><span>Lei nº 11.196/2005 · ano-calendário ' + h(ano) + ' · ' + h(e.formaTribTexto || '') + (e.apuracao ? ' (' + h(e.apuracao) + ')' : '') + ' · emitido em ' + h(dataBR(hoje())) + '</span></div></header>' +
       (opc.demo ? '<p class="demo">DEMONSTRAÇÃO — caso fictício com dados sintéticos. Não utilizar como peça técnica.</p>' : '') +
       '<h2>1. Sumário executivo</h2><div class="kpis">' + kpi('Economia estimada', fmt(calc.economia), 'IRPJ ' + fmt(calc.economiaIRPJ) + ' · CSLL ' + fmt(calc.economiaCSLL), true) +
         kpi('Dispêndios elegíveis', fmt(calc.dispendios), Object.keys(calc.porRubrica).length + ' rubrica(s) · ' + projs.length + ' projeto(s)') +
@@ -1063,8 +1061,6 @@
       '<div class="ass"><div><span></span>Responsável técnico-tributário<br>Reversa Tax · Argus Prime</div><div><span></span>Representante legal<br>' + h(e.nome || '') + '</div></div>';
 
     var css = 'body{font-family:Arial,Helvetica,sans-serif;color:#0E2239;max-width:860px;margin:24px auto;padding:0 24px;font-size:12.5px;line-height:1.5}' +
-      '.capa{background:#0E2239;color:#fff;padding:28px 30px;border-radius:6px;margin-bottom:18px}.capa .marca{font-weight:700;letter-spacing:.08em;font-size:14px}.capa .marca em{color:#3DB8AE;font-style:normal}.capa .marca small{display:block;font-weight:400;letter-spacing:0;color:#AFC0D2;font-size:11px}' +
-      '.capa h1{font-size:28px;margin:22px 0 2px}.capa p{margin:0;color:#C9D6E3}.capa .cli{margin-top:18px;border-top:1px solid rgba(255,255,255,.2);padding-top:12px}.capa .cli b{display:block;font-size:16px}.capa .cli span{display:block;color:#C9D6E3}.capa .cli .cnpj{color:#fff;font-size:14px;margin:2px 0 6px}.capa .pot{color:#3DB8AE;font-size:18px;font-weight:700;margin:2px 0 0}' +
       '.demo{background:#F6E8D3;color:#7A4B0E;padding:8px 12px;font-weight:700;border-radius:4px}' +
       'h2{font-size:15px;margin:24px 0 8px;border-bottom:2px solid #1E8F88;padding-bottom:3px;break-after:avoid}h3{font-size:13px;margin:14px 0 6px}' +
       '.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:8px 0 12px}.k{border:1px solid #DCE3EA;border-radius:6px;padding:10px}.k span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#5A6878}.k b{display:block;font-size:16px;margin:4px 0}.k small{color:#5A6878;font-size:10.5px}.k.d{background:#0E2239;color:#fff;border-color:#0E2239}.k.d b{color:#3DB8AE}.k.d span,.k.d small{color:#C9D6E3}' +
@@ -1073,9 +1069,35 @@
       '.fases td:first-child{font-weight:700;width:22%}.selo{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;white-space:nowrap}.selo.ok{background:#DDF2EE;color:#16705F}.selo.and{background:#FFF1D6;color:#8A5A00}.selo.pen{background:#EEF1F4;color:#5A6878}.selo.blq{background:#FBE1E1;color:#A12A2A}' +
       '.nota{color:#5A6878;font-size:11.5px}.ass{display:grid;grid-template-columns:repeat(2,1fr);gap:40px;margin-top:48px}.ass span{display:block;border-top:1px solid #0E2239;margin-bottom:4px}' +
       '.imp{position:fixed;top:12px;right:12px;background:#1E8F88;color:#fff;border:0;border-radius:6px;padding:8px 14px;font-weight:700;cursor:pointer}' +
-      '@media print{body{margin:0;max-width:none}.imp{display:none}.capa,.k.d,.selo,th,.demo,.concl{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
+      '.pg{box-sizing:border-box;min-height:1120px;margin:0 -24px 28px;padding:64px 56px;display:flex;flex-direction:column;border-radius:6px}' +
+      '.capa,.contra{background:#0E2239;color:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}' +
+      '.marca{display:flex;align-items:center;gap:14px;font-weight:700;letter-spacing:.08em;font-size:15px}.marca img{height:64px;width:auto}.marca em{color:#3DB8AE;font-style:normal}.marca small{display:block;font-weight:400;letter-spacing:0;color:#AFC0D2;font-size:11.5px}' +
+      '.capa .tit{margin-top:auto}.capa h1{font-size:42px;line-height:1.1;margin:0}.capa .pot{color:#3DB8AE;font-size:24px;font-weight:700;margin:8px 0 0}' +
+      '.capa .cli{margin-top:40px;border-top:2px solid #3DB8AE;padding-top:18px}.capa .cli b{display:block;font-size:20px}.capa .cli span{display:block;color:#C9D6E3;margin-top:4px}.capa .cli .cnpj{color:#fff;font-size:16px}.capa .tag{display:inline-block!important;margin-top:12px!important;background:#F6E8D3;color:#7A4B0E!important;font-weight:700;padding:3px 10px;border-radius:4px}' +
+      '.rod{margin-top:auto;padding-top:28px;color:#AFC0D2;font-size:11px}.capa .rod{margin-top:56px}' +
+      '.indice{border:1px solid #DCE3EA}.indice h1{font-size:26px;margin:0 0 24px;border-bottom:2px solid #1E8F88;padding-bottom:8px}.indice ol{list-style:none;margin:0;padding:0}.indice li a{display:flex;gap:12px;align-items:baseline;color:#0E2239;text-decoration:none;padding:9px 0;font-size:14px}' +
+      '.indice .n{color:#1E8F88;font-weight:700;min-width:26px}.indice .d{flex:1;border-bottom:1px dotted #AFC0D2}.indice .nota{margin-top:auto}' +
+      '.contra .msg{margin:auto 0}.contra .msg b{font-size:22px}.contra .msg p{color:#3DB8AE;font-size:16px;margin:6px 0 0}' +
+      '@page{size:A4;margin:14mm 12mm}@page full{margin:0}' +
+      '@media print{body{margin:0;max-width:none;padding:0}.imp{display:none}.pg{page:full;margin:0;border-radius:0;min-height:0;height:297mm;break-after:page;padding:22mm 20mm}.indice{border:0;page:auto;height:auto;min-height:250mm;padding:0}.contra{break-before:page;break-after:auto}.cont{display:block}.k.d,.selo,th,.demo,.concl{-webkit-print-color-adjust:exact;print-color-adjust:exact}}';
     var titulo = 'Diagnóstico Lei do Bem — Potencial Real de Ganhos — ' + (e.nome || '') + ' — CNPJ ' + cnpjFmt(e.cnpj);
-    return { titulo: titulo, html: '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>' + h(titulo) + '</title><style>' + css + '</style></head><body><button class="imp" onclick="window.print()">Imprimir / salvar PDF</button>' + corpo + '</body></html>' };
+    // seções numeradas viram âncoras do índice
+    var secoes = [];
+    corpo = corpo.replace(/<h2>(\d+)\. ([^<]*)<\/h2>/g, function (m, n, t) { secoes.push([n, t]); return '<h2 id="s' + n + '">' + n + '. ' + t + '</h2>'; });
+    var logo = opc.logo ? '<img src="' + h(opc.logo) + '" alt="">' : '';
+    var marca = '<div class="marca">' + logo + '<div>REVERSA <em>TAX</em><small>uma ferramenta Argus Prime</small></div></div>';
+    var capa = '<section class="pg capa">' + marca +
+      '<div class="tit"><h1>Diagnóstico Lei do Bem</h1><p class="pot">Potencial Real de Ganhos</p></div>' +
+      '<div class="cli"><b>' + h(e.nome || '[RAZÃO SOCIAL]') + '</b><span class="cnpj">CNPJ ' + h(cnpjFmt(e.cnpj)) + '</span>' +
+      '<span>Lei nº 11.196/2005 · ano-calendário ' + h(ano) + (e.formaTribTexto ? ' · ' + h(e.formaTribTexto) + (e.apuracao ? ' (' + h(e.apuracao) + ')' : '') : '') + '</span>' +
+      '<span>Emitido em ' + h(dataBR(hoje())) + '</span>' + (opc.demo ? '<span class="tag">DEMONSTRAÇÃO</span>' : '') + '</div>' +
+      '<div class="rod">Documento confidencial · uso exclusivo do cliente</div></section>';
+    var indice = '<section class="pg indice"><h1>Índice</h1><ol>' + secoes.map(function (x) { return '<li><a href="#s' + x[0] + '"><span class="n">' + x[0] + '</span><span class="t">' + x[1] + '</span><span class="d"></span></a></li>'; }).join('') + '</ol>' +
+      '<p class="nota">Diagnóstico gerado pelo Reversa Tax a partir das escriturações digitais e das informações fornecidas pela empresa. Valores sujeitos à revisão técnica e documental.</p></section>';
+    var contra = '<section class="pg contra">' + marca +
+      '<div class="msg"><b>Engenharia Financeira e Tributária</b><p>Onde o rigor técnico e a oportunidade se encontram.</p></div>' +
+      '<div class="rod">Argus Prime · argusprime.com.br<br>Este documento contém informações fiscais confidenciais da empresa analisada. É proibida a reprodução ou divulgação sem autorização.</div></section>';
+    return { titulo: titulo, html: '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><title>' + h(titulo) + '</title><style>' + css + '</style></head><body><button class="imp" onclick="window.print()">Imprimir / salvar PDF</button>' + capa + indice + '<main class="cont">' + corpo + '</main>' + contra + '</body></html>' };
   }
 
   var api = {
