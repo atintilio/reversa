@@ -7,6 +7,7 @@ const members = require('../../lib/domain/members');
 const tax = require('../../lib/domain/tax');
 const crm = require('../../lib/domain/crm');
 const leidobem = require('../../lib/domain/leidobem');
+const master = require('../../lib/domain/master');
 const clientAuthorizations = require('../../lib/domain/client-authorizations');
 
 function deny(ctx, permission, action) {
@@ -38,7 +39,7 @@ async function route(req, res) {
   switch (resource) {
     case 'me':
       if (m !== 'GET') return method(res, ['GET']);
-      return json(res, 200, { user: { name: ctx.user.name, email: ctx.user.email, legacy: ctx.user.legacy }, organization: ctx.organization, role: ctx.role, permissions: permissions(ctx) });
+      return json(res, 200, { user: { name: ctx.user.name, email: ctx.user.email, legacy: ctx.user.legacy }, organization: ctx.organization, role: ctx.role, master: Boolean(ctx.master), permissions: permissions(ctx) });
 
     case 'members':
       deny(ctx, 'manageMembers', 'members');
@@ -127,6 +128,26 @@ async function route(req, res) {
       if (sid && !sact && m === 'PATCH') { deny(ctx, 'write', 'ldb.save'); return json(res, 200, await leidobem.save(ctx, sid, body)); }
       if (sid && sact === 'revisao' && m === 'POST') { deny(ctx, 'write', 'ldb.review'); return json(res, 200, await leidobem.review(ctx, sid, body)); }
       if (sid && sact === 'recibo' && m === 'POST') { deny(ctx, 'review', 'ldb.receipt'); return json(res, 200, await leidobem.receipt(ctx, sid, body)); }
+      return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
+    }
+
+    case 'master': {
+      // /master/resumo · /master/parceiros[/:id[/convite]] · /master/usuarios[/:id] · /master/carteira · /master/conflitos · /master/auditoria
+      if (!ctx.master) {
+        audit('authz.denied', { outcome: 'denied', organizationId: ctx.organization.id, actorUserId: ctx.user.id, metadata: { action: 'master', role: ctx.role } });
+        throw new HttpError(403, 'FORBIDDEN', 'Acesso exclusivo do administrador master.');
+      }
+      const [, sub, sid, sact] = segments(req);
+      if (sub === 'resumo' && m === 'GET') return json(res, 200, await master.resumo());
+      if (sub === 'parceiros' && !sid && m === 'GET') return json(res, 200, { parceiros: await master.parceiros() });
+      if (sub === 'parceiros' && !sid && m === 'POST') return json(res, 201, await master.criarParceiro(ctx, body));
+      if (sub === 'parceiros' && sid && !sact && m === 'PATCH') return json(res, 200, await master.editarParceiro(ctx, sid, body));
+      if (sub === 'parceiros' && sid && sact === 'convite' && m === 'POST') return json(res, 200, await master.reenviarConvite(ctx, sid));
+      if (sub === 'usuarios' && !sid && m === 'GET') return json(res, 200, { usuarios: await master.usuarios() });
+      if (sub === 'usuarios' && sid && m === 'PATCH') return json(res, 200, await master.editarUsuario(ctx, sid, body));
+      if (sub === 'carteira' && m === 'GET') return json(res, 200, { clientes: await master.carteira(query) });
+      if (sub === 'conflitos' && m === 'GET') return json(res, 200, { conflitos: await master.conflitos() });
+      if (sub === 'auditoria' && m === 'GET') return json(res, 200, { eventos: await master.auditoria(query) });
       return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
     }
 

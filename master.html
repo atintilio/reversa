@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel Master · Reversa Tax</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<style>
+  .abas { display: flex; gap: 4px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .abas button { background: none; border: 0; border-bottom: 3px solid transparent; color: var(--muted); border-radius: 0; padding: 10px 14px; font-weight: 700; }
+  .abas button[aria-selected="true"] { color: var(--navy); border-bottom-color: var(--teal); }
+  .abas .n { background: #FBE1E1; color: #A12A2A; border-radius: 10px; padding: 0 7px; margin-left: 6px; font-size: 12px; }
+  .filtro { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; } .filtro select, .filtro input { max-width: 320px; }
+  .grade2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } @media (max-width: 640px) { .grade2 { grid-template-columns: 1fr; } }
+  .link-conv { word-break: break-all; background: var(--soft, #F5F7F9); padding: 8px; border-radius: 6px; font-size: 12px; }
+  td small { color: var(--muted); }
+  main > *, #conteudo > * { min-width: 0; }
+  #painel td:last-child { white-space: normal; } #painel td:last-child button { margin: 2px 0; }
+</style>
+</head>
+<body class="rv">
+<main>
+  <div class="cab">
+    <div>
+      <h1>Painel <em>Master</em></h1>
+      <p class="sub">Todos os parceiros, usuários e carteiras da plataforma. Cada parceiro trabalha num ambiente isolado; só você enxerga o conjunto.</p>
+    </div>
+    <button type="button" id="novo">Novo parceiro</button>
+  </div>
+  <div class="msg bad" id="negado" hidden>Acesso exclusivo do administrador master.</div>
+  <div id="conteudo" hidden>
+    <div class="grid-kpi" id="kpis"></div>
+    <div class="abas" role="tablist" id="abas">
+      <button type="button" data-aba="parceiros" aria-selected="true">Parceiros</button>
+      <button type="button" data-aba="usuarios">Usuários</button>
+      <button type="button" data-aba="carteira">Carteira consolidada</button>
+      <button type="button" data-aba="conflitos">Conflitos de CNPJ</button>
+      <button type="button" data-aba="auditoria">Auditoria</button>
+    </div>
+    <section class="card" id="painel"></section>
+  </div>
+</main>
+
+<dialog id="dlg-novo">
+  <form id="f-novo" method="dialog">
+    <h2>Novo parceiro</h2>
+    <p class="sub">Cria um ambiente isolado para o parceiro e convida o responsável, que poderá montar a própria equipe.</p>
+    <label>Nome do parceiro<input id="n-nome" required maxlength="180" placeholder="Ex.: Silva Contabilidade"></label>
+    <div class="grade2">
+      <label>CNPJ (opcional)<input id="n-cnpj" inputmode="numeric" maxlength="18"></label>
+      <label>Comissão em contrato (%)<input id="n-com" inputmode="decimal" value="0"></label>
+    </div>
+    <div class="grade2">
+      <label>Nome do responsável<input id="n-resp" required maxlength="180"></label>
+      <label>E-mail do responsável<input id="n-email" type="email" required maxlength="320"></label>
+    </div>
+    <label>Observações do contrato<textarea id="n-obs" rows="2" maxlength="2000"></textarea></label>
+    <div class="msg bad" id="n-erro" hidden></div>
+    <div class="acoes"><button type="button" class="sec" id="n-cancelar">Cancelar</button><button type="submit" id="n-criar">Criar e convidar</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlg-msg">
+  <form method="dialog"><h2 id="m-tit"></h2><div id="m-corpo"></div><div class="acoes"><button type="submit">Fechar</button></div></form>
+</dialog>
+
+<script src="/shell.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, esc = RV.esc;
+  var brl = function (v) { return RV.reais(Math.round((Number(v) || 0) * 100)); };
+  var pct = function (v) { return String(Math.round((Number(v) || 0) * 100) / 100).replace('.', ',') + '%'; };
+  var dt = function (d, h) { return d ? new Date(d).toLocaleString('pt-BR', h ? undefined : { day: '2-digit', month: '2-digit', year: 'numeric' }) : '—'; };
+  var cnpj = function (c) { return c ? RV.cnpj(c) : '—'; };
+  var FASE = { a_apresentar: 'A apresentar', apresentado: 'Apresentado', aguardando_autorizacao: 'Aguardando autorização', contrato: 'Contrato', perdido: 'Perdido' };
+  var PERFIL = { owner: 'Responsável', admin: 'Administrador', analyst: 'Analista', viewer: 'Leitor', support: 'Suporte' };
+  var SIT = { active: ['Ativo', 'ok'], invited: ['Convite pendente', 'warn'], suspended: ['Suspenso', 'bad'] };
+  var TIPO = { plataforma: 'Plataforma', interna: 'Interna', parceiro: 'Parceiro' };
+  var aba = 'parceiros', parceiros = [];
+
+  function msg(t, html) { $('m-tit').textContent = t; $('m-corpo').innerHTML = html; $('dlg-msg').showModal(); }
+  function resultadoConvite(r, email) {
+    if (r.emailSent) return msg('Convite enviado', '<p>O convite foi enviado para <b>' + esc(email) + '</b>. O link vale 48 horas.</p>');
+    if (r.contaExistente) return msg('Parceiro criado', '<p>Este e-mail já tinha conta ativa e foi vinculado como responsável do parceiro.</p>');
+    if (r.link) return msg('Envie o convite manualmente', '<p>O envio de e-mail não está disponível agora. Copie o link abaixo e envie ao responsável (vale 48 horas, uso único):</p><p class="link-conv">' + esc(r.link) + '</p><p><button type="button" class="sec mini" id="copiar">Copiar link</button></p>');
+  }
+  document.addEventListener('click', function (e) { if (e.target.id === 'copiar') { navigator.clipboard.writeText(document.querySelector('.link-conv').textContent).then(function () { RV.toast('Link copiado'); }); } });
+
+  function kpis() {
+    return RV.api('GET', '/api/v1/master/resumo').then(function (r) {
+      var k = function (rot, v, n, d) { return '<div class="kpi' + (d ? ' destaque' : '') + '"><div class="r">' + esc(rot) + '</div><div class="v">' + esc(v) + '</div>' + (n ? '<div class="n">' + esc(n) + '</div>' : '') + '</div>'; };
+      $('kpis').innerHTML = k('Parceiros', String(r.parceiros), r.parceirosAtivos + ' ativo(s)') + k('Usuários', String(r.usuarios), 'em todas as organizações') +
+        k('Clientes', String(r.clientes), r.contratos + ' em contrato') + k('Créditos identificados', brl(r.creditos), 'PIS/COFINS, antes da revisão', true) +
+        k('Economia Lei do Bem', brl(r.economiaLdb), 'IRPJ + CSLL estimados');
+      var b = document.querySelector('[data-aba="conflitos"]'); b.innerHTML = 'Conflitos de CNPJ' + (r.conflitos ? '<span class="n">' + r.conflitos + '</span>' : '');
+    });
+  }
+
+  function opcoesParceiro(sel) { return '<option value="">Todos os parceiros</option>' + parceiros.map(function (p) { return '<option value="' + p.id + '"' + (p.id === sel ? ' selected' : '') + '>' + esc(p.nome) + '</option>'; }).join(''); }
+
+  function pParceiros(el) {
+    return RV.api('GET', '/api/v1/master/parceiros').then(function (r) {
+      parceiros = r.parceiros;
+      el.innerHTML = '<div class="tabela"><table><thead><tr><th>Parceiro</th><th>Responsável</th><th class="num">Comissão</th><th class="num">Usuários</th><th class="num">Clientes</th><th class="num">Créditos</th><th class="num">Lei do Bem</th><th>Último acesso</th><th>Situação</th><th></th></tr></thead><tbody>' +
+        parceiros.map(function (p) {
+          var st = p.status === 'active' ? '<span class="pill ok">Ativo</span>' : '<span class="pill bad">Suspenso</span>';
+          var acoes = p.tipo === 'plataforma' ? '<small>Sua organização</small>' :
+            '<button type="button" class="sec mini" data-com="' + p.id + '">Comissão</button> ' +
+            (p.status === 'active' ? '<button type="button" class="sec mini" data-st="' + p.id + '|suspended">Suspender</button>' : '<button type="button" class="sec mini" data-st="' + p.id + '|active">Reativar</button>') +
+            ' <button type="button" class="sec mini" data-conv="' + p.id + '">Reenviar convite</button>';
+          return '<tr><td><b>' + esc(p.nome) + '</b><br><small>' + esc(TIPO[p.tipo] || p.tipo) + ' · ' + cnpj(p.cnpj) + ' · desde ' + dt(p.criadoEm) + '</small></td><td>' + esc(p.responsavel || '—') + '<br><small>' + esc(p.email || '') + '</small></td>' +
+            '<td class="num">' + (p.tipo === 'parceiro' ? pct(p.comissaoPct) : '—') + '</td><td class="num">' + p.usuarios + '</td><td class="num">' + p.clientes + '<br><small>' + p.contratos + ' contrato(s)</small></td>' +
+            '<td class="num">' + brl(p.creditos) + '</td><td class="num">' + brl(p.economiaLdb) + '<br><small>' + p.casosLdb + ' caso(s)</small></td><td>' + dt(p.ultimoAcesso, true) + '</td><td>' + st + '</td><td>' + acoes + '</td></tr>';
+        }).join('') + '</tbody></table></div>' + (parceiros.length <= 1 ? '<p class="vazio">Nenhum parceiro ainda. Use “Novo parceiro”.</p>' : '');
+      el.querySelectorAll('[data-st]').forEach(function (b) { b.onclick = function () {
+        var x = b.dataset.st.split('|'), p = parceiros.filter(function (q) { return q.id === x[0]; })[0];
+        if (x[1] === 'suspended' && !confirm('Suspender ' + p.nome + '? Toda a equipe do parceiro perde o acesso até a reativação. Os dados são mantidos.')) return;
+        RV.api('PATCH', '/api/v1/master/parceiros/' + x[0], { status: x[1] }).then(function () { RV.toast(x[1] === 'active' ? 'Parceiro reativado' : 'Parceiro suspenso'); render(); }).catch(function (e) { RV.toast(e.message); });
+      }; });
+      el.querySelectorAll('[data-com]').forEach(function (b) { b.onclick = function () {
+        var p = parceiros.filter(function (q) { return q.id === b.dataset.com; })[0];
+        var v = prompt('Comissão de ' + p.nome + ' em contrato (%), sobre os honorários líquidos de tributos:', String(p.comissaoPct).replace('.', ','));
+        if (v == null) return;
+        RV.api('PATCH', '/api/v1/master/parceiros/' + p.id, { comissaoPct: v.replace(',', '.') }).then(function () { RV.toast('Comissão atualizada'); render(); }).catch(function (e) { RV.toast(e.message); });
+      }; });
+      el.querySelectorAll('[data-conv]').forEach(function (b) { b.onclick = function () {
+        var p = parceiros.filter(function (q) { return q.id === b.dataset.conv; })[0];
+        RV.api('POST', '/api/v1/master/parceiros/' + p.id + '/convite', {}).then(function (r) { resultadoConvite(r, p.email); }).catch(function (e) { RV.toast(e.message); });
+      }; });
+    });
+  }
+
+  var filtroUsu = '', filtroCart = '', filtroAud = '';
+  function pUsuarios(el) {
+    return RV.api('GET', '/api/v1/master/usuarios').then(function (r) {
+      var us = r.usuarios.filter(function (u) { return !filtroUsu || u.organizacao.id === filtroUsu; });
+      el.innerHTML = '<div class="filtro"><select id="fu">' + opcoesParceiro(filtroUsu) + '</select><span class="muted">' + us.length + ' usuário(s)</span></div>' +
+        '<div class="tabela"><table><thead><tr><th>Usuário</th><th>Organização</th><th>Perfil</th><th>Último acesso</th><th>Situação</th><th></th></tr></thead><tbody>' +
+        us.map(function (u) {
+          var s = SIT[u.situacao] || [u.situacao, ''];
+          var b = u.situacao === 'active' ? '<button type="button" class="sec mini" data-u="' + u.id + '|' + u.organizacao.id + '|suspended">Suspender</button>' : u.situacao === 'suspended' ? '<button type="button" class="sec mini" data-u="' + u.id + '|' + u.organizacao.id + '|active">Reativar</button>' : '';
+          return '<tr><td><b>' + esc(u.nome) + '</b><br><small>' + esc(u.email) + '</small></td><td>' + esc(u.organizacao.nome) + '</td><td>' + esc(PERFIL[u.perfil] || u.perfil) + '</td><td>' + dt(u.ultimoAcesso, true) + '</td><td><span class="pill ' + s[1] + '">' + s[0] + '</span></td><td>' + b + '</td></tr>';
+        }).join('') + '</tbody></table></div><p class="muted" style="font-size:13px">A equipe de cada parceiro é convidada e organizada pelo próprio responsável, na tela Usuários do ambiente dele. Aqui você suspende ou reativa qualquer acesso.</p>';
+      $('fu').onchange = function () { filtroUsu = this.value; render(); };
+      el.querySelectorAll('[data-u]').forEach(function (b) { b.onclick = function () {
+        var x = b.dataset.u.split('|');
+        RV.api('PATCH', '/api/v1/master/usuarios/' + x[0], { organizacaoId: x[1], situacao: x[2] }).then(function () { RV.toast(x[2] === 'active' ? 'Acesso reativado' : 'Acesso suspenso'); render(); }).catch(function (e) { RV.toast(e.message); });
+      }; });
+    });
+  }
+
+  function pCarteira(el) {
+    return RV.api('GET', '/api/v1/master/carteira' + (filtroCart ? '?parceiro=' + filtroCart : '')).then(function (r) {
+      var cs = r.clientes, cred = 0, ldb = 0, com = 0, hon = 0;
+      cs.forEach(function (c) { cred += c.creditos; ldb += c.economiaLdb; if (c.comissao) { com += c.comissao.comissao; hon += c.comissao.honorarios; } });
+      el.innerHTML = '<div class="filtro"><select id="fc">' + opcoesParceiro(filtroCart) + '</select><span class="muted">' + cs.length + ' cliente(s) · créditos ' + brl(cred) + ' · Lei do Bem ' + brl(ldb) + ' · honorários contratados ' + brl(hon) + ' · comissões projetadas ' + brl(com) + '</span></div>' +
+        '<div class="tabela"><table><thead><tr><th>Cliente</th><th>Parceiro</th><th>Fase</th><th class="num">Créditos</th><th class="num">Lei do Bem</th><th class="num">Honorários</th><th class="num">Comissão</th></tr></thead><tbody>' +
+        (cs.length ? cs.map(function (c) {
+          return '<tr><td><b>' + esc(c.nome) + '</b><br><small>' + cnpj(c.cnpj) + '</small></td><td>' + esc(c.parceiro.nome) + '</td><td>' + esc(FASE[c.fase] || '—') + '</td><td class="num">' + brl(c.creditos) + '</td><td class="num">' + (c.economiaLdb ? brl(c.economiaLdb) : '—') + '</td>' +
+            '<td class="num">' + (c.comissao ? brl(c.comissao.honorarios) + '<br><small>' + pct(c.comissao.honorariosPct) + '</small>' : '—') + '</td><td class="num">' + (c.comissao ? brl(c.comissao.comissao) : '—') + '</td></tr>';
+        }).join('') : '<tr><td colspan="7" class="vazio">Nenhum cliente cadastrado.</td></tr>') + '</tbody></table></div>';
+      $('fc').onchange = function () { filtroCart = this.value; render(); };
+    });
+  }
+
+  function pConflitos(el) {
+    return RV.api('GET', '/api/v1/master/conflitos').then(function (r) {
+      el.innerHTML = '<p class="muted">Empresas cadastradas por mais de uma organização. O primeiro registro aparece primeiro: use-o como referência para definir de quem é a oportunidade.</p>' +
+        (r.conflitos.length ? '<div class="tabela"><table><thead><tr><th>CNPJ</th><th>Registros (ordem de cadastro)</th></tr></thead><tbody>' + r.conflitos.map(function (c) {
+          return '<tr><td class="mono">' + cnpj(c.cnpj) + '</td><td>' + c.registros.map(function (x, i) { return (i ? '<br>' : '') + '<b>' + esc(x.parceiro) + '</b> — ' + esc(x.cliente) + ' <small>em ' + dt(x.desde, true) + '</small>'; }).join('') + '</td></tr>';
+        }).join('') + '</tbody></table></div>' : '<p class="vazio">Nenhum conflito de CNPJ entre parceiros.</p>');
+    });
+  }
+
+  function pAuditoria(el) {
+    return RV.api('GET', '/api/v1/master/auditoria' + (filtroAud ? '?parceiro=' + filtroAud : '')).then(function (r) {
+      el.innerHTML = '<div class="filtro"><select id="fa">' + opcoesParceiro(filtroAud) + '</select><span class="muted">Últimos 300 eventos</span></div>' +
+        '<div class="tabela"><table><thead><tr><th>Quando</th><th>Organização</th><th>Quem</th><th>Evento</th><th>Resultado</th></tr></thead><tbody>' +
+        r.eventos.map(function (e) { return '<tr><td>' + dt(e.em, true) + '</td><td>' + esc(e.organizacao || '—') + '</td><td>' + esc(e.ator || '—') + '</td><td class="mono">' + esc(e.evento) + '</td><td>' + esc(e.resultado) + '</td></tr>'; }).join('') + '</tbody></table></div>';
+      $('fa').onchange = function () { filtroAud = this.value; render(); };
+    });
+  }
+
+  function render() {
+    var el = $('painel');
+    var p = parceiros.length ? Promise.resolve() : RV.api('GET', '/api/v1/master/parceiros').then(function (r) { parceiros = r.parceiros; });
+    p.then(function () { return { parceiros: pParceiros, usuarios: pUsuarios, carteira: pCarteira, conflitos: pConflitos, auditoria: pAuditoria }[aba](el); })
+      .then(kpis).catch(function (e) { RV.toast(e.message); });
+  }
+  $('abas').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-aba]'); if (!b) return; aba = b.dataset.aba;
+    $('abas').querySelectorAll('[data-aba]').forEach(function (x) { x.setAttribute('aria-selected', String(x === b)); }); render();
+  });
+
+  $('novo').addEventListener('click', function () { $('f-novo').reset(); $('n-com').value = '0'; $('n-erro').hidden = true; $('dlg-novo').showModal(); });
+  $('n-cancelar').addEventListener('click', function () { $('dlg-novo').close(); });
+  $('f-novo').addEventListener('submit', function (ev) {
+    ev.preventDefault(); $('n-criar').disabled = true; $('n-erro').hidden = true;
+    var corpo = { nome: $('n-nome').value, cnpj: $('n-cnpj').value, comissaoPct: $('n-com').value.replace(',', '.'), responsavel: $('n-resp').value, email: $('n-email').value, observacoes: $('n-obs').value };
+    RV.api('POST', '/api/v1/master/parceiros', corpo).then(function (r) { $('dlg-novo').close(); parceiros = []; aba = 'parceiros'; render(); resultadoConvite(r, corpo.email); })
+      .catch(function (e) { $('n-erro').textContent = e.message; $('n-erro').hidden = false; })
+      .then(function () { $('n-criar').disabled = false; });
+  });
+
+  RV.eu.then(function (eu) {
+    if (!eu || !eu.master) { $('negado').hidden = false; $('novo').hidden = true; return; }
+    $('conteudo').hidden = false; $('conteudo').style.cssText = 'display:grid;gap:20px'; render();
+  });
+})();
+</script>
+</body>
+</html>

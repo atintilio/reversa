@@ -71,6 +71,15 @@
   .item .acoes2 { display: flex; gap: 10px; margin-top: 6px; font-size: 12px; }
   .rv .item .acoes2 button { background: none; border: 0; color: var(--teal-ink); padding: 0; font-size: 12px; font-weight: 600; }
   .feito .txt, .feito b { text-decoration: line-through; color: var(--muted); }
+  .comissao { border: 1px solid var(--teal); border-radius: 10px; padding: 16px; display: grid; gap: 12px; background: #F3FAF9; }
+  .comissao .res { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .comissao .res div { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+  .comissao .res small { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  .comissao .res b { font-size: 16px; }
+  .comissao .res .dest { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .comissao .res .dest small { color: #C9D6E3; } .comissao .res .dest b { color: #3DB8AE; }
+  .comissao table { width: 100%; border-collapse: collapse; font-size: 13px; } .comissao th, .comissao td { border-bottom: 1px solid var(--line); padding: 6px 8px; text-align: right; } .comissao th:first-child, .comissao td:first-child { text-align: left; }
+  .comissao tr.atual td { font-weight: 700; color: var(--teal); }
   .agente { background: var(--navy); color: #E8EEF4; border-radius: 10px; padding: 16px; display: grid; gap: 10px; }
   .agente h3 { color: #6FD0C7; margin: 0; }
   .agente p { margin: 0; font-size: 13px; color: #AFC0D2; }
@@ -132,6 +141,7 @@
     <label>Próximo passo<input id="f-passo" maxlength="240" placeholder="Ex.: enviar proposta até sexta" data-write></label>
   </div>
   <div class="corpo">
+    <section class="comissao" id="f-comissao" hidden></section>
     <section class="agente" id="f-agente"></section>
 
     <section>
@@ -173,6 +183,7 @@
 
 <script src="/shell.js"></script>
 <script src="/teses-regras.js"></script>
+<script src="/comissao.js"></script>
 <script>
 (function () {
   'use strict';
@@ -317,7 +328,7 @@
     $('f-passo').value = caso.nextStep || ''; $('f-prev').value = caso.expectedCloseDate ? String(caso.expectedCloseDate).slice(0, 10) : '';
     $('f-resp').innerHTML = membros.map(function (m) { return '<option value="' + m.id + '">' + esc(m.name) + '</option>'; }).join('');
     var eu = RV.usuario && RV.usuario.user; var meu = membros.filter(function (m) { return eu && m.name === eu.name; })[0]; if (meu) $('f-resp').value = meu.id;
-    renderAgente(); renderLinha(); renderContatos(); renderPub(); renderDiag();
+    renderComissao(); renderAgente(); renderLinha(); renderContatos(); renderPub(); renderDiag();
     document.querySelectorAll('#ficha [data-write]').forEach(function (el) { if (!RV.pode('write')) { el.hidden = el.tagName === 'FORM'; el.disabled = true; } });
   }
 
@@ -328,6 +339,34 @@
   $('f-fase').addEventListener('change', function () { salvarCaso({ stage: $('f-fase').value }); });
   $('f-passo').addEventListener('change', function () { salvarCaso({ nextStep: $('f-passo').value }); });
   $('f-prev').addEventListener('change', function () { salvarCaso({ expectedCloseDate: $('f-prev').value }); });
+
+  // comissão do parceiro (fase de contrato)
+  function brl(v) { return RV.reais(Math.round((Number(v) || 0) * 100)); }
+  function pctBR(v) { return String(Math.round((Number(v) || 0) * 100) / 100).replace('.', ',') + '%'; }
+  function lerNum(v) { var t = String(v || '').trim(); if (/,/.test(t)) t = t.replace(/\./g, '').replace(',', '.'); var x = Number(t); return isFinite(x) ? x : 0; }
+  function renderComissao() {
+    var el = $('f-comissao'), caso = atual.cliente.caso || {};
+    if (!caso.id || caso.stage !== 'contrato') { el.hidden = true; el.innerHTML = ''; return; }
+    var org = (RV.usuario && RV.usuario.organization) || {}, cpct = Number(org.commissionPct || 0), cm = caso.comissao || {};
+    var base = cm.base != null ? cm.base : (caso.estimatedValue || 0), hon = cm.honorariosPct != null ? cm.honorariosPct : 20;
+    el.hidden = false;
+    el.innerHTML = '<div><h3 style="margin:0">Honorários e comissão do contrato</h3><div class="muted" style="font-size:13px">' +
+      (cpct > 0 ? 'Comissão do parceiro: <b>' + pctBR(cpct) + '</b> (definida em contrato) sobre os honorários líquidos de tributos (' + pctBR(Comissao.TRIBUTO * 100) + ').' : 'Organização sem comissão de parceiro: o quadro mostra honorários, tributos (' + pctBR(Comissao.TRIBUTO * 100) + ') e líquido.') + '</div></div>' +
+      '<div class="grade2"><label>Base de cálculo (R$)<input id="cm-base" inputmode="decimal" data-write value="' + String(Math.round(base * 100) / 100).replace('.', ',') + '"></label>' +
+      '<label>Honorários cobrados do cliente (%)<input id="cm-hon" inputmode="decimal" data-write value="' + String(hon).replace('.', ',') + '"></label></div>' +
+      '<div class="res" id="cm-res"></div><div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><button type="button" id="cm-salvar" data-write>Salvar no contrato</button><span class="muted" style="font-size:12px">' + (cm.atualizadoEm ? 'Salvo em ' + new Date(cm.atualizadoEm).toLocaleString('pt-BR') + (cm.por ? ' por ' + esc(cm.por) : '') : 'Ainda não salvo. A base vem do crédito calculado; ajuste se o contrato for sobre outro valor.') + '</span></div>' +
+      '<details><summary style="cursor:pointer;font-weight:700">Simular por faixa de honorários</summary><div id="cm-sim" style="margin-top:8px"></div></details>';
+    function atualizar() {
+      var b = lerNum($('cm-base').value), h = lerNum($('cm-hon').value), r = Comissao.calcular(b, h, cpct);
+      $('cm-res').innerHTML = '<div><small>Honorários</small><b>' + brl(r.honorarios) + '</b></div><div><small>Tributos ' + pctBR(Comissao.TRIBUTO * 100) + '</small><b>' + brl(r.tributos) + '</b></div><div><small>Líquido</small><b>' + brl(r.liquido) + '</b></div>' +
+        (cpct > 0 ? '<div class="dest"><small>Comissão do parceiro</small><b>' + brl(r.comissao) + '</b></div><div><small>Argus Prime</small><b>' + brl(r.argus) + '</b></div>' : '');
+      var faixas = [10, 15, 20, 25, 30]; if (faixas.indexOf(r.honorariosPct) < 0 && r.honorariosPct > 0) faixas.push(r.honorariosPct); faixas.sort(function (a, c) { return a - c; });
+      $('cm-sim').innerHTML = '<table><thead><tr><th>Honorários</th><th>Valor</th><th>Líquido</th>' + (cpct > 0 ? '<th>Comissão</th>' : '') + '</tr></thead><tbody>' +
+        Comissao.simular(b, cpct, faixas).map(function (x) { return '<tr' + (x.honorariosPct === r.honorariosPct ? ' class="atual"' : '') + '><td>' + pctBR(x.honorariosPct) + '</td><td>' + brl(x.honorarios) + '</td><td>' + brl(x.liquido) + '</td>' + (cpct > 0 ? '<td>' + brl(x.comissao) + '</td>' : '') + '</tr>'; }).join('') + '</tbody></table>';
+    }
+    $('cm-base').addEventListener('input', atualizar); $('cm-hon').addEventListener('input', atualizar); atualizar();
+    $('cm-salvar').addEventListener('click', function () { salvarCaso({ comissao: { base: lerNum($('cm-base').value), honorariosPct: lerNum($('cm-hon').value) } }); });
+  }
 
   // agente
   function renderAgente() {

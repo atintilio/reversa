@@ -68,7 +68,7 @@ test('migration 002 cria a organização padrão Argus Prime', async () => {
 test('me devolve organização, papel e permissões do backend', async () => {
   const r = J(await v1('me', { cookie: analista }));
   assert.equal(r.organization.name, 'Argus Prime'); assert.equal(r.role, 'analyst');
-  assert.deepEqual(r.permissions, { read: true, write: true, review: false, manageMembers: false });
+  assert.deepEqual(r.permissions, { read: true, write: true, review: false, manageMembers: false, master: false });
   assert.equal((await v1('me')).statusCode, 401);
 });
 

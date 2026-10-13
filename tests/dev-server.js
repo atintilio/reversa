@@ -15,7 +15,7 @@ const TIPOS = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '
   require('../lib/db').setSqlForTests(sql);
   const org = (await sql`select id from organizations limit 1`)[0].id;
   const u = (await sql`insert into users (email, email_normalized, name, password_hash) values ('admin@teste.local','admin@teste.local','Admin Teste', ${await bcrypt.hash('Senha-forte-123', 4)}) returning id`)[0];
-  await sql`insert into organization_members (organization_id, user_id, role) values (${org}, ${u.id}, 'admin')`;
+  await sql`insert into organization_members (organization_id, user_id, role) values (${org}, ${u.id}, 'owner')`;
   const rotas = {
     '/api/login': require('../api/login'), '/api/logout': require('../api/logout'),
     '/api/auth/password/forgot': require('../api/auth/password/forgot'), '/api/auth/password/reset': require('../api/auth/password/reset')
