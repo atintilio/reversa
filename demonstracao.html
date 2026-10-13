@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demonstração · Reversa Tax</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<style>
+  .demos { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .demos .card { display: grid; gap: 12px; align-content: start; }
+  .demos .card p { margin: 0; color: var(--muted); }
+  .demos .card .btn { justify-self: start; }
+</style>
+</head>
+<body class="rv">
+<main>
+  <div class="cab">
+    <div>
+      <h1>Área de <em>demonstração</em></h1>
+      <p class="sub">Exemplos com dados sintéticos para apresentar a ferramenta. Rodam só no navegador: nada é gravado no banco, nada aparece no CRM, em Clientes ou no Dashboard. O ambiente de produção fica reservado aos dados reais.</p>
+    </div>
+  </div>
+  <div class="msg warn"><span class="pill warn">DEMONSTRAÇÃO</span> Os documentos gerados aqui saem marcados como demonstração e não servem como peça técnica.</div>
+  <div class="demos">
+    <div class="card">
+      <h2>Diagnóstico de PIS e COFINS</h2>
+      <p>Arquivos EFD-Contribuições sintéticos da EMPRESA TESTE LTDA: teses, memória de cálculo, exportações e DTI de exemplo.</p>
+      <a class="btn" href="/?demo=1">Abrir exemplo</a>
+    </div>
+    <div class="card">
+      <h2>Teses × carteira</h2>
+      <p>Seis clientes fictícios de setores diferentes para mostrar o cruzamento da carteira com o catálogo de teses.</p>
+      <a class="btn" href="/teses.html?demo=1">Abrir exemplo</a>
+    </div>
+  </div>
+</main>
+<script src="/shell.js"></script>
+</body>
+</html>

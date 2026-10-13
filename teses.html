@@ -200,6 +200,8 @@
     { id: 'ex5', nome: 'Loja Virtual Exemplo Ltda', regime: 'presumido', perfil: { comercio: true, ecommerce: true, st: true, multiuf: false, folha: false, monofasico: false, industria: false, servicos: false } },
     { id: 'ex6', nome: 'Autopeças Exemplo ME', regime: 'simples', perfil: { comercio: true, monofasico: true, st: true, folha: false } }
   ];
+  // Clientes fictícios só na área de demonstração (?demo=1); em produção a tela mostra apenas a carteira real.
+  var DEMO = /(^|[?&])demo=1(&|$)/.test(location.search.slice(1));
   var estado = { reais: [], exemplo: false, cruz: null, clientes: [], grupo: 'fiscal', area: 'fiscal' };
   // Dois grupos: Fiscal (oportunidades do faturamento e das políticas sobre ele) e Previdenciário (folha).
   var GRUPOS = [
@@ -234,7 +236,7 @@
     return RV.api('GET', '/api/v1/taxpayers').then(function (j) {
       estado.reais = (j.taxpayers || []).map(function (t) { return { id: t.id, nome: t.legalName, cnpj: t.cnpj, regime: t.taxRegime, regimeTxt: t.taxRegime, perfil: t.perfil || {} }; });
     }).catch(function () { estado.reais = []; }).then(function () {
-      estado.exemplo = estado.reais.length === 0;
+      estado.exemplo = DEMO;
       render();
     });
   }
@@ -249,12 +251,12 @@
     var b = $('banner-exemplo');
     if (estado.exemplo) {
       b.hidden = false;
-      $('banner-txt').textContent = estado.reais.length ? 'Mostrando 6 clientes fictícios para demonstrar o cruzamento.' : 'Ainda não há clientes cadastrados. Mostrando 6 clientes fictícios para demonstrar o cruzamento.';
+      $('banner-txt').textContent = 'Demonstração: 6 clientes fictícios para mostrar o cruzamento. Nada aqui é gravado.';
       $('b-alternar').textContent = 'Ver meus clientes'; $('b-alternar').hidden = !estado.reais.length;
     } else {
       b.hidden = false; b.className = 'msg banner'; b.style.background = 'var(--soft)';
-      $('banner-txt').textContent = estado.reais.length + ' cliente(s) cadastrados. Clientes sem perfil aparecem com mais teses em "verificar".';
-      $('b-alternar').textContent = 'Ver exemplo'; $('b-alternar').hidden = false;
+      $('banner-txt').textContent = estado.reais.length ? estado.reais.length + ' cliente(s) cadastrados. Clientes sem perfil aparecem com mais teses em "verificar".' : 'Nenhum cliente cadastrado ainda. Cadastre empresas em Clientes para ver o cruzamento com as teses.';
+      $('b-alternar').textContent = 'Ver exemplo'; $('b-alternar').hidden = !DEMO;
       b.querySelector('.pill').hidden = true;
     }
     if (estado.exemplo) { b.className = 'msg warn banner'; b.style.background = ''; b.querySelector('.pill').hidden = false; }
