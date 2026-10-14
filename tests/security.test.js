@@ -51,7 +51,7 @@ test('login limita tentativas, normaliza conta e libera após expiração', asyn
   assert.equal(limited.headers['set-cookie'],undefined);
   assert.equal(limited.headers['retry-after'],'900');
   await sql`update auth_rate_limits set window_started=now()-interval '16 minutes'`;
-  assert.equal((await call(load('api/login'),{method:'POST',body:{email:'admin@example.test',password:'Local-password-123'}})).headers.location,'/');
+  assert.equal((await call(load('api/login'),{method:'POST',body:{email:'admin@example.test',password:'Local-password-123'}})).headers.location,'/ambiente.html');
 });
 test('erro real do banco ao revogar sessão faz rollback completo do reset', async () => {
   const token = 'local-reset-token-at-least-20-chars';

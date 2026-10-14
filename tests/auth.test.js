@@ -48,7 +48,7 @@ const linkDoUltimoEmail = () => new URL(enviados.at(-1).message.body.content.mat
 
 test('AUTH-001 login válido cria sessão persistente e audita', async () => {
   const r = await call(H['api/login'], { method: 'POST', body: { usuario: 'ana@argusprime.com.br', senha: SENHA } });
-  assert.equal(r.statusCode, 303); assert.equal(r.headers.location, '/');
+  assert.equal(r.statusCode, 303); assert.equal(r.headers.location, '/ambiente.html');
   assert.match(cookieFrom(r), /^rv_sessao=s1\./);
   assert.match(String(r.headers['set-cookie']), /HttpOnly; Secure; SameSite=Lax/);
   const ev = await eventos('auth.login.succeeded');
@@ -114,7 +114,7 @@ test('RESET-001/004/005..012 fluxo completo, token de uso único e revogação d
   assert.equal((await call(H['api/auth/password/reset'], { method: 'POST', body: { token, password: 'Nova-senha-forte-1', passwordConfirmation: 'Nova-senha-forte-1' } })).statusCode, 410, 'RESET-007');
   assert.equal((await call(H['api/catalog/opportunities'], { cookie: sessao })).statusCode, 401, 'RESET-012: sessão anterior revogada');
   const novo = await call(H['api/login'], { method: 'POST', body: { usuario: 'ana@argusprime.com.br', senha: 'Nova-senha-forte-1' } });
-  assert.equal(novo.headers.location, '/');
+  assert.equal(novo.headers.location, '/ambiente.html');
   assert.equal((await eventos('auth.password_reset.completed')).filter((e) => e.outcome === 'success').length, 1);
   assert.equal((await eventos('auth.password_reset.email_accepted')).length, 1);
   assert.ok(!logs.join('\n').includes(token), 'RESET-013: token fora dos logs');
@@ -151,7 +151,7 @@ test('RESET-014/015 rate limit por e-mail e por IP com resposta neutra', async (
 
 test('legado: aceito dentro da data, recusado com flag "off" ou sem segredo', async () => {
   const ok = await call(H['api/login'], { method: 'POST', body: { usuario: 'andre', senha: 'senha-legada-1' } });
-  assert.equal(ok.headers.location, '/');
+  assert.equal(ok.headers.location, '/ambiente.html');
   const ck = cookieFrom(ok);
   assert.equal((await call(H['api/catalog/opportunities'], { cookie: ck })).statusCode, 200);
   process.env.LEGACY_AUTH_UNTIL = 'off';

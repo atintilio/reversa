@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escolha o ambiente · Reversa Tax</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<style>
+  .escolha { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 760px) { .escolha { grid-template-columns: 1fr; } }
+  .rv .escolha .amb { display: grid; gap: 14px; align-content: start; text-align: left; padding: 28px; border-radius: 14px; border: 2px solid var(--line); background: var(--card); color: var(--navy); cursor: pointer; font: inherit; font-weight: 500; width: 100%; }
+  .rv .escolha .amb:hover { border-color: var(--teal); box-shadow: 0 8px 24px rgba(14,34,57,.08); filter: none; }
+  .amb .tag { justify-self: start; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
+  .amb.prod .tag { background: #DDF2EE; color: #16705F; } .amb.demo .tag { background: #F6E8D3; color: #7A4B0E; }
+  .amb h2 { font-size: 26px; margin: 0; } .amb p { margin: 0; color: var(--muted); font-weight: 500; line-height: 1.5; }
+  .amb ul { margin: 0; padding-left: 18px; color: var(--muted); font-weight: 500; line-height: 1.7; }
+  .amb .ir { justify-self: start; margin-top: 6px; background: var(--teal); color: #fff; border-radius: 8px; padding: 10px 18px; font-weight: 700; }
+  .amb.demo .ir { background: var(--navy); }
+</style>
+</head>
+<body class="rv">
+<main>
+  <div class="cab"><div><h1>Olá<span id="ola"></span>. Onde você quer <em>trabalhar</em>?</h1>
+    <p class="sub">Você pode trocar de ambiente a qualquer momento pelo botão no topo da tela.</p></div></div>
+  <div class="escolha">
+    <button type="button" class="amb prod" data-amb="prod">
+      <span class="tag">Produção</span>
+      <h2>Casos reais</h2>
+      <p>Clientes, diagnósticos, Lei do Bem e CRM com dados reais. Tudo o que você salvar aqui fica registrado na pasta do cliente.</p>
+      <ul><li>Diagnóstico de PIS/COFINS a partir dos SPEDs do cliente</li><li>Lei do Bem, CRM, contratos e comissões</li></ul>
+      <span class="ir">Entrar na produção</span>
+    </button>
+    <button type="button" class="amb demo" data-amb="demo">
+      <span class="tag">Demonstração</span>
+      <h2>Exemplos para apresentar</h2>
+      <p>Casos fictícios para mostrar a ferramenta a clientes e parceiros. Nada é gravado e nada aparece na produção.</p>
+      <ul><li>Diagnóstico de exemplo com DTI</li><li>Lei do Bem com cerca de R$ 2 milhões de economia</li><li>Teses × carteira com clientes fictícios</li></ul>
+      <span class="ir">Abrir a demonstração</span>
+    </button>
+  </div>
+</main>
+<script src="/shell.js"></script>
+<script>
+  document.querySelectorAll('[data-amb]').forEach(function (b) {
+    b.addEventListener('click', function () { RV.definirAmbiente(b.dataset.amb); location.href = b.dataset.amb === 'demo' ? '/demonstracao.html' : '/'; });
+  });
+  RV.eu.then(function (eu) { var n = eu && eu.user && eu.user.name; if (n) document.getElementById('ola').textContent = ', ' + n.split(' ')[0]; });
+</script>
+</body>
+</html>
