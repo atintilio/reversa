@@ -193,7 +193,7 @@
   var TIPOS = [['note', 'Nota', '✎'], ['call', 'Ligação', '☎'], ['meeting', 'Reunião', '◷'], ['email', 'E-mail', '✉'], ['task', 'Tarefa', '☐']];
   var ICONE = { note: '✎', call: '☎', meeting: '◷', email: '✉', task: '☐', agent: '✦', fase: '→' };
   var NOME_TIPO = { note: 'Nota', call: 'Ligação', meeting: 'Reunião', email: 'E-mail', task: 'Tarefa', agent: 'Agente de IA' };
-  var SEG = { verde: 'Verde', amarelo: 'Amarelo', vermelho: 'Vermelho' };
+  var SEG = { verde: 'Provável', amarelo: 'Possível', vermelho: 'Remoto' };
   var ABERTAS = ['a_apresentar', 'apresentado', 'aguardando_autorizacao'];
   var centavos = function (v) { return Math.round((Number(v) || 0) * 100); };
   var ROT = {}; (window.TesesRegras ? TesesRegras.PERFIL : []).forEach(function (p) { ROT[p.id] = p.rotulo.split(' (')[0]; });
@@ -322,7 +322,8 @@
     var base = '/api/v1/crm/clients/' + c.id + '/report';
     $('f-exportar').innerHTML = '<a href="' + base + '" download><b>Diagnóstico completo</b><small>Fiscal e Previdenciário</small></a>' +
       '<a href="' + base + '?grupo=fiscal" download><b>Somente Fiscal</b><small>Faturamento, PIS/COFINS, ICMS, IPI, IRPJ/CSLL</small></a>' +
-      '<a href="' + base + '?grupo=prev" download><b>Somente Previdenciário</b><small>Folha de pagamento</small></a>';
+      '<a href="' + base + '?grupo=prev" download><b>Somente Previdenciário</b><small>Folha de pagamento</small></a>' +
+      '<a href="' + base + '?versao=tecnica" download><b>Versão técnica · uso interno</b><small>Inclui teses remotas e códigos. Não enviar ao cliente</small></a>';
     $('f-exportar').onclick = function () { $('f-exportar').parentElement.open = false; RV.toast('Gerando o PDF…'); };
     $('f-fase').value = caso.stage || 'a_apresentar'; $('f-fase').disabled = !caso.id;
     $('f-passo').value = caso.nextStep || ''; $('f-prev').value = caso.expectedCloseDate ? String(caso.expectedCloseDate).slice(0, 10) : '';

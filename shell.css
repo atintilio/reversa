@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Libre+Baskerville:ital@0;1&display=swap');
 /* Reversa Tax — estilos comuns das páginas internas (clientes, dashboard, usuários) e da barra de navegação. */
 :root {
   --navy: #0E2239; --teal: #1E8F88; --teal-ink: #16736D; --cobre: #C78054;
@@ -117,3 +118,54 @@ body.rv { margin: 0; background: var(--bg); color: var(--fg); font-family: var(-
 .rv dialog::backdrop { background: rgba(14,34,57,.45); }
 .rv dialog form { padding: 22px; display: grid; gap: 14px; }
 .rv dialog h2 { margin-bottom: 2px; }
+
+/* ============================================================
+   Tema visual (base no design LeadFlow): fundo branco, tipografia Geist,
+   destaque em itálico serifado (Libre Baskerville), bordas finas e cantos de 6px.
+   Paleta Reversa mantida: navy, teal e cobre. Textos e estrutura inalterados.
+   ============================================================ */
+:root:not([data-theme="dark"]) { --bg: #FEFEFE; --line: rgba(14,34,57,.12); --soft: #F4F6F8; }
+:root { --f-head: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; --f-body: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; --f-serif: "Libre Baskerville", Georgia, serif; }
+body.rv { -webkit-font-smoothing: antialiased; letter-spacing: -.005em; }
+.rv h1, .rv h2, .rv h3 { font-weight: 500; letter-spacing: -.02em; }
+.rv h1 { font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.15; }
+.rv h1 em { font-family: var(--f-serif); font-style: italic; font-weight: 400; color: var(--teal); }
+.rv .sub { color: color-mix(in srgb, var(--fg) 55%, transparent); }
+
+/* navegação: barra clara com borda fina */
+.rv-nav { background: color-mix(in srgb, var(--bg) 88%, transparent); color: var(--fg); border-bottom: 1px solid var(--line); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px); font-family: var(--f-body); }
+.rv-nav .marca { color: var(--navy); font-family: var(--f-body); font-weight: 600; letter-spacing: -.01em; }
+.rv-nav .marca b { color: var(--teal); font-weight: 600; }
+.rv-nav .links a { color: color-mix(in srgb, var(--fg) 60%, transparent); font-weight: 500; font-size: 15px; border-radius: 6px; }
+.rv-nav .links a:hover { color: var(--fg); background: var(--soft); }
+.rv-nav .links a[aria-current="page"] { color: var(--fg); background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); }
+.rv-nav .eu { color: color-mix(in srgb, var(--fg) 55%, transparent); }
+.rv-nav .eu a { color: var(--fg); border: 1px solid var(--line); border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(14,34,57,.06); }
+.rv-nav .eu a:hover { border-color: var(--teal); }
+
+/* cartões, indicadores e tabelas */
+.rv .card, .rv .kpi { border-radius: 8px; border-color: var(--line); box-shadow: 0 1px 2px rgba(14,34,57,.04); }
+.rv .kpi .r { font-weight: 500; letter-spacing: .06em; }
+.rv .kpi .v { font-weight: 600; letter-spacing: -.02em; }
+.rv .kpi.destaque { background: var(--navy); border-color: var(--navy); }
+.rv th { font-weight: 500; }
+
+/* botões e campos */
+.rv button, .rv .btn { font-weight: 500; border-radius: 6px; box-shadow: 0 1px 2px rgba(14,34,57,.08); transition: background .15s, border-color .15s, filter .15s; }
+.rv button.sec, .rv .btn.sec { background: var(--card); border-color: var(--line); color: var(--fg); }
+.rv button.sec:hover, .rv .btn.sec:hover { border-color: var(--teal); filter: none; }
+.rv input, .rv select, .rv textarea { border-radius: 6px; border-color: var(--line); box-shadow: 0 1px 2px rgba(14,34,57,.04); }
+.rv input:focus, .rv select:focus, .rv textarea:focus { outline: 2px solid color-mix(in srgb, var(--teal) 55%, transparent); border-color: var(--teal); }
+.rv label { font-weight: 500; }
+
+/* selos em pílula, como os badges do design */
+.rv .pill { font-weight: 500; border: 1px solid currentColor; border-color: color-mix(in srgb, currentColor 35%, transparent); }
+.rv dialog { border-radius: 10px; box-shadow: 0 24px 60px rgba(14,34,57,.18); }
+.rv-toast { background: var(--navy); font-family: var(--f-body); font-weight: 500; border-radius: 6px; }
+
+/* entrada suave do conteúdo */
+@media (prefers-reduced-motion: no-preference) {
+  .rv main > * { animation: rv-entra .45s ease-out both; }
+  .rv main > *:nth-child(2) { animation-delay: .05s; } .rv main > *:nth-child(3) { animation-delay: .1s; }
+  @keyframes rv-entra { from { opacity: 0; transform: translateY(8px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+}

@@ -93,8 +93,9 @@ async function route(req, res) {
       if (sub === 'tasks' && m === 'GET') return json(res, 200, await crm.tasks(ctx, query));
       if (sub === 'members' && m === 'GET') return json(res, 200, await crm.members(ctx));
       if (sub === 'clients' && sid && !sact && m === 'GET') return json(res, 200, await crm.client(ctx, sid));
-      if (sub === 'clients' && sid && sact === 'report' && m === 'GET') {
-        const r = await crm.report(ctx, sid, query);
+      if (sub === 'clients' && sid && sact === 'report' && (m === 'GET' || m === 'POST')) {
+        // POST leva o link de aprovação no corpo (o token nunca vai para a URL).
+        const r = await crm.report(ctx, sid, query, m === 'POST' ? body : null);
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/pdf');
         res.setHeader('Content-Disposition', `attachment; filename="${r.nome}"`);

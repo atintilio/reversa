@@ -1,4 +1,4 @@
-// Regras de aplicabilidade das 61 teses e perfil do cliente na API.
+// Regras de aplicabilidade das 70 teses e perfil do cliente na API.
 process.env.SESSION_SECRET = 'segredo-de-teste';
 process.env.RESET_TOKEN_PEPPER = 'pepper-de-teste';
 const test = require('node:test');
@@ -7,9 +7,9 @@ const bcrypt = require('bcryptjs');
 const TR = require('../teses-regras.js');
 const { createDb, call, cookieFrom } = require('./helpers');
 
-test('TESES-001: as 61 teses batem com o catálogo (id, nome, risco, via)', () => {
+test('TESES-001: as 70 teses batem com o catálogo (id, nome, risco, via)', () => {
   const cat = require('../schemas/opportunity_catalog_v1.json').opportunities;
-  assert.equal(TR.TESES.length, 61);
+  assert.equal(TR.TESES.length, 70);
   cat.forEach((o, i) => {
     const t = TR.TESES[i];
     assert.deepEqual([t.id, t.nome, t.risco, t.via], [o.id, o.name, o.risk_level, o.category]);
@@ -30,7 +30,7 @@ test('TESES-002: avaliação provável / verificar / não se aplica', () => {
   assert.equal(TR.regimeDe('Não cumulativo'), 'real');
   assert.equal(TR.regimeDe('Cumulativo'), 'presumido');
   const c = TR.cruzar([{ id: 'a', nome: 'A', regime: 'real', perfil: { comercio: true, st: true } }]);
-  assert.equal(c.matriz[0].resultados.length, 61);
+  assert.equal(c.matriz[0].resultados.length, 70);
   assert.ok(c.matriz[0].contagem.provavel >= 3);
 });
 

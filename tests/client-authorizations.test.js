@@ -74,3 +74,24 @@ test('aceite simultâneo grava uma única seleção; revogação e expiração b
   const expired = await link(); await sql`update client_authorizations set expires_at = now() - interval '1 minute' where id = ${expired.id}`;
   assert.equal((await pub(expired.token)).statusCode, 404);
 });
+
+test('valores por tese, total da seleção, contrato e diagnóstico das teses aprovadas', async () => {
+  const bad = await v1(`cases/${caseId}/authorizations`, { cookie: staff, method: 'POST', body: { ...opts, values: { T004: -1 } } });
+  assert.equal(bad.statusCode, 400);
+  assert.equal((await v1(`cases/${caseId}/authorizations`, { cookie: staff, method: 'POST', body: { ...opts, contractUrl: 'http://inseguro.test/x' } })).statusCode, 400);
+  const a = await link({ values: { T004: 120000, T009: 30000 }, contractUrl: 'https://vaultsign.test/contrato/abc' });
+  const snap = json(await pub(a.token)).snapshot;
+  assert.equal(snap.theses.find(t => t.id === 'T004').value, 120000); assert.equal(snap.theses.find(t => t.id === 'T007').value, null);
+  assert.equal(snap.contract.url, 'https://vaultsign.test/contrato/abc');
+  // antes da aprovação, o diagnóstico das teses aprovadas não existe
+  const tp = (await sql`select taxpayer_id from tax_cases where id = ${caseId}`)[0].taxpayer_id;
+  const r = await pub(a.token, 'POST', await payload(a.token, ['T004']));
+  assert.equal(r.statusCode, 200, r.body);
+  const j = json(r); assert.equal(j.total, 120000); assert.equal(j.contract.provider, 'VaultSign'); assert.ok(j.emails);
+  const ev = await sql`select metadata from audit_events where event_type = 'client.authorization.notified'`;
+  assert.ok(ev.length >= 1);
+  const pdf = await v1(`crm/clients/${tp}/report`, { cookie: staff, query: { aprovadas: '1' } });
+  assert.equal(pdf.statusCode, 200);
+  const comLink = await v1(`crm/clients/${tp}/report`, { cookie: staff, method: 'POST', body: { link: a.url } });
+  assert.equal(comLink.statusCode, 200);
+});

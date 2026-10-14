@@ -178,6 +178,48 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
 @media (max-width: 640px) { .kpi + .kpi { border-left: 0; border-top: 1px solid var(--line); } .wrap { padding-block: 28px 48px; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Libre+Baskerville:ital@0;1&display=swap">
+<style>
+/* Tema visual claro (design LeadFlow com a paleta Reversa): fundo branco, Geist, itálico serifado, bordas finas. Textos inalterados. */
+:root:not([data-theme="dark"]) { --bg: #FEFEFE; --line: rgba(14,34,57,.12); --soft: #F4F6F8; }
+:root { --f-display: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; --f-body: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; }
+body { -webkit-font-smoothing: antialiased; }
+h1, h2 { font-weight: 500; letter-spacing: -.02em; }
+h1 em, h2 em { font-family: "Libre Baskerville", Georgia, serif; font-style: italic; font-weight: 400; }
+.head { color: var(--fg); background: #FEFEFE; background-image: radial-gradient(circle at 12% 0%, rgba(30,143,136,.09), transparent 55%); border: 1px solid rgba(14,34,57,.1); border-radius: 10px; box-shadow: 0 1px 2px rgba(14,34,57,.04); }
+.head::after { background: radial-gradient(circle, rgba(199,128,84,.10) 0%, rgba(199,128,84,0) 65%); }
+.head .topo { border-bottom: 1px solid rgba(14,34,57,.1); }
+.head .logo.escuro { display: block; height: 64px; }
+.head .logo.claro { display: none; }
+.head .marca-sub { color: rgba(14,34,57,.55); }
+.head .marca-sub strong { color: #0E2239; }
+.head .marca-sub a { color: #16736D; border-color: rgba(14,34,57,.14); border-radius: 6px; box-shadow: 0 1px 2px rgba(14,34,57,.06); }
+.head .marca-sub a:hover { border-color: #1E8F88; }
+.head .eyebrow { color: rgba(14,34,57,.55); }
+.head h1 { color: #0E2239; font-weight: 500; letter-spacing: -.03em; font-size: clamp(1.8rem, 3.6vw, 2.8rem); line-height: 1.12; }
+.head h1 em { color: #1E8F88; padding-top: 4px; }
+.head .lede { color: rgba(14,34,57,.6); }
+.beneficios li { background: #FFFFFF; border: 1px solid rgba(14,34,57,.1); border-left: 3px solid #1E8F88; border-radius: 6px; box-shadow: 0 1px 2px rgba(14,34,57,.04); }
+.beneficios strong { color: #0E2239; font-weight: 600; }
+.beneficios span { color: rgba(14,34,57,.6); }
+.hero-cta span { color: rgba(14,34,57,.5); }
+.head .btn.cta { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(14,34,57,.12); }
+.passos { background: #FFFFFF; border: 1px solid rgba(14,34,57,.1); border-radius: 8px; box-shadow: 0 1px 2px rgba(14,34,57,.04); }
+.passos b { border-color: rgba(199,128,84,.6); color: #C78054; border-radius: 999px; font-weight: 500; }
+.passos strong { color: #0E2239; font-weight: 600; }
+.passos span { color: rgba(14,34,57,.6); }
+.aviso-prelim { color: rgba(14,34,57,.5); border-top: 1px solid rgba(14,34,57,.1); }
+button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(14,34,57,.08); }
+.drop { border-radius: 10px; border-width: 1.5px; }
+.fila, .scroll, .pdf-form, .empty { border-radius: 8px; }
+.pill { border-radius: 999px; font-weight: 500; }
+.tools input[type=search], .pdf-form input { border-radius: 6px; }
+.toast { border-radius: 6px; }
+@media (prefers-reduced-motion: no-preference) {
+  .head { animation: entra .5s ease-out both; }
+  @keyframes entra { from { opacity: 0; transform: translateY(8px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+}
+</style>
 
 <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
 <div class="wrap" id="conteudo">

@@ -1,5 +1,5 @@
 /*
- * Reversa Tax — regras de aplicabilidade das 61 teses do catálogo (triagem, não cálculo).
+ * Reversa Tax — regras de aplicabilidade das 70 teses do catálogo (triagem, não cálculo).
  * Cruza o PERFIL do cliente (regime + características da operação) com o que cada tese exige.
  * Resultado por tese: "provavel" (perfil atende), "verificar" (falta informação) ou "nao" (perfil exclui).
  * Oportunidade não é crédito (RB-09): o cruzamento só indica onde olhar; o valor sai do motor e da revisão humana.
@@ -99,6 +99,15 @@
     { id: 'T059', nome: 'Contribuições previdenciárias — revisão de rubricas e incidências', tributo: 'Previdenciário', via: 'operacional', risco: 'medio', regimes: RP, todos: ['folha'] },
     { id: 'T060', nome: 'Tributação indireta — revisão integrada de NCM, ICMS, IPI, PIS/COFINS e regime fiscal', tributo: 'Indiretos', via: 'operacional', risco: 'medio', regimes: RP, algum: ['comercio', 'industria'] },
     { id: 'T061', nome: 'RAT/GILRAT — análise da atividade preponderante por estabelecimento', tributo: 'Previdenciário', via: 'administrativa', risco: 'baixo', regimes: RP, todos: ['folha'] },
+    { id: 'T062', nome: 'Contribuição previdenciária sobre hora dobrada (domingos e feriados trabalhados)', tributo: 'Previdenciário', via: 'judicial', risco: 'alto', regimes: RP, todos: ['folha'] },
+    { id: 'T063', nome: 'Contribuição previdenciária sobre PLR paga conforme a Lei 10.101/2000', tributo: 'Previdenciário', via: 'administrativa', risco: 'medio', regimes: RP, todos: ['folha'] },
+    { id: 'T064', nome: 'Contribuição previdenciária sobre licença-paternidade', tributo: 'Previdenciário', via: 'judicial', risco: 'alto', regimes: RP, todos: ['folha'] },
+    { id: 'T065', nome: 'Contribuição previdenciária sobre gratificações e prêmios eventuais', tributo: 'Previdenciário', via: 'judicial_administrativa', risco: 'medio', regimes: RP, todos: ['folha'] },
+    { id: 'T066', nome: 'Contribuição previdenciária sobre auxílio-alimentação (tíquete, cartão ou in natura)', tributo: 'Previdenciário', via: 'judicial_administrativa', risco: 'medio', regimes: RP, todos: ['folha'] },
+    { id: 'T067', nome: 'Contribuição previdenciária sobre vale-transporte', tributo: 'Previdenciário', via: 'judicial_administrativa', risco: 'baixo', regimes: RP, todos: ['folha'] },
+    { id: 'T068', nome: 'Contribuição previdenciária sobre assistência médica e odontológica', tributo: 'Previdenciário', via: 'administrativa', risco: 'baixo', regimes: RP, todos: ['folha'] },
+    { id: 'T069', nome: 'RAT/GILRAT — reflexos sobre 13º salário, DSR e dias não trabalhados', tributo: 'Previdenciário', via: 'administrativa', risco: 'medio', regimes: RP, todos: ['folha'] },
+    { id: 'T070', nome: 'Retenção de IR — ADM', tributo: 'Federais diversos', via: 'administrativa', risco: 'alto', regimes: RP }
   ];
 
   var ROTULO = {}; PERFIL.forEach(function (p) { ROTULO[p.id] = p.rotulo; });

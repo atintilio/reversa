@@ -105,6 +105,8 @@
     <p>Edite a classificação antes de emitir o link. A classificação original e a justificativa permanecerão visíveis ao cliente. Cada link conserva sua versão.</p>
     <label>Início do período<input type="month" id="autorizacao-inicio" required></label>
     <label>Fim do período<input type="month" id="autorizacao-fim" required></label>
+    <label>Link do contrato para assinatura (VaultSign)<input type="url" id="autorizacao-contrato" placeholder="https://… (opcional; após aprovar, o cliente é levado a este link)" maxlength="2000"></label>
+    <p class="muted" style="font-size:13px">Informe o valor estimado de cada tese (R$). O cliente vê o total recalculado conforme marca ou desmarca. Teses remotas começam desmarcadas.</p>
     <div id="autorizacao-teses" style="max-height:45vh;overflow:auto"></div>
     <label>Justificativa para classificações alteradas<textarea id="autorizacao-motivo" maxlength="2000" rows="3" placeholder="Obrigatória quando uma cor for alterada"></textarea></label>
     <div class="acoes"><button type="button" id="autorizacao-cancelar" class="sec">Cancelar</button><button id="autorizacao-gerar" type="submit">Gerar link exclusivo</button></div>
@@ -215,7 +217,10 @@
     if (!caso) { $('autorizacoes').textContent = 'Sem caso aberto.'; return; }
     RV.api('GET', '/api/v1/cases/' + caso.id + '/authorizations').then(function (r) {
       $('autorizacoes').innerHTML = r.authorizations.map(function (a) {
-        return '<p>' + (a.accepted_at ? 'Autorizado em ' + RV.data(a.accepted_at, true) + ' · ' + RV.esc(a.representative_name) + ' · ' + RV.esc((a.selected_theses || []).join(', ')) : 'Aguardando cliente · criado em ' + RV.data(a.created_at, true)) +
+        var sel = a.selected_theses || [], totalAprov = a.snapshot.theses.filter(function (t) { return sel.indexOf(t.id) >= 0; }).reduce(function (s, t) { return s + (Number(t.value) || 0); }, 0);
+        return '<p>' + (a.accepted_at ? 'Aprovado em ' + RV.data(a.accepted_at, true) + ' · ' + RV.esc(a.representative_name) + ' · ' + sel.length + ' tese(s) · ' + RV.reais(Math.round(totalAprov * 100)) +
+            ' <button type="button" class="mini" data-diag-aprovadas="1">Diagnóstico das teses aprovadas</button>' : 'Aguardando aprovação do cliente · criado em ' + RV.data(a.created_at, true)) +
+          (a.snapshot.contract ? '<br><small>Contrato: ' + RV.esc(a.snapshot.contract.provider) + '</small>' : '') +
           (a.revoked_at ? ' · acesso revogado' : new Date(a.expires_at) < new Date() ? ' · acesso expirado' : ' · acesso até ' + RV.data(a.expires_at, true)) +
           '<br><small>Documento: ' + RV.esc(a.snapshot_hash) + '</small>' +
           '<details><summary>Versão apresentada e alterações de risco</summary>' + a.snapshot.theses.map(function (t) {
@@ -231,7 +236,7 @@
     $('autorizacao-motivo').value = '';
     $('autorizacao-teses').innerHTML = window.TesesRegras.TESES.map(function (t) {
       var d = window.TesesDiagnostico.de(t.id) || {}, color = d.seguranca || 'amarelo';
-      return '<div style="padding:10px;border-bottom:1px solid #ddd"><label><input type="checkbox" name="oferta-tese" value="' + t.id + '" checked> ' + RV.esc(t.nome) + '</label><label>Classificação (original: ' + color + ')<select data-cor-tese="' + t.id + '">' +
+      return '<div style="padding:10px;border-bottom:1px solid #ddd"><label><input type="checkbox" name="oferta-tese" value="' + t.id + '"' + (color !== 'vermelho' ? ' checked' : '') + '> ' + RV.esc(t.nome) + '</label><label>Valor estimado (R$)<input type="number" min="0" step="0.01" data-valor-tese="' + t.id + '" placeholder="a dimensionar"></label><label>Classificação (original: ' + color + ')<select data-cor-tese="' + t.id + '">' +
         ['verde','amarelo','vermelho'].map(function (c) { return '<option value="' + c + '"' + (c === color ? ' selected' : '') + '>' + c + '</option>'; }).join('') + '</select></label></div>';
     }).join('');
     $('dlg-autorizacao').showModal();
@@ -245,18 +250,34 @@
       var color = document.querySelector('[data-cor-tese="' + id + '"]').value;
       risks[id] = { color: color, reason: $('autorizacao-motivo').value.trim() };
     });
+    var values = {};
+    ids.forEach(function (id) { var v = document.querySelector('[data-valor-tese="' + id + '"]').value; if (v !== '') values[id] = Number(v); });
     $('autorizacao-gerar').disabled = true;
-    RV.api('POST', '/api/v1/cases/' + caso.id + '/authorizations', { theses: ids, risks: risks,
+    RV.api('POST', '/api/v1/cases/' + caso.id + '/authorizations', { theses: ids, risks: risks, values: values,
+      contractUrl: $('autorizacao-contrato').value.trim() || undefined, contractProvider: 'VaultSign',
       periodStart: $('autorizacao-inicio').value, periodEnd: $('autorizacao-fim').value
     }).then(function (r) {
       $('dlg-autorizacao').close(); $('link-autorizacao').textContent = '';
       var input = document.createElement('input'); input.type = 'text'; input.readOnly = true; input.value = r.url;
       input.setAttribute('aria-label', 'Link exclusivo de aprovação; copie e compartilhe com o representante');
       input.style.width = '100%'; $('link-autorizacao').appendChild(input); input.select();
+      var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'mini sec'; bt.textContent = 'Baixar diagnóstico com este link de aprovação';
+      bt.onclick = function () { baixarRelatorio({ link: r.url }, 'Diagnostico-com-link-de-aprovacao.pdf'); };
+      $('link-autorizacao').appendChild(bt);
       RV.toast('Link gerado. Copie e compartilhe com o representante autorizado.'); carregarAutorizacoes();
     }).catch(function (err) { RV.toast(err.message); }).finally(function () { $('autorizacao-gerar').disabled = false; });
   });
+  // Download do PDF por POST: o link de aprovação vai no corpo, nunca na URL.
+  function baixarRelatorio(corpo, nomeArq, query) {
+    RV.toast('Gerando o PDF…');
+    fetch('/api/v1/crm/clients/' + encodeURIComponent(id) + '/report' + (query || ''), { method: corpo ? 'POST' : 'GET', credentials: 'same-origin',
+      headers: corpo ? { 'Content-Type': 'application/json' } : {}, body: corpo ? JSON.stringify(corpo) : undefined })
+      .then(function (r) { if (!r.ok) return r.json().then(function (j) { throw new Error(j.error && j.error.message || 'Falha ao gerar o PDF.'); }); return r.blob(); })
+      .then(function (b) { var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = nomeArq; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000); })
+      .catch(function (e) { RV.toast(e.message); });
+  }
   $('autorizacoes').addEventListener('click', function (e) {
+    if (e.target.closest('[data-diag-aprovadas]')) { baixarRelatorio(null, 'Diagnostico-Teses-Aprovadas.pdf', '?aprovadas=1'); return; }
     var b = e.target.closest('[data-revogar-link]'); if (!b) return;
     RV.api('DELETE', '/api/v1/client-authorizations/' + b.dataset.revogarLink).then(function () { carregarAutorizacoes(); RV.toast('Acesso pelo link revogado.'); }).catch(function (err) { RV.toast(err.message); });
   });

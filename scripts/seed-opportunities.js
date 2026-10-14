@@ -7,7 +7,7 @@ async function main() {
   if (!url) throw new Error('POSTGRES_URL ou DATABASE_URL não configurada');
   const catalogPath = path.join(__dirname, '..', 'schemas', 'opportunity_catalog_v1.json');
   const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
-  if (catalog.opportunities.length !== 61) throw new Error('Catálogo deve conter 61 oportunidades');
+  if (catalog.opportunities.length !== 70) throw new Error('Catálogo deve conter 70 oportunidades');
   const sql = postgres(url, { max: 1, ssl: 'require' });
   for (const item of catalog.opportunities) {
     await sql`

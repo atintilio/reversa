@@ -991,6 +991,150 @@
       "next_actions": [
         "document_validation"
       ]
+    },
+    {
+      "id": "T062",
+      "name": "Contribuição previdenciária sobre hora dobrada (domingos e feriados trabalhados)",
+      "category": "judicial",
+      "risk_level": "alto",
+      "catalog_status": "active",
+      "implementation_status": "needs_rule_validation",
+      "calculation_model": "to_be_defined",
+      "eligibility_rules": [],
+      "required_documents": [],
+      "legal_references": [],
+      "validation_rules": [],
+      "next_actions": [
+        "document_validation"
+      ]
+    },
+    {
+      "id": "T063",
+      "name": "Contribuição previdenciária sobre PLR paga conforme a Lei 10.101/2000",
+      "category": "administrativa",
+      "risk_level": "medio",
+      "catalog_status": "active",
+      "implementation_status": "needs_rule_validation",
+      "calculation_model": "to_be_defined",
+      "eligibility_rules": [],
+      "required_documents": [],
+      "legal_references": [],
+      "validation_rules": [],
+      "next_actions": [
+        "document_validation"
+      ]
+    },
+    {
+      "id": "T064",
+      "name": "Contribuição previdenciária sobre licença-paternidade",
+      "category": "judicial",
+      "risk_level": "alto",
+      "catalog_status": "active",
+      "implementation_status": "needs_rule_validation",
+      "calculation_model": "to_be_defined",
+      "eligibility_rules": [],
+      "required_documents": [],
+      "legal_references": [],
+      "validation_rules": [],
+      "next_actions": [
+        "document_validation"
+      ]
+    },
+    {
+      "id": "T065",
+      "name": "Contribuição previdenciária sobre gratificações e prêmios eventuais",
+      "category": "judicial_administrativa",
+      "risk_level": "medio",
+      "catalog_status": "active",
+      "implementation_status": "needs_rule_validation",
+      "calculation_model": "to_be_defined",
+      "eligibility_rules": [],
+      "required_documents": [],
+      "legal_references": [],
+      "validation_rules": [],
+      "next_actions": [
+        "document_validation"
+      ]
+    },
+    {
+      "id": "T066",
+      "name": "Contribuição previdenciária sobre auxílio-alimentação (tíquete, cartão ou in natura)",
+      "category": "judicial_administrativa",
+      "risk_level": "medio",
+      "catalog_status": "active",
+      "implementation_status": "needs_rule_validation",
+      "calculation_model": "to_be_defined",
+      "eligibility_rules": [],
+      "required_documents": [],
+      "legal_references": [],
+      "validation_rules": [],
+      "next_actions": [
+        "document_validation"
+      ]
+    },
+    {
+      "id": "T067",
+      "name": "Contribuição previdenciária sobre vale-transporte",
+      "category": "judicial_administrativa",
+      "risk_level": "baixo",
+      "catalog_status": "active",
+      "implementation_status": "needs_rule_validation",
+      "calculation_model": "to_be_defined",
+      "eligibility_rules": [],
+      "required_documents": [],
+      "legal_references": [],
+      "validation_rules": [],
+      "next_actions": [
+        "document_validation"
+      ]
+    },
+    {
+      "id": "T068",
+      "name": "Contribuição previdenciária sobre assistência médica e odontológica",
+      "category": "administrativa",
+      "risk_level": "baixo",
+      "catalog_status": "active",
+      "implementation_status": "needs_rule_validation",
+      "calculation_model": "to_be_defined",
+      "eligibility_rules": [],
+      "required_documents": [],
+      "legal_references": [],
+      "validation_rules": [],
+      "next_actions": [
+        "document_validation"
+      ]
+    },
+    {
+      "id": "T069",
+      "name": "RAT/GILRAT — reflexos sobre 13º salário, DSR e dias não trabalhados",
+      "category": "administrativa",
+      "risk_level": "medio",
+      "catalog_status": "active",
+      "implementation_status": "needs_rule_validation",
+      "calculation_model": "to_be_defined",
+      "eligibility_rules": [],
+      "required_documents": [],
+      "legal_references": [],
+      "validation_rules": [],
+      "next_actions": [
+        "document_validation"
+      ]
+    },
+    {
+      "id": "T070",
+      "name": "Retenção de IR — ADM",
+      "category": "administrativa",
+      "risk_level": "alto",
+      "catalog_status": "active",
+      "implementation_status": "needs_rule_validation",
+      "calculation_model": "to_be_defined",
+      "eligibility_rules": [],
+      "required_documents": [],
+      "legal_references": [],
+      "validation_rules": [],
+      "next_actions": [
+        "document_validation"
+      ]
     }
   ]
 }

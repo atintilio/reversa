@@ -142,9 +142,15 @@
         us.map(function (u) {
           var s = SIT[u.situacao] || [u.situacao, ''];
           var b = u.situacao === 'active' ? '<button type="button" class="sec mini" data-u="' + u.id + '|' + u.organizacao.id + '|suspended">Suspender</button>' : u.situacao === 'suspended' ? '<button type="button" class="sec mini" data-u="' + u.id + '|' + u.organizacao.id + '|active">Reativar</button>' : '';
-          return '<tr><td><b>' + esc(u.nome) + '</b><br><small>' + esc(u.email) + '</small></td><td>' + esc(u.organizacao.nome) + '</td><td>' + esc(PERFIL[u.perfil] || u.perfil) + '</td><td>' + dt(u.ultimoAcesso, true) + '</td><td><span class="pill ' + s[1] + '">' + s[0] + '</span></td><td>' + b + '</td></tr>';
-        }).join('') + '</tbody></table></div><p class="muted" style="font-size:13px">A equipe de cada parceiro é convidada e organizada pelo próprio responsável, na tela Usuários do ambiente dele. Aqui você suspende ou reativa qualquer acesso.</p>';
+          var vt = u.organizacao.tipo === 'plataforma' && u.perfil !== 'owner' && u.situacao === 'active'
+            ? ' <button type="button" class="' + (u.visaoTodo ? '' : 'sec ') + 'mini" data-vt="' + u.id + '|' + u.organizacao.id + '|' + (u.visaoTodo ? '0' : '1') + '" title="Acesso ao painel Master: vê todos os parceiros, usuários e negócios">' + (u.visaoTodo ? 'Visão do todo: sim' : 'Dar visão do todo') + '</button>' : '';
+          return '<tr><td><b>' + esc(u.nome) + '</b><br><small>' + esc(u.email) + '</small></td><td>' + esc(u.organizacao.nome) + '</td><td>' + esc(PERFIL[u.perfil] || u.perfil) + (u.visaoTodo ? '<br><small>visão do todo</small>' : '') + '</td><td>' + dt(u.ultimoAcesso, true) + '</td><td><span class="pill ' + s[1] + '">' + s[0] + '</span></td><td>' + b + vt + '</td></tr>';
+        }).join('') + '</tbody></table></div><p class="muted" style="font-size:13px">A equipe de cada parceiro é convidada e organizada pelo próprio responsável, na tela Usuários do ambiente dele. Aqui você suspende ou reativa qualquer acesso e concede a visão do todo (painel Master) a membros da equipe Argus Prime.</p>';
       $('fu').onchange = function () { filtroUsu = this.value; render(); };
+      el.querySelectorAll('[data-vt]').forEach(function (b) { b.onclick = function () {
+        var x = b.dataset.vt.split('|');
+        RV.api('PATCH', '/api/v1/master/usuarios/' + x[0], { organizacaoId: x[1], visaoTodo: x[2] === '1' }).then(function () { RV.toast(x[2] === '1' ? 'Visão do todo concedida' : 'Visão do todo retirada'); render(); }).catch(function (e) { RV.toast(e.message); });
+      }; });
       el.querySelectorAll('[data-u]').forEach(function (b) { b.onclick = function () {
         var x = b.dataset.u.split('|');
         RV.api('PATCH', '/api/v1/master/usuarios/' + x[0], { organizacaoId: x[1], situacao: x[2] }).then(function () { RV.toast(x[2] === 'active' ? 'Acesso reativado' : 'Acesso suspenso'); render(); }).catch(function (e) { RV.toast(e.message); });

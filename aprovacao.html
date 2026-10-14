@@ -3,29 +3,74 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow">
-  <title>Autorização do cliente · Reversa Tax</title>
+  <title>Aprovação das teses · Reversa Tax</title>
   <style>
-    body{margin:0;background:#eef2f6;color:#14283f;font:16px/1.55 system-ui,sans-serif}main{max-width:860px;margin:40px auto;padding:24px;background:white;border-radius:16px}h1{font-size:28px}h2{font-size:18px}label{display:block}input[type=text],input[type=email]{box-sizing:border-box;width:100%;padding:10px;border:1px solid #aebbc7;border-radius:6px}article{border:1px solid #d2dbe3;border-radius:8px;padding:16px;margin:14px 0}article label{font-weight:650}input[type=checkbox]{width:18px;height:18px;vertical-align:middle;margin-right:8px}.badge{padding:2px 10px;border-radius:12px;display:inline-block}.verde{background:#d8f2e1;color:#164d2a}.amarelo{background:#fff0bb;color:#684b00}.vermelho{background:#ffe0df;color:#822c2a}button{background:#116c69;color:white;padding:12px 20px;border:0;border-radius:6px;font:inherit;cursor:pointer}button:disabled{opacity:.55}.muted{color:#536476;font-size:14px}#status{white-space:pre-wrap}[hidden]{display:none!important}@media(max-width:600px){main{margin:12px;padding:18px}}
+    :root{--tinta:#1D2B27;--texto:#2E3733;--muted:#6E7773;--linha:#E4E0D6;--fundo:#F8F7F3;--esm:#0E7A5C;--ouro:#A9864F;--remoto:#8C9591}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--fundo);color:var(--texto);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
+    .filete{height:3px;background:linear-gradient(90deg,var(--esm) 70%,var(--ouro) 70%)}
+    main{max-width:880px;margin:32px auto;padding:36px 40px;background:#fff;border:1px solid var(--linha);border-radius:4px}
+    header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+    .marca{display:flex;align-items:center;gap:10px;text-align:right}
+    .marca img{height:36px}.marca b{letter-spacing:.12em;color:var(--tinta)}.marca b span{color:var(--esm)}.marca small{display:block;color:var(--muted);font-size:12px}
+    .eyebrow{font-size:11px;letter-spacing:.18em;color:var(--ouro);font-weight:600;text-transform:uppercase;margin:28px 0 6px}
+    h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:28px;color:var(--tinta);margin:0 0 8px;line-height:1.25}
+    h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:19px;color:var(--tinta);margin:32px 0 10px}
+    .regua{width:30px;height:1.5px;background:var(--esm);margin:10px 0 18px}
+    .muted{color:var(--muted);font-size:13px}
+    #status{white-space:pre-wrap;margin:12px 0}
+    .grupo{font-size:11px;letter-spacing:.14em;color:var(--esm);font-weight:600;text-transform:uppercase;margin:22px 0 4px}
+    .tese{display:grid;grid-template-columns:24px 1fr auto;gap:4px 12px;padding:14px 0;border-bottom:1px solid var(--linha);align-items:start}
+    .tese input{width:17px;height:17px;margin-top:3px;accent-color:var(--esm)}
+    .tese .nome{font-weight:600;color:var(--tinta)}
+    .tese .ref{color:var(--muted);font-size:12.5px;margin-top:2px}
+    .tese .dir{text-align:right;white-space:nowrap}
+    .tese .valor{font-weight:600;color:var(--tinta)}
+    .classe{font-size:12px;font-weight:600}.verde{color:var(--esm)}.amarelo{color:var(--ouro)}.vermelho{color:var(--remoto)}
+    details{grid-column:2/4;font-size:12.5px;color:var(--muted)}details summary{cursor:pointer;color:var(--esm)}
+    .total{position:sticky;bottom:0;background:#fff;border-top:1.5px solid var(--tinta);margin-top:8px;padding:14px 0;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+    .total b{font-family:Georgia,serif;font-size:24px;font-weight:400;color:var(--tinta)}
+    .total .split{font-size:13px;color:var(--muted)}
+    label.campo{display:block;margin:10px 0;font-size:13px;color:var(--muted)}
+    input[type=text],input[type=email]{width:100%;padding:10px 12px;border:1px solid var(--linha);border-radius:3px;font:inherit;color:var(--texto);margin-top:4px}
+    .aceite{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:14px 0}.aceite input{margin-top:4px;accent-color:var(--esm)}
+    button,.botao{display:inline-block;background:var(--esm);color:#fff;padding:12px 22px;border:0;border-radius:3px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+    button:disabled{opacity:.5;cursor:default}
+    .termos{font-size:13px;color:var(--muted);background:var(--fundo);padding:12px 14px;border-left:2px solid var(--ouro)}
+    #concluido{border:1px solid var(--linha);border-left:3px solid var(--esm);padding:18px 20px;margin:20px 0}
+    footer{margin-top:28px;padding-top:12px;border-top:1px solid var(--linha);font-size:12px;color:var(--muted)}
+    [hidden]{display:none!important}
+    @media(max-width:640px){main{margin:0;padding:22px 18px;border:0}.tese{grid-template-columns:22px 1fr}.tese .dir{grid-column:2;text-align:left}details{grid-column:2}}
   </style>
   <script src="/aprovacao.js" defer></script>
 </head>
-<body><main>
-  <p>REVERSA TAX</p><h1>Autorização para recuperação administrativa</h1>
+<body><div class="filete"></div><main>
+  <header>
+    <div></div>
+    <div class="marca"><img src="/assets/reversa-r.png" alt=""><div><b>REVERSA <span>TAX</span></b><small>uma solução Argus Prime</small></div></div>
+  </header>
+  <p class="eyebrow">Aprovação das teses</p>
+  <h1 id="cliente">Diagnóstico de oportunidades</h1>
+  <div class="regua"></div>
   <p id="status" role="status" aria-live="polite">Carregando seu diagnóstico…</p>
+
   <section id="conteudo" hidden>
-    <h2 id="cliente"></h2><p id="periodo"></p>
-    <p>Selecione as teses para as quais deseja autorizar o trabalho. Todas as cores podem ser selecionadas. A cor indica a classificação apresentada; ela não confirma direito ao crédito.</p>
-    <p class="muted">Este link dá acesso apenas a esta autorização. Compartilhe somente com o representante autorizado. Nome, e-mail e vínculo são declarados pelo portador do link; este registro não é assinatura digital certificada.</p>
+    <p id="periodo" class="muted"></p>
+    <p>Selecione as teses que a empresa aprova para a recuperação. O valor estimado é recalculado conforme a seleção. Ao final, você será direcionado para a assinatura eletrônica do contrato.</p>
     <form id="form">
       <div id="teses"></div>
+      <div class="total" aria-live="polite"><span>Total estimado das teses selecionadas<br><span class="split" id="split"></span></span><b id="total">R$ 0,00</b></div>
+      <p class="muted">Valores estimados, sujeitos à revisão técnica, à validação dos documentos de suporte e à atualização pela Selic. A aprovação não reconhece crédito.</p>
+
       <h2>Representante da empresa</h2>
-      <label>Nome completo<input id="nome" type="text" required minlength="3" maxlength="240" autocomplete="name"></label>
-      <label>E-mail<input id="email" type="email" required maxlength="254" autocomplete="email"></label>
-      <label>Cargo/vínculo e poder de representação<input id="vinculo" type="text" required minlength="3" maxlength="240" placeholder="Ex.: sócio-administrador"></label>
-      <p id="termos"></p>
-      <label><input id="aceite" type="checkbox" required> Li as classificações, ressalvas e condições acima; declaro ter poderes para autorizar em nome da empresa.</label>
-      <p><button id="enviar" type="submit">Registrar minha autorização</button></p>
+      <label class="campo">Nome completo<input id="nome" type="text" required minlength="3" maxlength="240" autocomplete="name"></label>
+      <label class="campo">E-mail<input id="email" type="email" required maxlength="254" autocomplete="email"></label>
+      <label class="campo">Cargo e poder de representação<input id="vinculo" type="text" required minlength="3" maxlength="240" placeholder="Ex.: sócio-administrador"></label>
+      <p class="termos" id="termos"></p>
+      <label class="aceite"><input id="aceite" type="checkbox" required><span>Li as classificações e as condições acima e declaro ter poderes para aprovar em nome da empresa.</span></label>
+      <p><button id="enviar" type="submit">Aprovar as teses selecionadas</button></p>
     </form>
-    <p class="muted" id="versao"></p>
+    <div id="concluido" hidden></div>
+    <footer><span id="versao"></span><br>Este link é exclusivo da empresa. Compartilhe apenas com o representante autorizado. Nome, e-mail e cargo são declarados pelo portador do link; o registro não substitui a assinatura do contrato.</footer>
   </section>
 </main></body></html>
