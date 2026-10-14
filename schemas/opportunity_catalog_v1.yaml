@@ -808,3 +808,16 @@ opportunities:
     legal_references: []
     validation_rules: []
     next_actions: [document_validation]
+
+  - id: T061
+    name: "RAT/GILRAT — análise da atividade preponderante por estabelecimento"
+    category: administrativa
+    risk_level: baixo
+    catalog_status: active
+    implementation_status: needs_rule_validation
+    calculation_model: to_be_defined
+    eligibility_rules: []
+    required_documents: []
+    legal_references: []
+    validation_rules: []
+    next_actions: [document_validation]

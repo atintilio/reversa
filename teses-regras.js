@@ -1,5 +1,5 @@
 /*
- * Reversa Tax — regras de aplicabilidade das 60 teses do catálogo (triagem, não cálculo).
+ * Reversa Tax — regras de aplicabilidade das 61 teses do catálogo (triagem, não cálculo).
  * Cruza o PERFIL do cliente (regime + características da operação) com o que cada tese exige.
  * Resultado por tese: "provavel" (perfil atende), "verificar" (falta informação) ou "nao" (perfil exclui).
  * Oportunidade não é crédito (RB-09): o cruzamento só indica onde olhar; o valor sai do motor e da revisão humana.
@@ -97,7 +97,8 @@
     { id: 'T057', nome: 'PIS/COFINS — créditos sobre manutenção e conservação de ativos', tributo: 'PIS/COFINS', via: 'administrativa', risco: 'medio', regimes: R, todos: ['imobilizado'] },
     { id: 'T058', nome: 'PIS/COFINS — créditos sobre combustíveis em hipóteses legalmente admitidas', tributo: 'PIS/COFINS', via: 'administrativa', risco: 'medio', regimes: R, algum: ['transporte', 'industria', 'agro'] },
     { id: 'T059', nome: 'Contribuições previdenciárias — revisão de rubricas e incidências', tributo: 'Previdenciário', via: 'operacional', risco: 'medio', regimes: RP, todos: ['folha'] },
-    { id: 'T060', nome: 'Tributação indireta — revisão integrada de NCM, ICMS, IPI, PIS/COFINS e regime fiscal', tributo: 'Indiretos', via: 'operacional', risco: 'medio', regimes: RP, algum: ['comercio', 'industria'] }
+    { id: 'T060', nome: 'Tributação indireta — revisão integrada de NCM, ICMS, IPI, PIS/COFINS e regime fiscal', tributo: 'Indiretos', via: 'operacional', risco: 'medio', regimes: RP, algum: ['comercio', 'industria'] },
+    { id: 'T061', nome: 'RAT/GILRAT — análise da atividade preponderante por estabelecimento', tributo: 'Previdenciário', via: 'administrativa', risco: 'baixo', regimes: RP, todos: ['folha'] },
   ];
 
   var ROTULO = {}; PERFIL.forEach(function (p) { ROTULO[p.id] = p.rotulo; });
