@@ -99,6 +99,11 @@ section { display: grid; gap: 16px; min-width: 0; }
 .drop.over { background: var(--soft); border-style: solid; }
 .drop strong { font-weight: 700; font-size: 1.02rem; }
 .drop .hint { color: var(--muted-fg); font-size: .88rem; }
+.fila { border: 1px solid var(--line); background: var(--card); padding: 18px 20px; display: grid; gap: 12px; margin-top: 14px; }
+.fila-cab { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
+.fila-cab strong { display: block; font-size: 1.02rem; } .fila-cab .hint { color: var(--muted-fg); font-size: .88rem; }
+.fila table td .rm { background: none; border: 0; color: var(--muted-fg); cursor: pointer; font-size: 1rem; padding: 2px 6px; }
+.fila table td .rm:hover { color: #A12A2A; }
 .btns { display: flex; flex-wrap: wrap; gap: 10px; }
 button, .btn { font: inherit; font-size: .88rem; font-weight: 600; padding: 9px 16px; border: 1px solid var(--fg); background: var(--fg); color: var(--bg); cursor: pointer; border-radius: 0; }
 button.sec, .btn.sec { background: transparent; color: var(--fg); border-color: var(--line); }
@@ -184,7 +189,7 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     </div>
     <div class="hero">
       <div class="hero-txt">
-        <div class="eyebrow">Diagnóstico tributário · PIS e COFINS</div>
+        <div class="eyebrow">Diagnóstico de oportunidades tributárias</div>
         <h1>Onde o rigor técnico <em>e a oportunidade se encontram</em></h1>
         <p class="lede">Envie a EFD-Contribuições de empresas do Lucro Real ou do Lucro Presumido e receba um diagnóstico preliminar pronto para a conversa com o cliente: teses calculadas item a item, separadas em crédito, potencial, risco e monitoramento.</p>
         <ul class="beneficios">
@@ -199,7 +204,7 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
       </div>
       <ol class="passos" aria-label="Como funciona">
         <li><b>1</b><div><strong>Envie os SPEDs</strong><span>EFD-Contribuições do período, como baixada do ReceitanetBX.</span></div></li>
-        <li><b>2</b><div><strong>O motor calcula</strong><span>Teses de PIS e COFINS avaliadas item a item.</span></div></li>
+        <li><b>2</b><div><strong>O motor calcula</strong><span>Oportunidades tributárias avaliadas item a item.</span></div></li>
         <li><b>3</b><div><strong>Apresente ao cliente</strong><span>Resumo por tese, memória de cálculo e exportação em Excel.</span></div></li>
       </ol>
     </div>
@@ -211,13 +216,19 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     <div class="drop" id="drop">
       <div>
         <strong>Arraste os arquivos da EFD-Contribuições aqui (.txt ou .zip)</strong>
-        <p class="hint">Um arquivo .txt por competência, como baixado do ReceitanetBX, ou uma pasta compactada (.zip) com todos eles. Envie todos os meses do período: as compras de um mês ajudam a calcular o ICMS-ST das vendas de outro.</p>
+        <p class="hint">Um arquivo .txt por competência, como baixado do ReceitanetBX, ou uma pasta compactada (.zip) com todos eles. Pode enviar em mais de uma leva: os arquivos se somam na lista de conferência. Envie todos os meses do período: as compras de um mês ajudam a calcular o ICMS-ST das vendas de outro.</p>
       </div>
       <div class="btns">
         <label class="btn" for="arquivos">Selecionar arquivos</label>
         <input type="file" id="arquivos" multiple accept=".txt,.TXT,.zip,.ZIP,text/plain,application/zip,application/x-zip-compressed">
         <button class="sec" id="btn-exemplo" type="button" hidden>Carregar exemplo</button>
       </div>
+    </div>
+    <div class="fila" id="fila" hidden>
+      <div class="fila-cab"><div><strong>Conferência dos arquivos</strong><span class="hint" id="fila-resumo"></span></div>
+        <div class="btns"><button type="button" class="sec" id="fila-limpar">Limpar lista</button><button type="button" id="fila-gerar">Gerar diagnóstico</button></div></div>
+      <ul class="msgs" id="fila-alertas"></ul>
+      <div class="scroll"><table id="fila-tab"></table></div>
     </div>
     <details class="cfg">
       <summary>Configurar tabela de monofásicos</summary>
@@ -239,7 +250,7 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
 
   <section aria-labelledby="t-teses">
     <div class="sec-head">
-      <h2 id="t-teses">Teses de <em>PIS e COFINS</em></h2>
+      <h2 id="t-teses">Oportunidades <em>tributárias</em></h2>
       <div class="btns">
         <button class="sec" type="button" id="btn-xlsx">Exportar Excel</button>
       </div>
@@ -509,7 +520,7 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
     if (root.REVERSA_LOGO) { try { doc.addImage(root.REVERSA_LOGO, 'PNG', W - M - 60, M - 4, 60, 12); } catch (e) { /* segue sem logo */ } }
     y += 18;
     fonte('helvetica', 'bold', 28); cor(COR.tinta); doc.text(t('Diagnóstico Técnico Inicial - DTI'), M, y); y += 10;
-    fonte('helvetica', 'normal', 14); cor(COR.bronze); doc.text(t('Créditos de PIS e COFINS · ' + teses.length + ' tese(s) analisada(s)'), M, y); y += 12;
+    fonte('helvetica', 'normal', 14); cor(COR.bronze); doc.text(t('Oportunidades tributárias · ' + teses.length + ' tese(s) analisada(s)'), M, y); y += 12;
 
     var ficha = [
       ['Contribuinte', cnpjs.map(function (c) { return contribuintes[c]; }).join('; ') || '-'],
@@ -777,6 +788,8 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
       })).then(function (listas) { return [].concat.apply([], listas); });
     });
   }
+  // Envio em levas: os arquivos se somam numa fila de conferência; o cálculo só roda em "Gerar diagnóstico".
+  var fila = [];
   function aoEscolher(lista) {
     var fs = Array.prototype.slice.call(lista || []);
     if (!fs.length) return;
@@ -785,10 +798,61 @@ footer { font-size: .8rem; color: var(--muted-fg); border-top: 1px solid var(--l
       .then(function (listas) {
         var a = [].concat.apply([], listas);
         if (!a.length) { toast('Nenhum arquivo SPED (começando por |0000|) encontrado.'); return; }
-        processar(a, false); toast(a.length + ' arquivo(s) SPED processado(s)');
+        var novos = 0, repetidos = 0;
+        a.forEach(function (arq) {
+          if (fila.some(function (x) { return x.nome === arq.nome && x.texto.length === arq.texto.length; })) { repetidos++; return; }
+          arq.lido = M.lerEfdContribuicoes(arq.texto, arq.nome); fila.push(arq); novos++;
+        });
+        if (estado.res && !estado.exemplo && novos) { estado.res = null; secoesResultado(false); $('banner').innerHTML = ''; }
+        renderFila();
+        toast(novos + ' arquivo(s) adicionado(s)' + (repetidos ? ' · ' + repetidos + ' já estava(m) na lista' : '') + '. Confira e clique em Gerar diagnóstico.');
       })
       .catch(function (e) { toast(e.message); });
   }
+  function proximoMes(c) { var a = +c.slice(0, 4), m = +c.slice(5, 7) + 1; if (m > 12) { m = 1; a++; } return a + '-' + (m < 10 ? '0' : '') + m; }
+  function renderFila() {
+    $('fila').hidden = !fila.length;
+    if (!fila.length) return;
+    var validos = fila.filter(function (x) { return x.lido.meta && !x.lido.erros.length; });
+    var porCnpj = {}, chave = {};
+    validos.forEach(function (x) {
+      var m = x.lido.meta; (porCnpj[m.cnpj] = porCnpj[m.cnpj] || { nome: m.nome, comps: {} }).comps[m.competencia] = 1;
+      var k = m.cnpj + '|' + m.competencia; (chave[k] = chave[k] || []).push(x);
+    });
+    var alertas = [], cnpjs = Object.keys(porCnpj);
+    if (cnpjs.length > 1) alertas.push(['e', 'Arquivos de ' + cnpjs.length + ' CNPJs diferentes (' + cnpjs.map(function (c) { return esc(porCnpj[c].nome) + ' ' + cnpjFmt(c); }).join('; ') + '). Confira se é o mesmo grupo: a pasta do cliente usa o CNPJ com mais arquivos.']);
+    cnpjs.forEach(function (c) {
+      var comps = Object.keys(porCnpj[c].comps).sort(), falta = [], cur = comps[0];
+      while (cur && cur < comps[comps.length - 1]) { cur = proximoMes(cur); if (!porCnpj[c].comps[cur]) falta.push(compFmt(cur)); }
+      if (falta.length) alertas.push(['w', (cnpjs.length > 1 ? cnpjFmt(c) + ': ' : '') + falta.length + ' mês(es) faltando entre ' + compFmt(comps[0]) + ' e ' + compFmt(comps[comps.length - 1]) + ': ' + falta.slice(0, 12).join(', ') + (falta.length > 12 ? '…' : '') + '.']);
+    });
+    Object.keys(chave).forEach(function (k) { if (chave[k].length > 1) alertas.push(['', compFmt(k.split('|')[1]) + ': ' + chave[k].length + ' arquivos da mesma competência. Será usada a retificadora (ou o último enviado).']); });
+    var inval = fila.length - validos.length;
+    if (inval) alertas.push(['e', inval + ' arquivo(s) com erro serão ignorados no diagnóstico (veja a coluna Situação).']);
+    $('fila-alertas').innerHTML = alertas.map(function (a) { return '<li' + (a[0] === 'e' ? ' class="e"' : '') + '>' + a[1] + '</li>'; }).join('');
+    var ord = fila.slice().sort(function (a, b) { var x = a.lido.meta, y = b.lido.meta; return ((x && x.competencia) || '').localeCompare((y && y.competencia) || '') || a.nome.localeCompare(b.nome); });
+    $('fila-tab').innerHTML = '<thead><tr><th>Arquivo</th><th>Empresa</th><th>Competência</th><th>Regime</th><th>Tipo</th><th>Situação</th><th></th></tr></thead><tbody>' + ord.map(function (x) {
+      var l = x.lido, m = l.meta, st = l.erros.length ? '<span class="pill bad" title="' + esc(l.erros.join(' ')) + '">ERRO — ' + esc(l.erros[0]) + '</span>' : l.avisos.length ? '<span class="pill warn" title="' + esc(l.avisos.join(' ')) + '">COM AVISOS (' + l.avisos.length + ')</span>' : '<span class="pill ok">OK</span>';
+      return '<tr><td>' + esc(x.nome) + '</td><td>' + (m ? esc(m.nome) + '<br><small>' + cnpjFmt(m.cnpj) + '</small>' : '—') + '</td><td>' + (m ? compFmt(m.competencia) : '—') + '</td><td>' + (m ? esc(m.regime || '—') : '—') + '</td><td>' + (m ? (m.retificadora ? 'Retificadora' : 'Original') : '—') + '</td><td>' + st + '</td><td><button type="button" class="rm" data-rm="' + fila.indexOf(x) + '" title="Remover da lista" aria-label="Remover ' + esc(x.nome) + '">✕</button></td></tr>';
+    }).join('') + '</tbody>';
+    $('fila-resumo').textContent = fila.length + ' arquivo(s) na lista · ' + validos.length + ' válido(s) · ' + cnpjs.length + ' CNPJ(s)';
+    $('fila-gerar').disabled = !validos.length;
+  }
+  $('fila-tab').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-rm]'); if (!b) return;
+    fila.splice(+b.dataset.rm, 1);
+    if (estado.res && !estado.exemplo) { estado.res = null; secoesResultado(false); $('banner').innerHTML = ''; }
+    renderFila();
+  });
+  $('fila-limpar').addEventListener('click', function () { fila = []; if (!estado.exemplo) { estado.res = null; secoesResultado(false); $('banner').innerHTML = ''; } renderFila(); });
+  $('fila-gerar').addEventListener('click', function () {
+    var validos = fila.filter(function (x) { return x.lido.meta && !x.lido.erros.length; });
+    if (!validos.length) return;
+    calcularHashes(validos);
+    estado.arquivos = validos; estado.lidos = validos.map(function (x) { return x.lido; }); estado.exemplo = false;
+    apurar(); toast('Diagnóstico gerado com ' + validos.length + ' arquivo(s)');
+    $('resumo').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
   $('arquivos').addEventListener('change', function (e) { aoEscolher(e.target.files); e.target.value = ''; });
   var drop = $('drop');
   ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
