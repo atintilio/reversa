@@ -151,6 +151,7 @@
       .catch(function (e) { $('lista').innerHTML = '<tr><td colspan="5" class="vazio">' + RV.esc(e.message) + '</td></tr>'; });
   }
   $('busca').addEventListener('input', function () { clearTimeout(tBusca); tBusca = setTimeout(carregarLista, 250); });
+  var buscaUrl = new URLSearchParams(location.search).get('busca'); if (buscaUrl) $('busca').value = buscaUrl; // vinda da busca da barra superior
   $('f-fase').addEventListener('change', renderLista);
   $('lista').addEventListener('click', function (e) { var tr = e.target.closest('tr[data-id]'); if (tr && !e.target.closest('a')) location.href = '/clientes.html?id=' + tr.dataset.id; });
 

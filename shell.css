@@ -23,20 +23,6 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 
-/* barra de navegação (todas as páginas) */
-.rv-nav { position: sticky; top: 0; z-index: 50; background: #0E2239; color: #fff; font-family: var(--f-body, "Manrope", system-ui, sans-serif); }
-.rv-nav .in { max-width: 1240px; margin: 0 auto; padding: 0 20px; height: 64px; display: flex; align-items: center; gap: 22px; }
-.rv-nav .marca { display: flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; font-family: "Open Sans", system-ui, sans-serif; font-weight: 700; letter-spacing: .05em; font-size: 17px; white-space: nowrap; }
-.rv-nav .marca img { height: 30px; width: auto; }
-.rv-nav .marca b { color: #3DB8AE; font-weight: 700; }
-.rv-nav .links { display: flex; gap: 4px; flex: 1; overflow-x: auto; scrollbar-width: none; }
-.rv-nav .links a { color: #C9D6E3; text-decoration: none; font-size: 16px; font-weight: 700; padding: 10px 14px; border-radius: 6px; white-space: nowrap; }
-.rv-nav .links a:hover { color: #fff; background: rgba(255,255,255,.08); }
-.rv-nav .links a[aria-current="page"] { color: #fff; background: rgba(61,184,174,.22); }
-.rv-nav .eu { display: flex; align-items: center; gap: 12px; font-size: 13px; color: #AFC0D2; white-space: nowrap; }
-.rv-nav .eu a { color: #fff; text-decoration: none; font-weight: 600; border: 1px solid rgba(255,255,255,.25); padding: 6px 12px; border-radius: 6px; }
-.rv-nav .eu a:hover { border-color: #3DB8AE; }
-@media (max-width: 760px) { .rv-nav .in { gap: 10px; padding: 0 12px; } .rv-nav .marca span, .rv-nav .eu .nome { display: none; } }
 
 /* páginas internas */
 body.rv { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.5; }
@@ -124,7 +110,7 @@ body.rv { margin: 0; background: var(--bg); color: var(--fg); font-family: var(-
    destaque em itálico serifado (Libre Baskerville), bordas finas e cantos de 6px.
    Paleta Reversa mantida: navy, teal e cobre. Textos e estrutura inalterados.
    ============================================================ */
-:root:not([data-theme="dark"]) { --bg: #FEFEFE; --line: rgba(14,34,57,.12); --soft: #F4F6F8; }
+:root:not([data-theme="dark"]) { --bg: #F7F8FA; --line: rgba(14,34,57,.12); --soft: #F4F6F8; }
 :root { --f-head: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; --f-body: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; --f-serif: "Libre Baskerville", Georgia, serif; }
 body.rv { -webkit-font-smoothing: antialiased; letter-spacing: -.005em; }
 .rv h1, .rv h2, .rv h3 { font-weight: 500; letter-spacing: -.02em; }
@@ -132,19 +118,8 @@ body.rv { -webkit-font-smoothing: antialiased; letter-spacing: -.005em; }
 .rv h1 em { font-family: var(--f-serif); font-style: italic; font-weight: 400; color: var(--teal); }
 .rv .sub { color: color-mix(in srgb, var(--fg) 55%, transparent); }
 
-/* navegação: barra clara com borda fina */
-.rv-nav { background: color-mix(in srgb, var(--bg) 88%, transparent); color: var(--fg); border-bottom: 1px solid var(--line); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px); font-family: var(--f-body); }
-.rv-nav .marca { color: var(--navy); font-family: var(--f-body); font-weight: 600; letter-spacing: -.01em; }
-.rv-nav .marca b { color: var(--teal); font-weight: 600; }
-.rv-nav .links a { color: color-mix(in srgb, var(--fg) 60%, transparent); font-weight: 500; font-size: 15px; border-radius: 6px; }
-.rv-nav .links a:hover { color: var(--fg); background: var(--soft); }
-.rv-nav .links a[aria-current="page"] { color: var(--fg); background: var(--soft); box-shadow: inset 0 0 0 1px var(--line); }
-.rv-nav .eu { color: color-mix(in srgb, var(--fg) 55%, transparent); }
-.rv-nav .eu a { color: var(--fg); border: 1px solid var(--line); border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(14,34,57,.06); }
-.rv-nav .eu a:hover { border-color: var(--teal); }
-
 /* cartões, indicadores e tabelas */
-.rv .card, .rv .kpi { border-radius: 8px; border-color: var(--line); box-shadow: 0 1px 2px rgba(14,34,57,.04); }
+.rv .card, .rv .kpi { border-radius: 14px; border-color: var(--line); box-shadow: 0 1px 2px rgba(14,34,57,.04); }
 .rv .kpi .r { font-weight: 500; letter-spacing: .06em; }
 .rv .kpi .v { font-weight: 600; letter-spacing: -.02em; }
 .rv .kpi.destaque { background: var(--navy); border-color: var(--navy); }
@@ -169,3 +144,8 @@ body.rv { -webkit-font-smoothing: antialiased; letter-spacing: -.005em; }
   .rv main > *:nth-child(2) { animation-delay: .05s; } .rv main > *:nth-child(3) { animation-delay: .1s; }
   @keyframes rv-entra { from { opacity: 0; transform: translateY(8px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
 }
+
+/* layout com menu lateral (padrão Prospectra): conteúdo à direita do menu */
+.rv main { padding-top: 28px; }
+.rv .kpi { padding: 18px 20px; }
+.rv .card { padding: 20px 22px; }
