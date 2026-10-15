@@ -741,7 +741,8 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     return doc.output('blob');
   }
 
-  function apresentar(res, inicio, selecao) {
+  function apresentar(res, inicio, selecao, opts) {
+    opts = opts || {};
     if (!root.jspdf || !root.jspdf.jsPDF) throw new Error('Biblioteca de PDF indisponível.');
     var rows = [];
     res.teses.filter(function (tese) { return tese.natureza === 'credito' && tese.aplicavel; }).forEach(function (tese) {
@@ -766,7 +767,16 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       'A média pressupõe representatividade. Mudanças de atividade, incidência, regime, legislação ou sazonalidade exigem revisão dos estratos antes de apresentar a projeção.',
       'A janela comercial de cinco anos não comprova elegibilidade nem prazo de recuperação. Apuração definitiva, documentos e pagamentos serão conferidos após autorização do cliente.'
     ];
+    if (opts.exemplo) notas.unshift('DOCUMENTO DE DEMONSTRAÇÃO: gerado a partir de arquivos SPED sintéticos. Não utilizar com clientes.');
     notas.forEach(function (nota) { var linhas = doc.splitTextToSize(nota, 178); if (y + linhas.length * 5 > 275) { doc.addPage(); y = 20; } doc.text(linhas, 16, y); y += linhas.length * 5 + 5; });
+    // Próximos passos: validação no link de contratação, assinatura do contrato padrão e execução.
+    doc.addPage(); y = 24;
+    doc.setFontSize(18); doc.text('Próximos passos', 16, y); y += 12; doc.setFontSize(10.5);
+    ['Validação das oportunidades pelo contador ou responsável no link exclusivo enviado pela equipe Argus Prime: se houver oposição a alguma delas, basta marcá-la.',
+     'Assinatura eletrônica do contrato padrão no mesmo link, com confirmação por código enviado ao e-mail de quem assina.',
+     'Validação técnica de cada oportunidade com a documentação da empresa e os arquivos obtidos no e-CAC por procuração eletrônica.',
+     'Apuração definitiva, retificação das obrigações acessórias e transmissão dos pedidos de compensação, com acompanhamento periódico.'
+    ].forEach(function (p, i) { var l = doc.splitTextToSize(p, 166); doc.setFont(undefined, 'bold'); doc.text(String(i + 1).padStart(2, '0'), 16, y); doc.setFont(undefined, 'normal'); doc.text(l, 28, y); y += l.length * 5.4 + 6; });
     return doc.output('blob');
   }
   root.GeradorMemoria = { gerar: gerar, apresentar: apresentar };
@@ -1208,10 +1218,10 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   $('amostra-ano').value = new Date().getFullYear() - 5;
   $('btn-cliente').addEventListener('click', function () {
     try {
-      if (!estado.res || estado.exemplo) throw new Error('Carregue os arquivos do cliente antes de gerar a apresentação.');
+      if (!estado.res || !estado.res.competencias || !estado.res.competencias.length) throw new Error(estado.prev ? 'A apresentação ao cliente usa os arquivos EFD-Contribuições. Suba também os SPEDs fiscais do cliente.' : 'Carregue os arquivos do cliente antes de gerar a apresentação.');
       var blob = window.GeradorMemoria.apresentar(estado.res, Number($('amostra-ano').value), {
         identificado: $('cliente-identificado').checked, projetado: $('cliente-projetado').checked
-      });
+      }, { exemplo: !!estado.exemplo });
       salvar('Apresentacao-' + nomeBase() + '.pdf', blob);
     } catch (err) { toast(err.message); }
   });

@@ -12,7 +12,14 @@ const json = r => JSON.parse(r.body);
 function v1(path, opts = {}) { return call(api, { ...opts, url: '/api/v1/' + path }); }
 function pub(token, method = 'GET', body) { return v1('client-approval', { method, body, headers: { 'x-approval-token': token, origin: process.env.APP_BASE_URL } }); }
 async function link(extra = {}) { const r = await v1(`cases/${caseId}/authorizations`, { cookie: staff, method: 'POST', body: { ...opts, ...extra } }); assert.equal(r.statusCode, 201, r.body); const j = json(r); return { ...j, token: j.url.split('#')[1] }; }
-async function payload(token, ids = ['T004', 'T009', 'T007']) { return { selectedTheses: ids, snapshotHash: json(await pub(token)).snapshotHash, acceptedTerms: true, name: 'Representante Cliente', email: 'Cliente@Exemplo.com', role: 'Sócio-administrador' }; }
+process.env.REVERSA_DEV_OTP = '1';
+async function payload(token, opposed = []) {
+  const v = json(await pub(token));
+  const pv = json(await pub(token, 'POST', { action: 'previa', opposedTheses: opposed }));
+  const c = json(await pub(token, 'POST', { action: 'codigo', email: 'Cliente@Exemplo.com', name: 'Representante Cliente' }));
+  return { action: 'assinar', opposedTheses: opposed, snapshotHash: v.snapshotHash, contractHash: pv.contractHash, acceptedTerms: true,
+    name: 'Representante Cliente', email: 'Cliente@Exemplo.com', role: 'Sócio-administrador', cpf: '529.982.247-25', code: c.devCode };
+}
 test.before(async () => {
   ({ sql, db } = await createDb()); freshRequire('lib/db').setSqlForTests(sql); api = freshRequire('api/v1/[...route]');
   org = (await sql`select id from organizations limit 1`)[0].id;
@@ -35,63 +42,72 @@ test('links isolados; leitor/visitante não emitem; token somente hash e fragmen
   const a = await link(); assert.match(a.url, /^https:\/\/reversa.test\/aprovacao.html#[A-Za-z0-9_-]{43}$/);
   const stored = (await sql`select token_hash,snapshot from client_authorizations where id = ${a.id}`)[0];
   assert.equal(stored.token_hash, hashSession(a.token)); assert.ok(!JSON.stringify(stored).includes(a.token));
-  assert.equal(json(await pub(a.token)).snapshot.taxpayer.cnpj, '11222333000181');
+  assert.equal(json(await pub(a.token)).taxpayer.cnpj, '11222333000181');
   assert.deepEqual(json(await v1(`cases/${caseId}/authorizations`, { cookie: foreign })).authorizations, []);
 });
-test('cliente pode selecionar todas as cores sem mudar revisão ou valores do caso', async () => {
-  const a = await link(), before = (await sql`select status,estimated_value,commercial_stage from tax_cases where id = ${caseId}`)[0];
-  assert.deepEqual(json(await pub(a.token)).snapshot.theses.map(t => t.color), ['verde','amarelo','vermelho']);
-  const p = await payload(a.token); const r = await pub(a.token, 'POST', p); assert.equal(r.statusCode, 200, r.body);
-  const stored = (await sql`select selected_theses,representative_email,accepted_at from client_authorizations where id = ${a.id}`)[0];
-  assert.deepEqual(stored.selected_theses, p.selectedTheses); assert.equal(stored.representative_email, 'cliente@exemplo.com'); assert.ok(stored.accepted_at);
-  assert.deepEqual((await sql`select status,estimated_value,commercial_stage from tax_cases where id = ${caseId}`)[0], before);
-  assert.equal((await pub(a.token, 'POST', { ...p, selectedTheses: ['T004'] })).statusCode, 409);
+test('cliente não vê cor, classificação nem valor; teses remotas ficam de fora', async () => {
+  const a = await link({ values: { T004: 1000 } }), v = json(await pub(a.token));
+  assert.deepEqual(v.theses.map(t => t.id), ['T004', 'T009']); // T007 é remota
+  const txt = JSON.stringify(v); for (const k of ['color', 'verde', 'amarelo', 'vermelho', 'value', '1000']) assert.ok(!txt.includes(k), k);
+  assert.equal(v.contract.fee, 25);
 });
-test('risco editável exige justificativa; snapshot mantém original, autor e fundamento', async () => {
-  const bad = await v1(`cases/${caseId}/authorizations`, { cookie: staff, method: 'POST', body: { ...opts, risks: { T007: { color: 'verde' } } } });
-  assert.equal(bad.statusCode, 400);
-  const a = await link({ risks: { T007: { color: 'amarelo', reason: 'Revisão específica do enquadramento e período.' } } });
-  const row = json(await pub(a.token)).snapshot.theses.find(t => t.id === 'T007');
-  assert.equal(row.originalColor, 'vermelho'); assert.equal(row.color, 'amarelo'); assert.equal(row.riskEdit.by, 'Equipe'); assert.ok(row.legalBasis.includes('1.072.485'));
-  const original = await link(); assert.equal(json(await pub(original.token)).snapshot.theses.find(t => t.id === 'T007').color, 'vermelho');
+test('contrato: objeto só diz fiscal/tributário ou previdenciário; Argus Prime contratada; sem nome de tese', async () => {
+  const a = await link({ theses: ['T001', 'T004'] });
+  const obj = async (op) => json(await pub(a.token, 'POST', { action: 'previa', opposedTheses: op })).contract;
+  const c = await obj([]), tudo = JSON.stringify(c);
+  assert.match(c.clausulas[0][1][0], /natureza fiscal\/tributária e previdenciária/);
+  assert.match((await obj(['T004'])).clausulas[0][1][0], /natureza fiscal\/tributária identificadas/);
+  assert.match((await obj(['T001'])).clausulas[0][1][0], /natureza previdenciária identificadas/);
+  assert.match(c.contratada, /^ARGUS PRIME, inscrita no CNPJ sob o nº 66\.279\.651\/0001-70/); assert.ok(!/RZ3|Ac Tintilio Neg/i.test(tudo)); assert.match(c.contratada, /Av\. Liberdade, 1000, sala 1005.*André Carlos Tintilio/); assert.ok(!/R\$ 150/.test(tudo));
+  assert.match(tudo, /25% \(vinte e cinco por cento\)/);
+  const nomes = json(await pub(a.token)).theses.map(t => t.name); nomes.forEach(n => assert.ok(!tudo.includes(n), n));
+  const pdf = await pub(a.token, 'POST', { action: 'pdf' }); assert.equal(pdf.statusCode, 200); assert.equal(pdf.headers['content-type'], 'application/pdf');
 });
-test('rejeita teses externas/duplicadas, documento adulterado e falta de consentimento', async () => {
+test('assinatura com oposição, CPF e código; caso vai para Contrato; segunda assinatura bloqueada', async () => {
+  const a = await link(), p = await payload(a.token, ['T009']);
+  const r = await pub(a.token, 'POST', p); assert.equal(r.statusCode, 200, r.body);
+  const st = (await sql`select selected_theses,opposed_theses,representative_email,representative_cpf,contract_hash,accepted_at from client_authorizations where id = ${a.id}`)[0];
+  assert.deepEqual(st.selected_theses, ['T004']); assert.deepEqual(st.opposed_theses, ['T009']);
+  assert.equal(st.representative_email, 'cliente@exemplo.com'); assert.equal(st.representative_cpf, '52998224725'); assert.match(st.contract_hash, /^[0-9a-f]{64}$/);
+  assert.equal((await sql`select commercial_stage from tax_cases where id = ${caseId}`)[0].commercial_stage, 'contrato');
+  assert.equal((await pub(a.token, 'POST', p)).statusCode, 409);
+  const staffPdf = await v1(`client-authorizations/${a.id}/contrato`, { cookie: staff }); assert.equal(staffPdf.statusCode, 200);
+  assert.equal((await v1(`client-authorizations/${a.id}/contrato`, { cookie: foreign })).statusCode, 404);
+});
+test('rejeita oposição total, CPF inválido, código errado, contrato alterado e documento adulterado', async () => {
   const a = await link(), p = await payload(a.token);
-  for (const bad of [{ selectedTheses: ['T999'] }, { selectedTheses: ['T004','T004'] }, { selectedTheses: [] }, { acceptedTerms: false }, { name: '' }]) {
-    assert.equal((await pub(a.token, 'POST', { ...p, ...bad })).statusCode, 400);
+  assert.equal((await pub(a.token, 'POST', { action: 'previa', opposedTheses: ['T004', 'T009'] })).statusCode, 400);
+  for (const bad of [{ opposedTheses: ['T999'] }, { opposedTheses: ['T004','T004'] }, { acceptedTerms: false }, { name: '' }, { cpf: '111.111.111-11' }]) {
+    assert.equal((await pub(a.token, 'POST', { ...p, ...bad })).statusCode, 400, JSON.stringify(bad));
   }
+  assert.equal((await pub(a.token, 'POST', { ...p, contractHash: 'f'.repeat(64) })).statusCode, 409); // contrato lido era outro
   assert.equal((await pub(a.token, 'POST', { ...p, snapshotHash: 'fake' })).statusCode, 409);
+  assert.equal((await pub(a.token, 'POST', { ...p, code: '000000' === p.code ? '111111' : '000000' })).statusCode, 400);
+  assert.equal((await pub(a.token, 'POST', { ...p, email: 'outro@exemplo.com' })).statusCode, 400);
   assert.equal((await v1('client-approval', { headers: { 'x-approval-token': a.token, origin: 'https://outro.test' } })).statusCode, 403);
   assert.equal((await pub('a'.repeat(43))).statusCode, 404);
 });
-test('aceite simultâneo grava uma única seleção; revogação e expiração bloqueiam acesso', async () => {
+test('assinatura simultânea grava uma só; revogação e expiração bloqueiam acesso', async () => {
   const a = await link(), p = await payload(a.token);
-  const results = await Promise.all([pub(a.token, 'POST', p), pub(a.token, 'POST', { ...p, selectedTheses: ['T009'] })]);
-  assert.deepEqual(results.map(r => r.statusCode).sort(), [200,409]);
+  const results = await Promise.all([pub(a.token, 'POST', p), pub(a.token, 'POST', p)]);
+  assert.ok(results.some(r => r.statusCode === 200)); assert.ok(results.some(r => r.statusCode !== 200));
   assert.equal((await v1(`client-authorizations/${a.id}`, { cookie: foreign, method: 'DELETE' })).statusCode, 404);
   assert.equal((await v1(`client-authorizations/${a.id}`, { cookie: staff, method: 'DELETE' })).statusCode, 200);
   assert.equal((await pub(a.token)).statusCode, 404);
   const expired = await link(); await sql`update client_authorizations set expires_at = now() - interval '1 minute' where id = ${expired.id}`;
   assert.equal((await pub(expired.token)).statusCode, 404);
 });
-
-test('valores por tese, total da seleção, contrato e diagnóstico das teses aprovadas', async () => {
+test('valores ficam com a equipe; diagnóstico das teses contratadas e com link', async () => {
   const bad = await v1(`cases/${caseId}/authorizations`, { cookie: staff, method: 'POST', body: { ...opts, values: { T004: -1 } } });
   assert.equal(bad.statusCode, 400);
-  assert.equal((await v1(`cases/${caseId}/authorizations`, { cookie: staff, method: 'POST', body: { ...opts, contractUrl: 'http://inseguro.test/x' } })).statusCode, 400);
-  const a = await link({ values: { T004: 120000, T009: 30000 }, contractUrl: 'https://vaultsign.test/contrato/abc' });
-  const snap = json(await pub(a.token)).snapshot;
-  assert.equal(snap.theses.find(t => t.id === 'T004').value, 120000); assert.equal(snap.theses.find(t => t.id === 'T007').value, null);
-  assert.equal(snap.contract.url, 'https://vaultsign.test/contrato/abc');
-  // antes da aprovação, o diagnóstico das teses aprovadas não existe
+  const a = await link({ values: { T004: 120000, T009: 30000 } });
   const tp = (await sql`select taxpayer_id from tax_cases where id = ${caseId}`)[0].taxpayer_id;
-  const r = await pub(a.token, 'POST', await payload(a.token, ['T004']));
-  assert.equal(r.statusCode, 200, r.body);
-  const j = json(r); assert.equal(j.total, 120000); assert.equal(j.contract.provider, 'VaultSign'); assert.ok(j.emails);
-  const ev = await sql`select metadata from audit_events where event_type = 'client.authorization.notified'`;
-  assert.ok(ev.length >= 1);
-  const pdf = await v1(`crm/clients/${tp}/report`, { cookie: staff, query: { aprovadas: '1' } });
-  assert.equal(pdf.statusCode, 200);
   const comLink = await v1(`crm/clients/${tp}/report`, { cookie: staff, method: 'POST', body: { link: a.url } });
   assert.equal(comLink.statusCode, 200);
+  const r = await pub(a.token, 'POST', await payload(a.token, ['T009']));
+  assert.equal(r.statusCode, 200, r.body); assert.ok(json(r).emails);
+  const lista = json(await v1(`cases/${caseId}/authorizations`, { cookie: staff })).authorizations.find(x => x.id === a.id);
+  assert.equal(lista.snapshot.theses.find(t => t.id === 'T004').value, 120000);
+  const pdf = await v1(`crm/clients/${tp}/report`, { cookie: staff, query: { aprovadas: '1' } });
+  assert.equal(pdf.statusCode, 200);
 });

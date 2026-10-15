@@ -3,74 +3,99 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="referrer" content="no-referrer"><meta name="robots" content="noindex,nofollow">
-  <title>Aprovação das teses · Reversa Tax</title>
+  <title>Contratação · Reversa Tax</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Libre+Baskerville:ital@1&display=swap">
   <style>
-    :root{--tinta:#1D2B27;--texto:#2E3733;--muted:#6E7773;--linha:#E4E0D6;--fundo:#F8F7F3;--esm:#0E7A5C;--ouro:#A9864F;--remoto:#8C9591}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--fundo);color:var(--texto);font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif}
-    .filete{height:3px;background:linear-gradient(90deg,var(--esm) 70%,var(--ouro) 70%)}
-    main{max-width:880px;margin:32px auto;padding:36px 40px;background:#fff;border:1px solid var(--linha);border-radius:4px}
-    header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
-    .marca{display:flex;align-items:center;gap:10px;text-align:right}
-    .marca img{height:36px}.marca b{letter-spacing:.12em;color:var(--tinta)}.marca b span{color:var(--esm)}.marca small{display:block;color:var(--muted);font-size:12px}
-    .eyebrow{font-size:11px;letter-spacing:.18em;color:var(--ouro);font-weight:600;text-transform:uppercase;margin:28px 0 6px}
-    h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:28px;color:var(--tinta);margin:0 0 8px;line-height:1.25}
-    h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:19px;color:var(--tinta);margin:32px 0 10px}
-    .regua{width:30px;height:1.5px;background:var(--esm);margin:10px 0 18px}
-    .muted{color:var(--muted);font-size:13px}
-    #status{white-space:pre-wrap;margin:12px 0}
-    .grupo{font-size:11px;letter-spacing:.14em;color:var(--esm);font-weight:600;text-transform:uppercase;margin:22px 0 4px}
-    .tese{display:grid;grid-template-columns:24px 1fr auto;gap:4px 12px;padding:14px 0;border-bottom:1px solid var(--linha);align-items:start}
-    .tese input{width:17px;height:17px;margin-top:3px;accent-color:var(--esm)}
-    .tese .nome{font-weight:600;color:var(--tinta)}
-    .tese .ref{color:var(--muted);font-size:12.5px;margin-top:2px}
-    .tese .dir{text-align:right;white-space:nowrap}
-    .tese .valor{font-weight:600;color:var(--tinta)}
-    .classe{font-size:12px;font-weight:600}.verde{color:var(--esm)}.amarelo{color:var(--ouro)}.vermelho{color:var(--remoto)}
-    details{grid-column:2/4;font-size:12.5px;color:var(--muted)}details summary{cursor:pointer;color:var(--esm)}
-    .total{position:sticky;bottom:0;background:#fff;border-top:1.5px solid var(--tinta);margin-top:8px;padding:14px 0;display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
-    .total b{font-family:Georgia,serif;font-size:24px;font-weight:400;color:var(--tinta)}
-    .total .split{font-size:13px;color:var(--muted)}
-    label.campo{display:block;margin:10px 0;font-size:13px;color:var(--muted)}
-    input[type=text],input[type=email]{width:100%;padding:10px 12px;border:1px solid var(--linha);border-radius:3px;font:inherit;color:var(--texto);margin-top:4px}
-    .aceite{display:flex;gap:10px;align-items:flex-start;font-size:14px;margin:14px 0}.aceite input{margin-top:4px;accent-color:var(--esm)}
-    button,.botao{display:inline-block;background:var(--esm);color:#fff;padding:12px 22px;border:0;border-radius:3px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+    :root{--navy:#0E2239;--teal:#1E8F88;--teal-ink:#16736D;--teal-soft:#E6F4F2;--cobre:#C78054;--cobre-soft:#FBF3E8;--line:#E5E7EB;--muted:#5C6672;--surface:#F7F8FA;--bad:#A33A2B}
+    *{box-sizing:border-box}[hidden]{display:none!important}
+    body{margin:0;background:var(--surface);color:var(--navy);font:15px/1.55 Geist,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+    .top{background:#fff;border-bottom:1px solid var(--line)}
+    .top .in{max-width:880px;margin:0 auto;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .logo{display:flex;gap:10px;align-items:center;font-weight:700;letter-spacing:.03em}.logo img{height:30px}.logo b{color:var(--teal)}
+    .top small{color:var(--muted);font-size:12.5px}
+    main{max-width:880px;margin:24px auto 48px;padding:0 16px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px}
+    em.d{font-family:"Libre Baskerville",Georgia,serif;font-style:italic;color:var(--teal);font-weight:400}
+    h1{font-size:26px;font-weight:500;letter-spacing:-.02em;margin:0 0 6px;line-height:1.25}
+    .sub{color:var(--muted);margin:0 0 22px;max-width:64ch}
+    .passos{display:flex;gap:8px;margin-bottom:24px;font-size:13px}
+    .passos span{flex:1;padding:10px 12px;border-radius:10px;background:var(--surface);color:var(--muted)}
+    .passos span.on{background:var(--teal-soft);color:var(--teal-ink);font-weight:600}.passos span.ok{color:var(--teal-ink)}
+    .grupo{font-size:11px;letter-spacing:.12em;color:var(--teal-ink);font-weight:600;text-transform:uppercase;margin:20px 0 2px}
+    .tese{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
+    .tese b{display:block;font-weight:600}.tese small{color:var(--muted);font-size:13px;display:block;margin-top:2px}
+    .op{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);white-space:nowrap;border:1px solid var(--line);border-radius:8px;padding:7px 10px;cursor:pointer}
+    .op input{accent-color:var(--cobre);width:16px;height:16px}
+    .tese.oposta b,.tese.oposta small{text-decoration:line-through;opacity:.55}.tese.oposta .op{border-color:var(--cobre);color:var(--cobre);background:var(--cobre-soft)}
+    .barra{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:20px;padding:16px 18px;border-radius:12px;background:var(--surface);font-size:14px}
+    button,.btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:12px 18px;background:var(--teal);color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+    button.sec{background:#fff;color:var(--navy);border:1px solid var(--line)}
     button:disabled{opacity:.5;cursor:default}
-    .termos{font-size:13px;color:var(--muted);background:var(--fundo);padding:12px 14px;border-left:2px solid var(--ouro)}
-    #concluido{border:1px solid var(--linha);border-left:3px solid var(--esm);padding:18px 20px;margin:20px 0}
-    footer{margin-top:28px;padding-top:12px;border-top:1px solid var(--linha);font-size:12px;color:var(--muted)}
-    [hidden]{display:none!important}
-    @media(max-width:640px){main{margin:0;padding:22px 18px;border:0}.tese{grid-template-columns:22px 1fr}.tese .dir{grid-column:2;text-align:left}details{grid-column:2}}
+    .doc{border:1px solid var(--line);border-radius:12px;padding:26px 30px;max-height:60vh;overflow:auto;font-size:13.5px;line-height:1.65;background:#FDFDFD}
+    .doc h2{text-align:center;font-size:15px;letter-spacing:.06em;margin:0 0 2px}.doc .c{text-align:center;color:var(--muted);margin:0 0 18px;font-size:12px}
+    .doc h3{font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--teal-ink);margin:20px 0 6px}
+    .doc p{margin:0 0 8px;text-align:justify}
+    .grade{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    label.f{display:grid;gap:6px;font-size:13px;font-weight:600}
+    input.f{font:inherit;font-weight:400;padding:11px 13px;border:1px solid #8A8F98;border-radius:8px;background:#fff;color:var(--navy);width:100%}
+    input.f:focus{outline:2px solid rgba(30,143,136,.35);border-color:var(--teal)}
+    .chk{display:flex;gap:10px;font-size:13.5px;margin:16px 0;align-items:flex-start}.chk input{margin-top:3px;accent-color:var(--teal)}
+    .termos{font-size:13px;color:var(--muted);background:var(--surface);padding:12px 14px;border-left:2px solid var(--cobre);border-radius:0 8px 8px 0}
+    .codigo{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-top:6px}
+    .codigo label{flex:1;min-width:200px}
+    #status{min-height:1.5em;margin:12px 0;color:var(--bad)}
+    #status.info{color:var(--teal-ink)}
+    .ok-box{border:1px solid var(--line);border-left:3px solid var(--teal);border-radius:0 12px 12px 0;padding:18px 20px;background:#fff}
+    .hash{font-family:ui-monospace,Menlo,monospace;font-size:12px;word-break:break-all;color:var(--muted)}
+    footer{margin-top:18px;font-size:12px;color:var(--muted)}
+    @media(max-width:640px){.card{padding:20px 16px}.grade{grid-template-columns:1fr}.tese{grid-template-columns:1fr}.passos{flex-direction:column}.doc{padding:18px 16px}}
   </style>
   <script src="/aprovacao.js" defer></script>
 </head>
-<body><div class="filete"></div><main>
-  <header>
-    <div></div>
-    <div class="marca"><img src="/assets/reversa-r.png" alt=""><div><b>REVERSA <span>TAX</span></b><small>uma solução Argus Prime</small></div></div>
-  </header>
-  <p class="eyebrow">Aprovação das teses</p>
-  <h1 id="cliente">Diagnóstico de oportunidades</h1>
-  <div class="regua"></div>
-  <p id="status" role="status" aria-live="polite">Carregando seu diagnóstico…</p>
+<body>
+<div class="top"><div class="in"><div class="logo"><img src="/assets/reversa-r.png" alt=""><span>REVERSA <b>TAX</b></span></div><small id="cab">Link exclusivo</small></div></div>
+<main>
+  <p id="status" role="status" aria-live="polite">Carregando…</p>
+  <div class="card" id="conteudo" hidden>
+    <div class="passos"><span id="p1" class="on">1 · Oportunidades</span><span id="p2">2 · Contrato</span><span id="p3">3 · Assinatura</span></div>
 
-  <section id="conteudo" hidden>
-    <p id="periodo" class="muted"></p>
-    <p>Selecione as teses que a empresa aprova para a recuperação. O valor estimado é recalculado conforme a seleção. Ao final, você será direcionado para a assinatura eletrônica do contrato.</p>
-    <form id="form">
+    <section id="etapa1">
+      <h1>Oportunidades identificadas para a <em class="d">sua empresa</em></h1>
+      <p class="sub">Estas são as oportunidades que seguem para a próxima etapa. Se houver oposição a alguma delas, marque a caixa ao lado: ela fica fora do trabalho. Não é preciso marcar nada nas demais.</p>
       <div id="teses"></div>
-      <div class="total" aria-live="polite"><span>Total estimado das teses selecionadas<br><span class="split" id="split"></span></span><b id="total">R$ 0,00</b></div>
-      <p class="muted">Valores estimados, sujeitos à revisão técnica, à validação dos documentos de suporte e à atualização pela Selic. A aprovação não reconhece crédito.</p>
+      <div class="barra"><span id="resumo"></span><button type="button" id="ir2">Continuar para o contrato →</button></div>
+    </section>
 
-      <h2>Representante da empresa</h2>
-      <label class="campo">Nome completo<input id="nome" type="text" required minlength="3" maxlength="240" autocomplete="name"></label>
-      <label class="campo">E-mail<input id="email" type="email" required maxlength="254" autocomplete="email"></label>
-      <label class="campo">Cargo e poder de representação<input id="vinculo" type="text" required minlength="3" maxlength="240" placeholder="Ex.: sócio-administrador"></label>
-      <p class="termos" id="termos"></p>
-      <label class="aceite"><input id="aceite" type="checkbox" required><span>Li as classificações e as condições acima e declaro ter poderes para aprovar em nome da empresa.</span></label>
-      <p><button id="enviar" type="submit">Aprovar as teses selecionadas</button></p>
-    </form>
-    <div id="concluido" hidden></div>
-    <footer><span id="versao"></span><br>Este link é exclusivo da empresa. Compartilhe apenas com o representante autorizado. Nome, e-mail e cargo são declarados pelo portador do link; o registro não substitui a assinatura do contrato.</footer>
-  </section>
-</main></body></html>
+    <section id="etapa2" hidden>
+      <h1>Contrato de prestação de <em class="d">serviços</em></h1>
+      <p class="sub">Leia o contrato. Ele já considera as oposições marcadas na etapa anterior.</p>
+      <div class="doc" id="doc"></div>
+      <div class="barra"><span><button type="button" class="sec" id="volta1">← Voltar</button> <button type="button" class="sec" id="baixar">Baixar PDF</button></span><button type="button" id="ir3">Li o contrato · ir para a assinatura →</button></div>
+    </section>
+
+    <section id="etapa3" hidden>
+      <h1>Assinar <em class="d">o contrato</em></h1>
+      <p class="sub">Quem assina declara ter poderes para representar a empresa (sócio, administrador ou procurador). Enviaremos um código para o e-mail informado.</p>
+      <form id="form">
+        <div class="grade">
+          <label class="f">Nome completo<input class="f" id="nome" required minlength="3" maxlength="240" autocomplete="name"></label>
+          <label class="f">CPF<input class="f" id="cpf" required inputmode="numeric" maxlength="14" placeholder="000.000.000-00"></label>
+          <label class="f">Cargo<input class="f" id="cargo" required minlength="3" maxlength="240" placeholder="Ex.: sócio-administrador"></label>
+          <label class="f">E-mail<input class="f" id="email" type="email" required maxlength="254" autocomplete="email"></label>
+        </div>
+        <p class="termos" id="termos"></p>
+        <label class="chk"><input type="checkbox" id="aceite"><span>Li e concordo com o contrato, tenho poderes para assinar em nome da empresa e aceito a assinatura eletrônica.</span></label>
+        <div class="codigo">
+          <button type="button" class="sec" id="pedir">Enviar código por e-mail</button>
+          <label class="f">Código recebido<input class="f" id="codigo" inputmode="numeric" maxlength="6" placeholder="6 dígitos" autocomplete="one-time-code"></label>
+          <button type="submit" id="assinar">Assinar contrato</button>
+        </div>
+        <p style="margin-top:14px"><button type="button" class="sec" id="volta2">← Voltar ao contrato</button></p>
+      </form>
+    </section>
+
+    <section id="fim" hidden></section>
+    <footer id="rodape"></footer>
+  </div>
+</main>
+</body></html>

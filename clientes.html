@@ -61,9 +61,9 @@
   </section>
   <div class="grid-kpi" id="p-kpis"></div>
   <section class="card" aria-labelledby="t-autorizacao">
-    <h2 id="t-autorizacao">Autorização do cliente</h2>
-    <p class="muted">Link exclusivo com seleção de teses verdes, amarelas e vermelhas. A autorização do cliente é separada da revisão técnica do crédito.</p>
-    <button type="button" id="preparar-autorizacao" data-write hidden>Preparar página de aprovação</button>
+    <h2 id="t-autorizacao">Contratação</h2>
+    <p class="muted">Link exclusivo para o contador ou responsável: lista as teses prováveis e possíveis (sem cor nem classificação), recebe oposições e colhe a assinatura do contrato padrão, com honorários de 25%. Teses remotas nunca vão ao cliente.</p>
+    <button type="button" id="preparar-autorizacao" data-write hidden>Gerar link de contratação</button>
     <p id="link-autorizacao" role="status" aria-live="polite"></p>
     <div id="autorizacoes"></div>
   </section>
@@ -101,12 +101,11 @@
 
 <dialog id="dlg-autorizacao" aria-labelledby="autorizacao-titulo">
   <form id="f-autorizacao">
-    <h2 id="autorizacao-titulo">Teses e classificação apresentadas ao cliente</h2>
-    <p>Edite a classificação antes de emitir o link. A classificação original e a justificativa permanecerão visíveis ao cliente. Cada link conserva sua versão.</p>
+    <h2 id="autorizacao-titulo">Teses do link de contratação</h2>
+    <p>Marque as teses que vão ao cliente. Só as prováveis e possíveis aparecem para ele, sem cor nem classificação; as remotas ficam de fora. Cada link conserva sua versão.</p>
     <label>Início do período<input type="month" id="autorizacao-inicio" required></label>
     <label>Fim do período<input type="month" id="autorizacao-fim" required></label>
-    <label>Link do contrato para assinatura (VaultSign)<input type="url" id="autorizacao-contrato" placeholder="https://… (opcional; após aprovar, o cliente é levado a este link)" maxlength="2000"></label>
-    <p class="muted" style="font-size:13px">Informe o valor estimado de cada tese (R$). O cliente vê o total recalculado conforme marca ou desmarca. Teses remotas começam desmarcadas.</p>
+    <p class="muted" style="font-size:13px">O valor estimado de cada tese (R$) é opcional e fica só para a equipe; o cliente não vê valores nem classificação. Teses remotas não são enviadas.</p>
     <div id="autorizacao-teses" style="max-height:45vh;overflow:auto"></div>
     <label>Justificativa para classificações alteradas<textarea id="autorizacao-motivo" maxlength="2000" rows="3" placeholder="Obrigatória quando uma cor for alterada"></textarea></label>
     <div class="acoes"><button type="button" id="autorizacao-cancelar" class="sec">Cancelar</button><button id="autorizacao-gerar" type="submit">Gerar link exclusivo</button></div>
@@ -219,15 +218,18 @@
     RV.api('GET', '/api/v1/cases/' + caso.id + '/authorizations').then(function (r) {
       $('autorizacoes').innerHTML = r.authorizations.map(function (a) {
         var sel = a.selected_theses || [], totalAprov = a.snapshot.theses.filter(function (t) { return sel.indexOf(t.id) >= 0; }).reduce(function (s, t) { return s + (Number(t.value) || 0); }, 0);
-        return '<p>' + (a.accepted_at ? 'Aprovado em ' + RV.data(a.accepted_at, true) + ' · ' + RV.esc(a.representative_name) + ' · ' + sel.length + ' tese(s) · ' + RV.reais(Math.round(totalAprov * 100)) +
-            ' <button type="button" class="mini" data-diag-aprovadas="1">Diagnóstico das teses aprovadas</button>' : 'Aguardando aprovação do cliente · criado em ' + RV.data(a.created_at, true)) +
-          (a.snapshot.contract ? '<br><small>Contrato: ' + RV.esc(a.snapshot.contract.provider) + '</small>' : '') +
+        var nome = function (ids) { return a.snapshot.theses.filter(function (t) { return (ids || []).indexOf(t.id) >= 0; }).map(function (t) { return RV.esc(t.name); }).join('; '); };
+        var op = a.opposed_theses || [];
+        return '<p>' + (a.accepted_at ? '<b>Contrato assinado</b> em ' + RV.data(a.accepted_at, true) + ' · ' + RV.esc(a.representative_name) + (a.representative_role ? ' (' + RV.esc(a.representative_role) + ')' : '') + ' · ' + sel.length + ' tese(s) · ' + RV.reais(Math.round(totalAprov * 100)) +
+            (op.length ? '<br><small>Oposição: ' + nome(op) + '</small>' : '<br><small>Sem oposições</small>') +
+            (a.contract_hash ? '<br><button type="button" class="mini" data-contrato="' + a.id + '">Baixar contrato assinado</button> ' : '<br>') +
+            '<button type="button" class="mini sec" data-diag-aprovadas="1">Diagnóstico das teses contratadas</button>' : 'Aguardando assinatura · link criado em ' + RV.data(a.created_at, true)) +
           (a.revoked_at ? ' · acesso revogado' : new Date(a.expires_at) < new Date() ? ' · acesso expirado' : ' · acesso até ' + RV.data(a.expires_at, true)) +
-          '<br><small>Documento: ' + RV.esc(a.snapshot_hash) + '</small>' +
-          '<details><summary>Versão apresentada e alterações de risco</summary>' + a.snapshot.theses.map(function (t) {
+          '<br><small>Documento: ' + RV.esc(a.snapshot_hash) + (a.contract_hash ? ' · contrato ' + RV.esc(a.contract_hash) : '') + '</small>' +
+          '<details><summary>Versão apresentada</summary>' + a.snapshot.theses.map(function (t) {
             return '<p>' + RV.esc(t.name) + ' · ' + RV.esc(t.color) + (t.riskEdit ? ' · original: ' + RV.esc(t.originalColor) + '<br>' + RV.esc(t.riskEdit.reason) + ' · por ' + RV.esc(t.riskEdit.by) : '') + '</p>';
           }).join('') + '</details>' +
-          (!a.revoked_at && RV.pode('write') ? ' <button type="button" class="mini sec" data-revogar-link="' + a.id + '">Revogar acesso</button>' : '') + '</p>';
+          (!a.revoked_at && !a.accepted_at && RV.pode('write') ? ' <button type="button" class="mini sec" data-revogar-link="' + a.id + '">Revogar acesso</button>' : '') + '</p>';
       }).join('') || '<p>Nenhum link emitido.</p>';
     }).catch(function (e) { $('autorizacoes').textContent = e.message; });
   }
@@ -255,17 +257,16 @@
     ids.forEach(function (id) { var v = document.querySelector('[data-valor-tese="' + id + '"]').value; if (v !== '') values[id] = Number(v); });
     $('autorizacao-gerar').disabled = true;
     RV.api('POST', '/api/v1/cases/' + caso.id + '/authorizations', { theses: ids, risks: risks, values: values,
-      contractUrl: $('autorizacao-contrato').value.trim() || undefined, contractProvider: 'VaultSign',
       periodStart: $('autorizacao-inicio').value, periodEnd: $('autorizacao-fim').value
     }).then(function (r) {
       $('dlg-autorizacao').close(); $('link-autorizacao').textContent = '';
       var input = document.createElement('input'); input.type = 'text'; input.readOnly = true; input.value = r.url;
-      input.setAttribute('aria-label', 'Link exclusivo de aprovação; copie e compartilhe com o representante');
+      input.setAttribute('aria-label', 'Link exclusivo de contratação; copie e envie ao contador ou responsável');
       input.style.width = '100%'; $('link-autorizacao').appendChild(input); input.select();
-      var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'mini sec'; bt.textContent = 'Baixar diagnóstico com este link de aprovação';
-      bt.onclick = function () { baixarRelatorio({ link: r.url }, 'Diagnostico-com-link-de-aprovacao.pdf'); };
+      var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'mini sec'; bt.textContent = 'Baixar diagnóstico com este link de contratação';
+      bt.onclick = function () { baixarRelatorio({ link: r.url }, 'Diagnostico-com-link-de-contratacao.pdf'); };
       $('link-autorizacao').appendChild(bt);
-      RV.toast('Link gerado. Copie e compartilhe com o representante autorizado.'); carregarAutorizacoes();
+      RV.toast('Link gerado. Copie e envie ao contador ou responsável pela empresa.'); carregarAutorizacoes();
     }).catch(function (err) { RV.toast(err.message); }).finally(function () { $('autorizacao-gerar').disabled = false; });
   });
   // Download do PDF por POST: o link de aprovação vai no corpo, nunca na URL.
@@ -278,7 +279,15 @@
       .catch(function (e) { RV.toast(e.message); });
   }
   $('autorizacoes').addEventListener('click', function (e) {
-    if (e.target.closest('[data-diag-aprovadas]')) { baixarRelatorio(null, 'Diagnostico-Teses-Aprovadas.pdf', '?aprovadas=1'); return; }
+    if (e.target.closest('[data-diag-aprovadas]')) { baixarRelatorio(null, 'Diagnostico-Teses-Contratadas.pdf', '?aprovadas=1'); return; }
+    var ct = e.target.closest('[data-contrato]');
+    if (ct) {
+      fetch('/api/v1/client-authorizations/' + ct.dataset.contrato + '/contrato', { credentials: 'same-origin' })
+        .then(function (r) { if (!r.ok) return r.json().then(function (j) { throw new Error(j.error && j.error.message || 'Falha ao baixar.'); }); return r.blob(); })
+        .then(function (b) { var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'Contrato-assinado.pdf'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(a.href); }, 5000); })
+        .catch(function (err) { RV.toast(err.message); });
+      return;
+    }
     var b = e.target.closest('[data-revogar-link]'); if (!b) return;
     RV.api('DELETE', '/api/v1/client-authorizations/' + b.dataset.revogarLink).then(function () { carregarAutorizacoes(); RV.toast('Acesso pelo link revogado.'); }).catch(function (err) { RV.toast(err.message); });
   });

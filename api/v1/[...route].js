@@ -24,6 +24,14 @@ function segments(req) {
   return path.split('/').filter(Boolean).map(decodeURIComponent);
 }
 
+function pdf(res, r) {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `attachment; filename="${r.nome}"`);
+  res.setHeader('Cache-Control', 'no-store');
+  return res.end(r.pdf);
+}
+
 async function route(req, res) {
   const [resource, id, action] = segments(req);
   const m = req.method;
@@ -32,7 +40,13 @@ async function route(req, res) {
   // Exceção pública limitada a um snapshot: credencial aleatória do link, sem sessão da equipe.
   if (resource === 'client-approval' && !id) {
     if (m === 'GET') return json(res, 200, await clientAuthorizations.readPublic(req));
-    if (m === 'POST') return json(res, 200, await clientAuthorizations.acceptPublic(req, body));
+    if (m === 'POST') {
+      const acao = body.action || 'assinar';
+      if (acao === 'previa') return json(res, 200, await clientAuthorizations.previewPublic(req, body));
+      if (acao === 'codigo') return json(res, 200, await clientAuthorizations.codePublic(req, body));
+      if (acao === 'pdf') return pdf(res, await clientAuthorizations.pdfPublic(req, body));
+      return json(res, 200, await clientAuthorizations.acceptPublic(req, body));
+    }
     return method(res, ['GET', 'POST']);
   }
   // Página do contador: mesma lógica do link do cliente, com credencial própria.
@@ -86,6 +100,7 @@ async function route(req, res) {
 
     case 'client-authorizations':
       if (id && m === 'DELETE') { deny(ctx, 'write', 'client.authorization.revoke'); return json(res, 200, await clientAuthorizations.revoke(ctx, id)); }
+      if (id && action === 'contrato' && m === 'GET') return pdf(res, await clientAuthorizations.contractPdf(ctx, id));
       return method(res, ['DELETE']);
 
     case 'analyses':

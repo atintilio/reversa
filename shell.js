@@ -122,7 +122,7 @@
   var aqui = location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
   // [caminho, rótulo, ícone, href alternativo, atributo de visibilidade]
   var principais = DEMO_AMB
-    ? [['/demonstracao', 'Início', 'inicio'], ['/', 'Diagnosticar', 'diag', '/?demo=1'], ['/lei-do-bem', 'Lei do Bem', 'lei', '/lei-do-bem.html?demo=1'], ['/teses', 'Teses', 'teses', '/teses.html?demo=1']]
+    ? [['/demonstracao', 'Início', 'inicio'], ['/', 'Diagnosticar', 'diag', '/?demo=1'], ['/lei-do-bem', 'Lei do Bem', 'lei', '/lei-do-bem.html?demo=1'], ['/teses', 'Teses', 'teses', '/teses.html?demo=1'], ['/execucao', 'Retificação', 'exe']]
     : [['/', 'Diagnosticar', 'diag'], ['/lei-do-bem', 'Lei do Bem', 'lei'], ['/crm', 'CRM', 'crm'], ['/clientes', 'Clientes', 'cli'], ['/teses', 'Teses', 'teses'], ['/dashboard', 'Dashboard', 'dash']];
   var plataforma = DEMO_AMB ? [] : [['/execucao', 'Execução', 'exe', null, 'data-plat'], ['/usuarios', 'Usuários', 'users', null, 'data-admin'], ['/master', 'Master', 'master', null, 'data-master']];
   var href = function (p) { return p === '/' ? '/' : p + '.html'; };

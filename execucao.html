@@ -21,6 +21,7 @@
   .aviso { font-size: 13px; color: var(--muted); }
   .link-conv { word-break: break-all; background: var(--soft, #F5F7F9); padding: 8px; border-radius: 6px; font-size: 12px; }
   [hidden] { display: none !important; }
+  body.lab #r-reg, body.lab #e-reg, body.lab #d-fechar { display: none !important; }
 </style>
 </head>
 <body class="rv">
@@ -377,7 +378,17 @@
     RV.api('POST', '/api/v1/execucoes/' + atual.id + '/fase', { para: 'cancelado', nota: $('d-voltar-nota').value })
       .then(function () { RV.toast('Execução cancelada'); return carregar().then(function () { return abrir(atual.id); }); }).catch(function (e) { RV.toast(e.message); });
   });
-  carregar();
+  // Ambiente de demonstração: laboratório de retificação (fiscal e eSocial) sem caso, sem gravar nada no servidor.
+  if (RV.ambiente() === 'demo') {
+    document.body.classList.add('lab');
+    document.title = 'Retificação · demonstração · Reversa Tax';
+    document.querySelector('.cab h1').innerHTML = 'Retificação <em>demonstração</em>';
+    document.querySelector('.cab .sub').textContent = 'Suba uma base real para ver a retificadora da EFD-Contribuições e o pacote de retificação do eSocial com a pré-validação. Tudo roda neste navegador: nada é enviado nem gravado.';
+    $('conteudo').hidden = false; $('sec-cand').hidden = true; $('tab-exec').closest('section').hidden = true;
+    var det = $('det'); det.hidden = false;
+    Array.prototype.forEach.call(det.children, function (c) { c.hidden = !(c.id === 'd-ret' || c.id === 'd-esr'); });
+    $('d-ret').hidden = $('d-esr').hidden = false;
+  } else carregar();
 })();
 </script>
 </body>
