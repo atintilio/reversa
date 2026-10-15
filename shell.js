@@ -73,14 +73,14 @@
   var aqui = location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
   var links = DEMO_AMB
     ? [['/demonstracao', 'Início'], ['/', 'Diagnosticar', '/?demo=1'], ['/lei-do-bem', 'Lei do Bem', '/lei-do-bem.html?demo=1'], ['/teses', 'Teses', '/teses.html?demo=1']]
-    : [['/', 'Diagnosticar'], ['/lei-do-bem', 'Lei do Bem'], ['/crm', 'CRM'], ['/clientes', 'Clientes'], ['/teses', 'Teses'], ['/dashboard', 'Dashboard'], ['/usuarios', 'Usuários']];
+    : [['/', 'Diagnosticar'], ['/lei-do-bem', 'Lei do Bem'], ['/crm', 'CRM'], ['/clientes', 'Clientes'], ['/execucao', 'Execução'], ['/teses', 'Teses'], ['/dashboard', 'Dashboard'], ['/usuarios', 'Usuários']];
   var href = function (p) { return p === '/' ? '/' : p + '.html'; };
   var nav = document.createElement('header');
   nav.className = 'rv-nav';
   nav.innerHTML = '<div class="in"><a class="marca" href="' + (DEMO_AMB ? '/demonstracao.html' : '/') + '"><img src="/assets/reversa-r.png" alt=""><span>REVERSA <b>TAX</b></span></a>' +
     '<nav class="links" aria-label="Seções">' + links.map(function (l) {
       var atual = l[0] === '/' ? aqui === '/' : aqui.indexOf(l[0]) === 0;
-      return '<a href="' + (l[2] || href(l[0])) + '"' + (l[0] === '/usuarios' ? ' data-admin hidden' : '') + (atual ? ' aria-current="page"' : '') + '>' + l[1] + '</a>';
+      return '<a href="' + (l[2] || href(l[0])) + '"' + (l[0] === '/usuarios' ? ' data-admin hidden' : l[0] === '/execucao' ? ' data-plat hidden' : '') + (atual ? ' aria-current="page"' : '') + '>' + l[1] + '</a>';
     }).join('') + '</nav><div class="eu"><a href="/ambiente.html" class="amb ' + (DEMO_AMB ? 'demo' : 'prod') + '" title="Trocar de ambiente">' + (DEMO_AMB ? 'Demonstração' : 'Produção') + ' ⇄</a><span class="nome"></span><a href="/master.html" class="master" data-master hidden' + (aqui.indexOf('/master') === 0 ? ' aria-current="page"' : '') + '>Master</a><a href="/api/logout">Sair</a></div></div>';
   function montar() {
     document.body.insertBefore(nav, document.body.firstChild);
@@ -96,6 +96,7 @@
       nav.querySelector('.nome').textContent = (eu.user && (eu.user.name || eu.user.email)) || '';
       if (eu.permissions && eu.permissions.manageMembers) nav.querySelectorAll('[data-admin]').forEach(function (a) { a.hidden = false; });
       if (eu.master) { nav.querySelectorAll('[data-master]').forEach(function (a) { a.hidden = false; a.title = nav.querySelector('.nome').textContent; }); nav.querySelector('.nome').hidden = true; }
+      if (eu.organization && eu.organization.kind === 'plataforma') nav.querySelectorAll('[data-plat]').forEach(function (a) { a.hidden = false; });
       if (eu.organization && eu.organization.kind === 'parceiro') nav.querySelector('.nome').textContent += ' · ' + eu.organization.name;
     }
     RV.usuario = eu;

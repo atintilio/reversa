@@ -9,6 +9,7 @@ const crm = require('../../lib/domain/crm');
 const leidobem = require('../../lib/domain/leidobem');
 const master = require('../../lib/domain/master');
 const clientAuthorizations = require('../../lib/domain/client-authorizations');
+const execucao = require('../../lib/domain/execucao');
 
 function deny(ctx, permission, action) {
   if (can(ctx, permission)) return;
@@ -32,6 +33,12 @@ async function route(req, res) {
   if (resource === 'client-approval' && !id) {
     if (m === 'GET') return json(res, 200, await clientAuthorizations.readPublic(req));
     if (m === 'POST') return json(res, 200, await clientAuthorizations.acceptPublic(req, body));
+    return method(res, ['GET', 'POST']);
+  }
+  // Página do contador: mesma lógica do link do cliente, com credencial própria.
+  if (resource === 'accountant-review' && !id) {
+    if (m === 'GET') return json(res, 200, await execucao.readAccountant(req));
+    if (m === 'POST') return json(res, 200, await execucao.respondAccountant(req, body));
     return method(res, ['GET', 'POST']);
   }
   const ctx = await context(req);
@@ -151,6 +158,20 @@ async function route(req, res) {
       if (sub === 'auditoria' && m === 'GET') return json(res, 200, { eventos: await master.auditoria(query) });
       return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
     }
+
+    case 'execucoes':
+      // /execucoes · /execucoes/:id · /execucoes/:id/fase · /execucoes/:id/contador (só plataforma; aprovar e transmitir só master)
+      if (!id) {
+        if (m === 'GET') return json(res, 200, await execucao.list(ctx));
+        if (m === 'POST') return json(res, 201, await execucao.start(ctx, body));
+        return method(res, ['GET', 'POST']);
+      }
+      if (!action && m === 'GET') return json(res, 200, await execucao.get(ctx, id));
+      if (!action && m === 'PATCH') return json(res, 200, await execucao.update(ctx, id, body));
+      if (action === 'fase' && m === 'POST') return json(res, 200, await execucao.advance(ctx, id, body));
+      if (action === 'contador' && m === 'POST') return json(res, 200, await execucao.sendAccountant(ctx, id, body));
+      if (action === 'arquivos' && m === 'POST') return json(res, 200, await execucao.registerFiles(ctx, id, body));
+      return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
 
     case 'dashboard':
       if (m !== 'GET') return method(res, ['GET']);

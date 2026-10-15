@@ -1,7 +1,7 @@
 import { neon } from '@neondatabase/serverless';
 
 // APIs são tratadas por funções Node em /api. O middleware protege somente as páginas.
-export const config = { matcher: '/((?!login\\.html|reset-password\\.html|aprovacao\\.html|aprovacao\\.js|assets/reversa-r\\.png|robots\\.txt|api/|favicon\\.ico).*)' };
+export const config = { matcher: '/((?!login\\.html|reset-password\\.html|aprovacao\\.html|aprovacao\\.js|validacao-contador\\.html|validacao-contador\\.js|assets/reversa-r\\.png|robots\\.txt|api/|favicon\\.ico).*)' };
 
 const COOKIE = 'rv_sessao';
 const enc = new TextEncoder();

@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Execução · Reversa Tax</title>
+<link rel="icon" href="/favicon.png">
+<link rel="stylesheet" href="/shell.css">
+<style>
+  .grade { display: grid; gap: 16px; }
+  .etapas { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .etapas li { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .etapas li.feito { color: var(--ok); border-color: transparent; background: var(--ok-bg); }
+  .etapas li.atual { color: #fff; background: var(--teal, #0E7A5C); border-color: transparent; font-weight: 700; }
+  .acoes { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+  .acoes label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+  textarea { width: 100%; min-height: 110px; font: inherit; padding: 10px; border: 1px solid var(--line); border-radius: 6px; }
+  .hist { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+  .hist li { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .hist small, td small { color: var(--muted); }
+  .aviso { font-size: 13px; color: var(--muted); }
+  .link-conv { word-break: break-all; background: var(--soft, #F5F7F9); padding: 8px; border-radius: 6px; font-size: 12px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body class="rv">
+<main>
+  <div class="cab">
+    <div>
+      <h1>Execução</h1>
+      <p class="sub">Começa somente com o contrato assinado. Retificação, pré-validação, aprovação, validação do contador, transmissão e PER/DCOMP. Exclusivo da equipe Argus Prime. Aprovar e transmitir: somente André ou Moisés.</p>
+    </div>
+  </div>
+  <div class="msg bad" id="negado" hidden>A execução é exclusiva da equipe Argus Prime.</div>
+  <div class="grade" id="conteudo" hidden>
+    <section class="card" id="sec-cand">
+      <h2>Contratos enviados</h2><p class="aviso">Inicie a execução só depois de confirmar a assinatura do contrato.</p>
+      <div class="tabela"><table id="tab-cand"></table></div>
+    </section>
+    <section class="card">
+      <h2>Em execução</h2>
+      <div class="tabela"><table id="tab-exec"></table></div>
+    </section>
+    <section class="card" id="det" hidden>
+      <div class="cab"><div><h2 id="d-nome"></h2><p class="sub" id="d-sub"></p></div><button type="button" class="sec" id="d-fechar">Fechar</button></div>
+      <ol class="etapas" id="d-etapas"></ol>
+
+      <h3>Resumo da retificação</h3>
+      <textarea id="d-resumo" maxlength="20000" placeholder="O que será retificado, períodos, teses aprovadas pelo cliente e valores."></textarea>
+      <label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="d-contador-exige" style="width:auto"> Exige validação do contador (o ajuste altera a base do IRPJ/CSLL na ECF)</label>
+      <p class="acoes"><button type="button" class="sec" id="d-salvar">Salvar resumo</button><span class="aviso" id="d-trava"></span></p>
+
+      <div id="d-ret" hidden>
+        <h3>Retificadora · EFD-Contribuições</h3>
+        <p class="aviso">Os arquivos são lidos e gerados neste navegador: o SPED não é enviado ao servidor. No caso ficam registrados só o resumo, os hashes e o resultado da pré-validação.</p>
+        <div class="acoes"><label>Arquivos originais (.txt)<input type="file" id="r-arqs" multiple accept=".txt,.TXT"></label>
+          <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="r-t69" checked style="width:auto"> Tema 69 (ICMS na base)</label>
+          <label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" id="r-st" checked style="width:auto"> Tema 1.125 (ICMS-ST)</label></div>
+        <p class="aviso">Monofásicos exigem trocar o CST para 04 e informar a receita no M400/M410 com a natureza da receita; ainda não são gerados automaticamente.</p>
+        <div class="tabela"><table id="r-tab"></table></div>
+        <p class="acoes"><button type="button" id="r-gerar" hidden>Gerar e pré-validar</button><button type="button" class="sec" id="r-zip" hidden>Baixar retificadoras (.zip)</button><button type="button" class="sec" id="r-reg" hidden>Registrar no caso</button></p>
+        <div id="r-msgs"></div>
+      </div>
+
+      <div id="d-esr" hidden>
+        <h3>Retificação · eSocial</h3>
+        <p class="aviso">Envie os XML baixados do eSocial (S-1005, S-1010, S-1200 com o retorno e o recibo, e o S-1299 de cada competência). A leitura e a geração acontecem neste navegador. A equipe escolhe as rubricas e a nova incidência conforme as teses aprovadas pelo cliente.</p>
+        <div class="acoes"><label>XML do eSocial (.xml ou .zip)<input type="file" id="e-arqs" multiple accept=".xml,.XML,.zip,.ZIP"></label>
+          <label>A partir da competência<input type="month" id="e-desde"></label>
+          <label>Nova incidência (codIncCP)<select id="e-inc"></select></label></div>
+        <div class="tabela"><table id="e-tab"></table></div>
+        <p class="acoes"><button type="button" id="e-gerar" hidden>Gerar e pré-validar</button><button type="button" class="sec" id="e-zip" hidden>Baixar pacote (.zip)</button><button type="button" class="sec" id="e-reg" hidden>Registrar no caso</button></p>
+        <div id="e-msgs"></div>
+      </div>
+
+      <h3>Arquivos registrados</h3>
+      <div class="tabela"><table id="d-arqs"></table></div>
+      <div class="tabela" id="d-arqs-esr"></div>
+
+      <h3>Avançar</h3>
+      <div class="acoes" id="d-avancar"></div>
+
+      <div id="d-cont" hidden>
+        <h3>Validação do contador</h3>
+        <div class="acoes"><label>E-mail do contador<input type="email" id="d-cont-email" maxlength="254" placeholder="contador@escritorio.com.br"></label>
+          <button type="button" id="d-cont-enviar">Enviar para validação</button></div>
+        <div id="d-cont-status" class="aviso"></div>
+      </div>
+
+      <h3>Recibos</h3>
+      <div id="d-recibos" class="aviso">Nenhum recibo registrado.</div>
+
+      <details style="margin-top:12px"><summary>Voltar fase</summary>
+        <div class="acoes" style="margin-top:8px"><label>Voltar para<select id="d-voltar-fase"></select></label>
+          <label style="flex:1">Motivo<input type="text" id="d-voltar-nota" maxlength="2000"></label>
+          <button type="button" class="sec" id="d-voltar">Voltar</button>
+          <button type="button" class="sec" id="d-cancelar" data-master hidden>Cancelar execução</button></div>
+      </details>
+
+      <h3>Histórico</h3>
+      <ul class="hist" id="d-hist"></ul>
+    </section>
+  </div>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="/motor-creditos.js"></script>
+<script src="/retificadora-efd.js"></script>
+<script src="/validador-efd.js"></script>
+<script src="/motor-esocial.js"></script>
+<script src="/retificadora-esocial.js"></script>
+<script src="/shell.js"></script>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); }, esc = RV.esc;
+  var dados = null, atual = null;
+  var POS_APROVACAO = ['aprovado', 'validacao_contador', 'transmitido', 'perdcomp', 'acompanhamento', 'concluido'];
+  var PILL = { aprovado: 'ok', transmitido: 'ok', perdcomp: 'ok', concluido: 'ok', aguardando_aprovacao: 'warn', validacao_contador: 'warn', cancelado: 'bad' };
+
+  function carregar() {
+    return RV.api('GET', '/api/v1/execucoes').then(function (r) {
+      dados = r; $('conteudo').hidden = false;
+      $('sec-cand').hidden = !r.candidatos.length;
+      $('tab-cand').innerHTML = '<thead><tr><th>Cliente</th><th>Parceiro</th><th></th></tr></thead><tbody>' + r.candidatos.map(function (c) {
+        return '<tr><td>' + esc(c.cliente.nome) + '<br><small>' + RV.cnpj(c.cliente.cnpj) + '</small></td><td>' + esc(c.parceiro) + '</td><td><button type="button" data-iniciar="' + c.caseId + '">Contrato assinado · iniciar</button></td></tr>';
+      }).join('') + '</tbody>';
+      $('tab-exec').innerHTML = r.execucoes.length ? '<thead><tr><th>Cliente</th><th>Parceiro</th><th>Fase</th><th>Contador</th><th>Atualizado</th><th></th></tr></thead><tbody>' + r.execucoes.map(function (e) {
+        return '<tr><td>' + esc(e.cliente.nome) + '<br><small>' + RV.cnpj(e.cliente.cnpj) + '</small></td><td>' + esc(e.parceiro) + '</td><td><span class="pill ' + (PILL[e.fase] || '') + '">' + esc(e.faseRotulo) + '</span></td>' +
+          '<td>' + (e.exigeContador ? esc(e.contador.respostaRotulo || (e.contador.enviadoEm ? 'Aguardando' : 'A enviar')) : '<small>Não exige</small>') + '</td><td>' + RV.data(e.atualizadoEm, true) + '</td>' +
+          '<td><button type="button" class="sec" data-abrir="' + e.id + '">Abrir</button></td></tr>';
+      }).join('') + '</tbody>' : '<tbody><tr><td>Nenhuma execução iniciada.</td></tr></tbody>';
+    }).catch(function (e) { if (/exclusiva|FORBIDDEN|permite/i.test(e.message)) $('negado').hidden = false; else RV.toast(e.message); });
+  }
+
+  function proxima(e) {
+    var f = dados.fases.map(function (x) { return x.id; }), i = f.indexOf(e.fase);
+    if (i < 0 || e.fase === 'concluido') return null;
+    var p = f[i + 1];
+    if (p === 'validacao_contador') return e.exigeContador ? null : f[i + 2];
+    return p;
+  }
+  function rot(id) { var x = dados.fases.filter(function (f) { return f.id === id; })[0]; return x ? x.rotulo : id; }
+
+  function abrir(id) {
+    return RV.api('GET', '/api/v1/execucoes/' + id).then(function (e) {
+      atual = e; $('det').hidden = false;
+      $('d-nome').textContent = e.cliente.nome;
+      $('d-sub').textContent = RV.cnpj(e.cliente.cnpj) + ' · Parceiro: ' + e.parceiro + (e.aprovadoPor ? ' · Aprovado por ' + e.aprovadoPor + ' em ' + RV.data(e.aprovadoEm, true) : '');
+      var f = dados.fases.map(function (x) { return x.id; }), i = f.indexOf(e.fase);
+      $('d-etapas').innerHTML = dados.fases.filter(function (x) { return x.id !== 'validacao_contador' || e.exigeContador; }).map(function (x) {
+        var j = f.indexOf(x.id); return '<li class="' + (j < i ? 'feito' : j === i ? 'atual' : '') + '">' + esc(x.rotulo) + '</li>';
+      }).join('') + (e.fase === 'cancelado' ? '<li class="atual">Cancelado</li>' : '');
+      var travado = POS_APROVACAO.indexOf(e.fase) >= 0 || e.fase === 'cancelado';
+      $('d-resumo').value = e.resumo; $('d-resumo').disabled = travado;
+      $('d-contador-exige').checked = e.exigeContador; $('d-contador-exige').disabled = travado; $('d-salvar').disabled = travado;
+      $('d-trava').textContent = travado ? 'Travado após a aprovação. Para alterar, volte a fase.' : '';
+      // avançar
+      var p = proxima(e), html = '';
+      if (e.fase === 'aprovado' && e.exigeContador) html = '<span class="aviso">Próximo passo: enviar ao contador para validação.</span>';
+      else if (e.fase === 'validacao_contador') html = e.contador.resposta === 'validado_assinado'
+        ? botaoAvancar('transmitido', e) : '<span class="aviso">Aguardando o contador responder "Validado e assinado".</span>';
+      else if (p && e.fase !== 'cancelado') html = botaoAvancar(p, e);
+      $('d-avancar').innerHTML = html || '<span class="aviso">Execução encerrada.</span>';
+      // contador
+      $('d-cont').hidden = !e.exigeContador || POS_APROVACAO.indexOf(e.fase) < 0;
+      $('d-cont-email').value = e.contador.email || '';
+      $('d-cont-enviar').hidden = !e.podeAprovar || ['aprovado', 'validacao_contador'].indexOf(e.fase) < 0;
+      $('d-cont-enviar').textContent = e.contador.enviadoEm ? 'Reenviar novo link' : 'Enviar para validação';
+      var c = e.contador;
+      $('d-cont-status').innerHTML = !c.enviadoEm ? 'Ainda não enviado.' :
+        'Enviado para ' + esc(c.email) + ' em ' + RV.data(c.enviadoEm, true) + ' (link válido até ' + RV.data(c.expiraEm, true) + ').' +
+        (c.abertoEm ? '<br>Aberto em ' + RV.data(c.abertoEm, true) + ' · prazo para responder até ' + RV.data(c.prazoResposta, true) + '.' : '<br>Ainda não abriu; o prazo de 12 horas começa na abertura.') +
+        (c.resposta ? '<br><b>' + esc(c.respostaRotulo) + '</b> por ' + esc(c.nome) + ' em ' + RV.data(c.respondidoEm, true) + (c.comentario ? ': ' + esc(c.comentario) : '') : '<br>Sem resposta ainda.');
+      $('d-ret').hidden = $('d-esr').hidden = ['apuracao_definitiva', 'retificacao_preparada', 'pre_validacao'].indexOf(e.fase) < 0;
+      var brl = function (c) { return RV.reais(c || 0); };
+      var efd = e.arquivos.filter(function (a) { return a.apuracao.pis; }), esr = e.arquivos.filter(function (a) { return a.apuracao.previdenciario; });
+      var tabEsr = esr.length ? '<table><thead><tr><th>Competência (eSocial)</th><th class="num">Base retirada</th><th class="num">Contribuição estimada</th><th>Eventos</th><th>Pré-validação</th></tr></thead><tbody>' + esr.map(function (a) {
+        return '<tr><td>' + esc(a.competencia.split('-').reverse().join('/')) + '<br><small>' + a.itensAlterados + ' trabalhador(es)</small></td><td class="num">' + brl(a.apuracao.previdenciario.baseRetirada) + '</td><td class="num"><b>' + brl(a.apuracao.previdenciario.contribuicaoEstimada) + '</b></td><td>' + a.eventos + '</td>' +
+          '<td>' + (a.validacao.erros ? '<span class="pill bad">' + a.validacao.erros + ' erro(s)</span>' : '<span class="pill ok">Sem erros</span>') + '</td></tr>';
+      }).join('') + '</tbody></table>' : '';
+      e = Object.assign({}, e, { arquivos: efd });
+      $('d-arqs').innerHTML = e.arquivos.length ? '<thead><tr><th>Competência</th><th class="num">PIS a recolher</th><th class="num">COFINS a recolher</th><th class="num">Crédito (PIS + COFINS)</th><th>Códigos de receita</th><th>Pré-validação</th></tr></thead><tbody>' + e.arquivos.map(function (a) {
+        var p = a.apuracao.pis, c = a.apuracao.cofins, cods = (p.codigosReceita || []).concat(c.codigosReceita || []).map(function (x) { return x.codigo; }).join(', ');
+        return '<tr><td>' + esc(a.competencia.split('-').reverse().join('/')) + '<br><small>' + esc(a.teses.map(function (t) { return { tema69: 'Tema 69', icmsSt: 'Tema 1.125' }[t] || t; }).join(', ')) + ' · ' + a.itensAlterados + ' itens</small></td>' +
+          '<td class="num">' + brl(p.aRecolherOriginal) + ' → ' + brl(p.aRecolherRetificado) + '</td><td class="num">' + brl(c.aRecolherOriginal) + ' → ' + brl(c.aRecolherRetificado) + '</td>' +
+          '<td class="num"><b>' + brl(p.diferenca + c.diferenca) + '</b></td><td>' + esc(cods) + '</td>' +
+          '<td>' + (a.validacao.erros ? '<span class="pill bad">' + a.validacao.erros + ' erro(s)</span>' : '<span class="pill ok">Sem erros</span>') + (a.validacao.avisos ? ' <small>' + a.validacao.avisos + ' aviso(s)</small>' : '') + '</td></tr>';
+      }).join('') + '</tbody><tfoot><tr><td>Total</td><td></td><td></td><td class="num"><b>' + brl(e.arquivos.reduce(function (s, a) { return s + a.apuracao.pis.diferenca + a.apuracao.cofins.diferenca; }, 0)) + '</b></td><td colspan="2"><small>Base para retificar a DCTF/DCTFWeb e para o PER/DCOMP.</small></td></tr></tfoot>'
+        : (esr.length ? '' : '<tbody><tr><td>Nenhum arquivo registrado.</td></tr></tbody>');
+      $('d-arqs-esr').innerHTML = tabEsr;
+      $('d-recibos').innerHTML = e.recibos.length ? e.recibos.map(function (r) { return esc(r.tipo) + ': <b>' + esc(r.numero) + '</b> · ' + RV.data(r.em, true) + ' · ' + esc(r.por); }).join('<br>') : 'Nenhum recibo registrado.';
+      // voltar
+      $('d-voltar-fase').innerHTML = dados.fases.filter(function (x) { return f.indexOf(x.id) < i && x.id !== 'validacao_contador'; }).map(function (x) { return '<option value="' + x.id + '">' + esc(x.rotulo) + '</option>'; }).join('');
+      $('d-cancelar').hidden = !e.podeAprovar || e.fase === 'cancelado' || e.fase === 'concluido';
+      $('d-hist').innerHTML = e.eventos.slice().reverse().map(function (h) {
+        return '<li><b>' + esc(h.para || (h.tipo === 'contador_resposta' ? 'Resposta do contador' : 'Atualização')) + '</b>' + (h.nota ? ' · ' + esc(h.nota) : '') + '<br><small>' + esc(h.por || '') + ' · ' + RV.data(h.em, true) + '</small></li>';
+      }).join('');
+      $('det').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }).catch(function (err) { RV.toast(err.message); });
+  }
+  function botaoAvancar(p, e) {
+    var exigeMaster = POS_APROVACAO.indexOf(p) >= 0;
+    if (exigeMaster && !e.podeAprovar) return '<span class="aviso">Próximo passo: ' + esc(rot(p)) + ' — somente André ou Moisés.</span>';
+    var recibo = p === 'transmitido' || p === 'perdcomp';
+    return (recibo ? '<label>Número do recibo<input type="text" id="d-recibo" maxlength="80"></label>' : '') +
+      '<label style="flex:1">Observação (opcional)<input type="text" id="d-nota" maxlength="2000"></label>' +
+      '<button type="button" data-para="' + p + '">' + (p === 'aprovado' ? 'Aprovar para transmissão' : 'Avançar para ' + esc(rot(p))) + '</button>';
+  }
+
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (t.dataset.iniciar) RV.api('POST', '/api/v1/execucoes', { caseId: t.dataset.iniciar, contratoAssinado: true }).then(function (r) { RV.toast('Execução iniciada'); return carregar().then(function () { return abrir(r.id); }); }).catch(function (e) { RV.toast(e.message); });
+    if (t.dataset.abrir) abrir(t.dataset.abrir);
+    if (t.dataset.para) {
+      var corpo = { para: t.dataset.para, nota: ($('d-nota') || {}).value || '' }; if ($('d-recibo')) corpo.recibo = $('d-recibo').value;
+      RV.api('POST', '/api/v1/execucoes/' + atual.id + '/fase', corpo).then(function () { RV.toast('Fase atualizada'); return carregar().then(function () { return abrir(atual.id); }); }).catch(function (e) { RV.toast(e.message); });
+    }
+  });
+  // ------------------------------------------------ retificadora (no navegador)
+  var ret = { arqs: [], saidas: [] };
+  var CP1252 = { 0x20AC: 0x80, 0x201A: 0x82, 0x0192: 0x83, 0x201E: 0x84, 0x2026: 0x85, 0x2020: 0x86, 0x2021: 0x87, 0x02C6: 0x88, 0x2030: 0x89, 0x0160: 0x8A, 0x2039: 0x8B, 0x0152: 0x8C, 0x017D: 0x8E,
+    0x2018: 0x91, 0x2019: 0x92, 0x201C: 0x93, 0x201D: 0x94, 0x2022: 0x95, 0x2013: 0x96, 0x2014: 0x97, 0x02DC: 0x98, 0x2122: 0x99, 0x0161: 0x9A, 0x203A: 0x9B, 0x0153: 0x9C, 0x017E: 0x9E, 0x0178: 0x9F };
+  function cp1252(s) { var b = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { var c = s.charCodeAt(i); b[i] = c < 256 ? c : (CP1252[c] || 0x3F); } return b; }
+  function sha(bytes) { return crypto.subtle.digest('SHA-256', bytes).then(function (h) { return Array.prototype.map.call(new Uint8Array(h), function (x) { return (x < 16 ? '0' : '') + x.toString(16); }).join(''); }); }
+  function baixar(nome, bytes) { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([bytes], { type: 'text/plain' })); a.download = nome; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000); }
+  function tabRet() {
+    $('r-tab').innerHTML = ret.arqs.length ? '<thead><tr><th>Arquivo</th><th>Competência</th><th>Recibo da original</th><th class="num">Crédito PIS</th><th class="num">Crédito COFINS</th><th>Pré-validação</th><th></th></tr></thead><tbody>' + ret.arqs.map(function (a, i) {
+      var s = ret.saidas[i], m = a.lido.meta;
+      var st = !s ? (a.lido.erros.length ? '<span class="pill bad">' + esc(a.lido.erros[0]) + '</span>' : '—') :
+        (s.erros.length ? '<details><summary><span class="pill bad">' + s.erros.length + ' erro(s)</span></summary><small>' + s.erros.map(esc).join('<br>') + '</small></details>' : '<span class="pill ok">Sem erros</span>') +
+        (s.avisos.length ? '<details><summary><small>' + s.avisos.length + ' aviso(s)</small></summary><small>' + s.avisos.map(esc).join('<br>') + '</small></details>' : '');
+      return '<tr><td>' + esc(a.nome) + '</td><td>' + (m ? esc(m.competencia.split('-').reverse().join('/')) : '—') + '</td>' +
+        '<td><input type="text" data-recibo="' + i + '" value="' + esc(a.recibo || '') + '" maxlength="60" placeholder="Nº do recibo" style="min-width:180px"></td>' +
+        '<td class="num">' + (s ? RV.reais(s.g.reducao.pis) : '—') + '</td><td class="num">' + (s ? RV.reais(s.g.reducao.cofins) : '—') + '</td><td>' + st + '</td>' +
+        '<td>' + (s ? '<button type="button" class="sec" data-baixar="' + i + '">Baixar</button>' : '') + '</td></tr>';
+    }).join('') + '</tbody>' : '';
+    $('r-gerar').hidden = !ret.arqs.length;
+    $('r-zip').hidden = $('r-reg').hidden = !ret.saidas.filter(Boolean).length;
+  }
+  $('r-arqs').addEventListener('change', function (ev) {
+    var fs = Array.prototype.slice.call(ev.target.files || []);
+    Promise.all(fs.map(function (f) { return f.arrayBuffer().then(function (buf) {
+      var bytes = new Uint8Array(buf), texto = new TextDecoder('windows-1252').decode(bytes);
+      return { nome: f.name, bytes: bytes, texto: texto, lido: MotorCreditos.lerEfdContribuicoes(texto, f.name) };
+    }); })).then(function (lista) { ret.arqs = lista; ret.saidas = []; $('r-msgs').innerHTML = ''; tabRet(); });
+  });
+  document.addEventListener('input', function (ev) { var i = ev.target.dataset && ev.target.dataset.recibo; if (i != null && ret.arqs[i]) ret.arqs[i].recibo = ev.target.value.trim(); });
+  $('r-gerar').addEventListener('click', function () {
+    var validos = ret.arqs.filter(function (a) { return a.lido.meta && !a.lido.erros.length; });
+    if (!validos.length) { RV.toast('Nenhum arquivo válido.'); return; }
+    var teses = []; if ($('r-t69').checked) teses.push('tema69'); if ($('r-st').checked) teses.push('icmsSt');
+    if (!teses.length) { RV.toast('Selecione ao menos uma tese.'); return; }
+    var res = MotorCreditos.apurar(validos.map(function (a) { return a.lido; }), {});
+    var ajustes = {};
+    res.teses.filter(function (t) { return teses.indexOf(t.id) >= 0; }).forEach(function (t) {
+      t.detalhes.forEach(function (d) {
+        if (!d.pis && !d.cofins) return;
+        var porArq = ajustes[d.arquivo] = ajustes[d.arquivo] || {}, x = porArq[d.linha] = porArq[d.linha] || { excessoPis: 0, excessoCofins: 0, pis: 0, cofins: 0 };
+        x.excessoPis += d.excessoPis || 0; x.excessoCofins += d.excessoCofins || 0; x.pis += d.pis; x.cofins += d.cofins;
+      });
+    });
+    ret.teses = teses;
+    Promise.all(ret.arqs.map(function (a) {
+      if (!a.lido.meta || a.lido.erros.length) return null;
+      var g = RetificadoraEfd.gerar(a.texto, ajustes[a.nome] || {}, { recibo: a.recibo });
+      var v = ValidadorEfd.validar(g.texto, a.nome), bytes = cp1252(g.texto);
+      return Promise.all([sha(a.bytes), sha(bytes)]).then(function (h) {
+        return { g: g, v: v, bytes: bytes, shaOriginal: h[0], shaRetificada: h[1], erros: g.erros.concat(v.erros), avisos: g.avisos.concat(v.avisos) };
+      });
+    })).then(function (saidas) {
+      ret.saidas = saidas; tabRet();
+      var semAjuste = saidas.filter(function (s) { return s && !s.g.itensAlterados; }).length;
+      $('r-msgs').innerHTML = semAjuste ? '<p class="aviso">' + semAjuste + ' arquivo(s) sem itens a retificar pelas teses selecionadas.</p>' : '';
+      RV.toast('Retificadoras geradas e pré-validadas');
+    }).catch(function (e) { RV.toast(e.message); });
+  });
+  function nomeRet(a) { return a.nome.replace(/\.txt$/i, '') + '-RETIFICADORA.txt'; }
+  document.addEventListener('click', function (ev) { var i = ev.target.dataset && ev.target.dataset.baixar; if (i != null && ret.saidas[i]) baixar(nomeRet(ret.arqs[i]), ret.saidas[i].bytes); });
+  $('r-zip').addEventListener('click', function () {
+    if (!window.JSZip) { ret.saidas.forEach(function (s, i) { if (s) baixar(nomeRet(ret.arqs[i]), s.bytes); }); return; }
+    var z = new JSZip(); ret.saidas.forEach(function (s, i) { if (s) z.file(nomeRet(ret.arqs[i]), s.bytes); });
+    z.generateAsync({ type: 'uint8array' }).then(function (b) { baixar('Retificadoras-' + (atual ? atual.cliente.cnpj : '') + '.zip', b); });
+  });
+  $('r-reg').addEventListener('click', function () {
+    var arquivos = ret.saidas.map(function (s, i) {
+      if (!s || !s.g.itensAlterados) return null;
+      var a = ret.arqs[i];
+      return { nome: nomeRet(a), competencia: a.lido.meta.competencia, cnpj: a.lido.meta.cnpj, reciboOriginal: a.recibo || '', shaOriginal: s.shaOriginal, shaRetificada: s.shaRetificada,
+        teses: ret.teses, itensAlterados: s.g.itensAlterados, apuracao: s.g.apuracao,
+        validacao: { erros: s.erros.length, avisos: s.avisos.length, versao: ValidadorEfd.VERSAO, mensagens: s.erros.concat(s.avisos).slice(0, 30) } };
+    }).filter(Boolean);
+    if (!arquivos.length) { RV.toast('Nada a registrar.'); return; }
+    RV.api('POST', '/api/v1/execucoes/' + atual.id + '/arquivos', { arquivos: arquivos })
+      .then(function (r) { RV.toast(r.comErro ? r.comErro + ' arquivo(s) com erro: corrija antes de seguir' : 'Arquivos registrados no caso'); return abrir(atual.id); }).catch(function (e) { RV.toast(e.message); });
+  });
+
+  // ------------------------------------------------ retificação eSocial (no navegador)
+  var esr = { lidos: [], textos: [], rubricas: [], pacote: null };
+  $('e-inc').innerHTML = Object.keys(RetificadoraEsocial.INCIDENCIAS).map(function (k) { return '<option value="' + k + '"' + (k === '00' ? ' selected' : '') + '>' + k + ' · ' + esc(RetificadoraEsocial.INCIDENCIAS[k]) + '</option>'; }).join('');
+  (function () { var d = new Date(); $('e-desde').value = (d.getFullYear() - 5) + '-' + String(d.getMonth() + 1).padStart(2, '0'); })();
+  function lerEsocial(f) {
+    if (/\.zip$/i.test(f.name)) {
+      if (!window.JSZip) return Promise.reject(new Error('Descompacte o .zip e envie os XML.'));
+      return f.arrayBuffer().then(JSZip.loadAsync).then(function (z) {
+        return Promise.all(Object.keys(z.files).filter(function (n) { return /\.xml$/i.test(n) && !z.files[n].dir; }).map(function (n) { return z.files[n].async('string').then(function (t) { return { nome: n.split('/').pop(), texto: t }; }); }));
+      });
+    }
+    return f.text().then(function (t) { return [{ nome: f.name, texto: t }]; });
+  }
+  function tabEsr() {
+    $('e-tab').innerHTML = esr.rubricas.length ? '<thead><tr><th></th><th>Rubrica</th><th>Incidência atual</th><th>Tese</th><th class="num">Base no período</th></tr></thead><tbody>' + esr.rubricas.map(function (r, i) {
+      return '<tr><td><input type="checkbox" data-rub="' + i + '"' + (r.tese ? ' checked' : '') + ' style="width:auto"></td><td>' + esc(r.cod) + ' · ' + esc(r.dsc) + '<br><small>Tabela ' + esc(r.tab) + ' · ' + r.competencias + ' competência(s)</small></td><td>' + esc(r.codIncCP) + '</td><td>' + esc(r.tese ? r.tese + ' · ' + r.motivo : '—') + '</td><td class="num">' + RV.reais(r.base) + '</td></tr>';
+    }).join('') + '</tbody>' : '';
+    $('e-gerar').hidden = !esr.rubricas.length;
+  }
+  $('e-arqs').addEventListener('change', function (ev) {
+    Promise.all(Array.prototype.slice.call(ev.target.files || []).map(lerEsocial)).then(function (ls) {
+      var docs = [].concat.apply([], ls);
+      esr.textos = docs; esr.lidos = docs.map(function (d) { return MotorEsocial.lerXml(d.texto, d.nome); }).filter(function (l) { return !l.erros.length; });
+      esr.rubricas = RetificadoraEsocial.rubricas(esr.lidos); esr.pacote = null;
+      $('e-msgs').innerHTML = '<p class="aviso">' + esr.lidos.length + ' XML do eSocial lido(s); ' + (docs.length - esr.lidos.length) + ' ignorado(s).</p>';
+      $('e-zip').hidden = $('e-reg').hidden = true; tabEsr();
+    }).catch(function (e) { RV.toast(e.message); });
+  });
+  $('e-gerar').addEventListener('click', function () {
+    var esc2 = Array.prototype.slice.call(document.querySelectorAll('[data-rub]:checked')).map(function (c) { return { chave: esr.rubricas[+c.dataset.rub].chave, novoCodIncCP: $('e-inc').value }; });
+    var p = RetificadoraEsocial.gerar(esr.lidos, { rubricas: esc2, desde: $('e-desde').value });
+    var v = p.erros.length ? { erros: [] } : RetificadoraEsocial.validar(p);
+    esr.pacote = p; esr.validacao = v; esr.teses = esc2.map(function (r) { var x = esr.rubricas.filter(function (y) { return y.chave === r.chave; })[0]; return x && x.tese; }).filter(Boolean);
+    var erros = p.erros.concat(v.erros);
+    $('e-msgs').innerHTML = (erros.length ? '<div class="msg bad">' + erros.slice(0, 30).map(esc).join('<br>') + '</div>' : '') +
+      (p.competencias.length ? '<div class="tabela"><table><thead><tr><th>Competência</th><th>Trabalhadores</th><th>Eventos</th><th class="num">Base retirada</th><th class="num">Contribuição estimada</th></tr></thead><tbody>' + p.competencias.map(function (c) {
+        return '<tr><td>' + esc(c.competencia.split('-').reverse().join('/')) + '</td><td>' + c.trabalhadores + '</td><td>' + c.eventos + '</td><td class="num">' + RV.reais(c.baseRetirada) + '</td><td class="num"><b>' + RV.reais(c.contribuicaoEstimada) + '</b></td></tr>';
+      }).join('') + '</tbody></table></div>' : '') + '<p class="aviso">' + p.avisos.map(esc).join('<br>') + '</p>';
+    $('e-zip').hidden = !p.arquivos.length; $('e-reg').hidden = !p.competencias.length;
+  });
+  $('e-zip').addEventListener('click', function () {
+    var p = esr.pacote; if (!p || !p.arquivos.length) return;
+    var enc = new TextEncoder();
+    if (!window.JSZip) { p.arquivos.forEach(function (a) { baixar(String(a.ordem).padStart(3, '0') + '-' + a.nome, enc.encode(a.xml)); }); return; }
+    var z = new JSZip(); p.arquivos.forEach(function (a) { z.file(String(a.ordem).padStart(3, '0') + '-' + a.nome, a.xml); });
+    z.file('LEIA-ME.txt', 'Assine e transmita na ordem numérica dos arquivos.\r\n1) S-1010 (tabela de rubricas)\r\n2) Para cada competência: S-1298 reabertura, S-1200 retificadores, S-1299 fechamento.\r\nDepois do fechamento, retransmita a DCTFWeb da competência e use o crédito no PER/DCOMP Web.\r\nLeiaute ' + p.leiaute + '. Gerado pelo time técnico Argus Prime.\r\n');
+    z.generateAsync({ type: 'uint8array' }).then(function (b) { baixar('eSocial-retificacao-' + (atual ? atual.cliente.cnpj : '') + '.zip', b); });
+  });
+  $('e-reg').addEventListener('click', function () {
+    var p = esr.pacote, v = esr.validacao, enc = new TextEncoder();
+    var orig = esr.textos.map(function (d) { return d.texto; }).join('');
+    Promise.all(p.competencias.map(function (c) {
+      var mine = p.arquivos.filter(function (a) { return a.nome.indexOf(c.competencia) === 0 || /^S-1010/.test(a.nome); }).map(function (a) { return a.xml; }).join('');
+      return Promise.all([sha(enc.encode(orig + c.competencia)), sha(enc.encode(mine))]).then(function (h) {
+        return { tipo: 'esocial', nome: 'eSocial ' + c.competencia, competencia: c.competencia, cnpj: (atual ? atual.cliente.cnpj : ''), shaOriginal: h[0], shaRetificada: h[1],
+          teses: esr.teses, itensAlterados: c.trabalhadores, eventos: c.eventos, apuracao: { previdenciario: { baseRetirada: c.baseRetirada, contribuicaoEstimada: c.contribuicaoEstimada } },
+          validacao: { erros: (c.pendencias || []).length + (p.erros.length ? p.erros.length : 0) + v.erros.length, avisos: p.avisos.length, versao: RetificadoraEsocial.VERSAO, mensagens: p.erros.concat(v.erros).slice(0, 30) } };
+      });
+    })).then(function (arquivos) {
+      return RV.api('POST', '/api/v1/execucoes/' + atual.id + '/arquivos', { arquivos: arquivos });
+    }).then(function (r) { RV.toast(r.comErro ? r.comErro + ' competência(s) com erro' : 'Retificação do eSocial registrada no caso'); return abrir(atual.id); }).catch(function (e) { RV.toast(e.message); });
+  });
+
+  $('d-fechar').addEventListener('click', function () { $('det').hidden = true; atual = null; });
+  $('d-salvar').addEventListener('click', function () {
+    RV.api('PATCH', '/api/v1/execucoes/' + atual.id, { resumo: $('d-resumo').value, exigeContador: $('d-contador-exige').checked })
+      .then(function () { RV.toast('Resumo salvo'); return abrir(atual.id); }).catch(function (e) { RV.toast(e.message); });
+  });
+  $('d-cont-enviar').addEventListener('click', function () {
+    RV.api('POST', '/api/v1/execucoes/' + atual.id + '/contador', { email: $('d-cont-email').value }).then(function (r) {
+      RV.toast(r.email === 'enviado' ? 'Link enviado ao contador' : 'E-mail não enviado: copie o link no histórico');
+      return carregar().then(function () { return abrir(atual.id); }).then(function () {
+        if (r.email !== 'enviado') $('d-cont-status').innerHTML += '<p>Envie este link ao contador (válido por 2 dias; 12 horas para responder após abrir):</p><p class="link-conv">' + esc(r.url) + '</p>';
+      });
+    }).catch(function (e) { RV.toast(e.message); });
+  });
+  $('d-voltar').addEventListener('click', function () {
+    RV.api('POST', '/api/v1/execucoes/' + atual.id + '/fase', { para: $('d-voltar-fase').value, nota: $('d-voltar-nota').value })
+      .then(function () { RV.toast('Fase revertida'); return carregar().then(function () { return abrir(atual.id); }); }).catch(function (e) { RV.toast(e.message); });
+  });
+  $('d-cancelar').addEventListener('click', function () {
+    RV.api('POST', '/api/v1/execucoes/' + atual.id + '/fase', { para: 'cancelado', nota: $('d-voltar-nota').value })
+      .then(function () { RV.toast('Execução cancelada'); return carregar().then(function () { return abrir(atual.id); }); }).catch(function (e) { RV.toast(e.message); });
+  });
+  carregar();
+})();
+</script>
+</body>
+</html>
