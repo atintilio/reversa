@@ -86,3 +86,22 @@ test('ESOCIAL-004: classificação das rubricas pela descrição', () => {
   assert.equal(c('Plano de Saúde'), 'T068');
   assert.equal(c('Salário Base'), undefined);
 });
+
+test('ESOCIAL-005: valor por competência (base da Selic) fecha com o total da tese e marca o prazo', () => {
+  const lidos = [
+    M.lerXml(S1005, 's1005.xml'), M.lerXml(S1010, 's1010.xml'), M.lerXml(S1020, 's1020.xml'),
+    M.lerXml(s1200('11111111111', '2025-03', [['010', '1000.00'], ['050', '400']]), 'a.xml'),
+    M.lerXml(s1200('11111111111', '2025-04', [['010', '500.00']]), 'b.xml'),
+    M.lerXml(s1200('11111111111', '2020-01', [['010', '1000']]), 'antigo.xml')
+  ];
+  const r = M.apurar(lidos, { hoje: new Date('2026-10-14') });
+  r.teses.forEach((t) => {
+    const soma = Math.round(t.porCompetencia.reduce((s, c) => s + c.valor, 0) * 100) / 100;
+    assert.ok(Math.abs(soma - t.valor) < 0.02, t.id + ': soma por competência = valor');
+    const np = Math.round(t.porCompetencia.filter((c) => c.noPrazo).reduce((s, c) => s + c.valor, 0) * 100) / 100;
+    assert.ok(Math.abs(np - t.valorNoPrazo) < 0.02, t.id + ': soma no prazo = valorNoPrazo');
+  });
+  const t007 = r.teses.find((x) => x.id === 'T007');
+  assert.deepEqual(t007.porCompetencia.map((c) => [c.competencia, c.noPrazo]), [['2020-01', false], ['2025-03', true], ['2025-04', true]]);
+  assert.ok(r.teses.find((x) => x.id === 'T069').porCompetencia.length === 1, 'reflexo (DSR) também traz a competência');
+});

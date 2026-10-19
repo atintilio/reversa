@@ -11,6 +11,7 @@ const master = require('../../lib/domain/master');
 const clientAuthorizations = require('../../lib/domain/client-authorizations');
 const execucao = require('../../lib/domain/execucao');
 const pgfn = require('../../lib/domain/pgfn');
+const selicFontes = require('../../lib/selic-fontes');
 
 function deny(ctx, permission, action) {
   if (can(ctx, permission)) return;
@@ -205,6 +206,15 @@ async function route(req, res) {
       if (action === 'rating' && m === 'POST') return json(res, 200, await pgfn.rating(ctx, id, body));
       if (action === 'revisao' && m === 'POST') return json(res, 200, await pgfn.review(ctx, id, body));
       return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
+
+    case 'selic': {
+      // Selic mensal para o diagnóstico PRELIMINAR (autenticado como as demais rotas). Cache 12 h no processo e na CDN.
+      if (m !== 'GET') return method(res, ['GET']);
+      const r = await selicFontes.obter();
+      if (!r.ok) return json(res, 503, { error: { code: 'SELIC_UNAVAILABLE', message: 'Selic indisponível — valores sem atualização.' }, fontes: r.fontes });
+      const { ok, ...dados } = r;
+      return json(res, 200, dados, { 'Cache-Control': 's-maxage=43200, stale-while-revalidate=86400' });
+    }
 
     case 'dashboard':
       if (m !== 'GET') return method(res, ['GET']);

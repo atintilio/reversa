@@ -23,13 +23,26 @@
 
   // ---------------------------------------------------------------- utilidades
 
-  /** "1234,56" -> 123456 (centavos). Vazio -> 0. */
-  function centavos(txt) {
+  /**
+   * "1234,56" -> 123456 (centavos). Vazio -> 0.
+   * Formato do SPED: vírgula decimal, sem separador de milhar. Tolerâncias (sinalizadas por `aviso`, se informado):
+   *   "1234.56" / "1234.5" (sem vírgula, ponto com 1 ou 2 casas) -> lido como DECIMAL  (aviso 'pontoDecimal')
+   *   "1.234" (sem vírgula, ponto com 3 casas)                    -> lido como milhar, como antes (aviso 'pontoAmbiguo')
+   * @param {string} txt
+   * @param {function(string, string)=} aviso  chamado com (tipo, texto original)
+   */
+  function centavos(txt, aviso) {
     if (txt === undefined || txt === null) return 0;
     var s = String(txt).trim();
     if (s === '') return 0;
-    s = s.replace(/\./g, '').replace(',', '.');
-    var n = Number(s);
+    var n;
+    if (s.indexOf(',') < 0 && /^[-+]?\d+\.\d{1,2}$/.test(s)) {
+      if (aviso) aviso('pontoDecimal', s);
+      n = Number(s);
+    } else {
+      if (aviso && s.indexOf(',') < 0 && /^[-+]?\d+\.\d{3}(\.\d{3})*$/.test(s)) aviso('pontoAmbiguo', s);
+      n = Number(s.replace(/\./g, '').replace(',', '.'));
+    }
     if (!isFinite(n)) throw new Error('Valor numérico inválido: "' + txt + '"');
     return Math.round(n * 100);
   }
@@ -91,9 +104,37 @@
     'C185': { CST: 1, CFOP: 2, VL_ITEM: 3, VL_DESC: 4, VL_BC: 5, ALIQ: 6, VL_TRIB: 9 },
     'M100': { COD_CRED: 1, VL_CRED: 7, VL_CRED_DISP: 11, SLD_CRED: 14 },
     'M500': { COD_CRED: 1, VL_CRED: 7, VL_CRED_DISP: 11, SLD_CRED: 14 },
+    // ---- Bloco F e apuração M (Guia Prático da EFD-Contribuições; REG = índice 0). Ver nota de fontes abaixo.
+    'F010': { CNPJ: 1 },
+    'F100': { IND_OPER: 1, COD_PART: 2, COD_ITEM: 3, DT_OPER: 4, VL_OPER: 5, CST_PIS: 6, VL_BC_PIS: 7, ALIQ_PIS: 8, VL_PIS: 9,
+              CST_COFINS: 10, VL_BC_COFINS: 11, ALIQ_COFINS: 12, VL_COFINS: 13, NAT_BC_CRED: 14, IND_ORIG_CRED: 15, COD_CTA: 16, COD_CCUS: 17, DESC_DOC_OPER: 18 },
+    'F120': { NAT_BC_CRED: 1, IDENT_BEM_IMOB: 2, IND_ORIG_CRED: 3, IND_UTIL_BEM_IMOB: 4, VL_OPER_DEP: 5, PARC_OPER_NAO_BC_CRED: 6,
+              CST_PIS: 7, VL_BC_PIS: 8, ALIQ_PIS: 9, VL_PIS: 10, CST_COFINS: 11, VL_BC_COFINS: 12, ALIQ_COFINS: 13, VL_COFINS: 14, COD_CTA: 15, COD_CCUS: 16, DESC_BEM_IMOB: 17 },
+    'F130': { NAT_BC_CRED: 1, IDENT_BEM_IMOB: 2, IND_ORIG_CRED: 3, IND_UTIL_BEM_IMOB: 4, MES_OPER_AQUIS: 5, VL_OPER_AQUIS: 6, PARC_OPER_NAO_BC_CRED: 7, VL_BC_CRED: 8, IND_NR_PARC: 9,
+              CST_PIS: 10, VL_BC_PIS: 11, ALIQ_PIS: 12, VL_PIS: 13, CST_COFINS: 14, VL_BC_COFINS: 15, ALIQ_COFINS: 16, VL_COFINS: 17, COD_CTA: 18, COD_CCUS: 19, DESC_BEM_IMOB: 20 },
+    'F150': { NAT_BC_CRED: 1, VL_TOT_EST: 2, EST_IMP: 3, VL_BC_EST: 4, VL_BC_MEN_EST: 5, CST_PIS: 6, ALIQ_PIS: 7, VL_CRED_PIS: 8,
+              CST_COFINS: 9, ALIQ_COFINS: 10, VL_CRED_COFINS: 11, DESC_EST: 12, COD_CTA: 13 },
+    // M200 (PIS) e M600 (COFINS) têm o mesmo leiaute; M210 e M610 também (a alíquota/base mudam só de nome).
+    'M200': { VL_TOT_CONT_NC_PER: 1, VL_TOT_CRED_DESC: 2, VL_TOT_CRED_DESC_ANT: 3, VL_TOT_CONT_NC_DEV: 4, VL_RET_NC: 5, VL_OUT_DED_NC: 6, VL_CONT_NC_REC: 7,
+              VL_TOT_CONT_CUM_PER: 8, VL_RET_CUM: 9, VL_OUT_DED_CUM: 10, VL_CONT_CUM_REC: 11, VL_TOT_CONT_REC: 12 },
+    'M210': { COD_CONT: 1, VL_REC_BRT: 2, VL_BC_CONT: 3, VL_AJUS_ACRES_BC: 4, VL_AJUS_REDUC_BC: 5, VL_BC_CONT_AJUS: 6, ALIQ: 7, QUANT_BC: 8, ALIQ_QUANT: 9,
+              VL_CONT_APUR: 10, VL_AJUS_ACRES: 11, VL_AJUS_REDUC: 12, VL_CONT_DIFER: 13, VL_CONT_DIFER_ANT: 14, VL_CONT_PER: 15 },
     '9999': { QTD_LIN: 1 }
   };
-  var MIN_CAMPOS = { '0000': 11, '0140': 4, '0200': 9, 'C010': 3, 'C100': 27, 'C170': 36, 'C180': 8, 'C181': 10, 'C185': 10, 'M100': 15, 'M500': 15 };
+  L.M600 = L.M200; L.M610 = L.M210;
+  // FONTES (confirmadas nesta sessão): nomes e ordem dos campos de F100, F120, F130, F150, M200, M210, M600 e M610 conferidos na
+  // reprodução do leiaute do Guia Prático (documentacao.senior.com.br, "Leiaute - SPED Contribuições", bloco F e bloco M) e no índice
+  // do Guia Prático v1.34 (registros e páginas). O PDF oficial da RFB não pôde ser baixado do ambiente (proxy bloqueou); as posições
+  // também conferem com as 12 EFD reais de teste (F100 com 18 campos após REG, M200 com 12, M210 com 15).
+  // NÃO CONFIRMADO: o nome do campo 19 do F100 aparece como DESC_COMPL na reprodução e DESC_DOC_OPER no pedido; a posição é a mesma.
+  // NÃO CONFIRMADO: domínio de IND_OPER no F100 (usado: 0 = crédito, 1 = receita/contribuição; outros valores vão para "outras operações")
+  //   e a Tabela 4.3.7 (NAT_BC_CRED) completa; só 05 e 06 foram rotuladas, a partir das 12 EFD de teste e do enunciado.
+  var MIN_CAMPOS = { '0000': 11, '0140': 4, '0200': 9, 'C010': 3, 'C100': 27, 'C170': 36, 'C180': 8, 'C181': 10, 'C185': 10, 'M100': 15, 'M500': 15,
+                       // Mínimos permissivos (só até os campos que o motor usa), para não perder registros com cauda truncada.
+                       'F010': 2, 'F100': 15, 'F120': 15, 'F130': 18, 'F150': 12, 'M200': 13, 'M210': 12, 'M600': 13, 'M610': 12 };
+  var NAT_BC_CRED_ROTULO = { '05': 'Aluguéis de prédios locados de pessoa jurídica', '06': 'Aluguéis de máquinas e equipamentos locados de pessoa jurídica' };
+  var NAT_ALUGUEL = { '05': 1, '06': 1 };
+  var SIT_ROTULO = { '02': 'documento cancelado', '03': 'escrituração extemporânea de documento cancelado', '04': 'documento denegado', '05': 'numeração inutilizada' };
 
   var REGIME = { '1': 'Não cumulativo', '2': 'Cumulativo', '3': 'Misto (não cumulativo e cumulativo)' };
   var SIT_VALIDAS = { '00': 1, '01': 1, '06': 1, '07': 1, '08': 1 };
@@ -137,6 +178,67 @@
     return null;
   }
 
+  // ------------------------------------------------- resumos do bloco F e da apuração M
+
+  function somaCst(mapa, cst, vlOper, bc, vl) {
+    var k = cst || '(vazio)';
+    var o = mapa[k] || (mapa[k] = { lancamentos: 0, vlOper: 0, base: 0, valor: 0 });
+    o.lancamentos++; o.vlOper += vlOper; o.base += bc; o.valor += vl;
+  }
+
+  /**
+   * Resume os registros do bloco F (somente leitura; nenhuma tese é aplicada).
+   *   receitas : F100 com IND_OPER = 1, por CST de PIS e de COFINS (VL_OPER, base e contribuição)
+   *   creditos : F100 (IND_OPER = 0), F120, F130 e F150, por NAT_BC_CRED
+   *   aluguel  : subtotal dos créditos com NAT_BC_CRED 05 e 06
+   */
+  function resumirBlocoF(F) {
+    var r = {
+      presente: !!(F.f100.length || F.f120.length || F.f130.length || F.f150.length),
+      registros: { F100: F.f100.length, F120: F.f120.length, F130: F.f130.length, F150: F.f150.length },
+      receitas: { lancamentos: 0, vlOper: 0, pis: 0, cofins: 0, porCstPis: {}, porCstCofins: {} },
+      creditos: { lancamentos: 0, pis: 0, cofins: 0, porNat: {} },
+      aluguel: { pis: 0, cofins: 0, base: 0 },
+      outrasOperacoes: { lancamentos: 0, vlOper: 0 }
+    };
+    function credito(nat, origem, base, pis, cofins) {
+      var k = nat || '(sem NAT_BC_CRED)';
+      var o = r.creditos.porNat[k] || (r.creditos.porNat[k] = { natBcCred: nat, rotulo: NAT_BC_CRED_ROTULO[nat] || null, lancamentos: 0, base: 0, pis: 0, cofins: 0, origens: { F100: 0, F120: 0, F130: 0, F150: 0 } });
+      o.lancamentos++; o.base += base; o.pis += pis; o.cofins += cofins; o.origens[origem]++;
+      r.creditos.lancamentos++; r.creditos.pis += pis; r.creditos.cofins += cofins;
+      if (NAT_ALUGUEL[nat]) { r.aluguel.pis += pis; r.aluguel.cofins += cofins; r.aluguel.base += base; }
+    }
+    F.f100.forEach(function (x) {
+      if (x.indOper === '1') {
+        r.receitas.lancamentos++; r.receitas.vlOper += x.vlOper; r.receitas.pis += x.vlPis; r.receitas.cofins += x.vlCofins;
+        somaCst(r.receitas.porCstPis, x.cstPis, x.vlOper, x.bcPis, x.vlPis);
+        somaCst(r.receitas.porCstCofins, x.cstCofins, x.vlOper, x.bcCofins, x.vlCofins);
+      } else if (x.indOper === '0') credito(x.natBcCred, 'F100', x.bcPis, x.vlPis, x.vlCofins);
+      else { r.outrasOperacoes.lancamentos++; r.outrasOperacoes.vlOper += x.vlOper; }
+    });
+    F.f120.forEach(function (x) { credito(x.natBcCred, 'F120', x.bcPis, x.vlPis, x.vlCofins); });
+    F.f130.forEach(function (x) { credito(x.natBcCred, 'F130', x.bcPis, x.vlPis, x.vlCofins); });
+    F.f150.forEach(function (x) { credito(x.natBcCred, 'F150', x.vlBcEst, x.vlCredPis, x.vlCredCofins); });
+    return r;
+  }
+
+  /** Resume M200/M210 (PIS) e M600/M610 (COFINS). `devido` = VL_TOT_CONT_REC (campo 13 do M200/M600). */
+  function resumirApuracaoM(M, avisos) {
+    function lado(cons, det, nome) {
+      var o = { presente: cons.length > 0 || det.length > 0, consolidacao: null, detalhes: det, devido: 0, contribuicaoPeriodo: 0, creditosDescontados: 0, receitaBruta: 0, baseCalculo: 0 };
+      if (cons.length) {
+        var c = {};
+        cons.forEach(function (x) { Object.keys(x).forEach(function (k) { if (k !== 'linha') c[k] = (c[k] || 0) + x[k]; }); });
+        o.consolidacao = c; o.devido = c.VL_TOT_CONT_REC; o.creditosDescontados = c.VL_TOT_CRED_DESC;
+        if (cons.length > 1 && avisos) avisos.push(cons.length + ' registros ' + nome + ' no mesmo arquivo: valores somados (o leiaute prevê um por período).');
+      }
+      det.forEach(function (d) { o.contribuicaoPeriodo += d.VL_CONT_PER; o.receitaBruta += d.VL_REC_BRT; o.baseCalculo += d.VL_BC_CONT; });
+      return o;
+    }
+    var pis = lado(M.m200, M.m210, 'M200'), cofins = lado(M.m600, M.m610, 'M600');
+    return { presente: pis.presente || cofins.presente, pis: pis, cofins: cofins };
+  }
+
   // ------------------------------------------------------------------ parser
 
   /**
@@ -154,6 +256,18 @@
     var linhas = texto.split(/\r?\n/);
     var estab = null, estab0140 = null, doc = null, docTemItem = false, qtd9999 = null, c180 = null;
     var cadastro = {};   // "cnpj|cod" e "*|cod" -> {ncm, descr, exIpi, unid}
+    var estabF = null;
+    var F = { f100: [], f120: [], f130: [], f150: [] };
+    var M = { m200: [], m210: [], m600: [], m610: [] };
+    var descartes = {};            // 'sit:02' / 'oper:2' -> {tipo, valor, notas, itens}
+    var pontos = {}, ambiguos = {}; // registro -> {n, ex}
+    function cv(t) {
+      return centavos(t, function (tipo, txt) {
+        var mapa = tipo === 'pontoDecimal' ? pontos : ambiguos;
+        var o = mapa[reg] || (mapa[reg] = { n: 0, ex: txt });
+        o.n++;
+      });
+    }
 
     function fecharDoc() {
       if (doc && doc.saida && doc.valida && !docTemItem) res.estatisticas.c100SaidaSemItens++;
@@ -229,12 +343,12 @@
               vlItem: 0, vlDesc: 0, vlIcms: 0, vlIcmsSt: 0, vlIpi: 0, cstPis: '', bcPis: 0, aliqPis: 0, vlPis: 0, cstCofins: '', bcCofins: 0, aliqCofins: 0, vlCofins: 0, consolidado: true };
             res.consolidados.push(alvo);
           }
-          if (pis) { alvo.cstPis = f[qc.CST]; alvo.vlItem = centavos(f[qc.VL_ITEM]); alvo.vlDesc = centavos(f[qc.VL_DESC]); alvo.bcPis = centavos(f[qc.VL_BC]); alvo.aliqPis = aliquota(f[qc.ALIQ]); alvo.vlPis = centavos(f[qc.VL_TRIB]); }
-          else { alvo.cstCofins = f[qc.CST]; if (!alvo.vlItem) alvo.vlItem = centavos(f[qc.VL_ITEM]); alvo.bcCofins = centavos(f[qc.VL_BC]); alvo.aliqCofins = aliquota(f[qc.ALIQ]); alvo.vlCofins = centavos(f[qc.VL_TRIB]); }
+          if (pis) { alvo.cstPis = f[qc.CST]; alvo.vlItem = cv(f[qc.VL_ITEM]); alvo.vlDesc = cv(f[qc.VL_DESC]); alvo.bcPis = cv(f[qc.VL_BC]); alvo.aliqPis = aliquota(f[qc.ALIQ]); alvo.vlPis = cv(f[qc.VL_TRIB]); }
+          else { alvo.cstCofins = f[qc.CST]; if (!alvo.vlItem) alvo.vlItem = cv(f[qc.VL_ITEM]); alvo.bcCofins = cv(f[qc.VL_BC]); alvo.aliqCofins = aliquota(f[qc.ALIQ]); alvo.vlCofins = cv(f[qc.VL_TRIB]); }
         } else if (reg === 'C190') {
           res.estatisticas.consolidados++;
         } else if (reg === 'M100' || reg === 'M500') {
-          var qm = L[reg], sld = centavos(f[qm.SLD_CRED]);
+          var qm = L[reg], sld = cv(f[qm.SLD_CRED]);
           res.saldoCredito[reg === 'M100' ? 'pis' : 'cofins'] += sld; res.saldoCredito.registros++;
         } else if (reg === 'C100') {
           fecharDoc();
@@ -247,13 +361,20 @@
             modelo: f[c.COD_MOD], data: data(f[c.DT_DOC]), sit: f[c.COD_SIT],
             saida: saida, entrada: entrada, valida: sitOk
           };
+          var motivoDescarte = !sitOk ? 'sit:' + (f[c.COD_SIT] || '(vazio)') : (!saida && !entrada ? 'oper:' + (f[c.IND_OPER] || '(vazio)') : null);
+          if (motivoDescarte) {
+            var dsc = descartes[motivoDescarte] || (descartes[motivoDescarte] = { tipo: motivoDescarte.slice(0, motivoDescarte.indexOf(':')), valor: motivoDescarte.slice(motivoDescarte.indexOf(':') + 1), notas: 0, itens: 0 });
+            dsc.notas++;
+            doc.descarte = motivoDescarte;
+          }
           if (!sitOk) res.estatisticas.c100Ignorados++;
+          else if (!saida && !entrada) res.estatisticas.c100Ignorados++;
           else if (saida) res.estatisticas.c100Saida++;
           else if (entrada) res.estatisticas.c100Entrada++;
         } else if (reg === 'C170') {
           if (!doc) { res.avisos.push('Linha ' + nLinha + ': C170 sem C100 anterior — ignorado.'); continue; }
           docTemItem = true;
-          if (!doc.valida || !(doc.saida || doc.entrada)) continue;
+          if (!doc.valida || !(doc.saida || doc.entrada)) { if (doc.descarte) descartes[doc.descarte].itens++; continue; }
           var k = L.C170;
           var prod = produto(f[k.COD_ITEM]);
           if (!prod || !prod.ncm) res.estatisticas.itensSemNcm++;
@@ -262,12 +383,42 @@
             doc: doc.numero, serie: doc.serie, chave: doc.chave, data: doc.data ? doc.data.iso : '',
             item: f[k.NUM_ITEM], codItem: f[k.COD_ITEM], descricao: prod ? prod.descr : '', ncm: prod ? prod.ncm : '', exIpi: prod ? prod.exIpi : '',
             qtd: quantidade(f[k.QTD]), unid: f[k.UNID] || '', cfop: f[k.CFOP], cstIcms: f[k.CST_ICMS] || '',
-            vlItem: centavos(f[k.VL_ITEM]), vlDesc: centavos(f[k.VL_DESC]), vlIcms: centavos(f[k.VL_ICMS]),
-            vlIcmsSt: centavos(f[k.VL_ICMS_ST]), vlIpi: centavos(f[k.VL_IPI]),
-            cstPis: f[k.CST_PIS], bcPis: centavos(f[k.VL_BC_PIS]), aliqPis: aliquota(f[k.ALIQ_PIS]), vlPis: centavos(f[k.VL_PIS]),
-            cstCofins: f[k.CST_COFINS], bcCofins: centavos(f[k.VL_BC_COFINS]), aliqCofins: aliquota(f[k.ALIQ_COFINS]), vlCofins: centavos(f[k.VL_COFINS])
+            vlItem: cv(f[k.VL_ITEM]), vlDesc: cv(f[k.VL_DESC]), vlIcms: cv(f[k.VL_ICMS]),
+            vlIcmsSt: cv(f[k.VL_ICMS_ST]), vlIpi: cv(f[k.VL_IPI]),
+            cstPis: f[k.CST_PIS], bcPis: cv(f[k.VL_BC_PIS]), aliqPis: aliquota(f[k.ALIQ_PIS]), vlPis: cv(f[k.VL_PIS]),
+            cstCofins: f[k.CST_COFINS], bcCofins: cv(f[k.VL_BC_COFINS]), aliqCofins: aliquota(f[k.ALIQ_COFINS]), vlCofins: cv(f[k.VL_COFINS])
           };
           (doc.saida ? res.itens : res.entradas).push(it);
+        } else if (reg === 'F010') {
+          estabF = f[L.F010.CNPJ] || null;
+        } else if (reg === 'F100') {
+          var a1 = L.F100;
+          F.f100.push({ linha: nLinha, estab: estabF, indOper: f[a1.IND_OPER], codPart: f[a1.COD_PART] || '', codItem: f[a1.COD_ITEM] || '', data: (data(f[a1.DT_OPER]) || {}).iso || '',
+            vlOper: cv(f[a1.VL_OPER]), cstPis: f[a1.CST_PIS] || '', bcPis: cv(f[a1.VL_BC_PIS]), aliqPis: aliquota(f[a1.ALIQ_PIS]), vlPis: cv(f[a1.VL_PIS]),
+            cstCofins: f[a1.CST_COFINS] || '', bcCofins: cv(f[a1.VL_BC_COFINS]), aliqCofins: aliquota(f[a1.ALIQ_COFINS]), vlCofins: cv(f[a1.VL_COFINS]),
+            natBcCred: f[a1.NAT_BC_CRED] || '', indOrigCred: f[a1.IND_ORIG_CRED] || '', codCta: f[a1.COD_CTA] || '', codCcus: f[a1.COD_CCUS] || '', descricao: f[a1.DESC_DOC_OPER] || '' });
+        } else if (reg === 'F120' || reg === 'F130') {
+          var a2 = L[reg], dep = reg === 'F120';
+          F[dep ? 'f120' : 'f130'].push({ linha: nLinha, estab: estabF, natBcCred: f[a2.NAT_BC_CRED] || '', identBem: f[a2.IDENT_BEM_IMOB] || '', indOrigCred: f[a2.IND_ORIG_CRED] || '', indUtil: f[a2.IND_UTIL_BEM_IMOB] || '',
+            vlOperBem: cv(f[dep ? a2.VL_OPER_DEP : a2.VL_OPER_AQUIS]), mesAquis: dep ? '' : (f[a2.MES_OPER_AQUIS] || ''), parcNaoBc: cv(f[a2.PARC_OPER_NAO_BC_CRED]), vlBcCred: dep ? 0 : cv(f[a2.VL_BC_CRED]),
+            cstPis: f[a2.CST_PIS] || '', bcPis: cv(f[a2.VL_BC_PIS]), aliqPis: aliquota(f[a2.ALIQ_PIS]), vlPis: cv(f[a2.VL_PIS]),
+            cstCofins: f[a2.CST_COFINS] || '', bcCofins: cv(f[a2.VL_BC_COFINS]), aliqCofins: aliquota(f[a2.ALIQ_COFINS]), vlCofins: cv(f[a2.VL_COFINS]),
+            codCta: f[a2.COD_CTA] || '', descricao: f[a2.DESC_BEM_IMOB] || '' });
+        } else if (reg === 'F150') {
+          var a3 = L.F150;
+          F.f150.push({ linha: nLinha, estab: estabF, natBcCred: f[a3.NAT_BC_CRED] || '', vlTotEst: cv(f[a3.VL_TOT_EST]), vlBcEst: cv(f[a3.VL_BC_EST]),
+            cstPis: f[a3.CST_PIS] || '', aliqPis: aliquota(f[a3.ALIQ_PIS]), vlCredPis: cv(f[a3.VL_CRED_PIS]),
+            cstCofins: f[a3.CST_COFINS] || '', aliqCofins: aliquota(f[a3.ALIQ_COFINS]), vlCredCofins: cv(f[a3.VL_CRED_COFINS]), descricao: f[a3.DESC_EST] || '' });
+        } else if (reg === 'M200' || reg === 'M600') {
+          var a4 = L.M200, o4 = {};
+          Object.keys(a4).forEach(function (n) { o4[n] = cv(f[a4[n]]); });
+          o4.linha = nLinha;
+          M[reg === 'M200' ? 'm200' : 'm600'].push(o4);
+        } else if (reg === 'M210' || reg === 'M610') {
+          var a5 = L.M210, o5 = { linha: nLinha, codCont: f[a5.COD_CONT] || '', aliq: aliquota(f[a5.ALIQ]), quantBc: f[a5.QUANT_BC] || '', aliqQuant: f[a5.ALIQ_QUANT] || '' };
+          ['VL_REC_BRT', 'VL_BC_CONT', 'VL_AJUS_ACRES_BC', 'VL_AJUS_REDUC_BC', 'VL_BC_CONT_AJUS', 'VL_CONT_APUR', 'VL_AJUS_ACRES', 'VL_AJUS_REDUC', 'VL_CONT_DIFER', 'VL_CONT_DIFER_ANT', 'VL_CONT_PER']
+            .forEach(function (n) { o5[n] = cv(f[a5[n]]); });
+          M[reg === 'M210' ? 'm210' : 'm610'].push(o5);
         } else if (reg === '9999') {
           qtd9999 = parseInt(f[L['9999'].QTD_LIN], 10);
         }
@@ -276,6 +427,26 @@
       }
     }
     fecharDoc();
+
+    res.blocoF = resumirBlocoF(F);
+    res.apuracaoM = resumirApuracaoM(M, res.avisos);
+    if (res.blocoF.presente) res.avisos.push('Bloco F lido (F100: ' + F.f100.length + ', F120: ' + F.f120.length + ', F130: ' + F.f130.length + ', F150: ' + F.f150.length +
+      '): receitas e créditos fora de nota fiscal entram apenas no resumo (res.blocoF); nenhuma tese é aplicada a eles.');
+
+    // Descartes que antes eram silenciosos: agrupados por motivo, com contagem.
+    Object.keys(descartes).sort().forEach(function (k) {
+      var d = descartes[k], itens = d.itens ? ' (' + d.itens + ' item(ns) C170 descartado(s))' : '';
+      if (d.tipo === 'sit') res.avisos.push(d.notas + ' nota(s) C100 com COD_SIT "' + d.valor + '"' + (SIT_ROTULO[d.valor] ? ' (' + SIT_ROTULO[d.valor] + ')' : '') + ' ignorada(s)' + itens + ': só entram COD_SIT 00, 01, 06, 07 e 08.');
+      else res.avisos.push(d.notas + ' nota(s) C100 com IND_OPER "' + d.valor + '" ignorada(s)' + itens + ': só entram IND_OPER 0 (entrada) e 1 (saída).');
+    });
+    function avisoPontos(mapa, texto) {
+      var regs = Object.keys(mapa).sort();
+      if (!regs.length) return;
+      var total = regs.reduce(function (n, r) { return n + mapa[r].n; }, 0);
+      res.avisos.push(total + ' valor(es) ' + texto + ' em ' + regs.map(function (r) { return r + ' (' + mapa[r].n + ', ex.: "' + mapa[r].ex + '")'; }).join(', ') + '. Confira o arquivo de origem.');
+    }
+    avisoPontos(pontos, 'monetário(s) com ponto decimal e sem vírgula lido(s) como decimal');
+    avisoPontos(ambiguos, 'monetário(s) com ponto e 3 casas, sem vírgula, lido(s) como separador de milhar (ambíguo)');
 
     if (!res.meta) res.erros.push('Registro 0000 não encontrado: o arquivo não é uma EFD-Contribuições válida.');
     else if (!res.meta.regimeCodigo) res.avisos.push('Registro 0110 ausente: regime de apuração não identificado.');
@@ -457,37 +628,102 @@
       var e = l.estatisticas || {};
       return { arquivo: l.arquivo, competencia: l.meta.competencia, regime: l.meta.regime || '—',
                saidas: l.itens.length, entradas: (l.entradas || []).length, consolidados: (l.consolidados || []).length,
-               produtos: l.produtos, saldoM: l.saldoCredito ? l.saldoCredito.registros : 0, c100SemItens: e.c100SaidaSemItens || 0 };
+               produtos: l.produtos, saldoM: l.saldoCredito ? l.saldoCredito.registros : 0, c100SemItens: e.c100SaidaSemItens || 0,
+               blocoF: l.blocoF && l.blocoF.presente ? (l.blocoF.registros.F100 + l.blocoF.registros.F120 + l.blocoF.registros.F130 + l.blocoF.registros.F150) : 0 };
     });
     var saidas = [], entradas = [], consol = [];
     usados.forEach(function (l) { saidas = saidas.concat(l.itens); entradas = entradas.concat(l.entradas || []); consol = consol.concat(l.consolidados || []); });
     var semItens = arquivos.reduce(function (n, a) { return n + a.c100SemItens; }, 0);
     var naoCum = usados.some(function (l) { return l.meta.regimeCodigo === '1' || l.meta.regimeCodigo === '3'; });
     var m = {};
+    var bf = { lanc: 0, receita: 0, credPis: 0, credCofins: 0, creditosLanc: 0 };
+    usados.forEach(function (l) {
+      if (!l.blocoF || !l.blocoF.presente) return;
+      bf.lanc += l.blocoF.registros.F100 + l.blocoF.registros.F120 + l.blocoF.registros.F130 + l.blocoF.registros.F150;
+      bf.receita += l.blocoF.receitas.vlOper; bf.credPis += l.blocoF.creditos.pis; bf.credCofins += l.blocoF.creditos.cofins; bf.creditosLanc += l.blocoF.creditos.lancamentos;
+    });
+    // Sufixo para zeros de tese: quando a receita/crédito está no bloco F, diz isso em vez de só "nenhuma saída".
+    function sufixoF(tese, lado) {
+      if (!bf.lanc) return '';
+      var partes = [];
+      if (lado === 'saida' && bf.receita) partes.push('receita de ' + formatarReais(bf.receita) + ' no F100');
+      if (lado === 'entrada' && bf.creditosLanc) partes.push('créditos de ' + formatarReais(bf.credPis) + ' de PIS e ' + formatarReais(bf.credCofins) + ' de COFINS em F100/F120/F130/F150');
+      return ' Receitas e créditos estão no bloco F' + (partes.length ? ' (' + partes.join('; ') + ')' : '') + '; a tese ' + tese +
+        ' depende de itens de nota fiscal (' + (lado === 'saida' ? 'saídas C170/C181' : 'entradas C170') + ') e não é aplicada ao bloco F sem regra aprovada.';
+    }
     function algum(arr, fn) { return arr.some(fn); }
     var base0 = semItens ? ' Há ' + semItens + ' nota(s) de saída sem itens C170 (registro C100 sem detalhe): sem o item não há como calcular.' : '';
     if (!T.tema69.aplicavel || !T.tema69.total.itensComValor) {
-      if (!saidas.length) m.tema69 = 'Nenhuma saída com itens C170 nos arquivos.' + base0 + (consol.length ? ' A escrituração consolidada (C180/C181/C185) não traz o ICMS destacado.' : '');
+      if (!saidas.length) m.tema69 = 'Nenhuma saída com itens C170 nos arquivos.' + sufixoF('do Tema 69', 'saida') + base0 + (consol.length ? ' A escrituração consolidada (C180/C181/C185) não traz o ICMS destacado.' : '');
       else if (!algum(saidas, function (i) { return i.vlIcms > 0; })) m.tema69 = 'Nenhum item de saída tem ICMS destacado (campo VL_ICMS do C170 zerado ou vazio). Sem o ICMS por item, a exclusão não pode ser calculada.';
       else if (!algum(saidas, function (i) { return CST_TRIBUTADOS[i.cstPis] || CST_TRIBUTADOS[i.cstCofins]; })) m.tema69 = 'Nenhuma saída com CST 01 ou 02 de PIS/COFINS (tributação normal): os itens estão com outros CST.';
       else m.tema69 = 'Nos itens com ICMS, a base de PIS/COFINS declarada já está sem o ICMS (BC igual ou menor que a base correta): não há excesso a recuperar.';
     }
     if (!T.monofasico.aplicavel || !T.monofasico.total.itensComValor) {
       var comNcm = saidas.concat(consol).filter(function (i) { return i.ncm; });
-      if (!comNcm.length) m.monofasico = 'Nenhum item de saída tem NCM (cadastro 0200 ausente ou sem NCM): sem NCM não é possível identificar monofásicos.';
+      if (!comNcm.length) m.monofasico = (saidas.length || consol.length ? 'Nenhum item de saída tem NCM (cadastro 0200 ausente ou sem NCM): sem NCM não é possível identificar monofásicos.' : 'Nenhuma saída com itens de nota fiscal nos arquivos.' + sufixoF('dos monofásicos', 'saida'));
       else if (!algum(comNcm, function (i) { return classificarMonofasico(i.ncm, i.exIpi, extrasGlobais); })) m.monofasico = 'Nenhum NCM vendido está na tabela de monofásicos (farmacêuticos, perfumaria, pneus). Combustíveis, bebidas e autopeças dependem de tabela complementar.';
       else m.monofasico = 'Há NCM monofásico, mas a venda não é de revenda (CFOP) ou o PIS/COFINS já está sem tributação (CST diferente de 01/02).';
     }
     if (!T.icmsSt.aplicavel || !T.icmsSt.total.itensComValor) {
-      if (!algum(saidas, function (i) { return String(i.cstIcms).slice(-2) === '60'; })) m.icmsSt = 'Nenhuma saída com CST de ICMS final 60 (ICMS cobrado anteriormente por substituição tributária).';
+      if (!algum(saidas, function (i) { return String(i.cstIcms).slice(-2) === '60'; })) m.icmsSt = (saidas.length ? 'Nenhuma saída com CST de ICMS final 60 (ICMS cobrado anteriormente por substituição tributária).' : 'Nenhuma saída com itens C170 nos arquivos.' + sufixoF('do ICMS-ST', 'saida'));
       else m.icmsSt = 'Há saídas com ICMS-ST (CST x60), mas sem a entrada correspondente com ICMS-ST nos meses enviados, ou com unidades divergentes. Envie também os meses de compra.';
     }
-    if (!T.insumos.aplicavel) m.insumos = !naoCum ? 'Tese só do regime não cumulativo; os arquivos são de regime cumulativo.' : (entradas.length ? 'Nenhuma entrada sem crédito (CST 70 a 75, 98, 99) em CFOP típico de insumo.' : 'Nenhuma entrada (C170 de notas de entrada) nos arquivos.');
-    if (!T.lei14592.aplicavel) m.lei14592 = !naoCum ? 'Verificação só do regime não cumulativo.' : 'Nenhum crédito (CST 50 a 56) tomado sobre ICMS a partir de 05/2023.';
+    if (!T.insumos.aplicavel) m.insumos = !naoCum ? 'Tese só do regime não cumulativo; os arquivos são de regime cumulativo.' : (entradas.length ? 'Nenhuma entrada sem crédito (CST 70 a 75, 98, 99) em CFOP típico de insumo.' : 'Nenhuma entrada (C170 de notas de entrada) nos arquivos.' + sufixoF('de insumos', 'entrada'));
+    if (!T.lei14592.aplicavel) m.lei14592 = !naoCum ? 'Verificação só do regime não cumulativo.' : 'Nenhum crédito (CST 50 a 56) tomado sobre ICMS a partir de 05/2023.' + (entradas.length ? '' : sufixoF('da Lei 14.592', 'entrada'));
     if (!T.saldoCredor.aplicavel) m.saldoCredor = !naoCum ? 'Saldo credor só no regime não cumulativo.' : 'Registros M100/M500 (apuração de créditos) ausentes nos arquivos.';
     return { arquivos: arquivos, motivos: m };
   }
   var extrasGlobais = [];
+
+  /** Monta blocoF e apuracaoM do resultado de apurar(): linhas por competência, totais e conferência F x M. */
+  function resumirPorCompetencia(usados) {
+    var linhasF = [], linhasM = [];
+    var totF = { receita: 0, pisReceita: 0, cofinsReceita: 0, creditoPis: 0, cofinsCredito: 0, aluguelPis: 0, aluguelCofins: 0 };
+    var totM = { devidoPis: 0, devidoCofins: 0 };
+    usados.forEach(function (l) {
+      var base = { cnpj: l.meta.cnpj, nome: l.meta.nome, competencia: l.meta.competencia, arquivo: l.arquivo };
+      var bf = l.blocoF, am = l.apuracaoM;
+      if (bf && bf.presente) {
+        linhasF.push(Object.assign({}, base, {
+          registros: bf.registros, receita: bf.receitas.vlOper, receitaLancamentos: bf.receitas.lancamentos,
+          contribuicaoPis: bf.receitas.pis, contribuicaoCofins: bf.receitas.cofins,
+          receitaPorCstPis: bf.receitas.porCstPis, receitaPorCstCofins: bf.receitas.porCstCofins,
+          creditoPis: bf.creditos.pis, creditoCofins: bf.creditos.cofins, creditoPorNat: bf.creditos.porNat,
+          creditoAluguelPis: bf.aluguel.pis, creditoAluguelCofins: bf.aluguel.cofins, baseAluguel: bf.aluguel.base,
+          outrasOperacoes: bf.outrasOperacoes
+        }));
+        totF.receita += bf.receitas.vlOper; totF.pisReceita += bf.receitas.pis; totF.cofinsReceita += bf.receitas.cofins;
+        totF.creditoPis += bf.creditos.pis; totF.cofinsCredito += bf.creditos.cofins; totF.aluguelPis += bf.aluguel.pis; totF.aluguelCofins += bf.aluguel.cofins;
+      }
+      if (am && am.presente) {
+        var lm = Object.assign({}, base, {
+          devidoPis: am.pis.devido, devidoCofins: am.cofins.devido,
+          contribuicaoPeriodoPis: am.pis.contribuicaoPeriodo, contribuicaoPeriodoCofins: am.cofins.contribuicaoPeriodo,
+          creditosDescontadosPis: am.pis.creditosDescontados, creditosDescontadosCofins: am.cofins.creditosDescontados,
+          receitaBrutaPis: am.pis.receitaBruta, receitaBrutaCofins: am.cofins.receitaBruta,
+          detalhesPis: am.pis.detalhes, detalhesCofins: am.cofins.detalhes
+        });
+        // Conferência F x M: informativa. O bloco F é só parte da apuração (há C, A, D também), então diferenças não são erro.
+        if (bf && bf.presente) {
+          lm.conferencia = {
+            pis: { contribuicaoBlocoF: bf.receitas.pis, contribuicaoM210: am.pis.contribuicaoPeriodo, creditoBlocoF: bf.creditos.pis, creditoDescontadoM200: am.pis.creditosDescontados },
+            cofins: { contribuicaoBlocoF: bf.receitas.cofins, contribuicaoM610: am.cofins.contribuicaoPeriodo, creditoBlocoF: bf.creditos.cofins, creditoDescontadoM600: am.cofins.creditosDescontados }
+          };
+          lm.conferencia.pis.difContribuicao = am.pis.contribuicaoPeriodo - bf.receitas.pis;
+          lm.conferencia.cofins.difContribuicao = am.cofins.contribuicaoPeriodo - bf.receitas.cofins;
+          lm.conferencia.pis.difCredito = am.pis.creditosDescontados - bf.creditos.pis;
+          lm.conferencia.cofins.difCredito = am.cofins.creditosDescontados - bf.creditos.cofins;
+        }
+        linhasM.push(lm);
+        totM.devidoPis += am.pis.devido; totM.devidoCofins += am.cofins.devido;
+      }
+    });
+    return {
+      blocoF: { presente: linhasF.length > 0, competencias: linhasF, total: totF },
+      apuracaoM: { presente: linhasM.length > 0, competencias: linhasM, total: totM }
+    };
+  }
 
   // ------------------------------------------------------------ apuração
 
@@ -624,6 +860,7 @@
     if (T.lei14592.aplicavel) T.lei14592.avisos.push('Passivo potencial: se confirmado, deve ser regularizado e abatido antes de pedir restituição.');
 
     var leitura = explicarLeitura(usados, T);
+    var resumoF = resumirPorCompetencia(usados);
     var teses = CATALOGO.filter(function (c) { return c.calculada; }).map(function (c) {
       var t = T[c.id];
       t.competencias = Object.keys(t.competencias).sort().map(function (k) { return t.competencias[k]; });
@@ -651,6 +888,9 @@
       resumo: { recuperavel: recuperavel, recuperavelNoPrazo: recuperavelNoPrazo, potencial: potencial, risco: risco },
       catalogo: CATALOGO,
       leitura: leitura,
+      // Bloco F e apuração M, uma linha por CNPJ/competência (somente leitura; nenhuma tese é calculada sobre o bloco F).
+      blocoF: resumoF.blocoF,
+      apuracaoM: resumoF.apuracaoM,
       avisos: avisos
     };
   }
@@ -670,6 +910,7 @@
     calcularIcmsSt: calcularIcmsSt,
     classificarMonofasico: classificarMonofasico,
     apurar: apurar,
+    resumirBlocoF: resumirBlocoF, resumirApuracaoM: resumirApuracaoM,
     CATALOGO: CATALOGO, MONOFASICOS: MONOFASICOS,
     centavos: centavos, aliquota: aliquota, quantidade: quantidade, formatarReais: formatarReais
   };

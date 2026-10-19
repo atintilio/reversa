@@ -36,3 +36,37 @@ test('fora do prazo de 5 anos não conta no valor no prazo', () => {
   const r = M.apurar([M.lerEcf(ecf(true), 'd.txt')], { hoje: '2031-01-01' });
   assert.equal(r.total.valor, 34000); assert.equal(r.total.valorNoPrazo, 0);
 });
+
+// ---- correções da revisão independente
+const comItem = (desc, v) => ecf(true).replace('MULTAS CONTRATUAIS COMPENSATÓRIAS|15000,00', desc + '|' + v);
+test('contingência trabalhista, PDD e reversão não viram oportunidade', () => {
+  for (const d of ['PROVISÃO PARA CONTINGÊNCIA CÍVEL PROC 13ª VARA', 'PROVISÃO PARA PERDAS NO RECEBIMENTO DE CRÉDITOS', 'REVERSÃO DE PROVISÃO DE FÉRIAS E 13º SALÁRIO', 'MULTA PUNITIVA CONTRATUAL']) {
+    const r = M.apurar([M.lerEcf(comItem(d, '15000,00'), 'x')], { hoje: '2026-10-19' });
+    assert.equal(r.total.valor, 34000 - 15000 * 0.34 + 0, d); // o item de 15 mil sai do cálculo
+  }
+});
+test('valor com ponto decimal é lido como decimal e avisa', () => {
+  const l = M.lerEcf(comItem('MULTAS CONTRATUAIS COMPENSATÓRIAS', '15000.00'), 'p');
+  assert.equal(l.trimestres[0].adicoes[5].valor, 15000); assert.match(l.avisos.join(), /ponto decimal/);
+});
+test('período não trimestral (ECF anual) não é calculado', () => {
+  const t = ecf(true).replace('|M030|001|', '|M030|A00|');
+  const r = M.apurar([M.lerEcf(t, 'anual')], { hoje: '2026-10-19' });
+  assert.equal(r.total.valor, 0); assert.match(r.avisos.join(), /não é trimestral/);
+});
+test('sem pagamento declarado o trimestre vai para revisão e não soma', () => {
+  const t = ecf(true).replace('|N630|IRPJ A PAGAR 1T|531500,00|', '');
+  const r = M.apurar([M.lerEcf(t, 'sempago')], { hoje: '2026-10-19' });
+  assert.equal(r.total.valor, 0); assert.equal(r.revisao.length, 1);
+});
+test('o mesmo arquivo enviado duas vezes não dobra', () => {
+  const r = M.apurar([M.lerEcf(ecf(true), 'a'), M.lerEcf(ecf(true), 'b')], { hoje: '2026-10-19' });
+  assert.equal(r.total.valor, 34000);
+});
+test('último dia do prazo ainda conta e sem 0000 não quebra', () => {
+  assert.equal(M.apurar([M.lerEcf(ecf(true), 'a')], { hoje: '2030-04-30T15:00:00Z' }).total.valorNoPrazo, 34000);
+  assert.doesNotThrow(() => M.apurar([M.lerEcf('|M300|1|R|100,00|', 'z')]));
+});
+test('adições indedutíveis aparecem na lista de mantidas', () => {
+  assert.equal(M.apurar([M.lerEcf(ecf(true), 'a')], { hoje: '2026-10-19' }).adicoesMantidas.length, 3);
+});

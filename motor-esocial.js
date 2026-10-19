@@ -163,11 +163,11 @@
       });
     });
 
-    var porTese = {}, semCadastro = {}, semIncidencia = {}, semTese = {}, rubricasUsadas = {}, comps = {}, reflexos = { base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {} };
+    var porTese = {}, semCadastro = {}, semIncidencia = {}, semTese = {}, rubricasUsadas = {}, comps = {}, reflexos = { base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, porComp: {} };
     function acumula(tese, r, base, aliq, comp, motivo) {
-      var t = porTese[tese] = porTese[tese] || { id: tese, nome: NOMES[tese], base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, competencias: {} };
+      var t = porTese[tese] = porTese[tese] || { id: tese, nome: NOMES[tese], base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, competencias: {}, porComp: {} };
       var noPrazo = comp >= limite;
-      t.base += base; t.valor += base * aliq; t.competencias[comp] = 1;
+      t.base += base; t.valor += base * aliq; t.competencias[comp] = 1; t.porComp[comp] = (t.porComp[comp] || 0) + base * aliq;
       if (noPrazo) { t.baseNoPrazo += base; t.valorNoPrazo += base * aliq; }
       var k = r.tab + '|' + r.cod, x = t.rubricas[k] = t.rubricas[k] || { cod: r.cod, tab: r.tab, dsc: r.dsc, natRubr: r.natRubr, codIncCP: r.codIncCP, motivo: motivo, base: 0 };
       x.base += base;
@@ -192,7 +192,7 @@
           var aliq = CPP + (ratAj || 0) + terceiros;
           if (c) acumula(c.id, r, vr, aliq, comp, c.motivo);
           if (REFLEXOS.test(norm(r.dsc)) && ratAj) {
-            reflexos.base += vr; reflexos.valor += vr * ratAj;
+            reflexos.base += vr; reflexos.valor += vr * ratAj; reflexos.porComp[comp] = (reflexos.porComp[comp] || 0) + vr * ratAj;
             if (comp >= limite) { reflexos.baseNoPrazo += vr; reflexos.valorNoPrazo += vr * ratAj; }
             var kr = tab + '|' + cod, xr = reflexos.rubricas[kr] = reflexos.rubricas[kr] || { cod: cod, tab: tab, dsc: r.dsc, natRubr: r.natRubr, codIncCP: r.codIncCP, motivo: 'reflexo (13º, DSR ou dias não trabalhados)', base: 0 };
             xr.base += vr;
@@ -201,13 +201,14 @@
         if (!est) avisos.push('Estabelecimento ' + nrInsc + ' sem S-1005: RAT e FAP não aplicados nas competências dele.');
       });
     });
-    if (reflexos.base > 0) porTese.T069 = { id: 'T069', nome: NOMES.T069, base: reflexos.base, baseNoPrazo: reflexos.baseNoPrazo, valor: reflexos.valor, valorNoPrazo: reflexos.valorNoPrazo, rubricas: reflexos.rubricas, competencias: {} };
+    if (reflexos.base > 0) porTese.T069 = { id: 'T069', nome: NOMES.T069, base: reflexos.base, baseNoPrazo: reflexos.baseNoPrazo, valor: reflexos.valor, valorNoPrazo: reflexos.valorNoPrazo, rubricas: reflexos.rubricas, competencias: {}, porComp: reflexos.porComp };
 
     var r2 = function (v) { return Math.round(v * 100) / 100; };
     var teses = Object.keys(porTese).map(function (id) {
       var t = porTese[id];
       return { id: id, nome: t.nome, base: r2(t.base), baseNoPrazo: r2(t.baseNoPrazo), valor: r2(t.valor), valorNoPrazo: r2(t.valorNoPrazo),
         competencias: Object.keys(t.competencias).length,
+        porCompetencia: Object.keys(t.porComp).sort().map(function (k) { return { competencia: k, valor: r2(t.porComp[k]), noPrazo: k >= limite }; }), // valor por competência (base da atualização pela Selic)
         rubricas: Object.keys(t.rubricas).map(function (k) { var x = t.rubricas[k]; return Object.assign({}, x, { base: r2(x.base) }); }).sort(function (a, b) { return b.base - a.base; }) };
     }).sort(function (a, b) { return b.valorNoPrazo - a.valorNoPrazo; });
     var cs = Object.keys(comps).sort();
