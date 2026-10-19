@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transação PGFN · Reversa Tax</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<style>
+  .rv .vd { border-left: 5px solid var(--teal); }
+  .rv .vd.bom { border-left-color: var(--ok); } .rv .vd.ruim { border-left-color: var(--bad); }
+  .rv .vd p { margin: 6px 0 0; }
+  .rv .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 800px) { .rv .duas { grid-template-columns: 1fr; } }
+  .rv .grupo-box { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .rv .grupo-box.atual { border-color: var(--teal); background: var(--soft); }
+  .rv .grupo-box b { font: 700 1.1rem var(--f-head); }
+  .rv .ret { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; align-items: end; }
+  .rv .mut { color: var(--muted); font-size: 13px; }
+  .rv .lista-simples { margin: 6px 0 0; padding-left: 18px; font-size: 14px; }
+  .rv textarea.csv { min-height: 90px; width: 100%; font: 13px ui-monospace, Menlo, monospace; }
+  .rv td input, .rv td select { padding: 5px 7px; min-width: 90px; }
+  .rv details summary { cursor: pointer; font-weight: 700; }
+</style>
+</head>
+<body class="rv">
+<main>
+  <div class="cab">
+    <div>
+      <h1>Transação <em>PGFN</em></h1>
+      <p class="sub">Capacidade de pagamento (CAPAG), cenários de parcelamento com desconto e simulador de rating. Cálculo determinístico, com regras e fontes à mostra.</p>
+    </div>
+    <div class="acoes" id="topo-acoes"></div>
+  </div>
+
+  <section class="card" id="aviso"><span class="pill warn">Parâmetros a confirmar</span>
+    <span class="mut" id="aviso-txt"></span></section>
+
+  <section class="card" id="lista" hidden>
+    <h2>Dossiês</h2>
+    <div class="ret"><label>CNPJ do cliente<input id="n-cnpj" inputmode="numeric" placeholder="00.000.000/0000-00"></label>
+      <label>Razão social<input id="n-nome" placeholder="Nome da empresa"></label>
+      <button id="n-criar">Abrir dossiê</button></div>
+    <div class="tabela" style="margin-top:14px"><table><thead><tr><th>Cliente</th><th class="num">Inscrições</th><th class="num">Total</th><th>Situação</th></tr></thead><tbody id="lista-corpo"></tbody></table></div>
+  </section>
+
+  <div id="editor" hidden style="display:grid;gap:24px">
+    <section class="card">
+      <h2 id="ed-titulo">Dados do contribuinte</h2>
+      <div class="ret">
+        <label>Perfil<select id="f-perfil"><option value="geral">Geral (teto de desconto 65%)</option><option value="diferenciado">ME/EPP/PF/Santa Casa… (70%)</option><option value="mei">MEI</option></select></label>
+        <label>CAPAG (R$)<input id="f-capag" inputmode="decimal" placeholder="ex.: 400000"></label>
+        <label>Passivo comparado (R$)<input id="f-passivo" inputmode="decimal" placeholder="dívidas RFB+PGFN"></label>
+        <label>Rating informado pela PGFN<select id="f-rating"><option value="">Não informado (derivar)</option><option>A</option><option>B</option><option>C</option><option>D</option></select></label>
+        <label>Caixa mensal disponível (R$)<input id="f-caixa" inputmode="decimal"></label>
+        <label>Selic anual (%)<input id="f-selic" inputmode="decimal" placeholder="ex.: 14"></label>
+        <label>Taxa de desconto anual (%)<input id="f-taxa" inputmode="decimal" placeholder="ex.: 18"></label>
+        <label>Devedor contumaz?<select id="f-contumaz"><option value="">Não informado</option><option value="nao">Não</option><option value="sim">Sim</option></select></label>
+        <label>Transação rescindida há &lt; 2 anos?<select id="f-resc"><option value="">Não informado</option><option value="nao">Não</option><option value="sim">Sim</option></select></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Inscrições em dívida ativa</h2>
+      <details><summary>Colar planilha (CSV com ponto e vírgula ou tabulação)</summary>
+        <p class="mut">Colunas: referência; tipo (tributario, previdenciario, fgts, nao_tributario); situação (ativa, suspensa, garantida, parcelada, quitada); data da inscrição (AAAA-MM-DD); principal; saldo atualizado.</p>
+        <textarea class="csv" id="csv"></textarea><div class="acoes"><button class="sec mini" id="csv-ok">Importar</button></div></details>
+      <div class="tabela"><table><thead><tr><th>Referência</th><th>Tipo</th><th>Situação</th><th>Inscrição</th><th class="num">Principal</th><th class="num">Saldo atualizado</th><th></th></tr></thead><tbody id="dv"></tbody></table></div>
+      <div class="acoes" style="margin-top:10px"><button class="sec mini" id="dv-add">+ Inscrição</button></div>
+    </section>
+
+    <div class="acoes"><button id="calc">Calcular</button><button class="sec" id="gravar" hidden>Gravar cálculo no dossiê</button><span class="mut" id="calc-msg"></span></div>
+
+    <div id="res" hidden style="display:grid;gap:24px">
+      <section class="card vd" id="rating"></section>
+      <section class="card"><h2>Cenários</h2><div class="tabela"><table><thead><tr><th>Cenário</th><th class="num">Desconto</th><th class="num">Custo nominal</th><th class="num">Valor presente</th><th class="num">Maior parcela no 1º ano</th><th>Situação</th></tr></thead><tbody id="cen"></tbody></table></div><p class="mut" id="cen-nota"></p></section>
+      <section class="card"><h2>Regras avaliadas no cenário</h2><div class="acoes"><label>Cenário<select id="cen-sel"></select></label></div><div class="tabela"><table><thead><tr><th>Regra</th><th>Resultado</th><th>Explicação</th></tr></thead><tbody id="reg"></tbody></table></div></section>
+      <section class="card"><h2>Simulador de rating: e se mudar?</h2>
+        <div class="ret"><label>CAPAG revisada (R$)<input id="s-capag" inputmode="decimal"></label><label>Ajuste no passivo (R$, negativo reduz)<input id="s-passivo" inputmode="decimal"></label><button id="s-ok">Simular</button></div>
+        <div id="s-out" style="margin-top:14px"></div></section>
+      <section class="card" id="briefs-card" hidden><h2>Resumos para decisão</h2><div id="briefs"></div></section>
+    </div>
+  </div>
+</main>
+<script src="/shell.js"></script>
+<script>
+(function () {
+  var DEMO = RV.ambiente() === 'demo', E = RV.esc, R = function (v) { return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }, caseId = null, ultimo = null, debts = [], podeMaster = false;
+  var $ = function (id) { return document.getElementById(id); };
+  var ROT = { cd_avista: 'C/D · à vista', cd_36x: 'C/D · 36 prestações', cd_60x: 'C/D · 60 prestações', cd_114x: 'C/D · prazo máximo', ab_avista: 'A/B · à vista', ab_60x: 'A/B · 60 prestações' };
+  var SIT = { viavel: ['ok', 'Viável'], viavel_com_pendencia: ['warn', 'Viável com pendência'], inviavel: ['bad', 'Inviável'], nao_avaliado: ['', 'Não avaliado'] };
+  var RES = { satisfied: ['ok', 'Atendida'], violated: ['bad', 'Violada'], unknown: ['warn', 'Não informada'], not_evaluated: ['', 'Não avaliada'] };
+  function num(v) { if (v == null || v === '') return null; var x = Number(String(v).replace(/\./g, '').replace(',', '.')); if (String(v).indexOf(',') < 0) x = Number(v); return isFinite(x) ? x : null; }
+  function pct(v) { var x = num(v); return x == null ? null : x / 100; }
+  function sn(v) { return v === 'sim' ? true : v === 'nao' ? false : undefined; }
+  function fact(id, f) { var x = num($(id).value); return x == null ? null : (f ? f(x) : { value: x }); }
+
+  function facts() {
+    var f = { perfil: $('f-perfil').value, capagValue: fact('f-capag'), passivoRfb: fact('f-passivo'), monthlyCashCapacity: fact('f-caixa'),
+      selicAnnual: fact('f-selic', function (x) { return { value: x / 100 }; }), discountRateAnnual: fact('f-taxa', function (x) { return { value: x / 100 }; }),
+      capagRating: $('f-rating').value || null };
+    var c = sn($('f-contumaz').value), r = sn($('f-resc').value); f.devedorContumaz = c === undefined ? null : c; f.transacaoRescindida2anos = r === undefined ? null : r;
+    return f;
+  }
+  function fill(f) {
+    f = f || {}; var g = function (k) { return f[k] && f[k].value != null ? f[k].value : ''; };
+    $('f-perfil').value = f.perfil || 'geral'; $('f-capag').value = g('capagValue'); $('f-passivo').value = g('passivoRfb'); $('f-caixa').value = g('monthlyCashCapacity');
+    $('f-selic').value = g('selicAnnual') === '' ? '' : Math.round(g('selicAnnual') * 1e4) / 100; $('f-taxa').value = g('discountRateAnnual') === '' ? '' : Math.round(g('discountRateAnnual') * 1e4) / 100;
+    $('f-rating').value = f.capagRating || ''; $('f-contumaz').value = f.devedorContumaz == null ? '' : f.devedorContumaz ? 'sim' : 'nao'; $('f-resc').value = f.transacaoRescindida2anos == null ? '' : f.transacaoRescindida2anos ? 'sim' : 'nao';
+  }
+  var TIPOS = ['tributario', 'previdenciario', 'fgts', 'nao_tributario'], SITS = ['ativa', 'suspensa', 'garantida', 'parcelada', 'quitada'];
+  function opts(l, v) { return l.map(function (o) { return '<option' + (o === v ? ' selected' : '') + '>' + o + '</option>'; }).join(''); }
+  function drawDebts() {
+    $('dv').innerHTML = debts.map(function (d, i) { return '<tr><td><input data-i="' + i + '" data-k="ref" value="' + E(d.ref || '') + '"></td><td><select data-i="' + i + '" data-k="kind">' + opts(TIPOS, d.kind) + '</select></td><td><select data-i="' + i + '" data-k="adm">' + opts(SITS, d.adm) + '</select></td>' +
+      '<td><input data-i="' + i + '" data-k="insc" value="' + E(d.insc || '') + '" placeholder="AAAA-MM-DD"></td><td class="num"><input data-i="' + i + '" data-k="princ" value="' + E(d.princ == null ? '' : d.princ) + '"></td><td class="num"><input data-i="' + i + '" data-k="saldo" value="' + E(d.saldo == null ? '' : d.saldo) + '"></td><td><button class="perigo mini" data-del="' + i + '">Remover</button></td></tr>'; }).join('') || '<tr><td colspan="7" class="mut">Nenhuma inscrição.</td></tr>';
+  }
+  function today() { return new Date().toISOString().slice(0, 10); }
+  function debtsBody() { return debts.map(function (d, i) { return { externalDebtReference: d.ref || ('INS-' + (i + 1)), debtKind: d.kind, administrativeStatus: d.adm, inscriptionDate: d.insc || null, referenceDate: today(), principalAmount: num(d.princ), updatedBalance: num(d.saldo) }; }); }
+  function fromServer(l) { debts = l.map(function (d) { return { ref: d.externalDebtReference, kind: d.debtKind, adm: d.administrativeStatus, insc: d.inscriptionDate, princ: d.principalAmount, saldo: d.updatedBalance }; }); drawDebts(); }
+  $('dv').addEventListener('input', function (e) { var t = e.target; if (t.dataset.i != null) debts[t.dataset.i][t.dataset.k] = t.value; });
+  $('dv').addEventListener('click', function (e) { var i = e.target.dataset.del; if (i != null) { debts.splice(i, 1); drawDebts(); } });
+  $('dv-add').onclick = function () { debts.push({ kind: 'tributario', adm: 'ativa' }); drawDebts(); };
+  $('csv-ok').onclick = function () {
+    $('csv').value.split(/\r?\n/).filter(function (l) { return l.trim(); }).forEach(function (l) { var c = l.split(/;|\t/); if (/^ref/i.test(c[0])) return;
+      debts.push({ ref: (c[0] || '').trim(), kind: (c[1] || 'tributario').trim(), adm: (c[2] || 'ativa').trim(), insc: (c[3] || '').trim(), princ: (c[4] || '').trim(), saldo: (c[5] || '').trim() }); });
+    $('csv').value = ''; drawDebts();
+  };
+
+  function verdict(w, alvo) {
+    if (!w || !w.disponivel) return '<h2>Rating</h2><p class="mut">Informe CAPAG e passivo (ou o rating da PGFN) e as inscrições para ver o grupo e o efeito de mudá-lo.</p>';
+    var bom = w.direcao && (w.atual.grupo === 'CD' ? w.direcao.paraAB === 'ruim' : w.direcao.paraCD === 'bom');
+    var cmp = w.comparativo || {};
+    function box(k, g) { return '<div class="grupo-box' + (w.atual.grupo === g ? ' atual' : '') + '"><b>' + (g === 'AB' ? 'Grupo A/B' : 'Grupo C/D') + '</b>' + (w.atual.grupo === g ? ' <span class="pill">Atual</span>' : '') +
+      (k ? '<div class="mut">Prazo comparado: ' + k.prazo + ' meses</div><div>Desconto: <b>' + R(k.desconto) + '</b></div><div>Custo nominal: <b>' + R(k.nominal) + '</b></div>' + (k.pv != null ? '<div>Valor presente: <b>' + R(k.pv) + '</b></div>' : '') + '<div>Maior parcela: <b>' + R(k.picoCaixa) + '</b></div>' : '<div class="mut">Sem dados</div>') + '</div>'; }
+    return '<h2>Rating (CAPAG): ' + (w.atual.grupo === 'CD' ? 'C/D' : 'A/B') + ' <span class="pill ' + (w.atual.grupo === 'CD' ? 'ok' : 'warn') + '">' + (w.atual.origem === 'informado' ? 'informado pela PGFN' : 'derivado da CAPAG × passivo') + '</span></h2>' +
+      '<p><b>' + E(w.veredito) + '</b></p><div class="duas" style="margin-top:12px">' + box(cmp.ab, 'AB') + box(cmp.cd, 'CD') + '</div>' +
+      (w.limiar ? '<p class="mut">' + E(w.limiar.regra) + ' ' + E(w.limiar.paraSubirParaAB || '') + '</p>' : '') +
+      '<details><summary>Caminhos legítimos e limites</summary><ul class="lista-simples">' + (w.caminhosLegitimos || []).map(function (c) { return '<li><b>' + E(c.via) + ':</b> ' + E(c.descricao) + (c.observacao ? ' <i>' + E(c.observacao) + '</i>' : '') + '</li>'; }).join('') +
+      (w.limites || []).map(function (l) { return '<li class="mut">' + E(l) + '</li>'; }).join('') + '</ul></details>';
+  }
+  function render(r) {
+    ultimo = r; $('res').hidden = false; $('res').style.display = 'grid';
+    var el = $('rating'); el.innerHTML = verdict(r.ratingWhatIf); el.className = 'card vd' + (r.ratingWhatIf && r.ratingWhatIf.disponivel ? (r.ratingWhatIf.atual.grupo === 'CD' ? ' bom' : '') : '');
+    $('cen').innerHTML = r.scenarios.map(function (s) { var sit = SIT[s.viability] || ['', s.viability];
+      return '<tr class="click" data-k="' + s.scenarioKey + '"><td><b>' + E(ROT[s.scenarioKey] || s.label) + '</b>' + (r.melhor === s.scenarioKey ? ' <span class="pill ok">Sugerido</span>' : '') + '</td><td class="num">' + R(s.desconto) + '</td><td class="num">' + R(s.nominalCost) + '</td><td class="num">' + (s.pv == null ? '—' : R(s.pv)) + '</td><td class="num">' + R(s.picoCaixa) + '</td><td><span class="pill ' + sit[0] + '">' + sit[1] + '</span></td></tr>'; }).join('');
+    $('cen-nota').textContent = (r.missingInputs && r.missingInputs.length ? 'Falta informar: ' + r.missingInputs.join('; ') + '. ' : '') + 'Parâmetros do edital: ' + (r.catalogStatus === 'a_confirmar_no_edital_oficial' ? 'a confirmar no edital oficial.' : r.catalogStatus) + ' Tratamento de IRPJ/CSLL do desconto não avaliado.';
+    $('cen-sel').innerHTML = r.scenarios.map(function (s) { return '<option value="' + s.scenarioKey + '"' + (r.melhor === s.scenarioKey ? ' selected' : '') + '>' + E(ROT[s.scenarioKey] || s.label) + '</option>'; }).join(''); drawRules();
+  }
+  function drawRules() {
+    var s = ultimo && ultimo.scenarios.filter(function (x) { return x.scenarioKey === $('cen-sel').value; })[0]; if (!s) { $('reg').innerHTML = ''; return; }
+    $('reg').innerHTML = s.constraintResults.map(function (c) { var st = RES[c.evaluationStatus] || ['', c.evaluationStatus]; return '<tr><td><b>' + c.ruleCode + '</b></td><td><span class="pill ' + st[0] + '">' + st[1] + '</span></td><td>' + E(c.explanation) + '</td></tr>'; }).join('');
+  }
+  $('cen-sel').onchange = drawRules;
+  $('cen').addEventListener('click', function (e) { var tr = e.target.closest('tr[data-k]'); if (tr) { $('cen-sel').value = tr.dataset.k; drawRules(); } });
+
+  function body(extra) { return Object.assign({ debts: debtsBody(), facts: facts() }, extra || {}); }
+  function calcular() {
+    if (!debts.length) { RV.toast('Informe ao menos uma inscrição.', 'erro'); return Promise.resolve(); }
+    $('calc').disabled = true;
+    return RV.api('POST', '/api/v1/pgfn/simular', body()).then(render).catch(function (e) { RV.toast(e.message || 'Não foi possível calcular.', 'erro'); }).then(function () { $('calc').disabled = false; });
+  }
+  $('calc').onclick = calcular;
+  $('s-ok').onclick = function () {
+    var rt = {}; if ($('s-capag').value) rt.capagRevisada = num($('s-capag').value); if ($('s-passivo').value) rt.passivoAjuste = num($('s-passivo').value);
+    if (!Object.keys(rt).length) { RV.toast('Informe a CAPAG revisada ou o ajuste do passivo.', 'erro'); return; }
+    RV.api('POST', '/api/v1/pgfn/simular', body({ rating: rt })).then(function (r) { $('s-out').innerHTML = '<div class="card vd ' + (r.ratingSimulado && r.ratingSimulado.atual && r.ratingSimulado.atual.grupo === 'CD' ? 'bom' : 'ruim') + '" style="padding:14px">' + verdict(r.ratingSimulado) + '</div>'; }).catch(function (e) { RV.toast(e.message || 'Erro.', 'erro'); });
+  };
+
+  // ---- produção: dossiês gravados
+  function loadList() { return RV.api('GET', '/api/v1/pgfn').then(function (r) { $('lista-corpo').innerHTML = r.dossies.map(function (d) { var s = SIT[d.viabilityStatus] || ['', 'Sem cálculo']; return '<tr class="click" data-id="' + d.id + '"><td><b>' + E(d.cliente.nome || '') + '</b><div class="mut">' + E(d.cliente.cnpj || '') + '</div></td><td class="num">' + d.dividas + '</td><td class="num">' + R(d.total) + '</td><td><span class="pill ' + s[0] + '">' + s[1] + '</span></td></tr>'; }).join('') || '<tr><td colspan="4" class="mut">Nenhum dossiê ainda.</td></tr>'; }); }
+  function open(id) {
+    caseId = id; return RV.api('GET', '/api/v1/pgfn/' + id).then(function (g) {
+      $('lista').hidden = true; $('editor').hidden = false; $('gravar').hidden = false; $('ed-titulo').textContent = g.cliente.nome + ' · ' + g.cliente.cnpj; fill(g.facts); fromServer(g.dividas);
+      $('topo-acoes').innerHTML = '<button class="sec" id="voltar">Todos os dossiês</button>'; $('voltar').onclick = function () { location.reload(); };
+      if (g.resultado) { calcular().then(function () { briefs(g); }); }
+    });
+  }
+  function briefs(g) {
+    var l = (g.resultado ? g.resultado.scenarios : []).reduce(function (a, s) { return a.concat(s.briefs.map(function (b) { return { b: b, s: s }; })); }, []); $('briefs-card').hidden = !l.length;
+    $('briefs').innerHTML = (g.desatualizado ? '<p><span class="pill warn">Dados alterados depois do último cálculo gravado</span></p>' : '') + l.map(function (x) { var c = x.b.content || {}; return '<div class="grupo-box" style="margin-bottom:10px"><b>' + E(ROT[x.s.scenarioKey] || x.s.scenarioKey) + ' · ' + (x.b.audience === 'tecnico' ? 'técnico' : 'parceiro') + '</b> <span class="pill">' + x.b.status + '</span><p>' + E(c.message || '') + '</p><p class="mut">' + E(c.shortTermReason || '') + ' ' + E(c.longTermRisk || '') + '</p>' +
+      (podeMaster && x.b.status !== 'approved' ? '<div class="acoes"><button class="mini" data-b="' + x.b.id + '" data-d="approve">Aprovar</button><button class="sec mini" data-b="' + x.b.id + '" data-d="return">Devolver</button></div>' : '') + '</div>'; }).join('');
+  }
+  $('briefs').addEventListener('click', function (e) { var b = e.target.dataset.b; if (!b) return; RV.api('POST', '/api/v1/pgfn/' + caseId + '/revisao', { briefId: b, decision: e.target.dataset.d }).then(function () { RV.toast('Revisão registrada.'); open(caseId); }).catch(function (x) { RV.toast(x.message, 'erro'); }); });
+  $('gravar').onclick = function () {
+    $('gravar').disabled = true;
+    RV.api('PUT', '/api/v1/pgfn/' + caseId + '/dividas', { debts: debtsBody() }).then(function () { return RV.api('PATCH', '/api/v1/pgfn/' + caseId, { facts: facts() }); })
+      .then(function () { return RV.api('POST', '/api/v1/pgfn/' + caseId + '/calcular'); }).then(function () { RV.toast('Cálculo gravado.'); return open(caseId); })
+      .catch(function (e) { RV.toast(e.message || 'Não foi possível gravar.', 'erro'); }).then(function () { $('gravar').disabled = false; });
+  };
+  $('n-criar').onclick = function () { RV.api('POST', '/api/v1/pgfn', { cnpj: $('n-cnpj').value, legalName: $('n-nome').value }).then(function (r) { return open(r.id); }).catch(function (e) { RV.toast(e.message || 'Erro.', 'erro'); }); };
+  $('lista-corpo').addEventListener('click', function (e) { var tr = e.target.closest('tr[data-id]'); if (tr) open(tr.dataset.id); });
+
+  RV.api('GET', '/api/v1/pgfn/catalogo').then(function (c) { $('aviso-txt').textContent = ' Limites e prazos do edital (edital 2/2024 e atualizações) ainda precisam de conferência no texto oficial; o resultado é estimativa de apoio à decisão.'; }).catch(function () {});
+  if (DEMO) {
+    $('editor').hidden = false; $('ed-titulo').textContent = 'Exemplo para demonstração (dados fictícios)';
+    fill({ perfil: 'geral', capagValue: { value: 400000 }, passivoRfb: { value: 1480000 }, monthlyCashCapacity: { value: 30000 }, selicAnnual: { value: 0.14 }, discountRateAnnual: { value: 0.18 }, devedorContumaz: false, transacaoRescindida2anos: false });
+    debts = [{ ref: 'CDA 1', kind: 'tributario', adm: 'ativa', insc: '2023-05-10', princ: 600000, saldo: 1000000 }, { ref: 'CDA 2', kind: 'previdenciario', adm: 'ativa', insc: '2022-03-02', princ: 200000, saldo: 300000 }]; drawDebts(); calcular();
+  } else {
+    RV.api('GET', '/api/v1/me').catch(function () { return null; }).then(function (eu) { podeMaster = Boolean(eu && (eu.master || (eu.user && eu.user.master))); });
+    $('lista').hidden = false; loadList().catch(function (e) { RV.toast(e.message || 'Sem acesso.', 'erro'); });
+  }
+})();
+</script>
+</body>
+</html>

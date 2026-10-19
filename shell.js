@@ -116,15 +116,16 @@
     teses: '<path d="M12 3v18"/><path d="M5 21h14"/><path d="M3 7h18"/><path d="m6 7-3 7a3 3 0 0 0 6 0z"/><path d="m18 7-3 7a3 3 0 0 0 6 0z"/>',
     dash: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
     users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+    pgfn: '<path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M9 21v-6h6v6"/>',
     master: '<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>'
   };
   var svg = function (k) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICO[k] + '</svg>'; };
   var aqui = location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
   // [caminho, rótulo, ícone, href alternativo, atributo de visibilidade]
   var principais = DEMO_AMB
-    ? [['/demonstracao', 'Início', 'inicio'], ['/', 'Diagnosticar', 'diag', '/?demo=1'], ['/lei-do-bem', 'Lei do Bem', 'lei', '/lei-do-bem.html?demo=1'], ['/teses', 'Teses', 'teses', '/teses.html?demo=1'], ['/execucao', 'Retificação', 'exe']]
+    ? [['/demonstracao', 'Início', 'inicio'], ['/', 'Diagnosticar', 'diag', '/?demo=1'], ['/lei-do-bem', 'Lei do Bem', 'lei', '/lei-do-bem.html?demo=1'], ['/teses', 'Teses', 'teses', '/teses.html?demo=1'], ['/execucao', 'Retificação', 'exe'], ['/pgfn', 'Transação PGFN', 'pgfn']]
     : [['/', 'Diagnosticar', 'diag'], ['/lei-do-bem', 'Lei do Bem', 'lei'], ['/crm', 'CRM', 'crm'], ['/clientes', 'Clientes', 'cli'], ['/teses', 'Teses', 'teses'], ['/dashboard', 'Dashboard', 'dash']];
-  var plataforma = DEMO_AMB ? [] : [['/execucao', 'Execução', 'exe', null, 'data-plat'], ['/usuarios', 'Usuários', 'users', null, 'data-admin'], ['/master', 'Master', 'master', null, 'data-master']];
+  var plataforma = DEMO_AMB ? [] : [['/execucao', 'Execução', 'exe', null, 'data-plat'], ['/pgfn', 'Transação PGFN', 'pgfn', null, 'data-plat'], ['/usuarios', 'Usuários', 'users', null, 'data-admin'], ['/master', 'Master', 'master', null, 'data-master']];
   var href = function (p) { return p === '/' ? '/' : p + '.html'; };
   var item = function (l) {
     var atual = l[0] === '/' ? aqui === '/' : aqui.indexOf(l[0]) === 0;

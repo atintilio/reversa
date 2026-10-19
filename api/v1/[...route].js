@@ -10,6 +10,7 @@ const leidobem = require('../../lib/domain/leidobem');
 const master = require('../../lib/domain/master');
 const clientAuthorizations = require('../../lib/domain/client-authorizations');
 const execucao = require('../../lib/domain/execucao');
+const pgfn = require('../../lib/domain/pgfn');
 
 function deny(ctx, permission, action) {
   if (can(ctx, permission)) return;
@@ -186,6 +187,23 @@ async function route(req, res) {
       if (action === 'fase' && m === 'POST') return json(res, 200, await execucao.advance(ctx, id, body));
       if (action === 'contador' && m === 'POST') return json(res, 200, await execucao.sendAccountant(ctx, id, body));
       if (action === 'arquivos' && m === 'POST') return json(res, 200, await execucao.registerFiles(ctx, id, body));
+      return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
+
+    case 'pgfn':
+      // /pgfn · /pgfn/catalogo · /pgfn/simular (sem gravar) · /pgfn/:id · /pgfn/:id/dividas · /pgfn/:id/calcular · /pgfn/:id/rating · /pgfn/:id/revisao
+      if (!id) {
+        if (m === 'GET') return json(res, 200, await pgfn.list(ctx));
+        if (m === 'POST') return json(res, 201, await pgfn.create(ctx, body));
+        return method(res, ['GET', 'POST']);
+      }
+      if (id === 'catalogo' && m === 'GET') return json(res, 200, pgfn.catalogo());
+      if (id === 'simular' && m === 'POST') return json(res, 200, await pgfn.simulate(ctx, body));
+      if (!action && m === 'GET') return json(res, 200, await pgfn.get(ctx, id));
+      if (!action && m === 'PATCH') return json(res, 200, await pgfn.saveFacts(ctx, id, body));
+      if (action === 'dividas' && m === 'PUT') return json(res, 200, await pgfn.saveDebts(ctx, id, body));
+      if (action === 'calcular' && m === 'POST') return json(res, 200, await pgfn.run(ctx, id));
+      if (action === 'rating' && m === 'POST') return json(res, 200, await pgfn.rating(ctx, id, body));
+      if (action === 'revisao' && m === 'POST') return json(res, 200, await pgfn.review(ctx, id, body));
       return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
 
     case 'dashboard':
