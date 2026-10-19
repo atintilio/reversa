@@ -29,7 +29,7 @@ test('meses sem oportunidade contam na média e valor ocultado não aparece no P
   const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x => x[1]).find(x => x.includes('root.GeradorMemoria ='));
   const textos = [];
   function PDF() {
-    this.setFontSize = () => {}; this.text = x => textos.push(x); this.splitTextToSize = x => [x];
+    this.setFontSize = () => {}; this.setFont = () => {}; this.text = x => textos.push(x); this.splitTextToSize = x => [x];
     this.autoTable = cfg => { textos.push(cfg.body); this.lastAutoTable = { finalY: 80 }; };
     this.output = () => textos; this.addPage = () => {};
   }

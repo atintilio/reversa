@@ -163,7 +163,7 @@
       });
     });
 
-    var porTese = {}, semCadastro = {}, rubricasUsadas = {}, comps = {}, reflexos = { base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {} };
+    var porTese = {}, semCadastro = {}, semIncidencia = {}, semTese = {}, rubricasUsadas = {}, comps = {}, reflexos = { base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {} };
     function acumula(tese, r, base, aliq, comp, motivo) {
       var t = porTese[tese] = porTese[tese] || { id: tese, nome: NOMES[tese], base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, competencias: {} };
       var noPrazo = comp >= limite;
@@ -183,8 +183,12 @@
           if (!lista) { semCadastro[tab + '|' + cod] = (semCadastro[tab + '|' + cod] || 0) + vr; return; }
           var r = vigente(lista, comp);
           rubricasUsadas[tab + '|' + cod] = r;
-          if (r.tpRubr !== '1' || !INCIDE_PATRONAL[r.codIncCP] || vr <= 0) return;
+          if (r.tpRubr !== '1' || !INCIDE_PATRONAL[r.codIncCP] || vr <= 0) {
+            if (vr > 0) { var kn = r.dsc + ' (tipo ' + (r.tpRubr || '?') + ', incidência ' + (r.codIncCP || 'não informada') + ')'; semIncidencia[kn] = (semIncidencia[kn] || 0) + vr; }
+            return;
+          }
           var c = classificar(r.dsc);
+          if (!c && !(REFLEXOS.test(norm(r.dsc)) && ratAj)) semTese[r.dsc] = (semTese[r.dsc] || 0) + vr;
           var aliq = CPP + (ratAj || 0) + terceiros;
           if (c) acumula(c.id, r, vr, aliq, comp, c.motivo);
           if (REFLEXOS.test(norm(r.dsc)) && ratAj) {
@@ -210,6 +214,9 @@
     if (!contagem['S-1010']) avisos.unshift('Faltam os eventos S-1010 (tabela de rubricas): sem eles não é possível saber a incidência de cada rubrica.');
     if (!contagem['S-1200']) avisos.unshift('Faltam os eventos S-1200 (remuneração): sem eles não há base para o cálculo.');
     if (!contagem['S-1005']) avisos.push('Faltam os eventos S-1005 (estabelecimentos): o RAT ajustado pelo FAP não foi aplicado.');
+    var lista = function (o) { return Object.keys(o).sort(function (a, b) { return o[b] - o[a]; }).slice(0, 8).join('; '); };
+    if (Object.keys(semIncidencia).length) avisos.push('Rubricas sem incidência patronal declarada no S-1010 (só rubricas de vencimento com código de incidência 11, 12, 21 ou 22 entram no cálculo): ' + lista(semIncidencia) + '.');
+    if (Object.keys(semTese).length) avisos.push('Rubricas com incidência, mas sem tese associada pela descrição (a equipe técnica deve classificar): ' + lista(semTese) + '.');
     Object.keys(semCadastro).slice(0, 20).forEach(function (k) { avisos.push('Rubrica ' + k.split('|')[1] + ' (tabela ' + k.split('|')[0] + ') usada na folha sem cadastro no S-1010.'); });
     return {
       versaoMotor: VERSAO, geradoEm: new Date().toISOString(), empregador: empregador,

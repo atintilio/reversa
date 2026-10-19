@@ -290,6 +290,13 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     <p class="note">Entram no recuperável só as teses pacificadas. Insumos/Tema 779 são potencial a validar com prova de essencialidade ou relevância; o risco da Lei 14.592/2023 é passivo a regularizar antes do pedido. PERSE exige habilitação, receita elegível e verificação do encerramento administrativo/decisões judiciais por competência.</p>
   </section>
 
+  <section aria-labelledby="t-cob" id="sec-cob" hidden>
+    <div class="sec-head"><h2 id="t-cob">Cobertura do <em>catálogo</em></h2></div>
+    <ul class="msgs" id="leitura-motivos"></ul>
+    <details class="rub"><summary id="cob-resumo">Todas as teses cadastradas</summary><div class="scroll"><table id="tab-cob"></table></div></details>
+    <p class="note">Calculada: o motor apurou valor com os arquivos enviados. A apurar: a tese se aplica ao perfil, mas depende de outro documento (indicado) ou de análise da equipe técnica. Não se aplica: o regime do cliente a exclui.</p>
+  </section>
+
   <section aria-labelledby="t-prev" id="sec-prev" hidden>
     <div class="sec-head">
       <h2 id="t-prev">Oportunidades <em>previdenciárias</em></h2>
@@ -408,6 +415,8 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
 <script src="/motor-creditos.js"></script>
 <script src="/motor-esocial.js"></script>
+<script src="/teses-regras.js"></script>
+<script src="/teses-diagnostico.js"></script>
 <script src="/demo-sped.js"></script>
 <script>
 /*
@@ -872,7 +881,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   function ehEs(x) { return x.tipo === 'esocial'; }
   function efdValidos() { return fila.filter(function (x) { return !ehEs(x) && x.lido.meta && !x.lido.erros.length; }); }
   function esValidos() { return fila.filter(function (x) { return ehEs(x) && !x.lido.erros.length && x.lido.eventos.length; }); }
-  function limparResultado() { estado.res = null; estado.prev = null; secoesResultado(false); $('sec-prev').hidden = true; $('banner').innerHTML = ''; }
+  function limparResultado() { estado.res = null; estado.prev = null; secoesResultado(false); $('sec-prev').hidden = true; $('sec-cob').hidden = true; $('banner').innerHTML = ''; }
   function aoEscolher(lista) {
     var fs = Array.prototype.slice.call(lista || []);
     if (!fs.length) return;
@@ -955,7 +964,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       estado.arquivos = validos; estado.lidos = validos.map(function (x) { return x.lido; });
       apurar();
     } else { estado.res = null; estado.arquivos = []; estado.lidos = []; secoesResultado(false); banner(); }
-    renderPrev();
+    renderPrev(); renderCobertura();
     toast('Diagnóstico gerado com ' + (validos.length + es.length) + ' arquivo(s)');
     $(validos.length ? 'resumo' : 't-prev').scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
@@ -964,7 +973,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
   ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
   drop.addEventListener('drop', function (e) { aoEscolher(e.dataTransfer && e.dataTransfer.files); });
-  $('btn-exemplo').addEventListener('click', function () { estado.prev = null; $('sec-prev').hidden = true; processar(EXEMPLO, true); toast('Exemplo carregado'); });
+  $('btn-exemplo').addEventListener('click', function () { estado.prev = null; $('sec-prev').hidden = true; processar(EXEMPLO, true); renderCobertura(); toast('Exemplo carregado'); });
 
   // ---------------------------------------------------------------- render
   function tese(id) { return estado.res.teses.filter(function (t) { return t.id === id; })[0]; }
@@ -1042,6 +1051,49 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     ['Revisão de rubricas e incidências', 'a lista de rubricas abaixo é o ponto de partida']
   ];
   function RP(v) { return R(Math.round(v * 100)); } // o motor eSocial trabalha em reais; formatarReais espera centavos
+  function renderCobertura() {
+    var sec = $('sec-cob'), TR = window.TesesRegras, TD = window.TesesDiagnostico;
+    var res = estado.res, p = estado.prev;
+    if (!TR || (!res && !p)) { sec.hidden = true; return; }
+    sec.hidden = false;
+    var motivos = res && res.leitura ? res.leitura.motivos : {};
+    $('leitura-motivos').innerHTML = Object.keys(motivos).map(function (id) {
+      var c = res.catalogo.filter(function (x) { return x.id === id; })[0];
+      return '<li><strong>' + esc(c ? c.curto : id) + ':</strong> ' + esc(motivos[id]) + '</li>';
+    }).join('');
+    var cod = { regime: null };
+    if (res && res.teses) {
+      var codigos = {}; estado.lidos.forEach(function (l) { if (l.meta) codigos[l.meta.regimeCodigo] = 1; });
+      cod.regime = codigos['1'] || codigos['3'] ? 'real' : codigos['2'] ? 'presumido' : null;
+    }
+    var perfil = {};
+    if (p) perfil.folha = true;
+    if (res) {
+      var nt = function (id) { var t = res.teses.filter(function (x) { return x.id === id; })[0]; return t && t.total.itensComValor > 0; };
+      if (nt('monofasico')) perfil.monofasico = true;
+      if (nt('icmsSt')) perfil.st = true;
+    }
+    var calc = { T001: 'tema69', T002: 'icmsSt', T016: 'insumos', T046: 'monofasico', T011: 'saldoCredor' };
+    var n = { calc: 0, apurar: 0, nao: 0 };
+    var linhas = TR.TESES.map(function (t) {
+      var d = TD && TD.de ? TD.de(t.id) || {} : {};
+      var valor = null, estado_ = '';
+      if (calc[t.id] && res) {
+        var tt = res.teses.filter(function (x) { return x.id === calc[t.id]; })[0];
+        if (tt && tt.aplicavel) valor = (tt.totalNoPrazo.pis + tt.totalNoPrazo.cofins);
+      }
+      if (p) { var pt = p.teses.filter(function (x) { return x.id === t.id; })[0]; if (pt) valor = Math.round(pt.valorNoPrazo * 100); }
+      var av = TR.avaliar(t, { regime: cod.regime, perfil: perfil });
+      var cel, ordem;
+      if (valor !== null && valor > 0) { n.calc++; cel = '<span class="pill ok">CALCULADA</span>'; ordem = 0; }
+      else if (av.estado === 'nao') { n.nao++; cel = '<span class="pill neu">NÃO SE APLICA</span>'; ordem = 2; }
+      else { n.apurar++; cel = '<span class="pill warn">A APURAR</span>'; ordem = 1; }
+      var docs = (d.docs || []).join(', ') || '—';
+      return { o: ordem, h: '<tr><td class="num">' + t.id + '</td><td class="wrapc">' + esc(t.nome) + '</td><td>' + esc(t.tributo) + '</td><td>' + cel + '</td><td class="r">' + (valor ? R(valor) : '—') + '</td><td class="wrapc"><small>' + (ordem === 2 ? esc(av.motivos.join('; ')) : esc(docs)) + '</small></td></tr>' };
+    }).sort(function (a, b) { return a.o - b.o; });
+    $('cob-resumo').textContent = 'Todas as teses cadastradas — ' + n.calc + ' calculada(s), ' + n.apurar + ' a apurar com outros documentos, ' + n.nao + ' fora do regime';
+    $('tab-cob').innerHTML = '<thead><tr><th>Cód.</th><th>Tese</th><th>Tributo</th><th>Situação</th><th class="r">Valor no prazo</th><th>Documento necessário / motivo</th></tr></thead><tbody>' + linhas.map(function (x) { return x.h; }).join('') + '</tbody>';
+  }
   function renderPrev() {
     var p = estado.prev, sec = $('sec-prev'), R = RP;
     if (!p) { sec.hidden = true; return; }

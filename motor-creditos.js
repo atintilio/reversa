@@ -86,9 +86,14 @@
     'C170': { NUM_ITEM: 1, COD_ITEM: 2, DESCR_COMPL: 3, QTD: 4, UNID: 5, VL_ITEM: 6, VL_DESC: 7, CST_ICMS: 9, CFOP: 10,
               VL_BC_ICMS: 12, ALIQ_ICMS: 13, VL_ICMS: 14, VL_BC_ICMS_ST: 15, ALIQ_ST: 16, VL_ICMS_ST: 17, VL_IPI: 23,
               CST_PIS: 24, VL_BC_PIS: 25, ALIQ_PIS: 26, VL_PIS: 29, CST_COFINS: 30, VL_BC_COFINS: 31, ALIQ_COFINS: 32, VL_COFINS: 35 },
+    'C180': { COD_MOD: 1, DT_DOC_INI: 2, DT_DOC_FIN: 3, COD_ITEM: 4, COD_NCM: 5, EX_IPI: 6, VL_TOT_ITEM: 7 },
+    'C181': { CST: 1, CFOP: 2, VL_ITEM: 3, VL_DESC: 4, VL_BC: 5, ALIQ: 6, VL_TRIB: 9 },
+    'C185': { CST: 1, CFOP: 2, VL_ITEM: 3, VL_DESC: 4, VL_BC: 5, ALIQ: 6, VL_TRIB: 9 },
+    'M100': { COD_CRED: 1, VL_CRED: 7, VL_CRED_DISP: 11, SLD_CRED: 14 },
+    'M500': { COD_CRED: 1, VL_CRED: 7, VL_CRED_DISP: 11, SLD_CRED: 14 },
     '9999': { QTD_LIN: 1 }
   };
-  var MIN_CAMPOS = { '0000': 11, '0140': 4, '0200': 9, 'C010': 3, 'C100': 27, 'C170': 36 };
+  var MIN_CAMPOS = { '0000': 11, '0140': 4, '0200': 9, 'C010': 3, 'C100': 27, 'C170': 36, 'C180': 8, 'C181': 10, 'C185': 10, 'M100': 15, 'M500': 15 };
 
   var REGIME = { '1': 'Não cumulativo', '2': 'Cumulativo', '3': 'Misto (não cumulativo e cumulativo)' };
   var SIT_VALIDAS = { '00': 1, '01': 1, '06': 1, '07': 1, '08': 1 };
@@ -143,11 +148,11 @@
   function lerEfdContribuicoes(texto, nomeArquivo) {
     var res = {
       arquivo: nomeArquivo || '(sem nome)',
-      meta: null, itens: [], entradas: [], produtos: 0, avisos: [], erros: [],
+      meta: null, itens: [], entradas: [], consolidados: [], saldoCredito: { pis: 0, cofins: 0, registros: 0 }, produtos: 0, avisos: [], erros: [],
       estatisticas: { linhas: 0, registros: {}, c100Saida: 0, c100Entrada: 0, c100SaidaSemItens: 0, c100Ignorados: 0, consolidados: 0, itensSemNcm: 0 }
     };
     var linhas = texto.split(/\r?\n/);
-    var estab = null, estab0140 = null, doc = null, docTemItem = false, qtd9999 = null;
+    var estab = null, estab0140 = null, doc = null, docTemItem = false, qtd9999 = null, c180 = null;
     var cadastro = {};   // "cnpj|cod" e "*|cod" -> {ncm, descr, exIpi, unid}
 
     function fecharDoc() {
@@ -206,10 +211,31 @@
           fecharDoc();
           estab = f[L.C010.CNPJ];
           if (f[L.C010.IND_ESCRI] === '1') {
-            res.avisos.push('Estabelecimento ' + estab + ' escriturado de forma consolidada (C180/C190): itens não são analisados nesta versão.');
+            res.avisos.push('Estabelecimento ' + estab + ' escriturado de forma consolidada (C180/C181/C185): analisado apenas para monofásicos.');
           }
-        } else if (reg === 'C180' || reg === 'C190' || reg === 'C181' || reg === 'C185') {
+        } else if (reg === 'C180') {
           res.estatisticas.consolidados++;
+          var q = L.C180, pc = produto(f[q.COD_ITEM]);
+          c180 = { estab: estab, codItem: f[q.COD_ITEM], ncm: soDigitos(f[q.COD_NCM]) || (pc ? pc.ncm : ''), exIpi: f[q.EX_IPI] || (pc ? pc.exIpi : ''),
+                   descricao: pc ? pc.descr : '', data: data(f[q.DT_DOC_INI]), porCfop: {} };
+        } else if (reg === 'C181' || reg === 'C185') {
+          res.estatisticas.consolidados++;
+          if (!c180) { res.avisos.push('Linha ' + nLinha + ': ' + reg + ' sem C180 anterior — ignorado.'); continue; }
+          var qc = L[reg], pis = reg === 'C181';
+          var alvo = c180.porCfop[f[qc.CFOP]];
+          if (!alvo) {
+            alvo = c180.porCfop[f[qc.CFOP]] = { linha: nLinha, estab: c180.estab, doc: 'consolidado', serie: '', chave: '', data: c180.data ? c180.data.iso : '', item: '', codItem: c180.codItem,
+              descricao: c180.descricao, ncm: c180.ncm, exIpi: c180.exIpi, qtd: 0, unid: '', cfop: f[qc.CFOP], cstIcms: '',
+              vlItem: 0, vlDesc: 0, vlIcms: 0, vlIcmsSt: 0, vlIpi: 0, cstPis: '', bcPis: 0, aliqPis: 0, vlPis: 0, cstCofins: '', bcCofins: 0, aliqCofins: 0, vlCofins: 0, consolidado: true };
+            res.consolidados.push(alvo);
+          }
+          if (pis) { alvo.cstPis = f[qc.CST]; alvo.vlItem = centavos(f[qc.VL_ITEM]); alvo.vlDesc = centavos(f[qc.VL_DESC]); alvo.bcPis = centavos(f[qc.VL_BC]); alvo.aliqPis = aliquota(f[qc.ALIQ]); alvo.vlPis = centavos(f[qc.VL_TRIB]); }
+          else { alvo.cstCofins = f[qc.CST]; if (!alvo.vlItem) alvo.vlItem = centavos(f[qc.VL_ITEM]); alvo.bcCofins = centavos(f[qc.VL_BC]); alvo.aliqCofins = aliquota(f[qc.ALIQ]); alvo.vlCofins = centavos(f[qc.VL_TRIB]); }
+        } else if (reg === 'C190') {
+          res.estatisticas.consolidados++;
+        } else if (reg === 'M100' || reg === 'M500') {
+          var qm = L[reg], sld = centavos(f[qm.SLD_CRED]);
+          res.saldoCredito[reg === 'M100' ? 'pis' : 'cofins'] += sld; res.saldoCredito.registros++;
         } else if (reg === 'C100') {
           fecharDoc();
           var c = L.C100;
@@ -256,7 +282,7 @@
     if (qtd9999 === null) res.avisos.push('Registro 9999 ausente: o arquivo pode estar incompleto.');
     else if (qtd9999 !== res.estatisticas.linhas) res.avisos.push('Registro 9999 informa ' + qtd9999 + ' linhas, mas o arquivo tem ' + res.estatisticas.linhas + '. O arquivo pode estar truncado ou editado.');
     if (res.estatisticas.c100SaidaSemItens > 0) res.avisos.push(res.estatisticas.c100SaidaSemItens + ' nota(s) de saída sem itens C170: não analisadas nesta versão.');
-    if (res.estatisticas.consolidados > 0) res.avisos.push(res.estatisticas.consolidados + ' registro(s) de escrituração consolidada (C180–C190) não analisados nesta versão.');
+    if (res.consolidados.length > 0) res.avisos.push(res.consolidados.length + ' linha(s) de escrituração consolidada (C180/C181/C185) lida(s): usadas na tese dos monofásicos; sem ICMS destacado, não entram no Tema 69.');
     var totalItens = res.itens.length + res.entradas.length;
     if (totalItens > 0 && res.estatisticas.itensSemNcm === totalItens) res.avisos.push('Nenhum item tem NCM no cadastro (0200): a tese dos monofásicos não pode ser verificada neste arquivo.');
     else if (res.estatisticas.itensSemNcm > 0) res.avisos.push(res.estatisticas.itensSemNcm + ' item(ns) sem NCM no cadastro (0200).');
@@ -385,6 +411,9 @@
     { id: 'lei14592', nome: 'Crédito tomado sobre ICMS após a Lei 14.592/2023', curto: 'Risco: ICMS no crédito',
       classificacao: 'Verificação de risco', natureza: 'risco', regimes: 'Só Lucro Real (não cumulativo)', calculada: true,
       fundamento: 'Lei 14.592/2023 (conversão da MP 1.159/2023): a partir de 05/2023 o ICMS destacado não integra a base dos créditos. Crédito tomado sobre ICMS pode ser glosado e deve ser compensado antes de pedir restituição.' },
+    { id: 'saldoCredor', nome: 'Saldo credor de PIS/COFINS acumulado e não utilizado', curto: 'Saldo credor acumulado (M100/M500)',
+      classificacao: 'Consolidada em lei — destino depende da origem do crédito', natureza: 'potencial', regimes: 'Só Lucro Real (não cumulativo)', calculada: true,
+      fundamento: 'Leis 10.637/2002, art. 5º, e 10.833/2003, art. 6º; Lei 11.033/2004, art. 17; IN RFB 2.055/2021. Saldo informado pela própria empresa nos registros M100 (PIS) e M500 (COFINS) da última competência lida. Ressarcimento ou compensação dependem da origem do crédito (exportação, suspensão, alíquota zero) e da conferência da escrituração.' },
     { id: 'tema118', nome: 'Exclusão do ISS da base do PIS/COFINS', curto: 'ISS na base (Tema 118)',
       classificacao: 'Em julgamento — alto risco', natureza: 'monitorar', regimes: 'Lucro Real e Presumido', calculada: false,
       fundamento: 'STF, RE 592.616 (Tema 118): placar empatado em 5 x 5, julgamento retirado da pauta de 25/02/2026. Só por ação judicial; não entra no recuperável.' },
@@ -412,10 +441,53 @@
     insumos: [
       ['data', 'Data', 't'], ['doc', 'NF', 't'], ['codItem', 'Produto', 't'], ['descricao', 'Descrição', 't'], ['cfop', 'CFOP', 't'], ['cstPis', 'CST', 't'],
       ['base', 'Base potencial', 'm'], ['pis', 'PIS potencial', 'm'], ['cofins', 'COFINS potencial', 'm'], ['status', 'Situação', 't']],
+    saldoCredor: [
+      ['competencia', 'Última competência', 't'], ['cnpjMatriz', 'CNPJ', 't'], ['arquivo', 'Arquivo', 't'], ['pis', 'Saldo PIS', 'm'], ['cofins', 'Saldo COFINS', 'm'], ['status', 'Situação', 't']],
     lei14592: [
       ['data', 'Data', 't'], ['doc', 'NF', 't'], ['codItem', 'Produto', 't'], ['cfop', 'CFOP', 't'], ['vlItem', 'Valor item', 'm'], ['vlIcms', 'ICMS', 'm'],
       ['bcPis', 'Base do crédito', 'm'], ['excessoPis', 'ICMS na base', 'm'], ['pis', 'PIS em risco', 'm'], ['cofins', 'COFINS em risco', 'm'], ['status', 'Situação', 't']]
   };
+
+  /**
+   * Por que uma tese ficou sem valor? Nunca deixa o zero mudo: aponta o que o arquivo tem (ou não tem).
+   * Devolve { arquivos: [...], motivos: { idTese: 'texto' } }.
+   */
+  function explicarLeitura(usados, T) {
+    var arquivos = usados.map(function (l) {
+      var e = l.estatisticas || {};
+      return { arquivo: l.arquivo, competencia: l.meta.competencia, regime: l.meta.regime || '—',
+               saidas: l.itens.length, entradas: (l.entradas || []).length, consolidados: (l.consolidados || []).length,
+               produtos: l.produtos, saldoM: l.saldoCredito ? l.saldoCredito.registros : 0, c100SemItens: e.c100SaidaSemItens || 0 };
+    });
+    var saidas = [], entradas = [], consol = [];
+    usados.forEach(function (l) { saidas = saidas.concat(l.itens); entradas = entradas.concat(l.entradas || []); consol = consol.concat(l.consolidados || []); });
+    var semItens = arquivos.reduce(function (n, a) { return n + a.c100SemItens; }, 0);
+    var naoCum = usados.some(function (l) { return l.meta.regimeCodigo === '1' || l.meta.regimeCodigo === '3'; });
+    var m = {};
+    function algum(arr, fn) { return arr.some(fn); }
+    var base0 = semItens ? ' Há ' + semItens + ' nota(s) de saída sem itens C170 (registro C100 sem detalhe): sem o item não há como calcular.' : '';
+    if (!T.tema69.aplicavel || !T.tema69.total.itensComValor) {
+      if (!saidas.length) m.tema69 = 'Nenhuma saída com itens C170 nos arquivos.' + base0 + (consol.length ? ' A escrituração consolidada (C180/C181/C185) não traz o ICMS destacado.' : '');
+      else if (!algum(saidas, function (i) { return i.vlIcms > 0; })) m.tema69 = 'Nenhum item de saída tem ICMS destacado (campo VL_ICMS do C170 zerado ou vazio). Sem o ICMS por item, a exclusão não pode ser calculada.';
+      else if (!algum(saidas, function (i) { return CST_TRIBUTADOS[i.cstPis] || CST_TRIBUTADOS[i.cstCofins]; })) m.tema69 = 'Nenhuma saída com CST 01 ou 02 de PIS/COFINS (tributação normal): os itens estão com outros CST.';
+      else m.tema69 = 'Nos itens com ICMS, a base de PIS/COFINS declarada já está sem o ICMS (BC igual ou menor que a base correta): não há excesso a recuperar.';
+    }
+    if (!T.monofasico.aplicavel || !T.monofasico.total.itensComValor) {
+      var comNcm = saidas.concat(consol).filter(function (i) { return i.ncm; });
+      if (!comNcm.length) m.monofasico = 'Nenhum item de saída tem NCM (cadastro 0200 ausente ou sem NCM): sem NCM não é possível identificar monofásicos.';
+      else if (!algum(comNcm, function (i) { return classificarMonofasico(i.ncm, i.exIpi, extrasGlobais); })) m.monofasico = 'Nenhum NCM vendido está na tabela de monofásicos (farmacêuticos, perfumaria, pneus). Combustíveis, bebidas e autopeças dependem de tabela complementar.';
+      else m.monofasico = 'Há NCM monofásico, mas a venda não é de revenda (CFOP) ou o PIS/COFINS já está sem tributação (CST diferente de 01/02).';
+    }
+    if (!T.icmsSt.aplicavel || !T.icmsSt.total.itensComValor) {
+      if (!algum(saidas, function (i) { return String(i.cstIcms).slice(-2) === '60'; })) m.icmsSt = 'Nenhuma saída com CST de ICMS final 60 (ICMS cobrado anteriormente por substituição tributária).';
+      else m.icmsSt = 'Há saídas com ICMS-ST (CST x60), mas sem a entrada correspondente com ICMS-ST nos meses enviados, ou com unidades divergentes. Envie também os meses de compra.';
+    }
+    if (!T.insumos.aplicavel) m.insumos = !naoCum ? 'Tese só do regime não cumulativo; os arquivos são de regime cumulativo.' : (entradas.length ? 'Nenhuma entrada sem crédito (CST 70 a 75, 98, 99) em CFOP típico de insumo.' : 'Nenhuma entrada (C170 de notas de entrada) nos arquivos.');
+    if (!T.lei14592.aplicavel) m.lei14592 = !naoCum ? 'Verificação só do regime não cumulativo.' : 'Nenhum crédito (CST 50 a 56) tomado sobre ICMS a partir de 05/2023.';
+    if (!T.saldoCredor.aplicavel) m.saldoCredor = !naoCum ? 'Saldo credor só no regime não cumulativo.' : 'Registros M100/M500 (apuração de créditos) ausentes nos arquivos.';
+    return { arquivos: arquivos, motivos: m };
+  }
+  var extrasGlobais = [];
 
   // ------------------------------------------------------------ apuração
 
@@ -428,6 +500,7 @@
     opts = opts || {};
     var hoje = opts.hoje || new Date();
     var extras = opts.ncmsExtras || [];
+    extrasGlobais = extras;
     var limite = new Date(hoje.getFullYear() - 5, hoje.getMonth(), 1); // corte aproximado de 5 anos
     var avisos = [], porChave = {};
 
@@ -517,6 +590,11 @@
         }
       });
 
+      (l.consolidados || []).forEach(function (it) {
+        var mono = calcularMonofasico(it, extras);
+        if (mono) lancar('monofasico', l, comp, prescrito, Object.assign({}, it, { grupo: mono.grupo, base: mono.base, status: mono.status + ' (consolidado C180/C181/C185)' }), mono.pis, mono.cofins);
+      });
+
       if (naoCumulativo) {
         (l.entradas || []).forEach(function (e) {
           var ins = calcularInsumo(e, comp);
@@ -527,6 +605,16 @@
       }
     });
 
+    var ultimoPorCnpj = {};
+    usados.forEach(function (l) { if (!ultimoPorCnpj[l.meta.cnpj] || l.meta.competencia > ultimoPorCnpj[l.meta.cnpj].meta.competencia) ultimoPorCnpj[l.meta.cnpj] = l; });
+    Object.keys(ultimoPorCnpj).forEach(function (cnpj) {
+      var l = ultimoPorCnpj[cnpj];
+      if (!(l.meta.regimeCodigo === '1' || l.meta.regimeCodigo === '3')) return;
+      var sp = l.saldoCredito.pis, sc = l.saldoCredito.cofins;
+      if (!l.saldoCredito.registros) return;
+      lancar('saldoCredor', l, l.meta.competencia, false, { status: (sp || sc) ? 'Saldo informado nos registros M100/M500 — conferir origem' : 'Sem saldo credor informado' }, sp, sc);
+    });
+
     if (stSemEntrada.itens > 0) {
       T.icmsSt.avisos.push(stSemEntrada.itens + ' item(ns) vendidos com ICMS-ST (CST x60) sem entrada correspondente nos arquivos (receita de ' + formatarReais(stSemEntrada.receita) +
         '). Para quantificar, carregue os meses de compra ou a EFD ICMS/IPI.');
@@ -535,6 +623,7 @@
     if (T.insumos.aplicavel) T.insumos.avisos.push('Valores potenciais, não somados ao recuperável: cada item depende de análise de essencialidade ou relevância e de o fornecedor ser pessoa jurídica.');
     if (T.lei14592.aplicavel) T.lei14592.avisos.push('Passivo potencial: se confirmado, deve ser regularizado e abatido antes de pedir restituição.');
 
+    var leitura = explicarLeitura(usados, T);
     var teses = CATALOGO.filter(function (c) { return c.calculada; }).map(function (c) {
       var t = T[c.id];
       t.competencias = Object.keys(t.competencias).sort().map(function (k) { return t.competencias[k]; });
@@ -561,6 +650,7 @@
       teses: teses,
       resumo: { recuperavel: recuperavel, recuperavelNoPrazo: recuperavelNoPrazo, potencial: potencial, risco: risco },
       catalogo: CATALOGO,
+      leitura: leitura,
       avisos: avisos
     };
   }
