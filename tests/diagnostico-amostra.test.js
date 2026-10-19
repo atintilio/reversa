@@ -28,10 +28,14 @@ test('meses sem oportunidade contam na média e valor ocultado não aparece no P
   const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
   const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x => x[1]).find(x => x.includes('root.GeradorMemoria ='));
   const textos = [];
-  function PDF() {
-    this.setFontSize = () => {}; this.setFont = () => {}; this.text = x => textos.push(x); this.splitTextToSize = x => [x];
-    this.autoTable = cfg => { textos.push(cfg.body); this.lastAutoTable = { finalY: 80 }; };
-    this.output = () => textos; this.addPage = () => {};
+  function PDF() { // stub do jsPDF: registra textos e tabelas; demais métodos são no-op
+    const base = {
+      internal: { pageSize: { getWidth: () => 297, getHeight: () => 210 } },
+      text: x => textos.push(x), splitTextToSize: x => [x], getTextWidth: () => 10, getNumberOfPages: () => 1,
+      autoTable: cfg => { textos.push(cfg.body, cfg.foot || []); base.lastAutoTable = { finalY: 80 }; },
+      output: () => textos
+    };
+    return new Proxy(base, { get: (o, k) => (k in o ? o[k] : () => {}) });
   }
   const window = { jspdf: { jsPDF: PDF }, DiagnosticoAmostra: M, MotorCreditos: { formatarReais: x => `VALOR:${x}` } };
   vm.runInNewContext(script, { window });
