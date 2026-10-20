@@ -91,10 +91,26 @@
   .tese .det { margin-top: 6px; display: grid; gap: 3px; color: var(--muted); }
   .grupo-diag { display: grid; gap: 6px; }
   .tarefas td.atraso { color: var(--bad); font-weight: 700; }
+  .faixa-argus { background: #1f3d36; color: #fff; padding: 10px 16px; border-radius: 8px; margin-bottom: 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: 14px; }
+  .faixa-argus select { width: auto; min-width: 220px; }
+  .hist { display: grid; gap: 8px; }
+  .hist .h { border-left: 3px solid var(--line); padding: 4px 0 4px 10px; font-size: 13px; }
+  .hist .h.argus { border-left-color: #b8893b; }
+  .hist .h .q { color: var(--muted); font-size: 12px; }
+  .hist .de { color: var(--muted); text-decoration: line-through; }
+  .chip.argus { background: #f4e6c8; color: #6b4a10; }
+  .cartao.excluido { opacity: .6; border-style: dashed; }
+  #dlg-excluir { border: 1px solid var(--line); border-radius: 12px; padding: 18px; max-width: 460px; width: calc(100% - 32px); }
+  #dlg-excluir textarea { width: 100%; min-height: 90px; }
 </style>
 </head>
 <body class="rv">
 <main>
+  <div class="faixa-argus" id="faixa-argus" hidden>
+    <span id="faixa-txt"></span>
+    <label style="display:flex;gap:8px;align-items:center;margin-left:auto">CRM do parceiro<select id="sel-parceiro" aria-label="Parceiro"></select></label>
+    <label style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="f-excl" style="width:auto"> Mostrar excluídos</label>
+  </div>
   <div class="cab">
     <div>
       <h1>CRM <em>comercial</em></h1>
@@ -132,7 +148,7 @@
   <div class="topo">
     <div class="l1">
       <div><h2 id="f-nome">—</h2><div class="muted" id="f-sub" style="font-size:13px"></div></div>
-      <div class="acoes"><details class="exportar"><summary class="btn">Exportar PDF</summary><div class="menu-exp" id="f-exportar"></div></details><a class="btn sec" id="f-pasta" href="#">Abrir pasta</a><button class="sec" type="button" id="f-fechar" aria-label="Fechar">✕</button></div>
+      <div class="acoes"><details class="exportar"><summary class="btn">Exportar PDF</summary><div class="menu-exp" id="f-exportar"></div></details><a class="btn sec" id="f-pasta" href="#">Abrir pasta</a><button class="sec" type="button" id="f-excluir" hidden>Excluir card</button><button class="sec" type="button" id="f-restaurar" hidden>Restaurar card</button><button class="sec" type="button" id="f-fechar" aria-label="Fechar">✕</button></div>
     </div>
     <div class="grade2">
       <label>Fase<select id="f-fase" data-write></select></label>
@@ -160,6 +176,8 @@
 
     <section><h3>Linha do tempo</h3><div class="linha" id="f-linha"></div></section>
 
+    <section><h3>Histórico de alterações</h3><div class="hist" id="f-hist"><p class="muted">Carregando…</p></div></section>
+
     <section>
       <h3>Contatos</h3>
       <div id="f-contatos"></div>
@@ -183,12 +201,27 @@
 
 <script src="/shell.js"></script>
 <script src="/teses-regras.js"></script>
+<dialog id="dlg-excluir" aria-label="Excluir card">
+  <form id="f-excluir-form" style="display:grid;gap:10px">
+    <h3 style="margin:0">Excluir card</h3>
+    <p class="muted" style="margin:0;font-size:13px">O card sai do funil, mas a exclusão fica registrada no histórico e pode ser restaurada. Informe o motivo.</p>
+    <textarea id="f-excluir-motivo" maxlength="500" required placeholder="Motivo da exclusão"></textarea>
+    <div class="acoes" style="display:flex;gap:8px;justify-content:flex-end"><button type="button" class="sec" id="f-excluir-cancelar">Cancelar</button><button type="submit">Excluir</button></div>
+  </form>
+</dialog>
 <script src="/comissao.js"></script>
 <script>
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var esc = RV.esc;
+  // Modo Argus: o master opera no CRM de um parceiro via ?parceiro=<id> (o servidor só aceita de master).
+  var PARCEIRO = new URLSearchParams(location.search).get('parceiro') || '';
+  function API(metodo, url, corpo) {
+    if (PARCEIRO) url += (url.indexOf('?') < 0 ? '?' : '&') + 'parceiro=' + encodeURIComponent(PARCEIRO);
+    return RV.api(metodo, url, corpo);
+  }
+  var ehMaster = false, mostrarExcl = false, nomeParceiro = '';
   var dados = [], membros = [], atual = null, arrastando = null, tipo = 'note';
   var TIPOS = [['note', 'Nota', '✎'], ['call', 'Ligação', '☎'], ['meeting', 'Reunião', '◷'], ['email', 'E-mail', '✉'], ['task', 'Tarefa', '☐']];
   var ICONE = { note: '✎', call: '☎', meeting: '◷', email: '✉', task: '☐', agent: '✦', fase: '→' };
@@ -210,7 +243,7 @@
 
   // ------------------------------------------------------------ funil
   function carregar() {
-    return RV.api('GET', '/api/v1/crm/pipeline').then(function (j) { dados = j.clientes; render(); }).catch(function (e) { RV.toast(e.message); });
+    return API('GET', '/api/v1/crm/pipeline' + (mostrarExcl ? '?arquivados=1' : '')).then(function (j) { dados = j.clientes; render(); }).catch(function (e) { RV.toast(e.message); });
   }
 
   function chipsDiag(d) {
@@ -247,7 +280,9 @@
       var soma = col.reduce(function (s, c) { return s + centavos(c.estimatedValue); }, 0);
       return '<div class="coluna" data-fase="' + f.id + '"><header><b>' + esc(f.nome) + ' · ' + col.length + '</b><span>' + (soma ? RV.reaisCurto(soma) : '') + '</span></header>' +
         (col.length ? col.map(function (c) {
-          return '<article class="cartao" tabindex="0" data-id="' + c.id + '"' + (pode && c.caseId ? ' draggable="true"' : '') + '>' +
+          var excl = c.status === 'archived' || c.excluido;
+          return '<article class="cartao' + (excl ? ' excluido' : '') + '" tabindex="0" data-id="' + c.id + '"' + (pode && c.caseId && !excl ? ' draggable="true"' : '') + '>' +
+            (excl ? '<div class="chips"><span class="chip atraso">Excluído</span></div>' : '') +
             '<div class="nm">' + esc(c.legalName) + '</div>' +
             '<div class="meta"><span class="mono">' + RV.cnpj(c.cnpj) + '</span></div>' +
             '<div class="meta"><span>' + RV.nomeFase(c.stage) + '</span><span class="val">' + (c.estimatedValue ? RV.reaisCurto(centavos(c.estimatedValue)) : 'sem cálculo') + '</span></div>' +
@@ -274,13 +309,13 @@
 
   function mudarFase(c, fase) {
     var antes = c.stage; c.stage = fase; render();
-    return RV.api('PATCH', '/api/v1/cases/' + c.caseId, { stage: fase }).then(function () { RV.toast(c.legalName + ' → ' + RV.nomeFase(fase)); })
+    return API('PATCH', '/api/v1/cases/' + c.caseId, { stage: fase }).then(function () { RV.toast(c.legalName + ' → ' + RV.nomeFase(fase)); })
       .catch(function (e) { c.stage = antes; render(); RV.toast(e.message); });
   }
 
   // ------------------------------------------------------------ tarefas
   function carregarTarefas() {
-    RV.api('GET', '/api/v1/crm/tasks?scope=' + $('t-escopo').value).then(function (j) {
+    API('GET', '/api/v1/crm/tasks?scope=' + $('t-escopo').value).then(function (j) {
       var agora = Date.now();
       $('t-lista').innerHTML = j.tarefas.length ? j.tarefas.map(function (t) {
         var atrasada = t.dueAt && new Date(t.dueAt).getTime() < agora;
@@ -293,7 +328,7 @@
   $('t-escopo').addEventListener('change', carregarTarefas);
   $('t-lista').addEventListener('click', function (e) {
     var a = e.target.closest('[data-cli]'); if (a) { e.preventDefault(); abrir(a.dataset.cli); return; }
-    var b = e.target.closest('[data-feito]'); if (b) RV.api('PATCH', '/api/v1/crm/activities/' + b.dataset.feito, { done: true }).then(function () { RV.toast('Tarefa concluída'); carregarTarefas(); carregar(); }).catch(function (er) { RV.toast(er.message); });
+    var b = e.target.closest('[data-feito]'); if (b) API('PATCH', '/api/v1/crm/activities/' + b.dataset.feito, { done: true }).then(function () { RV.toast('Tarefa concluída'); carregarTarefas(); carregar(); }).catch(function (er) { RV.toast(er.message); });
   });
 
   // ------------------------------------------------------------ ficha
@@ -305,11 +340,11 @@
     $('f-tarefa').hidden = tipo !== 'task';
   });
   $('f-fechar').addEventListener('click', function () { $('ficha').close(); });
-  $('ficha').addEventListener('close', function () { atual = null; history.replaceState(null, '', location.pathname); carregar(); });
+  $('ficha').addEventListener('close', function () { atual = null; history.replaceState(null, '', location.pathname + (PARCEIRO ? '?parceiro=' + encodeURIComponent(PARCEIRO) : '')); carregar(); });
 
   function abrir(id) {
     history.replaceState(null, '', '?id=' + id);
-    return RV.api('GET', '/api/v1/crm/clients/' + id).then(function (j) { atual = j; renderFicha(); if (!$('ficha').open) $('ficha').showModal(); })
+    return API('GET', '/api/v1/crm/clients/' + id).then(function (j) { atual = j; renderFicha(); if (!$('ficha').open) $('ficha').showModal(); })
       .catch(function (e) { RV.toast(e.message); });
   }
   function recarregar() { return atual && abrir(atual.cliente.id); }
@@ -318,24 +353,24 @@
     var c = atual.cliente, caso = c.caso || {};
     $('f-nome').textContent = c.legalName;
     $('f-sub').textContent = RV.cnpj(c.cnpj) + ' · ' + (c.taxRegime || 'regime não informado') + (caso.owner ? ' · ' + caso.owner : '') + (caso.estimatedValue ? ' · ' + RV.reais(centavos(caso.estimatedValue)) + ' calculados (pendente de revisão)' : '');
-    $('f-pasta').href = '/clientes.html?id=' + c.id;
-    var base = '/api/v1/crm/clients/' + c.id + '/report';
-    $('f-exportar').innerHTML = '<a href="' + base + '" download><b>Diagnóstico completo</b><small>Fiscal e Previdenciário</small></a>' +
-      '<a href="' + base + '?grupo=fiscal" download><b>Somente Fiscal</b><small>Faturamento, PIS/COFINS, ICMS, IPI, IRPJ/CSLL</small></a>' +
-      '<a href="' + base + '?grupo=prev" download><b>Somente Previdenciário</b><small>Folha de pagamento</small></a>' +
-      '<a href="' + base + '?versao=tecnica" download><b>Versão técnica · uso interno</b><small>Inclui teses remotas e códigos. Não enviar ao cliente</small></a>';
+    $('f-pasta').href = '/clientes.html?id=' + c.id + (PARCEIRO ? '&parceiro=' + encodeURIComponent(PARCEIRO) : '');
+    var base = '/api/v1/crm/clients/' + c.id + '/report'; var qp = PARCEIRO ? 'parceiro=' + encodeURIComponent(PARCEIRO) : '';
+    $('f-exportar').innerHTML = '<a href="' + base + (qp ? '?' + qp : '') + '" download><b>Diagnóstico completo</b><small>Fiscal e Previdenciário</small></a>' +
+      '<a href="' + base + '?grupo=fiscal' + (qp ? '&' + qp : '') + '" download><b>Somente Fiscal</b><small>Faturamento, PIS/COFINS, ICMS, IPI, IRPJ/CSLL</small></a>' +
+      '<a href="' + base + '?grupo=prev' + (qp ? '&' + qp : '') + '" download><b>Somente Previdenciário</b><small>Folha de pagamento</small></a>' +
+      '<a href="' + base + '?versao=tecnica' + (qp ? '&' + qp : '') + '" download><b>Versão técnica · uso interno</b><small>Inclui teses remotas e códigos. Não enviar ao cliente</small></a>';
     $('f-exportar').onclick = function () { $('f-exportar').parentElement.open = false; RV.toast('Gerando o PDF…'); };
     $('f-fase').value = caso.stage || 'a_apresentar'; $('f-fase').disabled = !caso.id;
     $('f-passo').value = caso.nextStep || ''; $('f-prev').value = caso.expectedCloseDate ? String(caso.expectedCloseDate).slice(0, 10) : '';
     $('f-resp').innerHTML = membros.map(function (m) { return '<option value="' + m.id + '">' + esc(m.name) + '</option>'; }).join('');
     var eu = RV.usuario && RV.usuario.user; var meu = membros.filter(function (m) { return eu && m.name === eu.name; })[0]; if (meu) $('f-resp').value = meu.id;
-    renderComissao(); renderAgente(); renderLinha(); renderContatos(); renderPub(); renderDiag();
+    renderComissao(); renderAgente(); renderLinha(); renderContatos(); renderPub(); renderDiag(); renderHist(); acoesCard();
     document.querySelectorAll('#ficha [data-write]').forEach(function (el) { if (!RV.pode('write')) { el.hidden = el.tagName === 'FORM'; el.disabled = true; } });
   }
 
   function salvarCaso(campos) {
     var caso = atual.cliente.caso; if (!caso) return;
-    RV.api('PATCH', '/api/v1/cases/' + caso.id, campos).then(function () { RV.toast('Salvo'); recarregar(); }).catch(function (e) { RV.toast(e.message); });
+    API('PATCH', '/api/v1/cases/' + caso.id, campos).then(function () { RV.toast('Salvo'); recarregar(); }).catch(function (e) { RV.toast(e.message); });
   }
   $('f-fase').addEventListener('change', function () { salvarCaso({ stage: $('f-fase').value }); });
   $('f-passo').addEventListener('change', function () { salvarCaso({ nextStep: $('f-passo').value }); });
@@ -385,12 +420,12 @@
     if (b3) b3.addEventListener('click', function () {
       var perfil = Object.assign({}, atual.cliente.perfil);
       $('f-agente').querySelectorAll('[data-flag]').forEach(function (x) { if (x.checked) perfil[x.dataset.flag] = x.dataset.valor === 'true'; });
-      RV.api('PATCH', '/api/v1/taxpayers/' + atual.cliente.id, { perfil: perfil }).then(function () { RV.toast('Perfil atualizado; diagnóstico recalculado'); recarregar(); }).catch(function (e) { RV.toast(e.message); });
+      API('PATCH', '/api/v1/taxpayers/' + atual.cliente.id, { perfil: perfil }).then(function () { RV.toast('Perfil atualizado; diagnóstico recalculado'); recarregar(); }).catch(function (e) { RV.toast(e.message); });
     });
   }
   function rodarAgente(corpo, botao) {
     var t = botao.textContent; botao.disabled = true; botao.textContent = 'Pensando…';
-    RV.api('POST', '/api/v1/crm/clients/' + atual.cliente.id + '/agent', corpo).then(function () { RV.toast('Análise registrada na linha do tempo'); recarregar(); })
+    API('POST', '/api/v1/crm/clients/' + atual.cliente.id + '/agent', corpo).then(function () { RV.toast('Análise registrada na linha do tempo'); recarregar(); })
       .catch(function (e) { RV.toast(e.message, 6000); botao.disabled = false; botao.textContent = t; });
   }
 
@@ -399,7 +434,7 @@
     e.preventDefault();
     var corpo = { taxpayerId: atual.cliente.id, type: tipo, subject: $('f-assunto').value, body: $('f-texto').value };
     if (tipo === 'task') { if (!$('f-prazo').value) { RV.toast('Informe o prazo da tarefa.'); return; } corpo.dueAt = new Date($('f-prazo').value).toISOString(); corpo.assigneeId = $('f-resp').value; }
-    RV.api('POST', '/api/v1/crm/activities', corpo).then(function () { $('f-assunto').value = ''; $('f-texto').value = ''; $('f-prazo').value = ''; RV.toast(NOME_TIPO[tipo] + ' registrada'); recarregar(); })
+    API('POST', '/api/v1/crm/activities', corpo).then(function () { $('f-assunto').value = ''; $('f-texto').value = ''; $('f-prazo').value = ''; RV.toast(NOME_TIPO[tipo] + ' registrada'); recarregar(); })
       .catch(function (er) { RV.toast(er.message); });
   });
 
@@ -421,12 +456,62 @@
   }
   $('f-linha').addEventListener('click', function (e) {
     var d = e.target.closest('[data-done]');
-    if (d) { RV.api('PATCH', '/api/v1/crm/activities/' + d.dataset.done, { done: d.dataset.v === 'true' }).then(recarregar).catch(function (er) { RV.toast(er.message); }); return; }
+    if (d) { API('PATCH', '/api/v1/crm/activities/' + d.dataset.done, { done: d.dataset.v === 'true' }).then(recarregar).catch(function (er) { RV.toast(er.message); }); return; }
     var x = e.target.closest('[data-del]');
     if (x) {
       if (x.dataset.confirma !== '1') { x.dataset.confirma = '1'; x.textContent = 'Confirmar exclusão'; return; }
-      RV.api('DELETE', '/api/v1/crm/activities/' + x.dataset.del).then(function () { RV.toast('Excluído'); recarregar(); }).catch(function (er) { RV.toast(er.message); });
+      API('DELETE', '/api/v1/crm/activities/' + x.dataset.del).then(function () { RV.toast('Excluído'); recarregar(); }).catch(function (er) { RV.toast(er.message); });
     }
+  });
+
+  // ------------------------------------------------------------ histórico e exclusão (exclusão só para a Argus)
+  var CAMPO = { stage: 'Fase', nextStep: 'Próximo passo', expectedCloseDate: 'Previsão de fechamento', owner: 'Responsável', ownerUserId: 'Responsável', estimatedValue: 'Valor', comissao: 'Comissão', status: 'Situação', title: 'Título', contato: 'Contato', perfil: 'Perfil' };
+  var KIND = { edicao: 'Alterado', fase: 'Fase alterada', contato: 'Contato', atividade: 'Atividade', exclusao: 'Excluído', restauracao: 'Restaurado', diagnostico: 'Diagnóstico', created: 'Criado', update: 'Alterado', updated: 'Alterado', deleted: 'Excluído', restored: 'Restaurado', delete: 'Excluído', restore: 'Restaurado' };
+  function valorHist(campo, v) {
+    if (v == null || v === '') return '—';
+    if (campo === 'stage') return RV.nomeFase(v);
+    if (campo === 'estimatedValue') return RV.reais(centavos(v));
+    if (/Date$/.test(campo)) return RV.data ? RV.data(v) : String(v).slice(0, 10);
+    return typeof v === 'object' ? JSON.stringify(v) : String(v);
+  }
+  function renderHist() {
+    var c = atual && atual.cliente && atual.cliente.caso;
+    if (!c || !c.id) { $('f-hist').innerHTML = '<p class="muted">Sem card para este cliente.</p>'; return; }
+    var alvo = c.id;
+    API('GET', '/api/v1/cases/' + alvo + '/history').then(function (j) {
+      if (!atual || !atual.cliente.caso || atual.cliente.caso.id !== alvo) return;
+      var lista = (j.history || j.historico || j.items || []).map(function (x) {
+        return { kind: x.tipo || x.kind, field: x.campo || x.field, oldValue: x.de != null ? x.de : x.oldValue, newValue: x.para != null ? x.para : x.newValue,
+                 actorName: x.autor || x.actorName, actorOrgKind: x.origem || x.actorOrgKind, at: x.em || x.at, motivo: x.motivo, viaArgus: x.viaArgus };
+      });
+      $('f-hist').innerHTML = lista.length ? lista.map(function (h) {
+        var argus = h.actorOrgKind === 'plataforma' || h.viaArgus;
+        var o = KIND[h.kind] || h.kind || 'Alterado';
+        var mudanca = h.field ? '<b>' + esc(CAMPO[h.field] || h.field) + ':</b> <span class="de">' + esc(valorHist(h.field, h.oldValue)) + '</span> → ' + esc(valorHist(h.field, h.newValue)) : '<b>' + esc(o) + '</b>' + (h.motivo || h.note ? ' · ' + esc(h.motivo || h.note) : '');
+        return '<div class="h' + (argus ? ' argus' : '') + '"><div>' + mudanca + '</div><div class="q">' + esc(h.actorName || 'Sistema') + (argus ? ' <span class="chip argus">Argus</span>' : '') + ' · ' + RV.data(h.at, true) + '</div></div>';
+      }).join('') : '<p class="muted">Nenhuma alteração registrada ainda.</p>';
+    }).catch(function (e) { $('f-hist').innerHTML = '<p class="muted">Não foi possível carregar o histórico: ' + esc(e.message) + '</p>'; });
+  }
+  function acoesCard() {
+    var caso = (atual && atual.cliente.caso) || {};
+    var arq = caso.status === 'archived';
+    $('f-excluir').hidden = !(ehMaster && caso.id && !arq);
+    $('f-restaurar').hidden = !(ehMaster && caso.id && arq);
+    document.querySelectorAll('#ficha [data-write]').forEach(function (el) { var off = arq || !RV.pode('write'); el.disabled = off; el.hidden = off && el.tagName === 'FORM'; });
+  }
+  $('f-excluir').addEventListener('click', function () { $('f-excluir-motivo').value = ''; $('dlg-excluir').showModal(); });
+  $('f-excluir-cancelar').addEventListener('click', function () { $('dlg-excluir').close(); });
+  $('f-excluir-form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var motivo = $('f-excluir-motivo').value.trim(); var caso = atual && atual.cliente.caso;
+    if (!motivo) { RV.toast('Informe o motivo da exclusão.'); return; }
+    if (!caso || !caso.id) return;
+    API('DELETE', '/api/v1/cases/' + caso.id, { motivo: motivo }).then(function () { $('dlg-excluir').close(); RV.toast('Card excluído (fica no histórico)'); $('ficha').close(); })
+      .catch(function (er) { RV.toast(er.message); });
+  });
+  $('f-restaurar').addEventListener('click', function () {
+    var caso = atual && atual.cliente.caso; if (!caso || !caso.id) return;
+    API('POST', '/api/v1/cases/' + caso.id + '/restore', {}).then(function () { RV.toast('Card restaurado'); recarregar(); }).catch(function (er) { RV.toast(er.message); });
   });
 
   // contatos
@@ -439,16 +524,16 @@
   }
   $('f-contatos').addEventListener('click', function (e) {
     var p = e.target.closest('[data-prim]');
-    if (p) { var k = atual.contatos.filter(function (x) { return x.id === p.dataset.prim; })[0]; RV.api('PATCH', '/api/v1/crm/contacts/' + k.id, Object.assign({}, k, { primary: true })).then(recarregar).catch(function (er) { RV.toast(er.message); }); return; }
+    if (p) { var k = atual.contatos.filter(function (x) { return x.id === p.dataset.prim; })[0]; API('PATCH', '/api/v1/crm/contacts/' + k.id, Object.assign({}, k, { primary: true })).then(recarregar).catch(function (er) { RV.toast(er.message); }); return; }
     var d = e.target.closest('[data-kdel]');
     if (d) {
       if (d.dataset.confirma !== '1') { d.dataset.confirma = '1'; d.textContent = 'Confirmar'; return; }
-      RV.api('DELETE', '/api/v1/crm/contacts/' + d.dataset.kdel).then(recarregar).catch(function (er) { RV.toast(er.message); });
+      API('DELETE', '/api/v1/crm/contacts/' + d.dataset.kdel).then(recarregar).catch(function (er) { RV.toast(er.message); });
     }
   });
   $('f-novo-contato').addEventListener('submit', function (e) {
     e.preventDefault();
-    RV.api('POST', '/api/v1/crm/contacts', { taxpayerId: atual.cliente.id, name: $('k-nome').value, role: $('k-cargo').value, email: $('k-email').value, phone: $('k-tel').value, primary: !atual.contatos.length })
+    API('POST', '/api/v1/crm/contacts', { taxpayerId: atual.cliente.id, name: $('k-nome').value, role: $('k-cargo').value, email: $('k-email').value, phone: $('k-tel').value, primary: !atual.contatos.length })
       .then(function () { ['k-nome', 'k-cargo', 'k-email', 'k-tel'].forEach(function (i) { $(i).value = ''; }); RV.toast('Contato adicionado'); recarregar(); })
       .catch(function (er) { RV.toast(er.message); });
   });
@@ -468,14 +553,14 @@
     var b = $('pub-atualizar');
     if (b) b.addEventListener('click', function () {
       b.disabled = true; b.textContent = 'Consultando…';
-      RV.api('POST', '/api/v1/crm/clients/' + atual.cliente.id + '/cnpj').then(function (j) {
+      API('POST', '/api/v1/crm/clients/' + atual.cliente.id + '/cnpj').then(function (j) {
         atual.cliente.publico = j.publico; renderPub();
         var perfil = atual.cliente.perfil, sug = Object.keys(j.sugestaoPerfil).filter(function (k) { return perfil[k] !== j.sugestaoPerfil[k].valor; });
         if (sug.length) {
           $('pub-sug').innerHTML = '<p style="margin:8px 0 4px"><b>Pela CNAE, o perfil pode incluir:</b> ' + sug.map(function (k) { return esc(rotulo(k)); }).join(', ') + '</p><button type="button" class="mini" id="pub-aplicar">Aplicar ao perfil</button>';
           $('pub-aplicar').addEventListener('click', function () {
             var p2 = Object.assign({}, perfil); sug.forEach(function (k) { p2[k] = true; });
-            RV.api('PATCH', '/api/v1/taxpayers/' + atual.cliente.id, { perfil: p2 }).then(function () { RV.toast('Perfil atualizado'); recarregar(); }).catch(function (e) { RV.toast(e.message); });
+            API('PATCH', '/api/v1/taxpayers/' + atual.cliente.id, { perfil: p2 }).then(function () { RV.toast('Perfil atualizado'); recarregar(); }).catch(function (e) { RV.toast(e.message); });
           });
         }
       }).catch(function (e) { RV.toast(e.message); b.disabled = false; b.textContent = 'Tentar de novo'; });
@@ -495,9 +580,25 @@
     }).join('') + '<p class="muted" style="margin:0;font-size:13px">Preencha o perfil na <a href="/teses.html">tela de Teses</a> ou aplique as sugestões acima para refinar.</p>';
   }
 
-  RV.eu.then(function () {
-    RV.api('GET', '/api/v1/crm/members').then(function (j) { membros = j.membros; }).catch(function () {});
-    carregar().then(function () { var id = new URLSearchParams(location.search).get('id'); if (id) abrir(id); });
+  function modoArgus() {
+    var eu = RV.usuario || {};
+    ehMaster = !!eu.master;
+    if (!ehMaster) { PARCEIRO = ''; return Promise.resolve(); }
+    $('faixa-argus').hidden = false;
+    return RV.api('GET', '/api/v1/master/parceiros').then(function (r) {
+      var ps = r.parceiros || [];
+      $('sel-parceiro').innerHTML = '<option value="">Argus Prime (organização própria)</option>' + ps.filter(function (x) { return x.tipo === 'parceiro'; }).map(function (x) { return '<option value="' + x.id + '">' + esc(x.nome) + '</option>'; }).join('');
+      $('sel-parceiro').value = PARCEIRO;
+      var sel = ps.filter(function (x) { return x.id === PARCEIRO; })[0]; nomeParceiro = sel ? sel.nome : '';
+      $('faixa-txt').innerHTML = PARCEIRO ? 'Você está no CRM de <b>' + esc(nomeParceiro || 'parceiro') + '</b> (modo Argus): pode editar e excluir cards; tudo fica no histórico.' : 'Modo Argus: escolha um parceiro para acompanhar e editar os cards dele.';
+    }).catch(function () { $('faixa-txt').textContent = 'Modo Argus'; });
+  }
+  $('sel-parceiro').addEventListener('change', function () { var q = new URLSearchParams(location.search); q.delete('id'); q.delete('cliente'); if (this.value) q.set('parceiro', this.value); else q.delete('parceiro'); location.search = q.toString(); });
+  $('f-excl').addEventListener('change', function () { mostrarExcl = this.checked; carregar(); });
+
+  RV.eu.then(modoArgus).then(function () {
+    API('GET', '/api/v1/crm/members').then(function (j) { membros = j.membros; }).catch(function () {});
+    carregar().then(function () { var qs = new URLSearchParams(location.search), id = qs.get('id') || qs.get('cliente'); if (id) abrir(id); });
   });
 })();
 </script>

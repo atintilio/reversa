@@ -12,6 +12,7 @@ const clientAuthorizations = require('../../lib/domain/client-authorizations');
 const execucao = require('../../lib/domain/execucao');
 const pgfn = require('../../lib/domain/pgfn');
 const selicFontes = require('../../lib/selic-fontes');
+const history = require('../../lib/domain/history');
 
 function deny(ctx, permission, action) {
   if (can(ctx, permission)) return;
@@ -38,7 +39,7 @@ async function route(req, res) {
   const [resource, id, action] = segments(req);
   const m = req.method;
   const query = req.query || {};
-  const body = ['POST', 'PATCH', 'PUT'].includes(m) ? parseBody(req) : {};
+  const body = ['POST', 'PATCH', 'PUT', 'DELETE'].includes(m) ? parseBody(req) : {};
   // Exceção pública limitada a um snapshot: credencial aleatória do link, sem sessão da equipe.
   if (resource === 'client-approval' && !id) {
     if (m === 'GET') return json(res, 200, await clientAuthorizations.readPublic(req));
@@ -57,7 +58,10 @@ async function route(req, res) {
     if (m === 'POST') return json(res, 200, await execucao.respondAccountant(req, body));
     return method(res, ['GET', 'POST']);
   }
-  const ctx = await context(req);
+  let ctx = await context(req);
+  // Modo parceiro: a equipe Argus (master) opera dentro da organização de um parceiro (?parceiro= ou x-reversa-parceiro).
+  // Para quem não é master o parâmetro é ignorado. O autor continua sendo o usuário logado.
+  if (ctx.master && (resource === 'crm' || resource === 'cases')) ctx = await history.contextoParceiro(ctx, req, query, resource === 'cases' ? id : null);
 
   switch (resource) {
     case 'me':
@@ -93,13 +97,31 @@ async function route(req, res) {
         if (m === 'POST') { deny(ctx, 'write', 'client.authorization.create'); return json(res, 201, await clientAuthorizations.create(ctx, id, body)); }
         return method(res, ['GET', 'POST']);
       }
+      if (id && action === 'history') {
+        if (m !== 'GET') return method(res, ['GET']);
+        const h = await history.listar(ctx, id, query.limit);
+        if (!h) return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Caso não encontrado.' } });
+        return json(res, 200, { historico: h });
+      }
+      if (id && action === 'restore') {
+        if (m !== 'POST') return method(res, ['POST']);
+        return json(res, 200, await tax.restoreCase(ctx, id));
+      }
+      if (id && !action && m === 'DELETE') {
+        // Exclusão lógica: só a equipe Argus Prime; o parceiro pode editar, mas não excluir.
+        if (!ctx.master) {
+          audit('authz.denied', { outcome: 'denied', organizationId: ctx.organization.id, actorUserId: ctx.user.id, metadata: { action: 'case.delete', role: ctx.role } });
+          throw new HttpError(403, 'FORBIDDEN', 'Somente a equipe Argus Prime pode excluir cards. Você pode editá-lo.');
+        }
+        return json(res, 200, await tax.archiveCase(ctx, id, body.motivo || query.motivo));
+      }
       if (!id) {
         if (m === 'GET') return json(res, 200, await tax.listCases(ctx, query));
         if (m === 'POST') { deny(ctx, 'write', 'case.create'); return json(res, 201, await tax.createCase(ctx, body)); }
         return method(res, ['GET', 'POST']);
       }
       if (m === 'PATCH') { deny(ctx, 'write', 'case.update'); await tax.updateCase(ctx, id, body); return json(res, 200, { ok: true }); }
-      return method(res, ['PATCH']);
+      return method(res, ['PATCH', 'DELETE']);
 
     case 'client-authorizations':
       if (id && m === 'DELETE') { deny(ctx, 'write', 'client.authorization.revoke'); return json(res, 200, await clientAuthorizations.revoke(ctx, id)); }
@@ -114,7 +136,7 @@ async function route(req, res) {
     case 'crm': {
       // /crm/pipeline · /crm/tasks · /crm/members · /crm/clients/:id[/cnpj|/agent] · /crm/contacts[/:id] · /crm/activities[/:id]
       const [, sub, sid, sact] = segments(req);
-      if (sub === 'pipeline' && m === 'GET') return json(res, 200, await crm.pipeline(ctx));
+      if (sub === 'pipeline' && m === 'GET') return json(res, 200, await crm.pipeline(ctx, query));
       if (sub === 'tasks' && m === 'GET') return json(res, 200, await crm.tasks(ctx, query));
       if (sub === 'members' && m === 'GET') return json(res, 200, await crm.members(ctx));
       if (sub === 'clients' && sid && !sact && m === 'GET') return json(res, 200, await crm.client(ctx, sid));
@@ -174,6 +196,7 @@ async function route(req, res) {
       if (sub === 'carteira' && m === 'GET') return json(res, 200, { clientes: await master.carteira(query) });
       if (sub === 'ranking' && m === 'GET') return json(res, 200, { ranking: await master.ranking({ dias: query.dias }) });
       if (sub === 'diagnosticos' && m === 'GET') return json(res, 200, { diagnosticos: await master.diagnosticos(query) });
+      if (sub === 'alertas' && m === 'GET') return json(res, 200, { alertas: await require('../../lib/alertas').alertas(require('../../lib/db').getSql(), { orgId: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(query.parceiro || '')) ? query.parceiro : null }) });
       if (sub === 'conflitos' && m === 'GET') return json(res, 200, { conflitos: await master.conflitos() });
       if (sub === 'auditoria' && m === 'GET') return json(res, 200, { eventos: await master.auditoria(query) });
       return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });

@@ -170,6 +170,16 @@
   }
   if (document.body) montar(); else document.addEventListener('DOMContentLoaded', montar);
 
+  // Inatividade: 15 min sem mouse, teclado, toque ou rolagem derrubam a sessão; com atividade, renova a cada minuto.
+  (function () {
+    var LIMITE = 15 * 60e3, ultima = Date.now(), tocou = 0;
+    ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function (ev) { window.addEventListener(ev, function () { ultima = Date.now(); }, { passive: true, capture: true }); });
+    setInterval(function () {
+      var agora = Date.now();
+      if (agora - ultima >= LIMITE) { location.href = '/api/logout?inativo=1'; return; }
+      if (agora - tocou >= 60e3 && agora - ultima < 60e3) { tocou = agora; fetch('/api/v1/me', { credentials: 'same-origin' }).then(function (r) { if (r.status === 401) location.href = '/login.html?inativo=1'; }).catch(function () {}); }
+    }, 15e3);
+  })();
   RV.eu = fetch('/api/v1/me', { credentials: 'same-origin' }).then(function (r) {
     if (r.status === 401) { location.href = '/login.html'; return null; }
     return r.ok ? r.json() : null;

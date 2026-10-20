@@ -9,5 +9,5 @@ module.exports = async function handler(req, res) {
   try { user = await currentUser(req); } catch { user = null; }
   try { await revokeSession(cookieSession(req)); } catch (error) { console.error('auth_logout_error', error.name || 'Error'); }
   if (user) await audit('auth.logout', { actorUserId: user.id || null, metadata: { method: user.legacy ? 'legacy' : 'database' } });
-  return redirect(res, '/login.html?saiu=1', { 'Set-Cookie': clearSessionCookie() });
+  return redirect(res, (req.url || '').includes('inativo=1') ? '/login.html?inativo=1' : '/login.html?saiu=1', { 'Set-Cookie': clearSessionCookie() });
 };

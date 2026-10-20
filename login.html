@@ -156,6 +156,7 @@ h1 em { font-family: "Libre Baskerville", Georgia, serif; font-style: italic; fo
   });
   if (q.get('erro') === '1') { m.className = 'msg erro'; m.textContent = 'Usuário ou senha inválidos.'; }
   else if (q.get('erro') === 'config') { m.className = 'msg erro'; m.textContent = 'O acesso ainda não foi configurado pelo administrador.'; }
+  else if (q.get('inativo') === '1') { m.className = 'msg info'; m.textContent = 'Sessão encerrada por inatividade (15 minutos). Entre novamente.'; }
   else if (q.get('saiu') === '1') { m.className = 'msg info'; m.textContent = 'Você saiu da Reversa Tax.'; }
 })();
 </script>

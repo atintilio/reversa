@@ -36,6 +36,7 @@
     <div class="abas" role="tablist" id="abas">
       <button type="button" data-aba="parceiros" aria-selected="true">Parceiros</button>
       <button type="button" data-aba="usuarios">Usuários</button>
+      <button type="button" data-aba="acao">Precisa de ação</button>
       <button type="button" data-aba="ranking">Ranking</button>
       <button type="button" data-aba="diagnosticos">Diagnósticos</button>
       <button type="button" data-aba="carteira">Carteira consolidada</button>
@@ -168,16 +169,29 @@
       var cs = r.clientes, cred = 0, ldb = 0, com = 0, hon = 0;
       cs.forEach(function (c) { cred += c.creditos; ldb += c.economiaLdb; if (c.comissao) { com += c.comissao.comissao; hon += c.comissao.honorarios; } });
       el.innerHTML = '<div class="filtro"><select id="fc">' + opcoesParceiro(filtroCart) + '</select><span class="muted">' + cs.length + ' cliente(s) · créditos ' + brl(cred) + ' · Lei do Bem ' + brl(ldb) + ' · honorários contratados ' + brl(hon) + ' · comissões projetadas ' + brl(com) + '</span></div>' +
-        '<div class="tabela"><table><thead><tr><th>Cliente</th><th>Parceiro</th><th>Fase</th><th class="num">Créditos</th><th class="num">Lei do Bem</th><th class="num">Honorários</th><th class="num">Comissão</th></tr></thead><tbody>' +
+        '<div class="tabela"><table><thead><tr><th>Cliente</th><th>Parceiro</th><th>Fase</th><th class="num">Créditos</th><th class="num">Lei do Bem</th><th class="num">Honorários</th><th class="num">Comissão</th><th></th></tr></thead><tbody>' +
         (cs.length ? cs.map(function (c) {
           return '<tr><td><b>' + esc(c.nome) + '</b><br><small>' + cnpj(c.cnpj) + '</small></td><td>' + esc(c.parceiro.nome) + '</td><td>' + esc(FASE[c.fase] || '—') + '</td><td class="num">' + brl(c.creditos) + '</td><td class="num">' + (c.economiaLdb ? brl(c.economiaLdb) : '—') + '</td>' +
-            '<td class="num">' + (c.comissao ? brl(c.comissao.honorarios) + '<br><small>' + pct(c.comissao.honorariosPct) + '</small>' : '—') + '</td><td class="num">' + (c.comissao ? brl(c.comissao.comissao) : '—') + '</td></tr>';
-        }).join('') : '<tr><td colspan="7" class="vazio">Nenhum cliente cadastrado.</td></tr>') + '</tbody></table></div>';
+            '<td class="num">' + (c.comissao ? brl(c.comissao.honorarios) + '<br><small>' + pct(c.comissao.honorariosPct) + '</small>' : '—') + '</td><td class="num">' + (c.comissao ? brl(c.comissao.comissao) : '—') + '</td><td><a class="btn sec mini" href="/crm.html?parceiro=' + encodeURIComponent(c.parceiro.id) + '&cliente=' + encodeURIComponent(c.id) + '">Abrir no CRM</a></td></tr>';
+        }).join('') : '<tr><td colspan="8" class="vazio">Nenhum cliente cadastrado.</td></tr>') + '</tbody></table></div>';
       $('fc').onchange = function () { filtroCart = this.value; render(); };
     });
   }
 
   var TIPODX = { pis_cofins: 'PIS/COFINS', previdenciario: 'Previdenciário', icms: 'ICMS', completo: 'Completo' };
+  var ROT_ACAO = { card_parado: 'Card parado', diagnostico_sem_avanco: 'Diagnóstico sem avanço', contrato_nao_assinado: 'Contrato não assinado', pendencia_vencida: 'Pendência vencida' };
+  function pAcao(el) {
+    return RV.api('GET', '/api/v1/master/alertas').then(function (r) {
+      var a = r.alertas || [];
+      var b = document.querySelector('[data-aba="acao"]'); b.innerHTML = 'Precisa de ação' + (a.length ? '<span class="n">' + a.length + '</span>' : '');
+      el.innerHTML = '<div class="filtro"><span class="muted">' + a.length + ' item(ns) · cards sem atividade há 7+ dias, diagnósticos sem avanço, contratos não assinados há 5+ dias e pendências vencidas</span></div>' +
+        '<div class="tabela"><table><thead><tr><th>Parceiro</th><th>Cliente</th><th>Situação</th><th class="num">Dias</th></tr></thead><tbody>' +
+        (a.length ? a.map(function (x) {
+          return '<tr><td>' + esc(x.parceiro) + '</td><td><b>' + esc(x.cliente || '') + '</b></td><td><b>' + esc(ROT_ACAO[x.tipo] || x.tipo) + '</b> — ' + esc(x.motivo) + '</td><td class="num">' + x.dias + '</td></tr>';
+        }).join('') : '<tr><td colspan="4" class="vazio">Nada parado. Nenhum card, diagnóstico ou contrato aguardando ação.</td></tr>') + '</tbody></table></div>';
+    });
+  }
+
   function pRanking(el) {
     return RV.api('GET', '/api/v1/master/ranking?dias=' + diasRk).then(function (r) {
       el.innerHTML = '<div class="filtro"><select id="fr"><option value="7"' + (diasRk === '7' ? ' selected' : '') + '>Últimos 7 dias</option><option value="30"' + (diasRk === '30' ? ' selected' : '') + '>Últimos 30 dias</option><option value="90"' + (diasRk === '90' ? ' selected' : '') + '>Últimos 90 dias</option></select><span class="muted">Top 10 parceiros · ordenado por contratos e, depois, créditos vigentes</span></div>' +
@@ -225,7 +239,7 @@
   function render() {
     var el = $('painel');
     var p = parceiros.length ? Promise.resolve() : RV.api('GET', '/api/v1/master/parceiros').then(function (r) { parceiros = r.parceiros; });
-    p.then(function () { return { parceiros: pParceiros, usuarios: pUsuarios, ranking: pRanking, diagnosticos: pDiagnosticos, carteira: pCarteira, conflitos: pConflitos, auditoria: pAuditoria }[aba](el); })
+    p.then(function () { return { parceiros: pParceiros, usuarios: pUsuarios, acao: pAcao, ranking: pRanking, diagnosticos: pDiagnosticos, carteira: pCarteira, conflitos: pConflitos, auditoria: pAuditoria }[aba](el); })
       .then(kpis).catch(function (e) { RV.toast(e.message); });
   }
   $('abas').addEventListener('click', function (e) {

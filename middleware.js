@@ -32,6 +32,7 @@ async function dbSessionValid(token) {
       where s.session_hash = decode(${digest}, 'hex')
         and s.revoked_at is null
         and s.expires_at > now()
+        and coalesce(s.last_seen_at, s.created_at) > now() - interval '15 minutes'
         and u.status = 'active'
       limit 1`;
     return rows.length > 0;
