@@ -103,6 +103,11 @@ section { display: grid; gap: 16px; min-width: 0; }
 .rub { font-size: .84rem; } .rub summary { cursor: pointer; color: var(--accent-ink); }
 .rub table { margin-top: 6px; }
 .fila { border: 1px solid var(--line); background: var(--card); padding: 18px 20px; display: grid; gap: 12px; margin-top: 14px; }
+.resp-cliente { margin: 10px 0; padding: 10px 12px; border: 1px solid var(--line, #d9d4c7); border-radius: 8px; }
+.resp-cliente summary { cursor: pointer; }
+.resp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-top: 10px; }
+.resp-grid label { display: grid; gap: 4px; font-size: .85rem; }
+.resp-grid input { padding: 7px 9px; border: 1px solid #cfc9b8; border-radius: 6px; font: inherit; }
 .fila-cab { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
 .fila-cab strong { display: block; font-size: 1.02rem; } .fila-cab .hint { color: var(--muted-fg); font-size: .88rem; }
 .fila table td .rm { background: none; border: 0; color: var(--muted-fg); cursor: pointer; font-size: 1rem; padding: 2px 6px; }
@@ -274,6 +279,11 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     <div class="fila" id="fila" hidden>
       <div class="fila-cab"><div><strong>Conferência dos arquivos</strong><span class="hint" id="fila-resumo"></span></div>
         <div class="btns"><button type="button" class="sec" id="fila-limpar">Limpar lista</button><button type="button" id="fila-gerar">Gerar diagnóstico</button></div></div>
+      <details class="resp-cliente" id="resp-cliente"><summary><strong>Responsável no cliente</strong> <span class="hint">(opcional — se ficar em branco, o Reversa busca nas bases públicas e no Apollo)</span></summary>
+        <div class="resp-grid"><label>Nome<input type="text" id="resp-nome" maxlength="160" autocomplete="off"></label>
+          <label>Cargo<input type="text" id="resp-cargo" maxlength="120" autocomplete="off"></label>
+          <label>E-mail<input type="email" id="resp-email" maxlength="240" autocomplete="off"></label>
+          <label>Telefone<input type="text" id="resp-tel" maxlength="40" autocomplete="off"></label></div></details>
       <ul class="msgs" id="fila-alertas"></ul>
       <div class="scroll"><table id="fila-tab"></table></div>
     </div>
@@ -2035,7 +2045,10 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     }
     var res = estado.res, btn = $('btn-pasta'), st = $('pasta-status');
     btn.disabled = true; btn.textContent = 'Salvando…'; st.hidden = true;
+    var contatoResp = { nome: ($('resp-nome').value || '').trim(), cargo: ($('resp-cargo').value || '').trim(), email: ($('resp-email').value || '').trim(), telefone: ($('resp-tel').value || '').trim() };
+    if (!contatoResp.nome && !contatoResp.email && !contatoResp.telefone) contatoResp = null;
     var corpo = {
+      contato: contatoResp,
       taxpayer: { cnpj: cnpj, legalName: ref.nome, taxRegime: ref.regime },
       periodStart: comps[0], periodEnd: comps[comps.length - 1], files: lidos.length, engineVersion: res && res.versaoMotor,
       teses: (temSped ? res.teses : []).map(function (t) { return { id: t.id, nome: t.nome, curto: t.curto, natureza: t.natureza, itens: t.total.itensComValor, total: t.total, totalNoPrazo: t.totalNoPrazo }; })
@@ -2048,7 +2061,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     var p = estado.prev, prevCorpo = null;
     if (p && p.teses && p.teses.length && p.escopo && p.escopo.ok !== false) {
       prevCorpo = {
-        tipo: 'previdenciario', taxpayer: corpo.taxpayer, periodStart: p.periodo.inicio, periodEnd: p.periodo.fim, files: estado.nEs || 0, engineVersion: p.versaoMotor,
+        tipo: 'previdenciario', contato: contatoResp, taxpayer: corpo.taxpayer, periodStart: p.periodo.inicio, periodEnd: p.periodo.fim, files: estado.nEs || 0, engineVersion: p.versaoMotor,
         teses: p.teses.filter(function (t) { return !t.condicional || estado.prevIncluir[t.id]; }).map(function (t) { return { id: t.id, nome: t.nome, curto: t.nome, natureza: 'credito', itens: t.competencias, valorCentavos: Math.round(t.valor * 100), valorNoPrazoCentavos: Math.round(t.valorNoPrazo * 100) }; })
       };
       if (!prevCorpo.periodStart || !prevCorpo.teses.length) prevCorpo = null;

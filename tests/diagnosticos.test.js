@@ -76,3 +76,15 @@ test('gerar de novo o mesmo resultado não cria versão nova (repetido)', async 
   const b = J(r); assert.equal(b.repetido, true); assert.equal(b.versao, 2);
   assert.equal((await sql`select count(*)::int n from diagnostics`)[0].n, antes);
 });
+
+test('responsável informado pelo parceiro vira contato principal e zera a pendência; reenvio só completa vazios', async () => {
+  const r = await salvar({ teses: [credito(30000, 0)], contato: { nome: 'Carla Souza', cargo: 'Controller', email: 'Carla@Cliente.com.br', telefone: '' } });
+  assert.equal(r.statusCode, 201, r.body);
+  assert.deepEqual(J(r).pendencias, ['telefone']);
+  let c = (await sql`select name, role, email, phone, is_primary from crm_contacts where name = 'Carla Souza'`);
+  assert.equal(c.length, 1); assert.equal(c[0].email, 'carla@cliente.com.br'); assert.equal(c[0].is_primary, true); assert.equal(c[0].role, 'Controller');
+  const r2 = await salvar({ teses: [credito(40000, 0)], contato: { nome: 'Carla Souza', cargo: 'Outro cargo', email: 'carla@cliente.com.br', telefone: '48999990000' } });
+  assert.deepEqual(J(r2).pendencias, []);
+  c = await sql`select role, phone from crm_contacts where name = 'Carla Souza'`;
+  assert.equal(c.length, 1); assert.equal(c[0].role, 'Controller'); assert.equal(c[0].phone, '48999990000');
+});
