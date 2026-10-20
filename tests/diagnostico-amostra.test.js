@@ -81,7 +81,7 @@ test('apresentação ao cliente: condicional só entra se marcada, regime sempre
   assert.ok(str.includes('Regime não identificado nos arquivos lidos'));
 });
 
-test('relatório técnico interno traz "Teses calculadas e desaconselhadas"; o do cliente não', () => {
+test('relatório técnico interno traz "Teses calculadas, a avaliar"; o do cliente não', () => {
   const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
   const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x => x[1]).find(x => x.includes('root.GeradorMemoria ='));
   const textos = [];
@@ -106,12 +106,12 @@ test('relatório técnico interno traz "Teses calculadas e desaconselhadas"; o d
   textos.length = 0;
   try { window.GeradorMemoria.gerar(null, [], { prev }); } catch (e) { /* stub parcial: o que importa são os textos registrados */ }
   let str = JSON.stringify(textos);
-  assert.ok(str.includes('Teses calculadas e desaconselhadas'));
+  assert.ok(str.includes('Teses calculadas, a avaliar'));
   assert.ok(str.includes('Tema 985 do STF é desfavorável, com modulação a partir de 15/09/2020.') && str.includes('VALOR:55500'));
   textos.length = 0;
   window.GeradorMemoria.apresentar(null, 2021, { identificado: true }, { prev, cnpj: '12345678000190', incluirCondicionais: {} });
   str = JSON.stringify(textos);
-  assert.ok(!str.includes('desaconselhadas') && !str.includes('Terço de férias') && !str.includes('Tema 985'));
+  assert.ok(!str.includes("a avaliar") && !str.includes('Terço de férias') && !str.includes('Tema 985'));
 });
 
 test('selos da tela previdenciária: tooltip da T007 e chip "Requer documento"', () => {
