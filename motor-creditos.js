@@ -627,8 +627,9 @@
     saldoCredor: [
       ['competencia', 'Última competência', 't'], ['cnpjMatriz', 'CNPJ', 't'], ['arquivo', 'Arquivo', 't'], ['pis', 'Saldo PIS', 'm'], ['cofins', 'Saldo COFINS', 'm'], ['status', 'Situação', 't']],
     valeTransporte: [
-      ['competencia', 'Competência', 't'], ['cnpjMatriz', 'CNPJ', 't'], ['valorBruto', 'Vale-transporte pago', 'm'], ['descontoEmpregado', 'Descontado do empregado', 'm'],
-      ['jaApropriado', 'Já creditado (F100)', 'm'], ['base', 'Base do crédito', 'm'], ['pis', 'PIS potencial', 'm'], ['cofins', 'COFINS potencial', 'm'], ['status', 'Situação', 't']],
+      ['competencia', 'Competência', 't'], ['cnpjMatriz', 'CNPJ', 't'], ['modo', 'Modo', 't'], ['valorBruto', 'Total pago', 'm'], ['origemPago', 'Origem', 't'],
+      ['descontoEmpregado', 'Desconto do empregado', 'm'], ['origemDesconto', 'Origem', 't'],
+      ['jaApropriado', 'Já creditado (F100)', 'm'], ['base', 'Base líquida da empresa', 'm'], ['pis', 'PIS potencial', 'm'], ['cofins', 'COFINS potencial', 'm'], ['status', 'Situação', 't']],
     lei14592: [
       ['data', 'Data', 't'], ['doc', 'NF', 't'], ['codItem', 'Produto', 't'], ['cfop', 'CFOP', 't'], ['vlItem', 'Valor item', 'm'], ['vlIcms', 'ICMS', 'm'],
       ['bcPis', 'Base do crédito', 'm'], ['excessoPis', 'ICMS na base', 'm'], ['pis', 'PIS em risco', 'm'], ['cofins', 'COFINS em risco', 'm'], ['status', 'Situação', 't']]
@@ -866,24 +867,66 @@
       lancar('saldoCredor', l, l.meta.competencia, false, { status: (sp || sc) ? 'Saldo informado nos registros M100/M500 — conferir origem' : 'Sem saldo credor informado' }, sp, sc);
     });
 
-    // Vale-transporte: valores informados por competência (opts.valeTransporte = { 'AAAA-MM': reais | { valor, descontoEmpregado } }), só regime não cumulativo.
-    var vtIn = opts.valeTransporte || {};
-    Object.keys(vtIn).sort().forEach(function (comp) {
-      var v = vtIn[comp], bruto = Math.round((typeof v === 'object' && v ? Number(v.valor) : Number(v)) * 100) || 0;
-      var desc = Math.round((typeof v === 'object' && v ? Number(v.descontoEmpregado) : 0) * 100) || 0;
+    // Vale-transporte (T097), por competência. Total pago: manual (opts.valeTransporte, sobrescreve) > ECD (opts.ecd, lidos de motor-ecd).
+    // Parcela do empregado: manual > eSocial (opts.esocialVt = { 'AAAA-MM': reais }, de MotorEsocialExtra.descontoValeTransporte) > conta de desconto da ECD > desconhecida (null).
+    // Só regime não cumulativo. Valores em centavos. Cada valor guarda a origem (ECD | eSocial | manual | EFD).
+    var vtIn = opts.valeTransporte || {}, vtEsoc = opts.esocialVt || {}, vtEnt = {}, vtSemEfd = {};
+    var cent = function (x) { return Math.round(Number(x) * 100) || 0; };
+    if ((opts.ecd || []).length) {
+      var MEcd = (typeof root !== 'undefined' && root.MotorEcd) || (function () { try { return require('./motor-ecd.js'); } catch (e) { return null; } })();
+      (opts.ecd || []).forEach(function (ecd) {
+        if (!MEcd || !MEcd.valeTransporte) return;
+        var rr = MEcd.valeTransporte(ecd), raiz = String(ecd.cnpj || '').replace(/\D/g, '').slice(0, 8);
+        rr.avisos.forEach(function (m) { T.valeTransporte.avisos.push('ECD ' + (ecd.arquivo || raiz) + ': ' + m); });
+        if (rr.contasDespesa.length) T.valeTransporte.avisos.push('ECD ' + (ecd.arquivo || raiz) + ': contas lidas como vale-transporte: ' + rr.contasDespesa.slice(0, 5).map(function (c) { return c.conta + ' ' + c.nome; }).join('; ') + '. Vale-transporte em conta genérica de benefícios não é separado: conferir o plano de contas.');
+        Object.keys(rr.porCompetencia).forEach(function (comp) {
+          var x = rr.porCompetencia[comp];
+          if (!(x.totalPago > 0)) return;
+          vtEnt[raiz + '|' + comp] = { raiz: raiz, comp: comp, bruto: cent(x.totalPago), origemBruto: 'ECD',
+            desc: x.descontoContabil == null ? null : cent(x.descontoContabil), origemDesc: x.descontoContabil == null ? null : 'ECD' };
+        });
+      });
+    }
+    Object.keys(vtIn).forEach(function (comp) { // manual sobrescreve o que veio da ECD na mesma competência
+      var v = vtIn[comp], obj = typeof v === 'object' && v, bruto = cent(obj ? v.valor : v);
       if (bruto <= 0) return;
-      var alvo = usados.filter(function (l) { return l.meta.competencia === comp; });
-      if (!alvo.length) { T.valeTransporte.avisos.push('Competência ' + comp + ': sem EFD-Contribuições correspondente; valor não calculado.'); return; }
-      alvo.forEach(function (l) {
+      Object.keys(vtEnt).forEach(function (k) { if (vtEnt[k].comp === comp) delete vtEnt[k]; });
+      var temDesc = obj && v.descontoEmpregado != null && isFinite(Number(v.descontoEmpregado));
+      vtEnt['*|' + comp] = { raiz: null, comp: comp, bruto: bruto, origemBruto: 'manual', desc: temDesc ? cent(v.descontoEmpregado) : null, origemDesc: temDesc ? 'manual' : null };
+    });
+    Object.keys(vtEnt).forEach(function (k) { // parcela do empregado: eSocial vale mais que a conta contábil de desconto
+      var e = vtEnt[k];
+      if (e.origemDesc !== 'manual' && vtEsoc[e.comp] != null && isFinite(Number(vtEsoc[e.comp]))) { e.desc = cent(vtEsoc[e.comp]); e.origemDesc = 'eSocial'; }
+    });
+    var vtModos = {};
+    Object.keys(vtEnt).sort(function (a, b) { return vtEnt[a].comp < vtEnt[b].comp ? -1 : vtEnt[a].comp > vtEnt[b].comp ? 1 : a < b ? -1 : 1; }).forEach(function (k) {
+      var e = vtEnt[k], comp = e.comp;
+      var alvos = usados.filter(function (l) { return l.meta.competencia === comp && (e.raiz == null || String(l.meta.cnpj).replace(/\D/g, '').slice(0, 8) === e.raiz); });
+      if (!alvos.length) { vtSemEfd[comp] = 1; return; }
+      var lista = alvos;
+      var jaTotal = alvos.reduce(function (s, l) { return s + ((l.vtApropriado && l.vtApropriado.base) || 0); }, 0);
+      if (e.raiz != null) { // ECD é da empresa toda: lança uma vez só (na matriz, se houver) e abate o crédito de todos os arquivos
+        lista = [alvos.filter(function (l) { return /0001\d\d$/.test(String(l.meta.cnpj).replace(/\D/g, '')); })[0] || alvos[0]];
+      }
+      lista.forEach(function (l) {
         if (!(l.meta.regimeCodigo === '1' || l.meta.regimeCodigo === '3')) { T.valeTransporte.avisos.push('Competência ' + comp + ' (' + l.meta.cnpj + '): regime cumulativo, sem crédito de PIS/COFINS.'); return; }
         var di = l.meta.dtIni, prescrito = di ? new Date(di.ano, di.mes - 1, 1) < limite : false;
-        var ja = (l.vtApropriado && l.vtApropriado.base) || 0;
-        var base = Math.max(0, bruto - desc - ja);
-        lancar('valeTransporte', l, comp, prescrito, { valorBruto: bruto, descontoEmpregado: desc, jaApropriado: ja, base: base,
-          status: 'A validar — tese em disputa' + (ja ? ' (descontado o crédito já lançado no F100)' : '') + (desc ? '' : ' (sem a parcela do empregado: confirmar que o valor é só a parte custeada pela empresa)') },
+        var ja = e.raiz != null ? jaTotal : ((l.vtApropriado && l.vtApropriado.base) || 0);
+        var desconhecido = e.desc == null, desc = desconhecido ? 0 : e.desc;
+        var base = Math.max(0, e.bruto - desc - ja);
+        var modo = e.origemBruto === 'manual' ? (e.origemDesc === 'eSocial' ? 'Manual + eSocial' : 'Manual') : (e.origemDesc === 'eSocial' ? 'ECD + eSocial' : 'ECD apenas');
+        vtModos[modo] = 1;
+        lancar('valeTransporte', l, comp, prescrito, { valorBruto: e.bruto, totalPago: e.bruto, descontoEmpregado: desconhecido ? null : desc, jaApropriado: ja, base: base, baseLiquidaEmpresa: base,
+          modo: modo, origemPago: e.origemBruto, origemDesconto: desconhecido ? 'desconhecido' : e.origemDesc, origemJaCreditado: 'EFD',
+          status: 'A validar — tese em disputa' + (ja ? ' (descontado o crédito já lançado no F100)' : '') +
+            (desconhecido ? ' · Estimativa — sem eSocial; confirmar parcela do empregado (o valor pago foi usado por inteiro)' : '') },
           Math.round(base * ALIQ_NC.pis / 100), Math.round(base * ALIQ_NC.cofins / 100));
       });
     });
+    Object.keys(vtSemEfd).sort().forEach(function (c) { T.valeTransporte.avisos.push('Competência ' + c + ': sem EFD-Contribuições correspondente; valor não calculado.'); });
+    Object.keys(vtEsoc).forEach(function (c) { if (!Object.keys(vtEnt).some(function (k) { return vtEnt[k].comp === c; })) T.valeTransporte.avisos.push('Competência ' + c + ': desconto de vale-transporte lido no eSocial, mas sem valor pago (ECD ou manual) para calcular.'); });
+    T.valeTransporte.modo = Object.keys(vtModos).join(' / ') || null;
+    if (T.valeTransporte.modo) T.valeTransporte.avisos.push('Modo de apuração: ' + T.valeTransporte.modo + '. Total pago, parcela do empregado e base líquida da empresa aparecem separados por competência, com a origem de cada valor.');
     if (T.valeTransporte.aplicavel) T.valeTransporte.avisos.push('Tese em disputa: a Receita só admite o crédito para mão de obra empregada diretamente na produção ou prestação do serviço (IN RFB 2.121/2022, art. 176 — conferir). Valor potencial, fora do recuperável; depende de decisão judicial ou de pedido administrativo. Se a empresa já tomou crédito, ele foi abatido apenas quando o F100 descreve o vale-transporte.');
 
     if (stSemEntrada.itens > 0) {

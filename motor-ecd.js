@@ -144,6 +144,61 @@
       totalDebitos: deb, totalCreditos: cred, partidasDobradasOk: !desb.length && Math.abs(deb - cred) < 0.005, desbalanceados: desb, avisos: avisos };
   }
 
-  var api = { VERSAO: VERSAO, duvidas: duvidas, lerEcd: lerEcd, partidasPorConta: partidasPorConta, resumo: resumo };
+
+  // ------------------------------------------------------------------ vale-transporte (insumo da tese T097)
+  var RE_VT = /VALE[ -]?TRANSPORTE|AUX(ILIO)?\.? ?TRANSPORTE|\bV\.? ?T\.?\b/;
+  var RE_VT_DESC = /DESCONT|RECUPERA|REEMBOLS|PARTICIPA\w* (D[OE] )?(EMPREGAD|FUNCION|COLABORAD)/;
+  var RE_VT_IGNORA = /A PAGAR|A RECOLHER|ADIANTAMENTO|ANTECIPA/;
+  function normNome(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim(); }
+  // Lê, da ECD, o gasto mensal com vale-transporte (contas ANALÍTICAS de despesa cujo nome indica VT; conta sintética só serve para achar as analíticas
+  // filhas, nunca é somada, para não duplicar) e, se existir, a conta de desconto do empregado.
+  // Saída: { porCompetencia: { 'AAAA-MM': { totalPago, descontoContabil|null } }, contasDespesa:[{conta,nome}], contasDesconto:[...], avisos:[] }
+  // Limite: VT lançado em conta genérica de "benefícios" não é identificado.
+  function valeTransporte(lido) {
+    var out = { cnpj: (lido && lido.cnpj) || '', porCompetencia: {}, contasDespesa: [], contasDesconto: [], avisos: [] };
+    var contas = (lido && lido.contas) || [], mapa = {};
+    contas.forEach(function (c) { mapa[c.codigo] = c; });
+    var filhosDe = {};
+    contas.forEach(function (c) { if (c.superior) (filhosDe[c.superior] = filhosDe[c.superior] || []).push(c); });
+    function analiticasAbaixo(c, acc) {
+      (filhosDe[c.codigo] || []).forEach(function (f) { if (f.tipo === 'A') acc[f.codigo] = f; else analiticasAbaixo(f, acc); });
+      return acc;
+    }
+    var alvo = {};
+    contas.forEach(function (c) {
+      if (!RE_VT.test(normNome(c.nome))) return;
+      if (c.tipo === 'A') alvo[c.codigo] = c; else analiticasAbaixo(c, alvo);
+    });
+    var despesa = {}, desconto = {}, ignoradas = [];
+    Object.keys(alvo).forEach(function (cod) {
+      var c = alvo[cod], nm = normNome(c.nome);
+      if (RE_VT_IGNORA.test(nm)) { ignoradas.push(c.nome); return; }
+      if (RE_VT_DESC.test(nm)) { desconto[cod] = c; return; }
+      if (c.natureza === '04' || !c.natureza) { despesa[cod] = c; return; } // natureza 04 = contas de resultado
+      ignoradas.push(c.nome);
+    });
+    out.contasDespesa = Object.keys(despesa).map(function (k) { return { conta: k, nome: despesa[k].nome }; });
+    out.contasDesconto = Object.keys(desconto).map(function (k) { return { conta: k, nome: desconto[k].nome }; });
+    if (ignoradas.length) out.avisos.push('Contas de vale-transporte ignoradas por não serem de despesa (ativo/passivo/a pagar): ' + ignoradas.slice(0, 5).join('; ') + '.');
+    var naoMensal = 0, visto = {};
+    ((lido && lido.saldos) || []).forEach(function (sd) {
+      var ehD = !!despesa[sd.conta], ehC = !!desconto[sd.conta];
+      if (!ehD && !ehC) return;
+      var fin = sd.fin || '', ini = sd.ini || '';
+      if (!/^\d{4}-\d{2}/.test(fin)) return;
+      var chave = [sd.conta, sd.ccus, ini, fin].join('|');
+      if (visto[chave]) return; visto[chave] = 1;
+      if (ini.slice(0, 7) !== fin.slice(0, 7)) naoMensal++;
+      var comp = fin.slice(0, 7), x = out.porCompetencia[comp] = out.porCompetencia[comp] || { totalPago: 0, descontoContabil: null };
+      if (ehD) x.totalPago = r2(x.totalPago + sd.deb - sd.cred);
+      else x.descontoContabil = r2((x.descontoContabil || 0) + sd.cred - sd.deb);
+    });
+    Object.keys(out.porCompetencia).forEach(function (k) { if (out.porCompetencia[k].totalPago < 0) out.porCompetencia[k].totalPago = 0; });
+    if (naoMensal) out.avisos.push('ECD com período de saldo não mensal em ' + naoMensal + ' linha(s) de vale-transporte: o valor foi atribuído ao mês final do período; confira.');
+    if (!out.contasDespesa.length) out.avisos.push('ECD sem conta de despesa identificável como vale-transporte (nome com "vale-transporte"/"VT"): informe o valor manualmente. Vale-transporte em conta genérica de benefícios não é separado.');
+    return out;
+  }
+
+  var api = { VERSAO: VERSAO, valeTransporte: valeTransporte, duvidas: duvidas, lerEcd: lerEcd, partidasPorConta: partidasPorConta, resumo: resumo };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MotorEcd = api;
 })(typeof self !== 'undefined' ? self : this);

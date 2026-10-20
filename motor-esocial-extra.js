@@ -379,6 +379,57 @@
     };
   }
 
-  var api = { VERSAO: VERSAO, apurarExtra: apurarExtra, NOMES: NOMES, CONDICOES: CONDICOES };
+
+  // ------------------------------------------------------------------ desconto de vale-transporte do empregado (insumo da tese T097 de PIS/COFINS)
+  // Lê S-1010 (rubricas de DESCONTO, tpRubr 2, com descrição de vale-transporte ou natRubr 9216) e S-1200 (valores por competência).
+  // Devolve { porCompetencia: { 'AAAA-MM': reais }, rubricas: [...], avisos: [] }. Só folha mensal (13º ignorado); retificadora substitui o original;
+  // S-3000 exclui. O custo TOTAL do vale-transporte não vem do eSocial: é a ECD (ou valor manual) que traz o total pago.
+  var RE_DESC_VT = /VALE[ -]?TRANSPORTE|AUX(ILIO)?\.? ?TRANSPORTE|\bV\.? ?T\.?\b/;
+  function descontoValeTransporte(lidos) {
+    var rub = {}, cands = [], excl = [], out = { porCompetencia: {}, rubricas: [], avisos: [] };
+    (lidos || []).forEach(function (l) {
+      (l.eventos || []).forEach(function (ev) {
+        var n = ev.no;
+        if (ev.tipo === 'S-1010') {
+          ['inclusao', 'alteracao'].forEach(function (op) {
+            todos(n, op).forEach(function (o) {
+              var ir = filho(o, 'ideRubrica'), dr = filho(o, 'dadosRubrica'); if (!ir || !dr) return;
+              var k = txt(ir, 'ideTabRubr') + '|' + txt(ir, 'codRubr');
+              (rub[k] = rub[k] || []).push({ ini: txt(ir, 'iniValid'), fim: txt(ir, 'fimValid'), dsc: txt(dr, 'dscRubr'), natRubr: txt(dr, 'natRubr'), tpRubr: txt(dr, 'tpRubr') });
+            });
+          });
+        } else if (ev.tipo === 'S-1200') {
+          var ie = filho(n, 'ideEvento'), it = filho(n, 'ideTrabalhador'), per = txt(ie, 'perApur'), ind = txt(ie, 'indApuracao') || '1';
+          cands.push({ chave: txt(it, 'cpfTrab') + '|' + per + '|' + ind, comp: /^\d{4}$/.test(per) ? per + '-12' : per, ind: ind, retif: txt(ie, 'indRetif') === '2', no: n, recibo: reciboDe(n) });
+        } else if (ev.tipo === 'S-3000') {
+          excl.push(acharTxt(n, ['nrRecEvt']));
+        }
+      });
+    });
+    excl.forEach(function (r) { if (r) cands = cands.filter(function (c) { return !(c.recibo && c.recibo === r); }); });
+    var valem = {};
+    cands.forEach(function (c) { if (!valem[c.chave] || c.retif || !valem[c.chave].retif) valem[c.chave] = c; });
+    var usadas = {};
+    Object.keys(valem).forEach(function (k) {
+      var e = valem[k]; if (e.ind !== '1') return;
+      todos(e.no, 'dmDev').forEach(function (dm) {
+        ['itensRemun', 'detVerbas'].forEach(function (tg) {
+          todos(dm, tg).forEach(function (ir) {
+            var cod = txt(ir, 'codRubr'), tab = txt(ir, 'ideTabRubr'), lista = rub[tab + '|' + cod], r = lista ? vigente(lista, e.comp) : null;
+            if (!r || r.tpRubr !== '2') return;
+            if (!(r.natRubr === '9216' || RE_DESC_VT.test(norm(r.dsc)))) return;
+            var v = num(txt(ir, 'vrRubr')); if (v <= 0) return;
+            out.porCompetencia[e.comp] = r2((out.porCompetencia[e.comp] || 0) + v);
+            usadas[tab + '|' + cod] = r.dsc;
+          });
+        });
+      });
+    });
+    out.rubricas = Object.keys(usadas).map(function (k) { return { rubrica: k, descricao: usadas[k] }; });
+    if (!Object.keys(out.porCompetencia).length) out.avisos.push('Nenhuma rubrica de desconto de vale-transporte (tpRubr 2, natRubr 9216 ou descrição) encontrada no eSocial: a parcela do empregado segue desconhecida.');
+    return out;
+  }
+
+  var api = { VERSAO: VERSAO, descontoValeTransporte: descontoValeTransporte, apurarExtra: apurarExtra, NOMES: NOMES, CONDICOES: CONDICOES };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MotorEsocialExtra = api;
 })(typeof self !== 'undefined' ? self : this);

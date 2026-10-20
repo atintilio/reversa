@@ -645,7 +645,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     var natTxt = function (n) { return n === 'credito' ? 'Recuperável' : n === 'potencial' ? 'Potencial' : n === 'risco' ? 'Risco' : 'Monitorar'; };
     function valorCol(d, c) {
       var v = d[c[0]];
-      if (c[2] === 'm') return R(v || 0);
+      if (c[2] === 'm') return v === null ? '—' : R(v || 0);
       if (c[2] === 'n') return Number(v || 0).toLocaleString('pt-BR', { maximumFractionDigits: 4 });
       if (c[0] === 'data') { var p = String(v || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : t(v); }
       return t(v);
@@ -1431,7 +1431,17 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   }
   // A tabela de monofásicos é a do motor (sem ajuste manual na tela).
   function ncmsExtras() { return []; }
-  function apurar() { estado.res = M.apurar(estado.lidos, { ncmsExtras: ncmsExtras() }); render(); }
+  // vale-transporte (T097): a ECD traz o total pago; o eSocial (se também foi enviado) traz o desconto do empregado. Sem eSocial, a parcela do empregado fica como desconhecida.
+  function opcoesCreditos() {
+    var o = { ncmsExtras: ncmsExtras() };
+    if (estado.ecdLidos && estado.ecdLidos.length) o.ecd = estado.ecdLidos;
+    if (estado.prevLidos && estado.prevLidos.length && window.MotorEsocialExtra && window.MotorEsocialExtra.descontoValeTransporte) {
+      var d = window.MotorEsocialExtra.descontoValeTransporte(estado.prevLidos);
+      if (Object.keys(d.porCompetencia).length) o.esocialVt = d.porCompetencia;
+    }
+    return o;
+  }
+  function apurar() { estado.res = M.apurar(estado.lidos, opcoesCreditos()); render(); }
   function processar(arquivos, exemplo) {
     calcularHashes(arquivos);
     estado.arquivos = arquivos;
@@ -1520,7 +1530,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   function reapurarPrev() { if (!estado.prevLidos.length) return; estado.prev = apurarPrev(); renderPrev(); renderCobertura(); }
   ['prev-exc', 'prev-exc-ini', 'prev-exc-fim', 'prev-forcar'].forEach(function (id) { $(id).addEventListener('change', reapurarPrev); });
   function esValidos() { return fila.filter(function (x) { return ehEs(x) && !x.lido.erros.length && x.lido.eventos.length; }); }
-  function zerarDerivados() { estado.dti = false; estado.tecDados = null; estado.sdCred = null; estado.sdPrev = null; estado.sdEcf = null; estado.outrosArq = []; estado.ignorados = []; estado.cnpjBase = ''; estado.nTec = 0; estado.nDarf = 0; }
+  function zerarDerivados() { estado.ecdLidos = []; estado.dti = false; estado.tecDados = null; estado.sdCred = null; estado.sdPrev = null; estado.sdEcf = null; estado.outrosArq = []; estado.ignorados = []; estado.cnpjBase = ''; estado.nTec = 0; estado.nDarf = 0; }
   function limparResultado() { estado.res = null; estado.prev = null; zerarDerivados(); secoesResultado(false); secaoDti(false); $('sec-prev').hidden = true; $('sec-cob').hidden = true; $('sec-tec').hidden = true; $('banner').innerHTML = ''; }
   function aoEscolher(lista) {
     var fs = Array.prototype.slice.call(lista || []);
@@ -1621,6 +1631,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     var dv = darfValidos();
     estado.darfs = dv.map(function (x) { return x.lido; });
     estado.prevLidos = es.map(function (x) { return x.lido; }); estado.prevIncluir = {};
+    estado.ecdLidos = tec.filter(function (x) { return x.tipo === 'ecd'; }).map(function (x) { return x.lido; });
     estado.prev = apurarPrev();
     estado.nEs = es.length; estado.nTec = tec.length; estado.nDarf = dv.length;
     calcularHashes(validos.concat(es, tec, dv)); // impressão digital de todos os arquivos usados no DTI
@@ -1932,7 +1943,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   }
   function celula(d, c) {
     var v = d[c[0]];
-    if (c[2] === 'm') return '<td class="r">' + R(v || 0) + '</td>';
+    if (c[2] === 'm') return '<td class="r">' + (v === null ? '—' : R(v || 0)) + '</td>';
     if (c[2] === 'n') return '<td class="r">' + Number(v || 0).toLocaleString('pt-BR', { maximumFractionDigits: 4 }) + '</td>';
     if (c[0] === 'status') {
       var cls = /^Crédito/.test(v) ? 'ok' : /risco/i.test(v) ? 'bad' : /^A validar/.test(v) ? 'warn' : /já|Já|Coberto/.test(v) ? 'neu' : 'warn';
