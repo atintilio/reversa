@@ -149,6 +149,10 @@ input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .pill.warn { color: var(--warn); background: var(--warn-bg); }
 .pill.bad { color: var(--bad); background: var(--bad-bg); }
 .pill.neu { color: var(--muted-fg); background: var(--soft); }
+.pill.tip { cursor: help; margin-left: 6px; }
+.pill.tip:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.prev-docs { margin: 14px 0; font-size: .88rem; }
+.prev-docs li { margin: 4px 0; }
 .scroll { overflow-x: auto; border: 1px solid var(--line); background: var(--card); }
 table { border-collapse: collapse; width: 100%; font-size: .84rem; }
 th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap; vertical-align: top; }
@@ -342,6 +346,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     <ul class="msgs" id="prev-avisos"></ul>
     <div class="scroll"><table id="tab-prev"></table></div>
     <div id="prev-rubricas"></div>
+    <div class="prev-docs" id="prev-docs" hidden></div>
     <p class="note" id="prev-premissas"></p>
   </section>
 
@@ -450,6 +455,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
 <script src="/motor-creditos.js"></script>
+<script src="/motor-esocial-extra.js"></script>
 <script src="/motor-esocial.js"></script>
 <script src="/motor-ecf.js"></script>
 <script src="/motor-ecd.js"></script>
@@ -1144,6 +1150,16 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
                ['Apresentável ao cliente (sem parecer desfavorável e sem condicionais não marcadas)', '', '', RP(aN), RP(aT)].concat(selP ? [RP(aA)] : []).concat([''])],
         columnStyles: { 1: { halign: 'right', cellWidth: 16 }, 2: { halign: 'right', cellWidth: 31 }, 3: { halign: 'right', fontStyle: 'bold', cellWidth: 31 }, 4: { halign: 'right', cellWidth: 31 }, 5: selP ? { halign: 'right', cellWidth: 36 } : { halign: 'left' } }
       });
+      var desac = prev.teses.map(function (x) { var dz = root.TesesDiagnostico && root.TesesDiagnostico.desaconselhada ? root.TesesDiagnostico.desaconselhada(x.id) : null; return dz && !x.condicional ? { x: x, dz: dz } : null; }).filter(Boolean);
+      if (desac.length) {
+        fonte('helvetica', 'bold', 9.5); cor(COR.tinta); espaco(20); doc.text(t('Teses calculadas e desaconselhadas'), M, y); y += 4;
+        paragrafo('Uso interno. Estas teses foram calculadas para conhecimento da equipe, mas têm parecer desfavorável: não constam do relatório do cliente e não devem ser oferecidas como recuperáveis.');
+        tabela({
+          head: [['Tese', 'Estimativa no prazo', 'Total geral', 'Motivo', 'Precedente']],
+          body: desac.map(function (o) { return [t(o.x.nome), RP(o.x.valorNoPrazo), RP(o.x.valor), t(o.dz.motivo), t(o.dz.precedente || '-')]; }),
+          columnStyles: { 1: { halign: 'right', cellWidth: 30 }, 2: { halign: 'right', cellWidth: 30 } }
+        });
+      }
       if (selP) paragrafo('Atualização pela Selic: estimativa por competência, contada do vencimento estimado da contribuição (dia 20 do mês seguinte à competência). ' + (sel.avisoRfb || ''));
       lista('Avisos do eSocial', prev.avisos.map(t));
       fonte('helvetica', 'bold', 9.5); cor(COR.tinta); espaco(20); doc.text(t('Rubricas analisadas (' + prev.rubricasAnalisadas + ')'), M, y); y += 4;
@@ -1817,6 +1833,23 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     $('cob-resumo').textContent = 'Todas as teses cadastradas — ' + n.calc + ' calculada(s), ' + n.apurar + ' a apurar com outros documentos, ' + n.nao + ' fora do regime';
     $('tab-cob').innerHTML = '<thead><tr><th>Cód.</th><th>Tese</th><th>Tributo</th><th>Situação</th><th class="r">Valor no prazo</th><th>Documento necessário / motivo</th></tr></thead><tbody>' + linhas.map(function (x) { return x.h; }).join('') + '</tbody>';
   }
+  // selos da tela previdenciária: tese calculada porém desaconselhada (tooltip acessível) e tese que exige documento externo
+  function selosTese(id) {
+    var TD = window.TesesDiagnostico, out = '';
+    var dz = TD && TD.desaconselhada ? TD.desaconselhada(id) : null, rq = TD && TD.requerDocumento ? TD.requerDocumento(id) : null;
+    if (dz) out += ' <span class="pill bad tip" tabindex="0" role="note" title="' + esc(dz.motivo) + '" aria-label="Desaconselhada. ' + esc(dz.motivo) + '">Desaconselhada</span>';
+    if (rq) out += ' <span class="pill neu tip" tabindex="0" role="note" title="Documentos necessários: ' + esc(rq.join('; ')) + '" aria-label="Requer documento: ' + esc(rq.join('; ')) + '">Requer documento</span>';
+    return out;
+  }
+  function renderPrevDocs(p) {
+    var TD = window.TesesDiagnostico, el = $('prev-docs'); if (!el) return;
+    var calc = {}; p.teses.forEach(function (t) { calc[t.id] = true; });
+    var itens = Object.keys(TD && TD.DIAG || {}).filter(function (id) { return TD.requerDocumento(id) && !calc[id]; }).sort();
+    el.hidden = !itens.length;
+    el.innerHTML = itens.length ? '<strong>Teses que dependem de documentos externos (sem valor até a entrega)</strong><ul>' + itens.map(function (id) {
+      var d = TD.de(id); return '<li><span class="pill neu tip" tabindex="0" title="' + esc(TD.requerDocumento(id).join('; ')) + '">Requer documento</span> <strong>' + esc(id) + '</strong> — ' + esc((d.origem || '').replace(/^[^:]+:\s*/, '')) + '<br><small>' + esc(TD.requerDocumento(id).join('; ')) + '</small></li>';
+    }).join('') + '</ul>' : '';
+  }
   function renderPrev() {
     var p = estado.prev, sec = $('sec-prev'), R = RP;
     if (!p) { sec.hidden = true; return; }
@@ -1834,13 +1867,14 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       kpi('', 'Eventos lidos', nEv.toLocaleString('pt-BR'), ['S-1005', 'S-1010', 'S-1020', 'S-1200'].map(function (k) { return k + ' ' + (ev[k] || 0); }).join(' · '));
     $('prev-avisos').innerHTML = p.avisos.map(function (a) { return '<li' + (/^Faltam os eventos S-1(010|200)/.test(a) ? ' class="e"' : '') + '>' + esc(a) + '</li>'; }).join('');
     var linhas = p.teses.map(function (t) {
-      return '<tr><td class="wrapc"><strong>' + esc(t.nome) + '</strong>' + (t.id === 'T069' ? '<br><small>Reflexo do RAT: cálculo para a empresa decidir se segue pela via administrativa.</small>' : '') + '</td><td class="r">' + t.rubricas.length + '</td><td class="r">' + R(t.baseNoPrazo) + '</td><td class="r"><strong>' + R(t.valorNoPrazo) + '</strong></td><td class="r">' + R(t.valor) + '</td>' + (sp ? '<td class="r">' + R(sp.teses[t.id].totalNoPrazo.valorAt) + '</td>' : '') +
+      return '<tr><td class="wrapc"><strong>' + esc(t.nome) + '</strong>' + selosTese(t.id) + (t.id === 'T069' ? '<br><small>Reflexo do RAT: cálculo para a empresa decidir se segue pela via administrativa.</small>' : '') + '</td><td class="r">' + t.rubricas.length + '</td><td class="r">' + R(t.baseNoPrazo) + '</td><td class="r"><strong>' + R(t.valorNoPrazo) + '</strong></td><td class="r">' + R(t.valor) + '</td>' + (sp ? '<td class="r">' + R(sp.teses[t.id].totalNoPrazo.valorAt) + '</td>' : '') +
         '<td>' + (t.condicional ? '<label class="cond-incl"><span><input type="checkbox" data-incl="' + esc(t.id) + '"' + (estado.prevIncluir[t.id] ? ' checked' : '') + '> Incluir no relatório do cliente</span><small>' + esc(t.condicao || 'Condicional') + '</small></label>' : '<small>Incluída conforme o parecer</small>') + '</td></tr>';
     }).join('') + OUTRAS_PREV.map(function (o) {
       return '<tr><td class="wrapc">' + esc(o[0]) + '<br><small>A dimensionar: ' + esc(o[1]) + '.</small></td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td>' + (sp ? '<td class="r">—</td>' : '') + '<td>—</td></tr>';
     }).join('');
     $('tab-prev').innerHTML = '<thead><tr><th>Tese</th><th class="r">Rubricas</th><th class="r">Base no prazo</th><th class="r">Estimativa no prazo</th><th class="r">Total geral</th>' + (sp ? '<th class="r">No prazo atualizado pela Selic (estimativa)</th>' : '') + '<th>Relatório do cliente</th></tr></thead><tbody>' + linhas +
       '</tbody><tfoot><tr><td colspan="3">Estimativa previdenciária no prazo (pagamento ainda não confirmado)</td><td class="r">' + R(p.total.valorNoPrazo) + '</td><td class="r">' + R(p.total.valor) + '</td>' + (sp ? '<td class="r">' + R(sp.totalNoPrazo.valorAt) + '</td>' : '') + '<td></td></tr></tfoot>';
+    renderPrevDocs(p);
     $('prev-rubricas').innerHTML = p.teses.map(function (t) {
       return '<details class="rub"><summary>Rubricas de ' + esc(t.nome) + ' (' + t.rubricas.length + ')</summary><div class="scroll"><table><thead><tr><th>Código</th><th>Descrição no S-1010</th><th>Natureza</th><th>Incidência CP</th><th>Motivo da associação</th><th class="r">Base total</th></tr></thead><tbody>' +
         t.rubricas.map(function (r) { return '<tr><td class="num">' + esc(r.cod) + (r.tab ? ' <small>(' + esc(r.tab) + ')</small>' : '') + '</td><td>' + esc(r.dsc) + '</td><td class="num">' + esc(r.natRubr) + '</td><td>' + esc(r.codIncCP + ' · ' + (ME.INCIDE_PATRONAL[r.codIncCP] || '')) + '</td><td>' + esc(r.motivo) + '</td><td class="r">' + R(r.base) + '</td></tr>'; }).join('') +

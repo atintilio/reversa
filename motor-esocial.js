@@ -30,12 +30,19 @@
  *   - T074: INSS do SEGURADO descontado a maior/em duplicidade. Rubricas de desconto (tpRubr 2 com natRubr 9201, ou codIncCP 31 + descrição INSS/PREVID)
  *     somadas por trabalhador e competência; devido = tabela progressiva do ano sobre a base (tpRubr 1, codIncCP 11/21), limitada ao teto; excesso = retido - devido.
  *     Não é contribuição patronal: valor = excesso integral (restituição ao empregado + compensação). 13º (codIncCP 12/22 ou perApur anual) fica fora, com aviso.
+ * v0.4.0 (teses previdenciárias B):
+ *   - Rubricas: natRubr (Tabela 3 do eSocial) tem PRIORIDADE sobre a descrição; a descrição é o plano B. Mapa parcial (NAT_RUBR): CONFERIR com a Tabela 3 oficial.
+ *   - T009 revisão do FAP: (FAP declarado no S-1005 − opts.fapPublicado) × RAT × base, por competência. Sem o FAP revisado: valor zero + aviso.
+ *   - T010 revisão do RAT/GILRAT: RAT declarado × grau de risco do CNAE do estabelecimento (Anexo V do Decreto 3.048/99). Tabela parcial CNAE_RISCO (CONFERIR) ou opts.cnaeRisco.
+ *   - T061 RAT por atividade preponderante (Súmula 351 STJ): estabelecimentos que repetem o RAT do estabelecimento preponderante (mais empregados) acima do grau do próprio CNAE.
+ *   - T059 sanitização de rubricas: natRubr não salarial com incidência patronal declarada e sem tese específica; incoerências natRubr × codIncCP viram aviso.
+ *   - T076 13º sobre aviso-prévio indenizado (S-2299): 1/12 do aviso, limitado ao 13º com incidência pago na rescisão (ou o 13º do aviso pago em rubrica própria).
  *   Todo o valor é estimativa (pagamento: 'nao-confirmado'). Tags/leiaute marcados "a validar com XML real (Sodimac)" são tolerantes a variações de nome.
  * Funciona no navegador (window.MotorEsocial) e no Node (module.exports).
  */
 (function (root) {
   'use strict';
-  var VERSAO = '0.3.0';
+  var VERSAO = '0.5.0';
   var CPP = 0.20, TERCEIROS_PADRAO = 0.058;
   // a validar com XML real (Sodimac): nomes de tag aceitos (comparação sem diferenciar maiúsculas/minúsculas)
   var TAGS_CLASSTRIB = ['classTrib'], TAGS_DESFOLHA = ['indDesFolha', 'indDesoneracao', 'indCPRB'];
@@ -72,7 +79,46 @@
     T065: 'Apenas gratificações e prêmios eventuais (habituais ficam de fora).',
     T066: 'Forma de pagamento: PAT, cartão ou in natura, não em dinheiro.',
     T068: 'Plano disponível a todos os empregados.',
-    T008: 'Depende de ação judicial/decisão favorável e da modulação (Tema 1079); informar período.'
+    T008: 'Depende de ação judicial/decisão favorável e da modulação (Tema 1079); informar período.',
+    T009: 'Depende do FAP revisado (contestação/revisão administrativa ou ação): extrato do FAP na Dataprev/Previdência, relação de CAT e benefícios acidentários e vínculos/rotatividade.',
+    T010: 'Depende do enquadramento correto do CNAE (Anexo V do Decreto 3.048/99) por estabelecimento; conferir a tabela de grau de risco e o enquadramento contratado.',
+    T061: 'Depende do número de empregados por estabelecimento/lotação e do CNAE de cada CNPJ (Súmula 351 do STJ); conferir o enquadramento.',
+    T059: 'Revisão rubrica a rubrica: confirmar a natureza indenizatória e a habitualidade antes de pleitear; se houver tese específica para a verba, usar a específica.',
+    T076: 'Depende do entendimento sobre a incidência no 13º proporcional ao aviso-prévio indenizado (a RFB entende que incide; a tese é controvertida). Marcar só se a empresa decidir pleitear.'
+  };
+  // Mapa PARCIAL da Tabela 3 do eSocial (natRubr) — CONFERIR com a Tabela 3 oficial antes de usar o resultado.
+  // tese: tese da rubrica (prioridade sobre a descrição); cat: 'salarial' (integra o salário de contribuição), 'naoSalarial' (verba indenizatória/assistencial/eventual) ou 'desconto'.
+  var NAT_RUBR = {
+    '1000': { cat: 'salarial', nome: 'Salário, vencimento, soldo ou subsídio' }, '1003': { cat: 'salarial', nome: 'Horas extraordinárias' },
+    '1202': { cat: 'salarial', nome: 'Adicional de insalubridade' }, '1203': { cat: 'salarial', nome: 'Adicional de periculosidade' },
+    '1205': { cat: 'salarial', nome: 'Adicional noturno' }, '1206': { cat: 'salarial', nome: 'Adicional por tempo de serviço' },
+    '1214': { cat: 'salarial', nome: 'Adicional de penosidade' }, '1299': { cat: 'salarial', nome: 'Outros adicionais' }, '1212': { cat: 'salarial', nome: 'Gratificações de natureza permanente' },
+    '1604': { cat: 'salarial', nome: 'Ajuda de custo acima de 50% da remuneração' }, '1652': { cat: 'salarial', nome: 'Diárias acima de 50% do salário' },
+    '1211': { cat: 'eventual', tese: 'T065', nome: 'Gratificações' }, '1213': { cat: 'eventual', tese: 'T065', nome: 'Gratificações de natureza transitória' }, '2501': { cat: 'eventual', tese: 'T065', nome: 'Prêmios' },
+    '1300': { cat: 'naoSalarial', tese: 'T063', nome: 'PLR' }, '1810': { cat: 'naoSalarial', tese: 'T067', nome: 'Transporte' }, '1801': { cat: 'naoSalarial', tese: 'T066', nome: 'Alimentação' },
+    '1405': { cat: 'naoSalarial', tese: 'T068', nome: 'Assistência médica' },
+    '6003': { cat: 'naoSalarial', nome: 'Indenização compensatória do aviso-prévio' }, '6001': { cat: 'naoSalarial', nome: 'Aviso-prévio indenizado / 13º do aviso (código a conferir)' }, // 6001/6003: sem tese fixa (a fonte consultada diverge; a descrição decide)
+    '6006': { cat: 'naoSalarial', tese: 'T073', nome: 'Férias proporcionais' }, '6007': { cat: 'naoSalarial', tese: 'T073', nome: 'Férias vencidas na rescisão' }, '6004': { cat: 'naoSalarial', tese: 'T073', nome: 'Férias em dobro na rescisão' },
+    '6106': { cat: 'naoSalarial', tese: 'T071', nome: 'Multa do art. 477 da CLT' }, '6104': { cat: 'naoSalarial', tese: 'T072', nome: 'Indenização do art. 479 da CLT' }, '6904': { cat: 'naoSalarial', nome: 'Multa do art. 480 da CLT' },
+    '1602': { cat: 'naoSalarial', nome: 'Ajuda de custo de transferência' }, '1603': { cat: 'naoSalarial', nome: 'Ajuda de custo' },
+    '1650': { cat: 'naoSalarial', nome: 'Diárias de viagem' }, '1651': { cat: 'naoSalarial', nome: 'Diárias de viagem até 50% do salário' },
+    '1406': { cat: 'naoSalarial', nome: 'Auxílio-creche' }, '1407': { cat: 'naoSalarial', nome: 'Auxílio-educação' },
+    '1350': { cat: 'naoSalarial', nome: 'Bolsa de estudo (estagiário)' }, '1351': { cat: 'naoSalarial', nome: 'Bolsa de estudo (médico residente)' }, '1352': { cat: 'naoSalarial', nome: 'Bolsa de estudo ou pesquisa' },
+    '1409': { cat: 'naoSalarial', nome: 'Salário-família' },
+    '9201': { cat: 'desconto', nome: 'Contribuição previdenciária (INSS)' }, '9216': { cat: 'desconto', nome: 'Desconto de vale-transporte' }, '9219': { cat: 'desconto', nome: 'Desconto de assistência médica ou odontológica' },
+    '9220': { cat: 'desconto', nome: 'Desconto de alimentação' }, '9223': { cat: 'desconto', nome: 'Previdência complementar (empregado)' }, '9250': { cat: 'desconto', nome: 'Seguro de vida (desconto)' }
+  };
+  // Grau de risco (RAT: 1 = 1%, 2 = 2%, 3 = 3%) por CNAE-Subclasse — Anexo V do Decreto 3.048/99. TABELA PARCIAL (amostra): CONFERIR com o Anexo V; use opts.cnaeRisco para completar/corrigir.
+  var CNAE_RISCO = {
+    '6201501': 1, '6911701': 1, '7020400': 1, '8211300': 1, '4711301': 2, '4711302': 2, '4120400': 3, '1011201': 3, '4930202': 3
+  };
+  // Documentos além da procuração/XML do eSocial, por tese
+  var DOCUMENTOS = {
+    T009: ['Extrato do FAP na Dataprev/Previdência (FAP vigente e FAP revisado/contestado)', 'Relação de CAT emitidas e de benefícios acidentários (B91/B92/B93/B94)', 'Vínculos e rotatividade (RAIS/CAGED ou eSocial) do período do FAP'],
+    T010: ['Enquadramento do CNAE por estabelecimento (cartão CNPJ e S-1005)', 'Descrição da atividade econômica real de cada estabelecimento (para sustentar o grau de risco)'],
+    T061: ['Número de empregados por estabelecimento e por lotação (S-1200, já lido)', 'CNAE e atividade de cada CNPJ (cartão CNPJ)'],
+    T059: ['Tabela 3 oficial do eSocial (natureza das rubricas)', 'Acordos/convenções e políticas internas que definam a natureza e a habitualidade de cada verba'],
+    T076: ['Termos de rescisão (TRCT) e S-2299 com as verbas rescisórias', 'Decisão da empresa sobre pleitear a tese (incidência controvertida)']
   };
   var INCIDE_PATRONAL = { '11': 'mensal', '12': '13º salário', '21': 'salário-maternidade (empresa)', '22': 'salário-maternidade 13º (empresa)' };
 
@@ -135,6 +181,7 @@
   var REGRAS = [
     { id: 'T004', re: /MATERNIDADE/, motivo: 'salário-maternidade' },
     { id: 'T064', re: /PATERNIDADE/, motivo: 'licença-paternidade' },
+    { id: 'T076', re: /(13|DECIMO TERCEIRO).*(AVISO|AV\.? ?PREV)|(AVISO|AV\.? ?PREV).*(13 ?(O|º)? ?SAL|DECIMO TERCEIRO)/, motivo: '13º salário relativo ao aviso-prévio indenizado' },
     { id: 'T005', re: /AVISO ?PREVIO INDENIZ|AV\.? ?PREV(IO)?\.? ?INDENIZ|AVISO INDENIZ/, motivo: 'aviso-prévio indenizado' },
     { id: 'T073', re: /FERIAS.*INDENIZ|INDENIZ.*FERIAS/, motivo: 'férias indenizadas e respectivo 1/3' },
     { id: 'T073', soResc: true, re: /FERIAS (PROPORC|VENCID)|(1\/3|TERCO).*FERIAS|FERIAS.*(1\/3|TERCO)/, motivo: 'férias (proporcionais/vencidas) e 1/3 na rescisão' },
@@ -164,12 +211,44 @@
     T073: 'Contribuição previdenciária sobre férias indenizadas e terço constitucional de férias indenizadas',
     T071: 'Contribuição previdenciária sobre multa do art. 477 da CLT (multa rescisória)',
     T072: 'Contribuição previdenciária sobre indenização por dispensa (art. 479 da CLT / Lei 7.238/84, art. 9º)',
-    T074: 'INSS do segurado descontado a maior ou em duplicidade (restituição ao empregado e compensação)'
+    T074: 'INSS do segurado descontado a maior ou em duplicidade (restituição ao empregado e compensação)',
+    T009: 'Revisão do FAP (Fator Acidentário de Prevenção): diferença entre o FAP aplicado e o FAP revisado sobre a base do RAT',
+    T010: 'Revisão do RAT/GILRAT: alíquota declarada acima do grau de risco do CNAE do estabelecimento (Decreto 3.048/99, Anexo V)',
+    T061: 'RAT por atividade preponderante (Súmula 351 do STJ): estabelecimento com RAT do estabelecimento preponderante acima do grau do próprio CNAE',
+    T059: 'Sanitização de rubricas e incidências: verbas de natureza não salarial (Tabela 3) com incidência previdenciária declarada',
+    T076: 'Contribuição previdenciária sobre 13º salário relativo ao aviso-prévio indenizado'
   };
   function classificar(dsc, resc) {
     var d = norm(dsc);
     for (var i = 0; i < REGRAS.length; i++) if ((!REGRAS[i].soResc || resc) && REGRAS[i].re.test(d)) return REGRAS[i];
     return null;
+  }
+  /** Rubrica -> tese: natRubr (Tabela 3, mapa parcial) tem prioridade; a descrição é o plano B. */
+  function classificarRub(r, resc, mapa) {
+    var n = (mapa || NAT_RUBR)[r.natRubr];
+    if (n && n.tese) {
+      var regra = null; REGRAS.forEach(function (x) { if (!regra && x.id === n.tese) regra = x; });
+      return { id: n.tese, motivo: (regra ? regra.motivo : NOMES[n.tese]) + ' (natRubr ' + r.natRubr + ')', origem: 'natRubr' };
+    }
+    return classificar(r.dsc, resc);
+  }
+  function digitos(s) { return String(s || '').replace(/\D/g, ''); }
+  /** Grau de risco (1-3) do CNAE: opts.cnaeRisco {cnae: grau} (7, 5 ou 4 dígitos) > tabela parcial. */
+  function grauCnae(cnae, ov) {
+    var d = digitos(cnae), o = ov || {}, t = {}, k;
+    Object.keys(o).forEach(function (x) { t[digitos(x)] = +o[x]; });
+    for (k = d.length; k >= 4; k--) if (t[d.slice(0, k)] >= 1) return { grau: t[d.slice(0, k)], fonte: 'informado' };
+    if (CNAE_RISCO[d] >= 1) return { grau: CNAE_RISCO[d], fonte: 'tabela-parcial' };
+    return null;
+  }
+  /** FAP revisado da competência: número, lista [{ini,fim,fap}] ou objeto {cnpj: número|lista}. */
+  function fapDe(f, nr, comp) {
+    if (f == null) return null;
+    if (typeof f === 'object' && !Array.isArray(f)) { if (f[nr] == null) return null; f = f[nr]; }
+    if (typeof f === 'number') return f;
+    if (!Array.isArray(f)) return null;
+    var v = null; f.forEach(function (x) { if ((!x.ini || x.ini <= comp) && (!x.fim || x.fim >= comp) && x.fap != null) v = +x.fap; });
+    return v;
   }
 
   // ------------------------------------------------------------------ apuração
@@ -203,7 +282,7 @@
    * @param {Array} lidos  resultados de lerXml
    * @param {{hoje?: Date, terceiros?: number, terceirosExcecao?: {ini:string, fim:string}|null, forcarEscopo?: boolean}} opts
    */
-  function apurar(lidos, opts) {
+  function apurarBase(lidos, opts) {
     opts = opts || {};
     var terceiros = opts.terceiros == null ? TERCEIROS_PADRAO : Number(opts.terceiros);
     var limite = cincoAnos(opts.hoje);
@@ -292,7 +371,10 @@
     var porTese = {}, semCadastro = {}, semIncidencia = {}, semTese = {}, rubricasUsadas = {}, comps = {}, reflexos = { base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, porComp: {} };
     var pend065 = [], baseTrab = {}, semSM = {};
     var inssRet = {}, inssBase = {}, inssDecimo = {};
+    var mapaNat = Object.assign({}, NAT_RUBR, opts.natRubrMapa || {}), natUsada = false, incoerencias = {};
+    var ratInfo = {}, headEst = {}, headLot = {}, n76est = 0, n76sem = 0;
     function acumula(tese, r, base, aliq, comp, motivo) {
+      if (opts._excluir && opts._excluir[tese + '|' + r.tab + '|' + r.cod]) return; // rubrica reclassificada para tese do módulo extra (evita contar duas vezes)
       var t = porTese[tese] = porTese[tese] || { id: tese, nome: NOMES[tese], base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, competencias: {}, porComp: {} };
       var noPrazo = comp >= limite;
       t.base += base; t.valor += base * aliq; t.competencias[comp] = 1; t.porComp[comp] = (t.porComp[comp] || 0) + base * aliq;
@@ -313,6 +395,11 @@
         if (reg.cprb) cprbComps[comp] = 1;
         var nrInsc = txt(el, 'nrInsc'), est = estabs[nrInsc] ? vigente(estabs[nrInsc], comp) : null;
         var ratAj = est ? est.rat / 100 * est.fap : null;
+        if (e.tipo === 'S-1200') { // empregados por estabelecimento e por lotação (T061)
+          (headEst[nrInsc] = headEst[nrInsc] || {})[e.cpf + '|' + comp] = 1;
+          var kl = nrInsc + '|' + txt(el, 'codLotacao'); (headLot[kl] = headLot[kl] || {})[e.cpf + '|' + comp] = 1;
+        }
+        var av = { aviso: 0, real: 0, d13: 0 };
         var itens = []; TAGS_ITENS.forEach(function (tg) { todos(el, tg).forEach(function (x) { itens.push(x); }); });
         itens.forEach(function (ir) {
           var cod = txt(ir, 'codRubr'), tab = txt(ir, 'ideTabRubr'), vr = num(txt(ir, 'vrRubr'));
@@ -320,6 +407,13 @@
           if (!lista) { semCadastro[tab + '|' + cod] = (semCadastro[tab + '|' + cod] || 0) + vr; return; }
           var r = vigente(lista, comp);
           rubricasUsadas[tab + '|' + cod] = r;
+          var rc = classificarRub(r, e.tipo === 'S-2299', mapaNat); // natRubr tem prioridade sobre a descrição
+          if (rc && rc.origem === 'natRubr') natUsada = true;
+          if (e.tipo === 'S-2299' && r.tpRubr === '1' && vr > 0) { // insumos da T076
+            if (rc && rc.id === 'T005') av.aviso += vr;
+            else if (rc && rc.id === 'T076') { if (INCIDE_PATRONAL[r.codIncCP]) av.real += vr; }
+            else if (/13 ?(O|º)? ?SAL|DECIMO TERCEIRO/.test(norm(r.dsc)) && INCIDE_PATRONAL[r.codIncCP]) av.d13 += vr;
+          }
           var kI = e.cpf + '|' + comp;
           if (ehInssSegurado(r)) { if (vr > 0) { inssRet[kI] = (inssRet[kI] || 0) + vr; if (e.anual) inssDecimo[kI] = 1; } return; } // INSS do segurado: analisado na T074, não é patronal
           if (r.tpRubr === '1' && vr > 0) {
@@ -327,13 +421,18 @@
             else if (r.codIncCP === '11' || r.codIncCP === '21') inssBase[kI] = (inssBase[kI] || 0) + vr;
           }
           if (r.tpRubr !== '1' || !INCIDE_PATRONAL[r.codIncCP] || vr <= 0) {
+            var nmI = mapaNat[r.natRubr];
+            if (r.tpRubr === '1' && vr > 0 && nmI && nmI.cat === 'salarial' && !INCIDE_PATRONAL[r.codIncCP]) incoerencias[r.dsc + ' (natRubr ' + r.natRubr + ', incidência ' + (r.codIncCP || 'não informada') + ')'] = 1;
             if (vr > 0) { var kn = r.dsc + ' (tipo ' + (r.tpRubr || '?') + ', incidência ' + (r.codIncCP || 'não informada') + ')'; semIncidencia[kn] = (semIncidencia[kn] || 0) + vr; }
             return;
           }
           if (exc && comp >= exc.ini && comp <= exc.fim) baseTrab[e.cpf + '|' + comp] = (baseTrab[e.cpf + '|' + comp] || 0) + vr; // base do trabalhador (todos os estabelecimentos)
-          var c = classificar(r.dsc, e.tipo === 'S-2299');
-          if (!c && !(REFLEXOS.test(norm(r.dsc)) && ratAj)) semTese[r.dsc] = (semTese[r.dsc] || 0) + vr;
+          var c = rc;
           var aliq = (reg.cprb ? 0 : CPP) + (ratAj || 0) + terceiros; // CPRB: retira os 20% de CPP
+          var natC = mapaNat[r.natRubr];
+          if (est) { var kri = nrInsc + '|' + comp, ri = ratInfo[kri] = ratInfo[kri] || { nrInsc: nrInsc, comp: comp, est: est, base: 0 }; ri.base += vr; } // base do RAT (T009/T010/T061)
+          if (!c && natC && natC.cat === 'naoSalarial') { natUsada = true; acumula('T059', r, vr, aliq, comp, 'natRubr ' + r.natRubr + ' (' + natC.nome + ') com incidência patronal declarada (codIncCP ' + r.codIncCP + ')'); }
+          else if (!c && !(REFLEXOS.test(norm(r.dsc)) && ratAj)) semTese[r.dsc] = (semTese[r.dsc] || 0) + vr;
           if (c && c.id === 'T065') pend065.push({ cpf: e.cpf, k: tab + '|' + cod, comp: comp, vr: vr, aliq: aliq, r: r, motivo: c.motivo });
           else if (c) acumula(c.id, r, vr, aliq, comp, c.motivo);
           if (REFLEXOS.test(norm(r.dsc)) && ratAj) {
@@ -343,6 +442,10 @@
             xr.base += vr;
           }
         });
+        if (e.tipo === 'S-2299' && av.aviso > 0 && av.real <= 0) { // T076 estimada: 1/12 do aviso, limitada ao 13º com incidência pago na rescisão
+          if (av.d13 > 0) acumula('T076', { tab: 'S-2299', cod: 'aviso/12', dsc: '13º proporcional ao aviso-prévio indenizado (1/12 do aviso, estimado)', natRubr: '', codIncCP: '12' }, Math.min(av.aviso / 12, av.d13), (reg.cprb ? 0 : CPP) + (ratAj || 0) + terceiros, comp, 'estimado: 1/12 do aviso-prévio indenizado, limitado ao 13º com incidência pago na rescisão'), n76est++;
+          else n76sem++;
+        }
         if (!est) avisos.push('Estabelecimento ' + nrInsc + ' sem S-1005: RAT e FAP não aplicados nas competências dele.');
       });
     });
@@ -383,6 +486,43 @@
     if (Object.keys(semTabela).length) avisos.push('INSS do segurado: sem tabela progressiva para as competências ' + Object.keys(semTabela).sort().join(', ') + ' (antes de 03/2020 a alíquota não era progressiva): requer conferência manual e não entrou na T074.');
     if (Object.keys(conferirTab).length) avisos.push('INSS do segurado: tabela de ' + Object.keys(conferirTab).sort().join(', ') + ' a conferir com a portaria interministerial vigente antes de usar o valor.');
 
+    // T009 (FAP), T010 (RAT/GILRAT) e T061 (RAT por atividade preponderante): sobre a base do RAT por estabelecimento e competência
+    var headTot = {}, prep = null, semGrau = {}, subRat = {}, parcial = false, semRat = {}, fapInformado = opts.fapPublicado != null, grauCache = {};
+    Object.keys(headEst).sort().forEach(function (nr) { headTot[nr] = Object.keys(headEst[nr]).length; if (prep === null || headTot[nr] > headTot[prep]) prep = nr; });
+    var pseudo = function (nr, dsc) { return { tab: 'RAT', cod: nr, dsc: dsc, natRubr: '', codIncCP: '' }; };
+    Object.keys(ratInfo).sort().forEach(function (k) {
+      var ri = ratInfo[k], est = ri.est, nr = ri.nrInsc, fap = est.fap, rat = est.rat;
+      if (!(rat > 0)) { semRat[nr] = 1; return; }
+      var pub = fapDe(opts.fapPublicado, nr, ri.comp);
+      if (pub != null && fap > pub) acumula('T009', pseudo(nr, 'FAP aplicado ' + fap + ' × FAP revisado ' + pub + ' (RAT ' + rat + '%)'), ri.base, rat / 100 * (fap - pub), ri.comp, 'FAP aplicado ' + fap + ' acima do FAP revisado ' + pub);
+      var ck = nr + '|' + est.cnae; if (!(ck in grauCache)) grauCache[ck] = grauCnae(est.cnae, opts.cnaeRisco); var gr = grauCache[ck];
+      if (!gr) { semGrau[nr + ' (CNAE ' + (est.cnae || 'não informado') + ')'] = 1; return; }
+      if (gr.fonte === 'tabela-parcial') parcial = true;
+      if (rat < gr.grau) { subRat[nr + ' (CNAE ' + est.cnae + ': grau ' + gr.grau + ', declarado ' + rat + ')'] = 1; return; }
+      if (rat === gr.grau) return;
+      var pe = prep && prep !== nr && estabs[prep] ? vigente(estabs[prep], ri.comp) : null, difAliq = (rat - gr.grau) / 100 * fap;
+      if (pe && pe.rat === rat) acumula('T061', pseudo(nr, 'RAT ' + rat + '% igual ao do estabelecimento preponderante (' + prep + '); grau do próprio CNAE ' + est.cnae + ': ' + gr.grau), ri.base, difAliq, ri.comp, 'RAT do estabelecimento preponderante aplicado acima do grau do CNAE do estabelecimento');
+      else acumula('T010', pseudo(nr, 'RAT declarado ' + rat + '% × grau de risco ' + gr.grau + ' do CNAE ' + est.cnae), ri.base, difAliq, ri.comp, 'RAT declarado acima do grau de risco do CNAE');
+    });
+    var ratPrep = null;
+    if (prep) {
+      var lotsP = Object.keys(headLot).filter(function (k) { return k.split('|')[0] === prep; }).map(function (k) { return { cod: k.split('|')[1], empregados: Object.keys(headLot[k]).length }; }).sort(function (a, b) { return b.empregados - a.empregados; });
+      var ep = estabs[prep] ? vigente(estabs[prep], Object.keys(comps).sort().pop() || '9999-12') : null;
+      ratPrep = { nrInsc: prep, cnae: ep ? ep.cnae : '', ratAplicado: ep ? ep.rat : null, empregadosCompetencias: headTot[prep], lotacoes: lotsP,
+        estabelecimentos: Object.keys(headTot).map(function (nr) { return { nrInsc: nr, empregadosCompetencias: headTot[nr] }; }) };
+    }
+    if (ratInfo && Object.keys(ratInfo).length && !fapInformado) avisos.push('T009 (revisão do FAP): informe o FAP revisado (extrato do FAP na Dataprev/Previdência) para calcular; sem ele o valor é zero.');
+    if (Object.keys(semGrau).length) avisos.push('T010/T061: CNAE sem grau de risco na tabela parcial (' + Object.keys(semGrau).sort().join('; ') + '): informe o grau do Anexo V (opts.cnaeRisco) para calcular; valor zero.');
+    if (parcial && (porTese.T010 || porTese.T061)) avisos.push('T010/T061: grau de risco obtido da tabela parcial de CNAE — CONFERIR com o Anexo V do Decreto 3.048/99.');
+    if (Object.keys(subRat).length) avisos.push('RAT declarado ABAIXO do grau de risco do CNAE (possível passivo, não é crédito): ' + Object.keys(subRat).sort().join('; ') + '.');
+    if (Object.keys(semRat).length) avisos.push('S-1005 sem alíquota RAT (aliqRat) nos estabelecimentos ' + Object.keys(semRat).sort().join(', ') + ': T009/T010/T061 não calculadas.');
+    if ([porTese.T009, porTese.T010, porTese.T061].filter(Boolean).length > 1) avisos.push('T009, T010 e T061 incidem sobre a mesma base de RAT: conferir a sobreposição antes de somar os valores.');
+    if (natUsada) avisos.push('Rubricas classificadas por natRubr usam o mapa PARCIAL da Tabela 3 do eSocial: CONFERIR com a Tabela 3 oficial.');
+    if (porTese.T059) avisos.push('T059: rubricas de natureza não salarial com incidência declarada; se houver tese específica para a verba, usar a específica para não duplicar.');
+    if (Object.keys(incoerencias).length) avisos.push('Incoerência natRubr × incidência (natureza salarial sem incidência patronal declarada: possível passivo, conferir): ' + Object.keys(incoerencias).sort().slice(0, 8).join('; ') + '.');
+    if (n76est) avisos.push('T076 estimada em ' + n76est + ' rescisão(ões): 1/12 do aviso-prévio indenizado, limitado ao 13º com incidência pago. A incidência no 13º proporcional ao aviso é controvertida (a RFB entende que incide); a tese depende de decisão da empresa.');
+    if (n76sem) avisos.push('T076: ' + n76sem + ' rescisão(ões) com aviso-prévio indenizado sem 13º com incidência na mesma rescisão: sem valor estimado.');
+
     // T008 (exceção): terceiros sobre o que excede 20 salários mínimos por trabalhador e competência
     if (exc) {
       var t8 = { id: 'T008', nome: NOMES.T008, base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, competencias: {}, porComp: {} };
@@ -398,7 +538,7 @@
       avisos.push('T008 pode se sobrepor à parcela de terceiros das demais teses para trabalhadores acima de 20 salários mínimos: conferir antes de somar.');
     }
     if (reflexos.base > 0) porTese.T069 = { id: 'T069', nome: NOMES.T069, base: reflexos.base, baseNoPrazo: reflexos.baseNoPrazo, valor: reflexos.valor, valorNoPrazo: reflexos.valorNoPrazo, rubricas: reflexos.rubricas, competencias: {}, porComp: reflexos.porComp };
-    if (porTese.T005) avisos.push('13º sobre aviso-prévio indenizado: decisão pendente');
+    if (porTese.T005 && !porTese.T076) avisos.push('13º sobre aviso-prévio indenizado: decisão pendente');
 
     // escopo: ok = ao menos uma competência no escopo (ou nenhuma competência apurada)
     var cs = Object.keys(comps).sort(), exclLista = Object.keys(excluidas).sort();
@@ -450,12 +590,42 @@
       rescisoes: { eventos: contagem['S-2299'], exclusoes: { encontradas: exclusoes.length, pareadas: pareadas } },
       inssSegurado: inssLista.length ? { porCompetencia: inssLista, principal: Math.round(inssLista.reduce(function (s, x) { return s + x.excesso; }, 0) * 100) / 100 } : null,
       sensibilidadeBorda: sens,
+      ratPreponderante: ratPrep,
+      dependencias: ['T009', 'T010', 'T061', 'T059', 'T076'].map(function (id) {
+        var tem = !!porTese[id], st;
+        if (tem) st = 'calculada';
+        else if (id === 'T009') st = ratInfo && Object.keys(ratInfo).length ? (fapInformado ? 'sem-diferenca' : 'aguardando-dado') : 'sem-dados';
+        else if (id === 'T010' || id === 'T061') st = !Object.keys(ratInfo).length ? 'sem-dados' : (Object.keys(semGrau).length ? 'aguardando-dado' : (id === 'T061' && Object.keys(headEst).length < 2 ? 'nao-aplicavel' : 'sem-diferenca'));
+        else st = 'sem-ocorrencia';
+        return { id: id, nome: NOMES[id], status: st, documentos: DOCUMENTOS[id] };
+      }),
       pagamento: 'nao-confirmado', // os valores são estimativa: pagamento da contribuição não confirmado (GFIP/DCTFWeb/DARF)
       rubricasAnalisadas: Object.keys(rubricasUsadas).length,
       avisos: avisos.filter(function (a, i) { return avisos.indexOf(a) === i; })
     };
   }
 
-  var api = { VERSAO: VERSAO, lerXml: lerXml, apurar: apurar, classificar: classificar, parseXml: parseXml, INCIDE_PATRONAL: INCIDE_PATRONAL, NOMES: NOMES, SALARIO_MINIMO: SALARIO_MINIMO, CONDICOES: CONDICOES, INSS_TABELAS: INSS_TABELAS, contribInss: contribInss, tabelaInss: tabelaInss };
+  // apuração completa: núcleo + módulo extra (T077–T096). O extra roda primeiro para informar as rubricas que mudam de tese.
+  function apurar(lidos, opts) {
+    opts = opts || {};
+    var Extra = (typeof module !== 'undefined' && module.exports) ? (function () { try { return require('./motor-esocial-extra.js'); } catch (e) { return null; } })() : root.MotorEsocialExtra;
+    if (!Extra || opts.semExtra) return apurarBase(lidos, opts);
+    var ex = Extra.apurarExtra(lidos, Object.assign({}, opts, { classificar: classificar }));
+    var excl = {}; (ex.reclassifica || []).forEach(function (r) { excl[r.de + '|' + r.rubrica] = 1; });
+    var r = apurarBase(lidos, Object.assign({}, opts, { _excluir: excl }));
+    if (!r.escopo.ok && !r.escopo.forcado) { r.requerDocumento = []; return r; }
+    var r2 = function (v) { return Math.round(v * 100) / 100; };
+    r.teses = r.teses.filter(function (t) { return t.valor > 0 || t.valorNoPrazo > 0 || !excl[t.id]; }).concat(ex.teses.filter(function (t) { return t.natureza !== 'planejamento'; }))
+      .sort(function (a, b) { return b.valorNoPrazo - a.valorNoPrazo; });
+    r.planejamento = ex.teses.filter(function (t) { return t.natureza === 'planejamento'; });
+    r.total = { valor: r2(r.teses.reduce(function (s, t) { return s + t.valor; }, 0)), valorNoPrazo: r2(r.teses.reduce(function (s, t) { return s + t.valorNoPrazo; }, 0)) };
+    r.requerDocumento = ex.requerDocumento || [];
+    r.reclassificadas = ex.reclassifica || [];
+    r.avisos = r.avisos.concat(ex.avisos || []).filter(function (a, i, arr) { return arr.indexOf(a) === i; });
+    r.versaoExtra = ex.versao;
+    return r;
+  }
+
+  var api = { VERSAO: VERSAO, lerXml: lerXml, apurar: apurar, classificar: classificar, parseXml: parseXml, INCIDE_PATRONAL: INCIDE_PATRONAL, NOMES: NOMES, SALARIO_MINIMO: SALARIO_MINIMO, CONDICOES: CONDICOES, NAT_RUBR: NAT_RUBR, CNAE_RISCO: CNAE_RISCO, DOCUMENTOS: DOCUMENTOS, classificarRub: classificarRub, grauCnae: grauCnae, INSS_TABELAS: INSS_TABELAS, contribInss: contribInss, tabelaInss: tabelaInss };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MotorEsocial = api;
 })(typeof self !== 'undefined' ? self : this);

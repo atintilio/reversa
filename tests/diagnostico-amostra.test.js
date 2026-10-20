@@ -80,3 +80,46 @@ test('apresentação ao cliente: condicional só entra se marcada, regime sempre
   prev.escopo = undefined; str = gera({});
   assert.ok(str.includes('Regime não identificado nos arquivos lidos'));
 });
+
+test('relatório técnico interno traz "Teses calculadas e desaconselhadas"; o do cliente não', () => {
+  const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
+  const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x => x[1]).find(x => x.includes('root.GeradorMemoria ='));
+  const textos = [];
+  function PDF() {
+    const base = {
+      internal: { pageSize: { getWidth: () => 297, getHeight: () => 210 } },
+      text: x => textos.push(x), splitTextToSize: x => [x], getTextWidth: () => 10, getNumberOfPages: () => 1,
+      autoTable: cfg => { textos.push(cfg.body, cfg.foot || []); base.lastAutoTable = { finalY: 80 }; },
+      output: () => textos, save: () => {}
+    };
+    return new Proxy(base, { get: (o, k) => (k in o ? o[k] : () => {}) });
+  }
+  const TD = require('../teses-diagnostico');
+  const window = { jspdf: { jsPDF: PDF }, DiagnosticoAmostra: M, TesesDiagnostico: TD, MotorCreditos: { formatarReais: x => `VALOR:${x}` } };
+  vm.runInNewContext(script, { window });
+  const tese = (id, nome, valor) => ({ id, nome, rubricas: [], valorNoPrazo: valor, valor, baseNoPrazo: 0, porCompetencia: [{ competencia: '2023-03', valor }] });
+  const prev = {
+    periodo: { inicio: '2023-03', fim: '2023-03', competencias: 1 }, empregador: { nome: 'Cliente SA', cnpjRaiz: '12345678' }, estabelecimentos: [], lotacoes: [], avisos: [], premissas: { terceiros: 0.058 }, limitePrazo: '2021-10', rubricasAnalisadas: 0,
+    escopo: { ok: true, classTrib: '00', cprb: false, motivo: null, historico: [] },
+    teses: [tese('T066', 'Alimentação', 100), tese('T007', 'Terço de férias', 555)]
+  };
+  textos.length = 0;
+  try { window.GeradorMemoria.gerar(null, [], { prev }); } catch (e) { /* stub parcial: o que importa são os textos registrados */ }
+  let str = JSON.stringify(textos);
+  assert.ok(str.includes('Teses calculadas e desaconselhadas'));
+  assert.ok(str.includes('Tema 985 do STF é desfavorável, com modulação a partir de 15/09/2020.') && str.includes('VALOR:55500'));
+  textos.length = 0;
+  window.GeradorMemoria.apresentar(null, 2021, { identificado: true }, { prev, cnpj: '12345678000190', incluirCondicionais: {} });
+  str = JSON.stringify(textos);
+  assert.ok(!str.includes('desaconselhadas') && !str.includes('Terço de férias') && !str.includes('Tema 985'));
+});
+
+test('selos da tela previdenciária: tooltip da T007 e chip "Requer documento"', () => {
+  const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
+  assert.ok(/function selosTese/.test(html) && /class="pill bad tip" tabindex="0"/.test(html) && /Requer documento/.test(html));
+  const TD = require('../teses-diagnostico');
+  assert.equal(TD.desaconselhada('T007').motivo, 'Tema 985 do STF é desfavorável, com modulação a partir de 15/09/2020.');
+  assert.ok(TD.desaconselhada('T062').motivo.includes('Tema 687') && TD.desaconselhada('T064').motivo.includes('Tema 740'));
+  assert.equal(TD.desaconselhada('T067'), null);
+  assert.ok(TD.requerDocumento('T077').length > 0 && TD.requerDocumento('T067') === null);
+});
