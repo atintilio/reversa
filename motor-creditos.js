@@ -868,6 +868,7 @@
     });
 
     // Vale-transporte (T097), por competência. Total pago: manual (opts.valeTransporte, sobrescreve) > ECD (opts.ecd, lidos de motor-ecd).
+    var VT_DESCONTO_PADRAO = 0.06;
     // Parcela do empregado: manual > eSocial (opts.esocialVt = { 'AAAA-MM': reais }, de MotorEsocialExtra.descontoValeTransporte) > conta de desconto da ECD > desconhecida (null).
     // Só regime não cumulativo. Valores em centavos. Cada valor guarda a origem (ECD | eSocial | manual | EFD).
     var vtIn = opts.valeTransporte || {}, vtEsoc = opts.esocialVt || {}, vtEnt = {}, vtSemEfd = {};
@@ -912,14 +913,14 @@
         if (!(l.meta.regimeCodigo === '1' || l.meta.regimeCodigo === '3')) { T.valeTransporte.avisos.push('Competência ' + comp + ' (' + l.meta.cnpj + '): regime cumulativo, sem crédito de PIS/COFINS.'); return; }
         var di = l.meta.dtIni, prescrito = di ? new Date(di.ano, di.mes - 1, 1) < limite : false;
         var ja = e.raiz != null ? jaTotal : ((l.vtApropriado && l.vtApropriado.base) || 0);
-        var desconhecido = e.desc == null, desc = desconhecido ? 0 : e.desc;
+        var desconhecido = e.desc == null, desc = desconhecido ? Math.round(e.bruto * VT_DESCONTO_PADRAO) : e.desc; // sem dado real: desconto padrão de 6% sobre o valor pago (revisão final após contrato)
         var base = Math.max(0, e.bruto - desc - ja);
         var modo = e.origemBruto === 'manual' ? (e.origemDesc === 'eSocial' ? 'Manual + eSocial' : 'Manual') : (e.origemDesc === 'eSocial' ? 'ECD + eSocial' : 'ECD apenas');
         vtModos[modo] = 1;
-        lancar('valeTransporte', l, comp, prescrito, { valorBruto: e.bruto, totalPago: e.bruto, descontoEmpregado: desconhecido ? null : desc, jaApropriado: ja, base: base, baseLiquidaEmpresa: base,
-          modo: modo, origemPago: e.origemBruto, origemDesconto: desconhecido ? 'desconhecido' : e.origemDesc, origemJaCreditado: 'EFD',
+        lancar('valeTransporte', l, comp, prescrito, { valorBruto: e.bruto, totalPago: e.bruto, descontoEmpregado: desc, jaApropriado: ja, base: base, baseLiquidaEmpresa: base,
+          modo: modo, origemPago: e.origemBruto, origemDesconto: desconhecido ? 'padrão 6%' : e.origemDesc, origemJaCreditado: 'EFD',
           status: 'A validar — tese em disputa' + (ja ? ' (descontado o crédito já lançado no F100)' : '') +
-            (desconhecido ? ' · Estimativa — sem eSocial; confirmar parcela do empregado (o valor pago foi usado por inteiro)' : '') },
+            (desconhecido ? ' · Estimativa — desconto padrão de 6% do valor pago (sem eSocial/conta de desconto); revisar na etapa final, após a assinatura do contrato' : '') },
           Math.round(base * ALIQ_NC.pis / 100), Math.round(base * ALIQ_NC.cofins / 100));
       });
     });

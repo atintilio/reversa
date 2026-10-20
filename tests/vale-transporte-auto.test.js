@@ -29,7 +29,7 @@ const planoEcd = (extraSaldos, extraContas) => E.lerEcd([
 const VT = (r) => r.teses.find((t) => x(t) === 'valeTransporte');
 const x = (t) => t.id;
 
-test('VTA-001 só ECD: total pago lido da conta analítica; sintética e passivo não somam; parcela do empregado desconhecida (null), com estimativa', () => {
+test('VTA-001 só ECD: total pago lido da conta analítica; sintética e passivo não somam; desconto padrão de 6% como estimativa', () => {
   const ecd = planoEcd();
   const v = E.valeTransporte(ecd);
   assert.deepEqual(v.contasDespesa.map((c) => c.conta), ['3.1.01'], 'só a analítica de despesa');
@@ -39,10 +39,10 @@ test('VTA-001 só ECD: total pago lido da conta analítica; sintética e passivo
   const d = t.detalhes[0];
   assert.equal(d.modo, 'ECD apenas');
   assert.equal(d.totalPago, 1000000); assert.equal(d.origemPago, 'ECD');
-  assert.equal(d.descontoEmpregado, null); assert.equal(d.origemDesconto, 'desconhecido');
-  assert.equal(d.baseLiquidaEmpresa, 1000000);
-  assert.match(d.status, /Estimativa — sem eSocial; confirmar parcela do empregado/);
-  assert.equal(t.total.pis, Math.round(1000000 * 1.65 / 100));
+  assert.equal(d.descontoEmpregado, 60000); assert.equal(d.origemDesconto, 'padrão 6%');
+  assert.equal(d.baseLiquidaEmpresa, 940000);
+  assert.match(d.status, /Estimativa — desconto padrão de 6%/);
+  assert.equal(t.total.pis, Math.round(940000 * 1.65 / 100));
   assert.equal(t.modo, 'ECD apenas');
 });
 

@@ -28,11 +28,11 @@ test('VT-001 Lucro Real: base = valor pago - desconto do empregado; alíquotas 1
   assert.match(t.classificacao, /Em disputa/);
 });
 
-test('VT-002 número simples e sem desconto: calcula com aviso para confirmar a parcela do empregado', () => {
+test('VT-002 número simples e sem desconto: aplica o desconto padrão de 6% com estimativa', () => {
   const l = M.lerEfdContribuicoes(fim(cab('1')), 'a.txt');
   const t = M.apurar([l], { hoje: HOJE, valeTransporte: { '2025-01': 5000 } }).teses.find((x) => x.id === 'valeTransporte');
-  assert.equal(t.detalhes[0].base, 500000);
-  assert.match(t.detalhes[0].status, /parcela do empregado/);
+  assert.equal(t.detalhes[0].base, 470000);
+  assert.match(t.detalhes[0].status, /desconto padrão de 6%/);
 });
 
 test('VT-003 Lucro Presumido (cumulativo): sem crédito, com aviso', () => {
