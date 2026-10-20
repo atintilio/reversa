@@ -116,7 +116,7 @@ test('relatório técnico interno traz "Teses calculadas, a avaliar"; o do clien
 
 test('selos da tela previdenciária: tooltip da T007 e chip "Requer documento"', () => {
   const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
-  assert.ok(/function selosTese/.test(html) && /class="pill bad tip" tabindex="0"/.test(html) && /Requer documento/.test(html));
+  assert.ok(/function selosTese/.test(html) && /class="pill neu tip" tabindex="0"/.test(html) && /Requer documento/.test(html));
   const TD = require('../teses-diagnostico');
   assert.equal(TD.desaconselhada('T007').motivo, 'Tema 985 do STF é desfavorável, com modulação a partir de 15/09/2020.');
   assert.ok(TD.desaconselhada('T062').motivo.includes('Tema 687') && TD.desaconselhada('T064').motivo.includes('Tema 740'));
