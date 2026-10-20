@@ -81,3 +81,25 @@ test('MASTER-004 suspender parceiro corta o acesso da equipe; reativar devolve',
   const us = J(await v1('master/usuarios', { cookie: master })).usuarios;
   assert.ok(us.some((u) => u.email === 'ana@silva.com' && u.organizacao.nome === 'Silva Contabilidade'));
 });
+
+test('MASTER-005 diagnósticos versionados: resumo, ranking, lista e carteira usam a versão vigente', async () => {
+  const cli = (await sql`select id from taxpayers where organization_id = ${parceiroId} limit 1`)[0];
+  const ins = (code, versao, status, valor) => sql`insert into diagnostics (organization_id, taxpayer_id, code, tipo, versao, status, valor_total, valor_no_prazo)
+    values (${parceiroId}, ${cli.id}, ${code}, 'pis_cofins', ${versao}, ${status}, ${valor}, ${valor})`;
+  await ins('DX-2026-9001', 1, 'substituido', 500); await ins('DX-2026-9002', 2, 'vigente', 700);
+  await sql`insert into crm_activities (organization_id, taxpayer_id, type, subject, meta) values (${parceiroId}, ${cli.id}, 'task', 'Completar cadastro', '{"pendencia":true}'::jsonb)`;
+  const r = J(await v1('master/resumo', { cookie: master }));
+  assert.equal(r.diagnosticos.total, 2); assert.equal(r.diagnosticos.vigentes, 1); assert.equal(r.diagnosticosSemana, 2);
+  assert.equal(r.creditosVigentes, 700); assert.equal(r.pendenciasCadastro, 1);
+  const rk = J(await v1('master/ranking', { cookie: master })).ranking;
+  assert.equal(rk.length, 1); assert.equal(rk[0].id, parceiroId); assert.equal(rk[0].diagnosticos, 2); assert.equal(rk[0].creditos, 700);
+  assert.equal(rk[0].posicao, 1);
+  assert.equal(typeof freshRequire('lib/domain/master').ranking, 'function');
+  const lst = J(await v1('master/diagnosticos', { cookie: master, query: { parceiro: parceiroId } })).diagnosticos;
+  assert.equal(lst.length, 2); assert.equal(lst[0].parceiro.id, parceiroId);
+  assert.equal(J(await v1('master/diagnosticos', { cookie: master, query: { tipo: 'icms' } })).diagnosticos.length, 0);
+  assert.equal(J(await v1('master/diagnosticos', { cookie: master, query: { q: '9002' } })).diagnosticos.length, 1);
+  const cart = J(await v1('master/carteira', { cookie: master, query: { parceiro: parceiroId } })).clientes;
+  assert.equal(cart.find((c) => c.id === cli.id).creditos, 700);
+  assert.equal((await v1('master/ranking', { cookie: socio })).statusCode, 403);
+});

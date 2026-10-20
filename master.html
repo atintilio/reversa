@@ -36,6 +36,8 @@
     <div class="abas" role="tablist" id="abas">
       <button type="button" data-aba="parceiros" aria-selected="true">Parceiros</button>
       <button type="button" data-aba="usuarios">Usuários</button>
+      <button type="button" data-aba="ranking">Ranking</button>
+      <button type="button" data-aba="diagnosticos">Diagnósticos</button>
       <button type="button" data-aba="carteira">Carteira consolidada</button>
       <button type="button" data-aba="conflitos">Conflitos de CNPJ</button>
       <button type="button" data-aba="auditoria">Auditoria</button>
@@ -94,7 +96,10 @@
       var k = function (rot, v, n, d) { return '<div class="kpi' + (d ? ' destaque' : '') + '"><div class="r">' + esc(rot) + '</div><div class="v">' + esc(v) + '</div>' + (n ? '<div class="n">' + esc(n) + '</div>' : '') + '</div>'; };
       $('kpis').innerHTML = k('Parceiros', String(r.parceiros), r.parceirosAtivos + ' ativo(s)') + k('Usuários', String(r.usuarios), 'em todas as organizações') +
         k('Clientes', String(r.clientes), r.contratos + ' em contrato') + k('Créditos identificados', brl(r.creditos), 'PIS/COFINS, antes da revisão', true) +
-        k('Economia Lei do Bem', brl(r.economiaLdb), 'IRPJ + CSLL estimados');
+        k('Economia Lei do Bem', brl(r.economiaLdb), 'IRPJ + CSLL estimados') +
+        k('Diagnósticos', String(r.diagnosticos ? r.diagnosticos.total : 0), (r.diagnosticos ? r.diagnosticos.vigentes : 0) + ' vigente(s) · ' + (r.diagnosticosSemana || 0) + ' na semana') +
+        k('Créditos vigentes', brl(r.creditosVigentes), 'versões vigentes dos diagnósticos') +
+        k('Pendências de cadastro', String(r.pendenciasCadastro || 0), 'clientes com dados a completar');
       var b = document.querySelector('[data-aba="conflitos"]'); b.innerHTML = 'Conflitos de CNPJ' + (r.conflitos ? '<span class="n">' + r.conflitos + '</span>' : '');
     });
   }
@@ -133,7 +138,7 @@
     });
   }
 
-  var filtroUsu = '', filtroCart = '', filtroAud = '';
+  var filtroUsu = '', filtroCart = '', filtroAud = '', filtroDx = '', tipoDx = '', diasRk = '7';
   function pUsuarios(el) {
     return RV.api('GET', '/api/v1/master/usuarios').then(function (r) {
       var us = r.usuarios.filter(function (u) { return !filtroUsu || u.organizacao.id === filtroUsu; });
@@ -172,6 +177,33 @@
     });
   }
 
+  var TIPODX = { pis_cofins: 'PIS/COFINS', previdenciario: 'Previdenciário', icms: 'ICMS', completo: 'Completo' };
+  function pRanking(el) {
+    return RV.api('GET', '/api/v1/master/ranking?dias=' + diasRk).then(function (r) {
+      el.innerHTML = '<div class="filtro"><select id="fr"><option value="7"' + (diasRk === '7' ? ' selected' : '') + '>Últimos 7 dias</option><option value="30"' + (diasRk === '30' ? ' selected' : '') + '>Últimos 30 dias</option><option value="90"' + (diasRk === '90' ? ' selected' : '') + '>Últimos 90 dias</option></select><span class="muted">Top 10 parceiros · ordenado por contratos e, depois, créditos vigentes</span></div>' +
+        '<div class="tabela"><table><thead><tr><th>#</th><th>Parceiro</th><th class="num">Diagnósticos</th><th class="num">Oportunidades</th><th class="num">Contratos</th><th class="num">Valor em contrato</th><th class="num">Créditos vigentes</th></tr></thead><tbody>' +
+        (r.ranking.length ? r.ranking.map(function (x) {
+          return '<tr><td>' + x.posicao + '</td><td><b>' + esc(x.nome) + '</b></td><td class="num">' + x.diagnosticos + '</td><td class="num">' + x.oportunidades + '</td><td class="num">' + x.contratos + '</td><td class="num">' + brl(x.valorContratos) + '</td><td class="num">' + brl(x.creditos) + '</td></tr>';
+        }).join('') : '<tr><td colspan="7" class="vazio">Nenhum parceiro ainda.</td></tr>') + '</tbody></table></div>';
+      $('fr').onchange = function () { diasRk = this.value; render(); };
+    });
+  }
+
+  function pDiagnosticos(el) {
+    var qs = '?' + (filtroDx ? 'parceiro=' + filtroDx + '&' : '') + (tipoDx ? 'tipo=' + tipoDx : '');
+    return RV.api('GET', '/api/v1/master/diagnosticos' + qs).then(function (r) {
+      el.innerHTML = '<div class="filtro"><select id="fdp">' + opcoesParceiro(filtroDx) + '</select><select id="fdt"><option value="">Todos os tipos</option>' +
+        Object.keys(TIPODX).map(function (k) { return '<option value="' + k + '"' + (k === tipoDx ? ' selected' : '') + '>' + TIPODX[k] + '</option>'; }).join('') + '</select><span class="muted">' + r.diagnosticos.length + ' diagnóstico(s)</span></div>' +
+        '<div class="tabela"><table><thead><tr><th>Código</th><th>Cliente</th><th>Parceiro</th><th>Tipo</th><th>Versão</th><th class="num">Valor no prazo</th><th>Data</th></tr></thead><tbody>' +
+        (r.diagnosticos.length ? r.diagnosticos.map(function (d) {
+          return '<tr><td class="mono"><b>' + esc(d.codigo) + '</b></td><td>' + esc(d.cliente.nome) + '<br><small>' + cnpj(d.cliente.cnpj) + '</small></td><td>' + esc(d.parceiro.nome) + '</td><td>' + esc(TIPODX[d.tipo] || d.tipo) + '</td>' +
+            '<td>v' + d.versao + ' <span class="pill ' + (d.status === 'vigente' ? 'ok' : '') + '">' + (d.status === 'vigente' ? 'Vigente' : 'Substituído') + '</span></td><td class="num">' + brl(d.valorNoPrazo) + '</td><td>' + dt(d.criadoEm, true) + '</td></tr>';
+        }).join('') : '<tr><td colspan="7" class="vazio">Nenhum diagnóstico salvo.</td></tr>') + '</tbody></table></div>';
+      $('fdp').onchange = function () { filtroDx = this.value; render(); };
+      $('fdt').onchange = function () { tipoDx = this.value; render(); };
+    });
+  }
+
   function pConflitos(el) {
     return RV.api('GET', '/api/v1/master/conflitos').then(function (r) {
       el.innerHTML = '<p class="muted">Empresas cadastradas por mais de uma organização. O primeiro registro aparece primeiro: use-o como referência para definir de quem é a oportunidade.</p>' +
@@ -193,7 +225,7 @@
   function render() {
     var el = $('painel');
     var p = parceiros.length ? Promise.resolve() : RV.api('GET', '/api/v1/master/parceiros').then(function (r) { parceiros = r.parceiros; });
-    p.then(function () { return { parceiros: pParceiros, usuarios: pUsuarios, carteira: pCarteira, conflitos: pConflitos, auditoria: pAuditoria }[aba](el); })
+    p.then(function () { return { parceiros: pParceiros, usuarios: pUsuarios, ranking: pRanking, diagnosticos: pDiagnosticos, carteira: pCarteira, conflitos: pConflitos, auditoria: pAuditoria }[aba](el); })
       .then(kpis).catch(function (e) { RV.toast(e.message); });
   }
   $('abas').addEventListener('click', function (e) {

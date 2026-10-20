@@ -26,12 +26,21 @@
     "api/v1/rota.js": {
       "maxDuration": 60,
       "includeFiles": "assets/**"
+    },
+    "api/cron-semanal.js": {
+      "maxDuration": 60
     }
   },
   "rewrites": [
     {
       "source": "/api/v1/([^/]+)/(.+)",
       "destination": "/api/v1/rota?rvpath=$1/$2"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/cron-semanal",
+      "schedule": "0 23 * * 3"
     }
   ]
 }

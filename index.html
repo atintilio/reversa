@@ -2017,26 +2017,50 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     var sc = document.createElement('script'); sc.src = '/shell.js'; document.body.appendChild(sc); // barra de navegação da Reversa
   }
   $('btn-pasta').addEventListener('click', function () {
-    if (!estado.res || !estado.res.competencias.length) { toast('Carregue os arquivos do cliente antes de salvar.'); return; }
+    var temSped = !!(estado.res && estado.res.competencias.length), temPrev = !!(estado.prev && estado.prev.teses && estado.prev.teses.length);
+    if (!temSped && !temPrev) { toast('Carregue os arquivos do cliente antes de salvar.'); return; }
     if (estado.exemplo) { toast('Estes são os dados de exemplo. Carregue os SPEDs do cliente para salvar na pasta.'); return; }
     var lidos = estado.lidos.filter(function (x) { return x.meta && x.meta.cnpj; });
-    if (!lidos.length) { toast('Não encontrei o CNPJ do contribuinte nos arquivos.'); return; }
-    var conta = {}; lidos.forEach(function (l) { conta[l.meta.cnpj] = (conta[l.meta.cnpj] || 0) + 1; });
-    var cnpj = Object.keys(conta).sort(function (a, b) { return conta[b] - conta[a]; })[0];
-    var ref = lidos.filter(function (l) { return l.meta.cnpj === cnpj; })[0].meta;
-    var comps = lidos.map(function (l) { return l.meta.competencia; }).filter(Boolean).sort();
+    var cnpj, ref, comps = [];
+    if (lidos.length) {
+      var conta = {}; lidos.forEach(function (l) { conta[l.meta.cnpj] = (conta[l.meta.cnpj] || 0) + 1; });
+      cnpj = Object.keys(conta).sort(function (a, b) { return conta[b] - conta[a]; })[0];
+      ref = lidos.filter(function (l) { return l.meta.cnpj === cnpj; })[0].meta;
+      comps = lidos.map(function (l) { return l.meta.competencia; }).filter(Boolean).sort();
+    } else {
+      cnpj = String(estado.cnpjBase || '').replace(/\D/g, '');
+      if (cnpj.length !== 14) { toast('Não encontrei o CNPJ do contribuinte nos arquivos.'); return; }
+      ref = { nome: (estado.prev.empregador && estado.prev.empregador.nome) || '', regime: '' };
+    }
     var res = estado.res, btn = $('btn-pasta'), st = $('pasta-status');
     btn.disabled = true; btn.textContent = 'Salvando…'; st.hidden = true;
     var corpo = {
       taxpayer: { cnpj: cnpj, legalName: ref.nome, taxRegime: ref.regime },
-      periodStart: comps[0], periodEnd: comps[comps.length - 1], files: lidos.length, engineVersion: res.versaoMotor,
-      teses: res.teses.map(function (t) { return { id: t.id, nome: t.nome, curto: t.curto, natureza: t.natureza, itens: t.total.itensComValor, total: t.total, totalNoPrazo: t.totalNoPrazo }; })
+      periodStart: comps[0], periodEnd: comps[comps.length - 1], files: lidos.length, engineVersion: res && res.versaoMotor,
+      teses: (temSped ? res.teses : []).map(function (t) { return { id: t.id, nome: t.nome, curto: t.curto, natureza: t.natureza, itens: t.total.itensComValor, total: t.total, totalNoPrazo: t.totalNoPrazo }; })
     };
-    fetch('/api/v1/analyses', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(corpo) })
-      .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (r.status === 401) location.href = '/login.html'; if (!r.ok) throw new Error((j.error && j.error.message) || ('Erro ' + r.status)); return j; }); })
-      .then(function (j) {
-        st.innerHTML = 'Diagnóstico salvo na pasta de <strong>' + esc(ref.nome || cnpjFmt(cnpj)) + '</strong>. Os créditos ficam <em>pendentes de aprovação</em> até a revisão. <a href="/clientes.html?id=' + encodeURIComponent(j.taxpayerId) + '">Abrir a pasta</a>';
-        st.hidden = false; toast('Diagnóstico salvo na pasta do cliente');
+    function enviar(body) {
+      return fetch('/api/v1/analyses', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (r.status === 401) location.href = '/login.html'; if (!r.ok) throw new Error((j.error && j.error.message) || ('Erro ' + r.status)); return j; }); });
+    }
+    // Previdenciário (motor eSocial, valores em reais -> centavos): só entra no resumo quando houver resultado dentro do escopo
+    var p = estado.prev, prevCorpo = null;
+    if (p && p.teses && p.teses.length && p.escopo && p.escopo.ok !== false) {
+      prevCorpo = {
+        tipo: 'previdenciario', taxpayer: corpo.taxpayer, periodStart: p.periodo.inicio, periodEnd: p.periodo.fim, files: estado.nEs || 0, engineVersion: p.versaoMotor,
+        teses: p.teses.filter(function (t) { return !t.condicional || estado.prevIncluir[t.id]; }).map(function (t) { return { id: t.id, nome: t.nome, curto: t.nome, natureza: 'credito', itens: t.competencias, valorCentavos: Math.round(t.valor * 100), valorNoPrazoCentavos: Math.round(t.valorNoPrazo * 100) }; })
+      };
+      if (!prevCorpo.periodStart || !prevCorpo.teses.length) prevCorpo = null;
+    }
+    var codigos = [], pendencias = [], idCliente = null, aviso = '';
+    (temSped ? enviar(corpo) : Promise.resolve(null))
+      .then(function (j) { if (!j) return; codigos.push(j.diagnosticCode + ' v' + j.versao + ' (PIS/COFINS)'); idCliente = j.taxpayerId; pendencias = j.pendencias || []; })
+      .then(function () { if (!prevCorpo) return; return enviar(prevCorpo).then(function (j) { codigos.push(j.diagnosticCode + ' v' + j.versao + ' (Previdenciário)'); idCliente = j.taxpayerId; pendencias = j.pendencias || pendencias; }).catch(function (e) { aviso = ' O previdenciário não foi salvo: ' + e.message; }); })
+      .then(function () {
+        if (!codigos.length) throw new Error('nenhum resultado dentro do escopo para salvar' + aviso);
+        st.innerHTML = 'Diagnóstico salvo na pasta de <strong>' + esc(ref.nome || cnpjFmt(cnpj)) + '</strong>: ' + esc(codigos.join(' · ')) + '. Os créditos ficam <em>pendentes de aprovação</em> até a revisão.' +
+          (pendencias.length ? ' Faltam no cadastro: ' + esc(pendencias.join(', ')) + ' (tarefa criada no CRM).' : '') + esc(aviso) + ' <a href="/clientes.html?id=' + encodeURIComponent(idCliente) + '">Abrir a pasta</a>';
+        st.hidden = false; toast('Diagnóstico salvo: ' + codigos.join(' · '));
       })
       .catch(function (e) { st.textContent = 'Não foi possível salvar: ' + e.message; st.hidden = false; })
       .then(function () { btn.disabled = false; btn.textContent = 'Salvar na pasta do cliente'; });

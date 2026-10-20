@@ -82,6 +82,7 @@ async function route(req, res) {
         if (m === 'POST') { deny(ctx, 'write', 'taxpayer.create'); return json(res, 201, await tax.createTaxpayer(ctx, body)); }
         return method(res, ['GET', 'POST']);
       }
+      if (action === 'diagnostics' && m === 'GET') return json(res, 200, await tax.listDiagnostics(ctx, id));
       if (m === 'GET') return json(res, 200, await tax.getTaxpayer(ctx, id));
       if (m === 'PATCH') { deny(ctx, 'write', 'taxpayer.update'); await tax.updateTaxpayer(ctx, id, body); return json(res, 200, { ok: true }); }
       return method(res, ['GET', 'PATCH']);
@@ -171,6 +172,8 @@ async function route(req, res) {
       if (sub === 'usuarios' && !sid && m === 'GET') return json(res, 200, { usuarios: await master.usuarios() });
       if (sub === 'usuarios' && sid && m === 'PATCH') return json(res, 200, await master.editarUsuario(ctx, sid, body));
       if (sub === 'carteira' && m === 'GET') return json(res, 200, { clientes: await master.carteira(query) });
+      if (sub === 'ranking' && m === 'GET') return json(res, 200, { ranking: await master.ranking({ dias: query.dias }) });
+      if (sub === 'diagnosticos' && m === 'GET') return json(res, 200, { diagnosticos: await master.diagnosticos(query) });
       if (sub === 'conflitos' && m === 'GET') return json(res, 200, { conflitos: await master.conflitos() });
       if (sub === 'auditoria' && m === 'GET') return json(res, 200, { eventos: await master.auditoria(query) });
       return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
