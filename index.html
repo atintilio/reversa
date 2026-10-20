@@ -170,12 +170,6 @@ tfoot td { font-weight: 700; border-top: 1px solid var(--fg); border-bottom: 0; 
 .empty { padding: 28px; text-align: center; color: var(--muted-fg); border: 1px solid var(--line); background: var(--card); }
 
 /* metodologia */
-.method { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; }
-.method > div { display: grid; gap: 8px; align-content: start; min-width: 0; }
-.method h3 { font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; margin: 0; font-weight: 700; }
-.method p, .method li { font-size: .9rem; color: var(--muted-fg); }
-.method ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
-.formula { font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace; font-size: .82rem; background: var(--soft); padding: 12px 14px; border-left: 2px solid var(--accent); line-height: 1.7; overflow-x: auto; color: var(--fg); }
 .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 18px; font-size: .88rem; font-weight: 600; z-index: 10; max-width: calc(100% - 32px); }
 .tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--line); }
 .tabs button { background: transparent; color: var(--muted-fg); border: 0; border-bottom: 2px solid transparent; padding: 10px 14px; font-weight: 600; }
@@ -418,60 +412,6 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     </div>
     <div class="scroll" style="max-height: 560px"><table id="tab-mem"></table></div>
     <p class="note">Cada linha aponta o número da linha do registro C170 no arquivo SPED de origem, para conferência no PVA ou num editor de texto.</p>
-  </section>
-
-  <section aria-labelledby="t-met">
-    <div class="sec-head"><h2 id="t-met">Metodologia</h2></div>
-    <div class="method">
-      <div>
-        <h3>ICMS na base (Tema 69)</h3>
-        <p>Saídas tributadas (CST 01 e 02), Lucro Real e Presumido.</p>
-        <div class="formula">base correta = item − desconto − ICMS destacado<br>excesso = mín(ICMS; base declarada − base correta)<br>crédito = excesso × alíquota declarada</div>
-      </div>
-      <div>
-        <h3>Monofásicos (revenda)</h3>
-        <p>Saída com CFOP de revenda, NCM monofásico pelo cadastro 0200 e PIS/COFINS tributados (CST 01 ou 02). O revendedor tem alíquota zero, então o valor pago é restituível por inteiro. Absorve o Tema 69 e o ICMS-ST do mesmo item, sem dupla contagem.</p>
-        <div class="formula">crédito = PIS e COFINS informados no item</div>
-      </div>
-      <div>
-        <h3>ICMS-ST do substituído (Tema 1125)</h3>
-        <p>Saídas com CST ICMS x60 e CFOP de revenda. O ICMS-ST vem das notas de compra do mesmo produto e estabelecimento.</p>
-        <div class="formula">ST unitário = ST das entradas ÷ quantidade das entradas<br>ST atribuído = quantidade vendida × ST unitário<br>excesso = mín(ST atribuído; base declarada − (item − desconto − ST atribuído))<br>crédito = excesso × alíquota declarada</div>
-      </div>
-      <div>
-        <h3>Insumos e risco (só Lucro Real)</h3>
-        <ul>
-          <li><strong>Insumos:</strong> entradas sem crédito (CST 70 a 75, 98, 99) em CFOP de insumo, frete, serviço ou consumo. Potencial a 1,65% e 7,6%, sem ICMS na base a partir de 05/2023. Não soma no recuperável.</li>
-          <li><strong>Lei 14.592/2023:</strong> entradas com crédito (CST 50 a 56) a partir de 05/2023 cuja base inclui o ICMS. Sai como risco de glosa.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Previdenciário (XML do eSocial)</h3>
-        <p>Rubricas de vencimento (S-1010, tpRubr 1) com incidência patronal declarada (codIncCP 11, 12, 21 ou 22), somadas por competência no S-1200. A rubrica é associada à tese pela descrição e listada para conferência. Retificadora substitui a original.</p>
-        <div class="formula">estimativa = base × (CPP 20% + RAT × FAP do S-1005 + terceiros)<br>terceiros: 5,8% estimado, a confirmar pelo FPAS do S-1020<br>RAT reflexos (13º, DSR, dias não trabalhados) = base × RAT × FAP</div>
-      </div>
-      <div>
-        <h3>Controles</h3>
-        <ul>
-          <li>Valores em centavos inteiros, sem erro de arredondamento.</li>
-          <li>Conferência do total de linhas pelo registro 9999.</li>
-          <li>Retificadora prevalece sobre a original da mesma competência.</li>
-          <li>Notas canceladas, denegadas e inutilizadas são descartadas.</li>
-          <li>Regime lido do registro 0110: insumos e risco só rodam no não cumulativo.</li>
-          <li>EFD ICMS/IPI enviada por engano é recusada.</li>
-        </ul>
-      </div>
-      <div>
-        <h3>Fora do escopo desta versão</h3>
-        <ul>
-          <li>Atualização pela Selic.</li>
-          <li>Escrituração consolidada (C180 a C190) e notas sem itens C170: contadas e sinalizadas, mas não calculadas.</li>
-          <li>Prescrição: corte aproximado de 5 anos pela competência, a confirmar caso a caso.</li>
-          <li>ISS na base (Tema 118) e PIS/COFINS na própria base (Tema 1067): em monitoramento, sem cálculo.</li>
-          <li>O resultado é uma estimativa técnica e depende de revisão tributária antes de qualquer pedido.</li>
-        </ul>
-      </div>
-    </div>
   </section>
 
   <footer id="rodape"></footer>
