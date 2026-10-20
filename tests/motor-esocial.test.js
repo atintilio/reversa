@@ -78,7 +78,11 @@ test('ESOCIAL-004: classificação das rubricas pela descrição', () => {
   assert.equal(c('Licença Paternidade'), 'T064');
   assert.equal(c('Aviso Prévio Indenizado'), 'T005');
   assert.equal(c('1/3 Férias'), 'T007');
-  assert.equal(c('1/3 Férias Indenizadas'), 'T028');
+  // mudou por design (v0.2.0): férias indenizadas e 1/3 agora têm tese própria (T073), antes caíam em T028
+  assert.equal(c('1/3 Férias Indenizadas'), 'T073');
+  assert.equal(c('Multa Art. 477 CLT'), 'T071');
+  assert.equal(c('Indenização Art. 479 CLT'), 'T072');
+  assert.equal(c('Indenização por dano'), 'T028');
   assert.equal(c('PLR'), 'T063');
   assert.equal(c('Domingos e feriados trabalhados'), 'T062');
   assert.equal(c('Gratificação por desempenho'), 'T065');

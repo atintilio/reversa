@@ -133,6 +133,12 @@ input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
 .file-meta { color: var(--muted-fg); font-size: .85rem; }
 .msgs { margin: 0; padding-left: 18px; font-size: .86rem; color: var(--muted-fg); display: grid; gap: 2px; }
 .msgs .e { color: var(--bad); }
+.prev-ctl, .prev-escopo { display: grid; gap: 8px; margin: 0 0 14px; font-size: .88rem; }
+.prev-escopo[hidden], #prev-exc-datas[hidden], #prev-exc-msg[hidden] { display: none; }
+.prev-ctl label, .prev-escopo label { display: inline-flex; align-items: center; gap: 8px; }
+.prev-ctl input[type=month] { font: inherit; padding: 5px 8px; border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 6px; }
+.prev-ctl #prev-exc-datas { display: flex; flex-wrap: wrap; gap: 16px; padding-left: 24px; }
+.cond-incl { display: grid; gap: 4px; font-size: .82rem; } .cond-incl small { color: var(--muted-fg); }
 .pill { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .04em; padding: 2px 8px; white-space: nowrap; }
 .pill.ok { color: var(--ok); background: var(--ok-bg); }
 .pill.warn { color: var(--warn); background: var(--warn-bg); }
@@ -310,6 +316,18 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       <h2 id="t-prev">Oportunidades <em>previdenciárias</em></h2>
       <div class="btns"><button class="sec" type="button" id="btn-prev-csv">Exportar rubricas (CSV)</button></div>
     </div>
+    <div class="prev-ctl" id="prev-ctl">
+      <label class="chk"><input type="checkbox" id="prev-exc"> Empresa com ação ou decisão favorável sobre o limite de 20 salários nos terceiros</label>
+      <span id="prev-exc-datas" hidden>
+        <label>Início <input type="month" id="prev-exc-ini"></label>
+        <label>Fim <input type="month" id="prev-exc-fim"></label>
+      </span>
+      <p class="msgs" id="prev-exc-msg" hidden></p>
+    </div>
+    <div class="prev-escopo" id="prev-escopo" hidden>
+      <p class="msgs"><span class="e" id="prev-escopo-txt"></span></p>
+      <label class="chk"><input type="checkbox" id="prev-forcar"> Calcular mesmo assim (fora do escopo Lucro Real/Presumido)</label>
+    </div>
     <div class="kpis" id="prev-kpis"></div>
     <ul class="msgs" id="prev-avisos"></ul>
     <div class="scroll"><table id="tab-prev"></table></div>
@@ -468,6 +486,13 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   function classeCliente(id, alt) { var d = diagTese(id); return d && d.seguranca === 'verde' ? 'Provável' : d && d.seguranca === 'amarelo' ? 'Possível' : d && d.seguranca === 'vermelho' ? 'Remoto' : (alt || 'A confirmar'); }
   function semCodigo(s) { return String(s == null ? '' : s).replace(/\s*\(?\bT\d{3}\b\)?/g, '').replace(/\s{2,}/g, ' ').trim(); }
   // valores do cliente: só teses de crédito apresentáveis, competências da janela de cinco anos; em centavos
+  // tese previdenciária condicional (ex.: exceção do limite de 20 salários): só entra no relatório do cliente se a equipe marcar.
+  // Marcada, passa pelo filtro de segurança "vermelho" (a ressalva está na condição), mas nunca pela lista de teses sempre ocultas.
+  function entraCliente(x, inc) {
+    if (OCULTAR_CLIENTE.indexOf(x.id) >= 0) return false;
+    if (x.condicional) return !!(inc && inc[x.id]);
+    return !ocultoCliente(x.id);
+  }
   function dadosCliente(res, prev, sel, cli) {
     var ini = cli.inicio, fim = ini + 4, s = cli.selecao || {};
     var dentro = function (comp) { var a = Number(String(comp).slice(0, 4)); return a >= ini && a <= fim; };
@@ -484,13 +509,13 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       }).sort(function (a, b) { return a.competencia < b.competencia ? -1 : 1; });
       if (l.length) pis.push({ id: x.id, nome: semCodigo(x.nome), curto: semCodigo(x.curto), fundamento: semCodigo(x.fundamento), regimes: x.regimes, classe: classeCliente(x.id, x.classificacao), linhas: l });
     });
-    if (prev && prev.teses) prev.teses.filter(function (x) { return !ocultoCliente(x.id); }).forEach(function (x) {
+    if (prev && prev.teses) prev.teses.filter(function (x) { return entraCliente(x, cli.incluirCondicionais); }).forEach(function (x) {
       (x.porCompetencia || []).forEach(function (c) { rowsP.push({ cnpj: 'empregador', tese: x.id, competencia: c.competencia, regime: 'Folha', valor: Math.round(c.valor * 100) }); });
       var l = (x.porCompetencia || []).filter(function (c) { return dentro(c.competencia) && c.valor; }).map(function (c) {
         return { competencia: c.competencia, valor: Math.round(c.valor * 100), at: comSelic && sel.atualizarPrev ? Math.round(sel.atualizarPrev(c.valor, c.competencia) * 100) : null };
       });
       var d = diagTese(x.id);
-      if (l.length) prv.push({ id: x.id, nome: semCodigo(x.nome), base: d ? semCodigo(d.base) : '', classe: classeCliente(x.id), linhas: l });
+      if (l.length) prv.push({ id: x.id, nome: semCodigo(x.nome), base: d ? semCodigo(d.base) : '', classe: x.condicional ? 'Possível (condicionada)' : classeCliente(x.id), linhas: l });
     });
     var soma = function (ts, k) { return ts.reduce(function (a, x) { return a + x.linhas.reduce(function (b, l) { return b + (l[k] || 0); }, 0); }, 0); };
     var temAt = function (ts) { return ts.some(function (x) { return x.linhas.some(function (l) { return l.at !== null; }); }); };
@@ -672,6 +697,34 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     doc.addPage(); y = M;
 
     // ------------------------------------------------------------- apresentação ao cliente: mesmo layout do DTI, sem a memória de cálculo
+    // ---- regime tributário ao longo do tempo (nunca some: sem fonte, diz que não foi identificado)
+    function regimeEsocial(h, limpo) {
+      var ct = String(h.classTrib == null ? '' : h.classTrib), desc = h.descricao || '';
+      var base;
+      if (limpo) base = ct === '99' ? 'Pessoa jurídica em geral (Lucro Real/Presumido)' : /^0[123]$/.test(ct) ? 'Simples Nacional' : ct === '04' ? 'Microempreendedor individual (MEI)' : /simples/i.test(desc) ? 'Simples Nacional' : /geral/i.test(desc) ? 'Pessoa jurídica em geral (Lucro Real/Presumido)' : 'Regime não identificado';
+      else base = (ct ? 'Classificação tributária ' + ct + (desc ? ' - ' + desc : '') : desc || 'Não identificado');
+      return base + (h.cprb ? (limpo ? ' · com contribuição previdenciária sobre a receita bruta' : ' · CPRB') : '');
+    }
+    function linhasRegime(limpo) {
+      var linhas = [], per = function (a, b) { return a ? compFmt(a) + (b && b !== a ? ' a ' + compFmt(b) : '') : '-'; };
+      if (prev && prev.escopo) {
+        var hs = (prev.escopo.historico && prev.escopo.historico.length) ? prev.escopo.historico : [{ ini: prev.periodo && prev.periodo.inicio, fim: prev.periodo && prev.periodo.fim, classTrib: prev.escopo.classTrib, cprb: prev.escopo.cprb }];
+        hs.forEach(function (h) { linhas.push([per(h.ini, h.fim), regimeEsocial(h, limpo), limpo ? 'eSocial' : 'eSocial (S-1000)']); });
+      }
+      if (res) { // EFD-Contribuições: regime de incidência por período, juntando competências seguidas com o mesmo regime
+        var cs = res.competencias.slice().sort(function (a, b) { return a.competencia < b.competencia ? -1 : 1; }), ini = null, ult = null, reg = null;
+        var fecha = function () { if (reg !== null) linhas.push([per(ini, ult), reg, limpo ? 'EFD-Contribuições' : 'EFD-Contribuições (registro 0110)']); };
+        cs.forEach(function (c) { var r = c.regime || 'Não identificado'; if (r !== reg) { fecha(); reg = r; ini = c.competencia; } ult = c.competencia; });
+        fecha();
+      }
+      if (!limpo && ecfD) linhas.push(['-', 'Regime da ECF não identificado (o leitor da ECF não extrai a forma de tributação)', 'ECF']);
+      if (!linhas.length) linhas.push(['-', 'Regime não identificado nos arquivos lidos', '-']);
+      return linhas;
+    }
+    function blocoRegime(limpo) {
+      titulo(++sec, 'Regime tributário ao longo do tempo');
+      tabela({ head: [['Período', 'Regime', 'Fonte']], body: linhasRegime(limpo).map(function (r) { return r.map(t); }), columnStyles: { 0: { cellWidth: 55 }, 2: { cellWidth: 60 } } });
+    }
     function corpoCliente() {
       var C = dadosCliente(res, prev, sel, cli), s = C.selecao, mostra = !!s.identificado, cS = mostra && C.selic;
       var janela = C.inicio + ' a ' + C.fim, nT = C.pis.length + C.prev.length;
@@ -710,7 +763,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       tabela({ body: [
           ['Contribuinte', cnpjs.map(function (c) { return contribuintes[c]; }).join('; ') || '-'],
           ['CNPJ', cnpjs.map(cnpjFmt).join('; ') || '-'],
-          ['Regime', res ? (res.regimes || []).join('; ') || '-' : '-'],
+          ['Regime', res ? (res.regimes || []).join('; ') || 'Ver quadro "Regime tributário ao longo do tempo"' : 'Ver quadro "Regime tributário ao longo do tempo"'],
           ['Período analisado', perL.length === 1 ? perL[0][1] : perL.length ? perL.map(function (x) { return x[0] + ': ' + x[1]; }).join('\n') : '-'],
           ['Janela da estimativa', janela + ' (cinco anos civis)'],
           ['Fonte', fonL.join('; ') || '-'],
@@ -755,6 +808,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
         tabela({ head: [['Grupo', 'Competências na janela', 'Projeção (nominal)']], body: C.projecao.map(function (g) { return [t(g[0]), String(g[1]), R(g[2])]; }), columnStyles: { 1: { halign: 'right' }, 2: { halign: 'right', fontStyle: 'bold' } } });
       } else tabela({ head: [['Grupo', 'Situação']], body: [[t('PIS/COFINS e previdenciário'), t('Nenhuma oportunidade a apresentar com os documentos recebidos até o momento.')]] });
       paragrafo(cS ? 'A atualização pela Selic é estimativa e aparece ao lado do valor nominal, que permanece. ' + (sel.avisoRfb || '') : sel && sel.indisponivel ? 'Selic indisponível - valores sem atualização.' : 'Valores históricos, sem atualização monetária pela taxa Selic.');
+      blocoRegime(true);
 
       titulo(++sec, 'Objeto');
       paragrafo('Este documento apresenta, de forma resumida, as oportunidades de recuperação identificadas nos arquivos que o contribuinte transmitiu às autoridades fiscais' + (fonL.length ? ' (' + (res && prev ? 'EFD-Contribuições e eSocial' : res ? 'EFD-Contribuições' : 'eSocial') + ')' : '') +
@@ -810,7 +864,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
         titulo(++sec, 'Previdenciário - contribuição patronal (eSocial)');
         fonte('helvetica', 'bold', 8); cor(COR.bronze);
         doc.text(t('CRÉDITO · ESTIMATIVA PRELIMINAR'), M, y); y += 6;
-        paragrafo('Estimativa da contribuição patronal paga sobre rubricas de folha com tese de não incidência, calculada a partir dos eventos do eSocial: contribuição patronal de 20%, RAT ajustado pelo FAP do estabelecimento e contribuições a terceiros estimadas. A associação de cada rubrica à tese é conferida na apuração definitiva. Estimativa preliminar, não constitui crédito reconhecido.');
+        paragrafo('Estimativa (pagamento ainda não confirmado) da contribuição patronal paga sobre rubricas de folha com tese de não incidência, calculada a partir dos eventos do eSocial: contribuição patronal de 20%, RAT ajustado pelo FAP do estabelecimento e contribuições a terceiros estimadas. A associação de cada rubrica à tese é conferida na apuração definitiva. Estimativa preliminar, não constitui crédito reconhecido.');
         C.prev.forEach(function (x) {
           espaco(46);
           fonte('helvetica', 'bold', 9.5); cor(COR.tinta); doc.text(doc.splitTextToSize(t(x.nome), W - 2 * M)[0], M, y); y += 4.5;
@@ -829,10 +883,10 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
 
       espaco(60);
       titulo(++sec, 'Avisos e limitações');
-      ['Estimativa preliminar: não representa crédito constituído nem saldo disponível para compensação.',
+      ['Estimativa preliminar: não representa crédito constituído nem saldo disponível para compensação.'].concat(C.prev.length ? ['Os valores previdenciários são estimativas; o pagamento das contribuições ainda não foi confirmado.'] : []).concat([
        'A janela comercial de cinco anos (' + janela + ') não comprova elegibilidade nem prazo de recuperação. Apuração definitiva, documentos e pagamentos serão conferidos após autorização do cliente.',
        cS ? 'A atualização pela Selic é estimativa e aparece ao lado do valor nominal, que permanece. ' + (sel.avisoRfb || '') : sel && sel.indisponivel ? 'Selic indisponível — valores sem atualização.' : 'Não há atualização monetária pela taxa Selic nos valores apresentados.'
-      ].forEach(function (m) { paragrafo('•  ' + m); });
+      ]).forEach(function (m) { paragrafo('•  ' + m); });
     }
     if (cli) corpoCliente(); else {
 
@@ -855,7 +909,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     var ficha = [
       ['Contribuinte', cnpjs.map(function (c) { return contribuintes[c]; }).join('; ') || '-'],
       ['CNPJ', cnpjs.map(cnpjFmt).join('; ') || '-'],
-      ['Regime', res ? (res.regimes || []).join('; ') || '-' : '-'],
+      ['Regime', res ? (res.regimes || []).join('; ') || 'Ver quadro "Regime tributário ao longo do tempo"' : 'Ver quadro "Regime tributário ao longo do tempo"'],
       ['Período analisado', perL.length === 1 ? perL[0][1] : perL.length ? perL.map(function (x) { return x[0] + ': ' + x[1]; }).join('\n') : '-'],
       ['Fonte', fonU.join('; ')],
       ['Emissão', dataBR(emissao) + ' · Reversa' + (versaoMotor ? ', motor v' + versaoMotor : '')]
@@ -901,12 +955,12 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     if (prev) {
       var vN = 0, vT = 0, vA = 0, aN = 0, aT = 0, aA = 0;
       prev.teses.forEach(function (x) {
-        var at = selP && selP.teses[x.id] ? selP.teses[x.id].totalNoPrazo.valorAt : 0, ok = !ocultoCliente(x.id);
+        var at = selP && selP.teses[x.id] ? selP.teses[x.id].totalNoPrazo.valorAt : 0, ok = entraCliente(x, opts.incluirCondicionais);
         vN += x.valorNoPrazo; vT += x.valor; vA += at;
         if (ok) { aN += x.valorNoPrazo; aT += x.valor; aA += at; }
       });
-      cons.push([t('Previdenciário (todas as teses calculadas)'), 'eSocial', RP(vN), RP(vT), selAtiva ? (selP ? RP(vA) : '-') : null, t('Inclui as teses de parecer desfavorável (uso interno).')]);
-      cons.push([t('Previdenciário - apresentável ao cliente'), 'eSocial', RP(aN), RP(aT), selAtiva ? (selP ? RP(aA) : '-') : null, t('Sem as teses de parecer desfavorável: é a base da apresentação ao cliente.')]);
+      cons.push([t('Previdenciário (todas as teses calculadas)'), 'eSocial', RP(vN), RP(vT), selAtiva ? (selP ? RP(vA) : '-') : null, t('Inclui as teses de parecer desfavorável e as condicionais (uso interno). Estimativa; pagamento ainda não confirmado.')]);
+      cons.push([t('Previdenciário - apresentável ao cliente'), 'eSocial', RP(aN), RP(aT), selAtiva ? (selP ? RP(aA) : '-') : null, t('Sem as teses de parecer desfavorável e sem as condicionais não marcadas: é a base da apresentação ao cliente. Estimativa; pagamento ainda não confirmado.')]);
     }
     if (rE) cons.push([t('IRPJ e CSLL (ECF)'), 'ECF', RP(rE.total.valorNoPrazo), RP(rE.total.valor), selAtiva ? (selE ? RP(selE.totalNoPrazo.valorAt) : '-') : null, t('Uso interno: não consta do relatório do cliente (base legal pendente).')]);
     if (!cons.length) cons.push([t('Nenhuma tese calculada com os arquivos recebidos'), '-', '-', '-', selAtiva ? '-' : null, t('Os arquivos lidos estão listados na seção de leituras técnicas.')]);
@@ -941,6 +995,8 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     paragrafo('Teses classificadas como "Monitorar" estão em julgamento ou têm orientação desfavorável nos tribunais superiores e não foram quantificadas.');
     }
 
+    blocoRegime(false);
+
     if (res || outrosArq.length) {
     titulo(++sec, 'Fonte dos dados');
     paragrafo('Foram processados os arquivos abaixo. A impressão digital SHA-256 identifica cada arquivo de forma unívoca: qualquer alteração no conteúdo produz outro código, o que permite confirmar que o cálculo se refere exatamente aos arquivos listados.');
@@ -965,8 +1021,14 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       });
     }
 
+    if (res || (prev && prev.escopo)) titulo(++sec, 'Critérios gerais');
+    if (prev && prev.escopo) {
+      var esc_ = prev.escopo, sb = prev.sensibilidadeBorda;
+      paragrafo('Previdenciário - regime: ' + (esc_.ok === false ? 'fora do escopo (' + (esc_.motivo || 'motivo não informado') + ')' + (opts.prevForcado ? '; cálculo feito mesmo assim, a pedido da equipe' : '') : 'dentro do escopo') +
+        '; classificação tributária ' + (esc_.classTrib == null || esc_.classTrib === '' ? 'não identificada' : esc_.classTrib) + (esc_.cprb ? '; sujeita à CPRB (contribuição previdenciária sobre a receita bruta)' : '') + '. Estimativa; pagamento ainda não confirmado.');
+      if (sb) paragrafo('Sensibilidade pelo prazo: valor da competência no limite dos 5 anos ' + RP(sb.dentro) + ' (dentro) e ' + RP(sb.fora) + ' (imediatamente fora; entraria se o prazo fosse contado pelo pagamento).');
+    }
     if (res) {
-    titulo(++sec, 'Critérios gerais');
     paragrafo('Os valores são calculados em centavos inteiros e arredondados item a item. Havendo original e retificadora para a mesma competência, prevalece a retificadora. Notas canceladas, denegadas e inutilizadas são descartadas. O regime de apuração é lido do registro 0110: o levantamento de insumos e a verificação de risco só se aplicam ao regime não cumulativo.');
     paragrafo('Quando um mesmo item se enquadra na tese dos monofásicos, a restituição integral do PIS e da COFINS pagos absorve as teses de exclusão de base (ICMS e ICMS-ST) daquele item, para que não haja dupla contagem.');
     paragrafo('A recuperação do indébito observa o prazo de cinco anos contado do pagamento indevido (art. 168 do Código Tributário Nacional). As competências com possível prescrição estão sinalizadas e somadas à parte.');
@@ -1058,18 +1120,18 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
         '. Entram só rubricas de vencimento com incidência patronal declarada (codIncCP 11, 12, 21 e 22). No prazo: competências a partir de ' + compFmt(prev.limitePrazo) + '. A associação da rubrica à tese é feita pela descrição e precisa de conferência. Estimativa preliminar, não constitui crédito reconhecido. Motor eSocial v' + prev.versaoMotor + '.');
       var vN = 0, vT = 0, vA = 0, aN = 0, aT = 0, aA = 0;
       var linhasP = prev.teses.map(function (x) {
-        var at = selP && selP.teses[x.id] ? selP.teses[x.id].totalNoPrazo.valorAt : 0, ok = !ocultoCliente(x.id);
+        var at = selP && selP.teses[x.id] ? selP.teses[x.id].totalNoPrazo.valorAt : 0, ok = entraCliente(x, opts.incluirCondicionais);
         vN += x.valorNoPrazo; vT += x.valor; vA += at;
         if (ok) { aN += x.valorNoPrazo; aT += x.valor; aA += at; }
         return [t(x.nome) + (x.id === 'T069' ? ' (reflexo do RAT: cálculo para a empresa decidir se segue pela via administrativa)' : ''), x.rubricas.length, RP(x.baseNoPrazo), RP(x.valorNoPrazo), RP(x.valor)]
-          .concat(selP ? [RP(at)] : []).concat([ok ? '-' : 'Parecer desfavorável - não apresentar ao cliente']);
+          .concat(selP ? [RP(at)] : []).concat([x.condicional ? t('Condicional' + (x.condicao ? ': ' + x.condicao : '') + (ok ? ' - incluída no relatório do cliente' : ' - fora do relatório do cliente (não marcada)')) : ok ? '-' : 'Parecer desfavorável - não apresentar ao cliente']);
       });
       fonte('helvetica', 'bold', 9.5); cor(COR.tinta); espaco(20); doc.text(t('Quadro de teses previdenciárias'), M, y); y += 4;
       tabela({
         head: [['Tese', 'Rubricas', 'Base no prazo', 'Estimativa no prazo', 'Total geral'].concat(selP ? ['No prazo atualizado pela Selic (estimativa)'] : []).concat(['Parecer'])],
         body: linhasP,
-        foot: [['Estimativa previdenciária (todas as teses)', '', '', RP(vN), RP(vT)].concat(selP ? [RP(vA)] : []).concat(['']),
-               ['Apresentável ao cliente (sem as teses de parecer desfavorável)', '', '', RP(aN), RP(aT)].concat(selP ? [RP(aA)] : []).concat([''])],
+        foot: [['Estimativa previdenciária (todas as teses; pagamento ainda não confirmado)', '', '', RP(vN), RP(vT)].concat(selP ? [RP(vA)] : []).concat(['']),
+               ['Apresentável ao cliente (sem parecer desfavorável e sem condicionais não marcadas)', '', '', RP(aN), RP(aT)].concat(selP ? [RP(aA)] : []).concat([''])],
         columnStyles: { 1: { halign: 'right', cellWidth: 16 }, 2: { halign: 'right', cellWidth: 31 }, 3: { halign: 'right', fontStyle: 'bold', cellWidth: 31 }, 4: { halign: 'right', cellWidth: 31 }, 5: selP ? { halign: 'right', cellWidth: 36 } : { halign: 'left' } }
       });
       if (selP) paragrafo('Atualização pela Selic: estimativa por competência, contada do vencimento estimado da contribuição (dia 20 do mês seguinte à competência). ' + (sel.avisoRfb || ''));
@@ -1078,7 +1140,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       prev.teses.forEach(function (x) {
         if (!x.rubricas.length) return;
         espaco(24);
-        fonte('helvetica', 'bold', 8.5); cor(COR.bronze); doc.text(t(x.nome + ' - ' + x.rubricas.length + ' rubrica(s)' + (ocultoCliente(x.id) ? ' - parecer desfavorável, não apresentar ao cliente' : '')), M, y); y += 3;
+        fonte('helvetica', 'bold', 8.5); cor(COR.bronze); doc.text(t(x.nome + ' - ' + x.rubricas.length + ' rubrica(s)' + (x.condicional ? ' - condicional' + (x.condicao ? ': ' + x.condicao : '') : ocultoCliente(x.id) ? ' - parecer desfavorável, não apresentar ao cliente' : '')), M, y); y += 3;
         tabela({
           head: [['Código', 'Descrição no S-1010', 'Natureza', 'Incidência CP', 'Motivo da associação', 'Base total']],
           body: x.rubricas.map(function (r) { return [t(r.cod + (r.tab ? ' (' + r.tab + ')' : '')), t(r.dsc), t(r.natRubr), t(r.codIncCP + ' - ' + (root.MotorEsocial && root.MotorEsocial.INCIDE_PATRONAL ? root.MotorEsocial.INCIDE_PATRONAL[r.codIncCP] || '' : '')), t(r.motivo), RP(r.base)]; }),
@@ -1210,7 +1272,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     if (!root.jspdf || !root.jspdf.jsPDF) throw new Error('Biblioteca de PDF indisponível.');
     selecao = selecao || {};
     if (!selecao.identificado && !selecao.projetado) throw new Error('Selecione pelo menos um valor para exibir.');
-    return gerar(res, [], Object.assign({}, opts, { cliente: { inicio: inicio, selecao: selecao } }));
+    return gerar(res, [], Object.assign({}, opts, { cliente: { inicio: inicio, selecao: selecao, incluirCondicionais: opts.incluirCondicionais || {} } }));
   }
   root.GeradorMemoria = { gerar: gerar, apresentar: apresentar };
 })(typeof window !== 'undefined' ? window : this);
@@ -1221,7 +1283,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   'use strict';
   var M = window.MotorCreditos, ME = window.MotorEsocial;
   var EXEMPLO = window.REVERSA_EXEMPLO || [];
-  var estado = { darfs: [], arquivos: [], lidos: [], res: null, prev: null, exemplo: false, tese: 'tema69', dti: false, tecDados: null, outrosArq: [], ignorados: [], cnpjBase: '', nTec: 0, nDarf: 0 };
+  var estado = { prevLidos: [], prevIncluir: {}, darfs: [], arquivos: [], lidos: [], res: null, prev: null, exemplo: false, tese: 'tema69', dti: false, tecDados: null, outrosArq: [], ignorados: [], cnpjBase: '', nTec: 0, nDarf: 0 };
   // Produção começa vazia; os arquivos sintéticos só aparecem na área de demonstração (?demo=1).
   var DEMO = /(^|[?&])demo=1(&|$)/.test(location.search.slice(1));
   var $ = function (id) { return document.getElementById(id); };
@@ -1395,6 +1457,20 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   function ehEs(x) { return x.tipo === 'esocial'; }
   function tecValidos() { return fila.filter(ehTec); }
   function efdValidos() { return fila.filter(function (x) { return !ehEs(x) && !ehTec(x) && x.lido.meta && !x.lido.erros.length; }); }
+  // opções do eSocial lidas dos controles; exceção só vale com os dois meses preenchidos e fim >= início
+  function opcoesPrev() {
+    var o = {}, on = $('prev-exc').checked, ini = $('prev-exc-ini').value, fim = $('prev-exc-fim').value, msg = $('prev-exc-msg');
+    $('prev-exc-datas').hidden = !on; msg.hidden = true;
+    if (on) {
+      if (/^\d{4}-\d{2}$/.test(ini) && /^\d{4}-\d{2}$/.test(fim) && ini <= fim) o.terceirosExcecao = { ini: ini, fim: fim };
+      else { msg.hidden = false; msg.textContent = ini && fim && ini > fim ? 'O mês final precisa ser igual ou posterior ao inicial.' : 'Informe o mês inicial e o final da ação ou decisão.'; }
+    }
+    if ($('prev-forcar').checked) o.forcarEscopo = true;
+    return o;
+  }
+  function apurarPrev() { return estado.prevLidos.length ? ME.apurar(estado.prevLidos, opcoesPrev()) : null; }
+  function reapurarPrev() { if (!estado.prevLidos.length) return; estado.prev = apurarPrev(); renderPrev(); renderCobertura(); }
+  ['prev-exc', 'prev-exc-ini', 'prev-exc-fim', 'prev-forcar'].forEach(function (id) { $(id).addEventListener('change', reapurarPrev); });
   function esValidos() { return fila.filter(function (x) { return ehEs(x) && !x.lido.erros.length && x.lido.eventos.length; }); }
   function zerarDerivados() { estado.dti = false; estado.tecDados = null; estado.sdCred = null; estado.sdPrev = null; estado.sdEcf = null; estado.outrosArq = []; estado.ignorados = []; estado.cnpjBase = ''; estado.nTec = 0; estado.nDarf = 0; }
   function limparResultado() { estado.res = null; estado.prev = null; zerarDerivados(); secoesResultado(false); secaoDti(false); $('sec-prev').hidden = true; $('sec-cob').hidden = true; $('sec-tec').hidden = true; $('banner').innerHTML = ''; }
@@ -1496,7 +1572,8 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     zerarDerivados();
     var dv = darfValidos();
     estado.darfs = dv.map(function (x) { return x.lido; });
-    estado.prev = es.length ? ME.apurar(es.map(function (x) { return x.lido; })) : null;
+    estado.prevLidos = es.map(function (x) { return x.lido; }); estado.prevIncluir = {};
+    estado.prev = apurarPrev();
     estado.nEs = es.length; estado.nTec = tec.length; estado.nDarf = dv.length;
     calcularHashes(validos.concat(es, tec, dv)); // impressão digital de todos os arquivos usados no DTI
     estado.outrosArq = es.map(function (x) { return { arquivo: x.nome, tipo: 'eSocial', detalhe: Object.keys(x.es.tipos).sort().join(', ') }; })
@@ -1711,6 +1788,9 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     var p = estado.prev, sec = $('sec-prev'), R = RP;
     if (!p) { sec.hidden = true; return; }
     sec.hidden = false;
+    var esc0 = p.escopo, forc = $('prev-forcar').checked;
+    $('prev-escopo').hidden = !(esc0 && (esc0.ok === false || forc));
+    $('prev-escopo-txt').textContent = esc0 && esc0.ok === false ? 'Fora do escopo: ' + (esc0.motivo || 'regime não atendido') : 'Cálculo forçado fora do escopo Lucro Real/Presumido.';
     var fora = p.total.valor - p.total.valorNoPrazo, base = p.teses.reduce(function (a, t) { return a + t.baseNoPrazo; }, 0);
     var ev = p.eventos, nEv = Object.keys(ev).reduce(function (a, k) { return a + ev[k]; }, 0);
     var sp = estado.sdPrev = SD.previdenciario(p, estado.selic, estado.hoje);
@@ -1721,12 +1801,13 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       kpi('', 'Eventos lidos', nEv.toLocaleString('pt-BR'), ['S-1005', 'S-1010', 'S-1020', 'S-1200'].map(function (k) { return k + ' ' + (ev[k] || 0); }).join(' · '));
     $('prev-avisos').innerHTML = p.avisos.map(function (a) { return '<li' + (/^Faltam os eventos S-1(010|200)/.test(a) ? ' class="e"' : '') + '>' + esc(a) + '</li>'; }).join('');
     var linhas = p.teses.map(function (t) {
-      return '<tr><td class="wrapc"><strong>' + esc(t.nome) + '</strong>' + (t.id === 'T069' ? '<br><small>Reflexo do RAT: cálculo para a empresa decidir se segue pela via administrativa.</small>' : '') + '</td><td class="r">' + t.rubricas.length + '</td><td class="r">' + R(t.baseNoPrazo) + '</td><td class="r"><strong>' + R(t.valorNoPrazo) + '</strong></td><td class="r">' + R(t.valor) + '</td>' + (sp ? '<td class="r">' + R(sp.teses[t.id].totalNoPrazo.valorAt) + '</td>' : '') + '</tr>';
+      return '<tr><td class="wrapc"><strong>' + esc(t.nome) + '</strong>' + (t.id === 'T069' ? '<br><small>Reflexo do RAT: cálculo para a empresa decidir se segue pela via administrativa.</small>' : '') + '</td><td class="r">' + t.rubricas.length + '</td><td class="r">' + R(t.baseNoPrazo) + '</td><td class="r"><strong>' + R(t.valorNoPrazo) + '</strong></td><td class="r">' + R(t.valor) + '</td>' + (sp ? '<td class="r">' + R(sp.teses[t.id].totalNoPrazo.valorAt) + '</td>' : '') +
+        '<td>' + (t.condicional ? '<label class="cond-incl"><span><input type="checkbox" data-incl="' + esc(t.id) + '"' + (estado.prevIncluir[t.id] ? ' checked' : '') + '> Incluir no relatório do cliente</span><small>' + esc(t.condicao || 'Condicional') + '</small></label>' : '<small>Incluída conforme o parecer</small>') + '</td></tr>';
     }).join('') + OUTRAS_PREV.map(function (o) {
-      return '<tr><td class="wrapc">' + esc(o[0]) + '<br><small>A dimensionar: ' + esc(o[1]) + '.</small></td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td>' + (sp ? '<td class="r">—</td>' : '') + '</tr>';
+      return '<tr><td class="wrapc">' + esc(o[0]) + '<br><small>A dimensionar: ' + esc(o[1]) + '.</small></td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td>' + (sp ? '<td class="r">—</td>' : '') + '<td>—</td></tr>';
     }).join('');
-    $('tab-prev').innerHTML = '<thead><tr><th>Tese</th><th class="r">Rubricas</th><th class="r">Base no prazo</th><th class="r">Estimativa no prazo</th><th class="r">Total geral</th>' + (sp ? '<th class="r">No prazo atualizado pela Selic (estimativa)</th>' : '') + '</tr></thead><tbody>' + linhas +
-      '</tbody><tfoot><tr><td colspan="3">Estimativa previdenciária no prazo</td><td class="r">' + R(p.total.valorNoPrazo) + '</td><td class="r">' + R(p.total.valor) + '</td>' + (sp ? '<td class="r">' + R(sp.totalNoPrazo.valorAt) + '</td>' : '') + '</tr></tfoot>';
+    $('tab-prev').innerHTML = '<thead><tr><th>Tese</th><th class="r">Rubricas</th><th class="r">Base no prazo</th><th class="r">Estimativa no prazo</th><th class="r">Total geral</th>' + (sp ? '<th class="r">No prazo atualizado pela Selic (estimativa)</th>' : '') + '<th>Relatório do cliente</th></tr></thead><tbody>' + linhas +
+      '</tbody><tfoot><tr><td colspan="3">Estimativa previdenciária no prazo (pagamento ainda não confirmado)</td><td class="r">' + R(p.total.valorNoPrazo) + '</td><td class="r">' + R(p.total.valor) + '</td>' + (sp ? '<td class="r">' + R(sp.totalNoPrazo.valorAt) + '</td>' : '') + '<td></td></tr></tfoot>';
     $('prev-rubricas').innerHTML = p.teses.map(function (t) {
       return '<details class="rub"><summary>Rubricas de ' + esc(t.nome) + ' (' + t.rubricas.length + ')</summary><div class="scroll"><table><thead><tr><th>Código</th><th>Descrição no S-1010</th><th>Natureza</th><th>Incidência CP</th><th>Motivo da associação</th><th class="r">Base total</th></tr></thead><tbody>' +
         t.rubricas.map(function (r) { return '<tr><td class="num">' + esc(r.cod) + (r.tab ? ' <small>(' + esc(r.tab) + ')</small>' : '') + '</td><td>' + esc(r.dsc) + '</td><td class="num">' + esc(r.natRubr) + '</td><td>' + esc(r.codIncCP + ' · ' + (ME.INCIDE_PATRONAL[r.codIncCP] || '')) + '</td><td>' + esc(r.motivo) + '</td><td class="r">' + R(r.base) + '</td></tr>'; }).join('') +
@@ -1735,8 +1816,12 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     var est = p.estabelecimentos.map(function (e) { return cnpjFmt(e.nrInsc) + ' (CNAE ' + esc(e.cnae || '—') + ', RAT ' + String(e.rat).replace('.', ',') + '% × FAP ' + String(e.fap).replace('.', ',') + ')'; }).join('; ');
     var lot = p.lotacoes.map(function (l) { return 'FPAS ' + esc(l.fpas || '—') + ' / terceiros ' + esc(l.codTercs || '—'); }).filter(function (x, i, a) { return a.indexOf(x) === i; }).join('; ');
     $('prev-premissas').innerHTML = 'Premissas: CPP 20%; RAT × FAP do estabelecimento' + (est ? ' — ' + est : ' (sem S-1005, não aplicado)') + '; terceiros ' + (p.premissas.terceiros * 100).toFixed(1).replace('.', ',') + '% estimado' + (lot ? ', a confirmar pelo ' + lot : '') +
-      '. Entram só rubricas de vencimento com incidência patronal declarada (codIncCP 11, 12, 21 e 22). No prazo: competências a partir de ' + compFmt(p.limitePrazo) + '. A associação da rubrica à tese é feita pela descrição e precisa de conferência. Estimativa preliminar' + (sp ? ', com a Selic como estimativa ao lado do valor nominal' : ', sem Selic') + ', não constitui crédito reconhecido. Motor eSocial v' + p.versaoMotor + '.' + (notaSelic(sp && sp.estimados) ? '<br>' + notaSelic(sp && sp.estimados) : '');
+      '. Entram só rubricas de vencimento com incidência patronal declarada (codIncCP 11, 12, 21 e 22). No prazo: competências a partir de ' + compFmt(p.limitePrazo) + '. A associação da rubrica à tese é feita pela descrição e precisa de conferência. Estimativa preliminar; pagamento ainda não confirmado' + (sp ? ', com a Selic como estimativa ao lado do valor nominal' : ', sem Selic') + ', não constitui crédito reconhecido. Motor eSocial v' + p.versaoMotor + '.' + (notaSelic(sp && sp.estimados) ? '<br>' + notaSelic(sp && sp.estimados) : '');
   }
+  $('tab-prev').addEventListener('change', function (e) {
+    var id = e.target && e.target.getAttribute && e.target.getAttribute('data-incl'); if (!id) return;
+    estado.prevIncluir[id] = !!e.target.checked;
+  });
   $('btn-prev-csv').addEventListener('click', function () {
     var p = estado.prev; if (!p) return;
     var rows = [['Tese', 'Código', 'Tabela', 'Descrição', 'natRubr', 'codIncCP', 'Motivo', 'Base total']];
@@ -1895,7 +1980,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       if (!temDiagnostico()) throw new Error('Carregue os arquivos do cliente e gere o diagnóstico antes da apresentação.');
       var blob = window.GeradorMemoria.apresentar(resEfd(), Number($('amostra-ano').value), {
         identificado: $('cliente-identificado').checked, projetado: $('cliente-projetado').checked
-      }, { exemplo: !!estado.exemplo, selic: selicPdf(), prev: estado.prev, cnpj: estado.cnpjBase, tecnico: estado.tecDados, darfs: estado.darfs }); // ECF/DARF só identificam o contribuinte
+      }, { exemplo: !!estado.exemplo, selic: selicPdf(), prev: estado.prev, incluirCondicionais: estado.prevIncluir, cnpj: estado.cnpjBase, tecnico: estado.tecDados, darfs: estado.darfs }); // ECF/DARF só identificam o contribuinte
       salvar('Apresentacao-' + nomeBase() + '.pdf', blob);
     } catch (err) { toast(err.message); }
   });
@@ -1908,7 +1993,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     setTimeout(function () {
       try {
         var blob = window.GeradorMemoria.gerar(resEfd(), estado.lidos, {
-          prev: estado.prev, tecnico: estado.tecDados, darfs: estado.darfs, outrosArquivos: estado.outrosArq, ignorados: estado.ignorados,
+          prev: estado.prev, incluirCondicionais: estado.prevIncluir, prevForcado: $('prev-forcar').checked, tecnico: estado.tecDados, darfs: estado.darfs, outrosArquivos: estado.outrosArq, ignorados: estado.ignorados,
           responsavel: $('pdf-resp-on').checked ? $('pdf-resp').value.trim() : '', registro: $('pdf-resp-on').checked ? $('pdf-reg').value.trim() : '', local: $('pdf-local').value.trim(),
           hashes: estado.hashes, exemplo: estado.exemplo, ncmsExtras: ncmsExtras(), selic: selicPdf()
         });

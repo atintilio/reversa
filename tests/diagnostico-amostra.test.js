@@ -48,3 +48,35 @@ test('meses sem oportunidade contam na média e valor ocultado não aparece no P
   window.GeradorMemoria.apresentar(res, 2021, { identificado: true });
   assert.ok(JSON.stringify(textos).includes('VALOR:150000')); assert.ok(!JSON.stringify(textos).includes('VALOR:600000'));
 });
+
+test('apresentação ao cliente: condicional só entra se marcada, regime sempre consta e sem código técnico', () => {
+  const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
+  const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x => x[1]).find(x => x.includes('root.GeradorMemoria ='));
+  const textos = [];
+  function PDF() {
+    const base = {
+      internal: { pageSize: { getWidth: () => 297, getHeight: () => 210 } },
+      text: x => textos.push(x), splitTextToSize: x => [x], getTextWidth: () => 10, getNumberOfPages: () => 1,
+      autoTable: cfg => { textos.push(cfg.body, cfg.foot || []); base.lastAutoTable = { finalY: 80 }; },
+      output: () => textos
+    };
+    return new Proxy(base, { get: (o, k) => (k in o ? o[k] : () => {}) });
+  }
+  const window = { jspdf: { jsPDF: PDF }, DiagnosticoAmostra: M, TesesDiagnostico: require('../teses-diagnostico'), MotorCreditos: { formatarReais: x => `VALOR:${x}` } };
+  vm.runInNewContext(script, { window });
+  const tese = (id, nome, valor, extra) => ({ id, nome, rubricas: [], valorNoPrazo: valor * 2, valor: valor * 2, baseNoPrazo: 0, porCompetencia: [{ competencia: '2023-03', valor }, { competencia: '2023-04', valor }], ...extra });
+  const prev = {
+    periodo: { inicio: '2023-03', fim: '2023-04', competencias: 2 }, empregador: { nome: 'Cliente SA', cnpjRaiz: '12345678' }, estabelecimentos: [],
+    escopo: { ok: true, classTrib: '00', cprb: false, motivo: null, historico: [{ ini: '2023-03', fim: '2023-04', classTrib: '00', descricao: 'Pessoa jurídica em geral', cprb: false }] },
+    teses: [tese('T066', 'Alimentação', 100), tese('T008', 'Terceiros acima de 20 salários', 777, { condicional: true, condicao: 'ação favorável' })]
+  };
+  const gera = inc => { textos.length = 0; window.GeradorMemoria.apresentar(null, 2021, { identificado: true }, { prev, cnpj: '12345678000190', incluirCondicionais: inc }); return JSON.stringify(textos); };
+  let str = gera({});
+  assert.ok(str.includes('VALOR:20000') && !str.includes('VALOR:155400') && !str.includes('Terceiros acima'));
+  assert.ok(str.includes('Regime tributário ao longo do tempo') && str.includes('Pessoa jurídica em geral (Lucro Real/Presumido)'));
+  assert.ok(!/classTrib|classificação tributária|T008/.test(str)); assert.ok(str.includes('pagamento das contribuições ainda não foi confirmado'));
+  str = gera({ T008: true });
+  assert.ok(str.includes('Terceiros acima') && str.includes('VALOR:175400')); // 20000 + 155400, igual à soma exibida
+  prev.escopo = undefined; str = gera({});
+  assert.ok(str.includes('Regime não identificado nos arquivos lidos'));
+});

@@ -7,6 +7,8 @@
  *   S-1010 (evtTabRubrica)      rubricas: descrição, natureza (natRubr), tipo (tpRubr) e incidência previdenciária (codIncCP)
  *   S-1020 (evtTabLotacao)      lotações: FPAS e código de terceiros (exibidos)
  *   S-1200 (evtRemun)           remuneração por trabalhador, competência e estabelecimento
+ *   S-2299 (evtDeslig)          rescisão: verbas rescisórias (verbasResc/dmDev/infoPerApur/ideEstabLot/detVerbas) — leiaute a validar com XML real (Sodimac)
+ *   S-3000 (evtExclusao)        exclusão de evento: descarta o evento lido cujo recibo case com nrRecEvt (quando o XML traz o recibo)
  * Arquivos de lote (envioLoteEventos), retornos com o evento embutido e retificadoras (indRetif = 2) são aceitos.
  *
  * Regra de cálculo (estimativa preliminar, não é crédito):
@@ -17,12 +19,36 @@
  *     Terceiros: 5,8% estimado (salário-educação 2,5% + INCRA 0,2% + Sistema S 2,5% + SEBRAE 0,6%), a confirmar pelo FPAS.
  *   - RAT reflexos (13º, DSR, dias não trabalhados): base × RAT × FAP, para decisão da empresa.
  *   - "No prazo": competências dos últimos 5 anos (CTN, art. 168, I).
+ * v0.2.0:
+ *   - Escopo: só Lucro Real/Presumido (S-1000 classTrib 99), avaliado POR COMPETÊNCIA pelo histórico de vigências (escopo.historico).
+ *     Competência fora do escopo não é calculada (salvo opts.forcarEscopo). CPRB (indDesFolha = 1) retira os 20% de CPP.
+ *   - Terceiros: 5,8% sobre a base, sem teto de 20 SM (STJ Tema 1079, 2024; Tema 1390, j. 11/02/2026, REsp 2187625/RJ).
+ *     Exceção opcional opts.terceirosExcecao {ini, fim}: tese T008 (limite de 20 salários mínimos por trabalhador e competência).
+ *   - Rescisões (S-2299): mesma classificação por rubrica + T073 (férias indenizadas e 1/3), T071 (multa art. 477 CLT), T072 (art. 479 CLT / Lei 7.238 art. 9º).
+ *   - Teses condicionais (condicional/condicao), teste de habitualidade na T065 e sensibilidade da borda do prazo de 5 anos.
+ *   Todo o valor é estimativa (pagamento: 'nao-confirmado'). Tags/leiaute marcados "a validar com XML real (Sodimac)" são tolerantes a variações de nome.
  * Funciona no navegador (window.MotorEsocial) e no Node (module.exports).
  */
 (function (root) {
   'use strict';
-  var VERSAO = '0.1.0';
+  var VERSAO = '0.2.0';
   var CPP = 0.20, TERCEIROS_PADRAO = 0.058;
+  // a validar com XML real (Sodimac): nomes de tag aceitos (comparação sem diferenciar maiúsculas/minúsculas)
+  var TAGS_CLASSTRIB = ['classTrib'], TAGS_DESFOLHA = ['indDesFolha', 'indDesoneracao', 'indCPRB'];
+  var TAGS_ITENS = ['itensRemun', 'detVerbas'];            // S-1200 usa itensRemun; S-2299 usa detVerbas (verbasResc)
+  var CLASSTRIB_ESCOPO = '99';                              // pessoa jurídica em geral (Lucro Real/Presumido)
+  var CLASSTRIB_DESC = { '99': 'Pessoa jurídica em geral', '01': 'Simples Nacional', '02': 'Simples Nacional', '03': 'Simples Nacional' }; // só os códigos de que há certeza
+  // Salário mínimo nacional por vigência (CONFERIR com decreto: 2019-2025 conforme tabelas públicas; 2026 = Decreto 12.797/2025)
+  var SM_VIGENCIAS = [['2019-01', 998], ['2020-01', 1039], ['2020-02', 1045], ['2021-01', 1100], ['2022-01', 1212], ['2023-01', 1302], ['2023-05', 1320], ['2024-01', 1412], ['2025-01', 1518], ['2026-01', 1621]];
+  var SALARIO_MINIMO = {};
+  (function () { for (var a = 2019; a <= 2026; a++) for (var m = 1; m <= 12; m++) { var c = a + '-' + (m < 10 ? '0' : '') + m, v; SM_VIGENCIAS.forEach(function (x) { if (x[0] <= c) v = x[1]; }); SALARIO_MINIMO[c] = v; } })();
+  var CONDICOES = {
+    T063: 'Depende de acordo de PLR firmado conforme a Lei 10.101/2000.',
+    T065: 'Apenas gratificações e prêmios eventuais (habituais ficam de fora).',
+    T066: 'Forma de pagamento: PAT, cartão ou in natura, não em dinheiro.',
+    T068: 'Plano disponível a todos os empregados.',
+    T008: 'Depende de ação judicial/decisão favorável e da modulação (Tema 1079); informar período.'
+  };
   var INCIDE_PATRONAL = { '11': 'mensal', '12': '13º salário', '21': 'salário-maternidade (empresa)', '22': 'salário-maternidade 13º (empresa)' };
 
   // ------------------------------------------------------------------ XML mínimo (sem dependências)
@@ -52,7 +78,19 @@
   function num(v) { var n = Number(String(v || '').replace(',', '.')); return isFinite(n) ? n : 0; }
   function norm(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim(); }
 
-  var EVENTOS = { evtInfoEmpregador: 'S-1000', evtTabEstab: 'S-1005', evtTabRubrica: 'S-1010', evtTabLotacao: 'S-1020', evtRemun: 'S-1200', evtFechaEvPer: 'S-1299' };
+  function acharTxt(no, nomes) { // primeiro texto não vazio de uma tag (em qualquer nível), sem diferenciar maiúsculas
+    var set = nomes.map(function (x) { return x.toLowerCase(); }), res = '';
+    (function walk(n) { if (!n) return; n.filhos.forEach(function (f) { if (!res && set.indexOf(f.nome.toLowerCase()) >= 0 && decod(f.texto)) res = decod(f.texto); walk(f); }); })(no);
+    return res;
+  }
+  function mesAnterior(c) { var a = +c.slice(0, 4), m = +c.slice(5, 7) - 1; if (m < 1) { m = 12; a--; } return a + '-' + (m < 10 ? '0' : '') + m; }
+  function brl(v) { return 'R$ ' + (Math.round(v * 100) / 100).toFixed(2).replace('.', ','); }
+  function reciboDe(no) { // nrRecibo do retorno que embrulha o evento (download/retorno de lote), se houver
+    for (var a = no && no.pai; a; a = a.pai) { var r = filho(a, 'recibo'); if (r && txt(r, 'nrRecibo')) return txt(r, 'nrRecibo'); }
+    return '';
+  }
+
+  var EVENTOS = { evtInfoEmpregador: 'S-1000', evtTabEstab: 'S-1005', evtTabRubrica: 'S-1010', evtTabLotacao: 'S-1020', evtRemun: 'S-1200', evtFechaEvPer: 'S-1299', evtDeslig: 'S-2299', evtExclusao: 'S-3000' };
 
   /** Lê um arquivo XML e devolve os eventos reconhecidos. */
   function lerXml(texto, nomeArquivo) {
@@ -63,7 +101,7 @@
     Object.keys(EVENTOS).forEach(function (tag) {
       todos(doc, tag).forEach(function (ev) { r.eventos.push({ tipo: EVENTOS[tag], no: ev, id: (ev.attrs && ev.attrs.Id) || '' }); });
     });
-    if (!r.eventos.length) r.avisos.push('Nenhum evento usado no cálculo (S-1000, S-1005, S-1010, S-1020, S-1200) neste arquivo.');
+    if (!r.eventos.length) r.avisos.push('Nenhum evento usado no cálculo (S-1000, S-1005, S-1010, S-1020, S-1200, S-2299) neste arquivo.');
     return r;
   }
 
@@ -73,6 +111,10 @@
     { id: 'T004', re: /MATERNIDADE/, motivo: 'salário-maternidade' },
     { id: 'T064', re: /PATERNIDADE/, motivo: 'licença-paternidade' },
     { id: 'T005', re: /AVISO ?PREVIO INDENIZ|AV\.? ?PREV(IO)?\.? ?INDENIZ|AVISO INDENIZ/, motivo: 'aviso-prévio indenizado' },
+    { id: 'T073', re: /FERIAS.*INDENIZ|INDENIZ.*FERIAS/, motivo: 'férias indenizadas e respectivo 1/3' },
+    { id: 'T073', soResc: true, re: /FERIAS (PROPORC|VENCID)|(1\/3|TERCO).*FERIAS|FERIAS.*(1\/3|TERCO)/, motivo: 'férias (proporcionais/vencidas) e 1/3 na rescisão' },
+    { id: 'T071', re: /^(?!.*FGTS).*(ART\.? ?477|MULTA (DO |DA )?(RESCISOR|RESCISAO))/, motivo: 'multa do art. 477 da CLT' },
+    { id: 'T072', re: /ART\.? ?479|ART\.? ?9\b.*7\.?238|LEI 7\.?238|ADICIONAL INDENIZATORIO|INDENIZ.*(DISPENSA|SEM JUSTA CAUSA)/, motivo: 'indenização por dispensa (art. 479 CLT / Lei 7.238 art. 9º)' },
     { id: 'T006', re: /15 (PRIMEIROS )?DIAS|PRIMEIROS 15|AUX(ILIO)?\.? ?DOENCA|AUX(ILIO)?\.? ?ENFERMIDADE|AFAST(AMENTO)?\.? ?(POR )?DOENCA/, motivo: '15 primeiros dias de afastamento' },
     { id: 'T063', re: /\bPLR\b|PARTICIPACAO (NOS |NO )?(LUCROS|RESULTADOS)|\bPPR\b/, motivo: 'participação nos lucros ou resultados' },
     { id: 'T067', re: /VALE[ -]?TRANSPORTE|AUX(ILIO)?\.? ?TRANSPORTE|\bV\.?T\.?\b/, motivo: 'vale-transporte' },
@@ -92,11 +134,15 @@
     T063: 'Contribuição previdenciária sobre PLR paga conforme a Lei 10.101/2000', T064: 'Contribuição previdenciária sobre licença-paternidade',
     T065: 'Contribuição previdenciária sobre gratificações e prêmios eventuais', T066: 'Contribuição previdenciária sobre auxílio-alimentação (tíquete, cartão ou in natura)',
     T067: 'Contribuição previdenciária sobre vale-transporte', T068: 'Contribuição previdenciária sobre assistência médica e odontológica',
-    T069: 'RAT/GILRAT — reflexos sobre 13º salário, DSR e dias não trabalhados'
+    T069: 'RAT/GILRAT — reflexos sobre 13º salário, DSR e dias não trabalhados',
+    T008: 'Contribuições a terceiros: limite de 20 salários mínimos (empresa com ação ou decisão favorável)',
+    T073: 'Contribuição previdenciária sobre férias indenizadas e terço constitucional de férias indenizadas',
+    T071: 'Contribuição previdenciária sobre multa do art. 477 da CLT (multa rescisória)',
+    T072: 'Contribuição previdenciária sobre indenização por dispensa (art. 479 da CLT / Lei 7.238/84, art. 9º)'
   };
-  function classificar(dsc) {
+  function classificar(dsc, resc) {
     var d = norm(dsc);
-    for (var i = 0; i < REGRAS.length; i++) if (REGRAS[i].re.test(d)) return REGRAS[i];
+    for (var i = 0; i < REGRAS.length; i++) if ((!REGRAS[i].soResc || resc) && REGRAS[i].re.test(d)) return REGRAS[i];
     return null;
   }
 
@@ -108,16 +154,37 @@
   }
   function cincoAnos(hoje) { var d = new Date(hoje || Date.now()); return (d.getFullYear() - 5) + '-' + String(d.getMonth() + 1).padStart(2, '0'); }
 
+  function salarioMinimo(comp) { return SALARIO_MINIMO[comp]; }
+
+  /** Histórico de regime do S-1000: [{ini, fim, classTrib, descricao, cprb}] ordenado; fim derivado da próxima vigência. */
+  function montaHistorico(regs) {
+    var porIni = {};
+    regs.forEach(function (r) { porIni[r.ini || ''] = r; }); // mesma vigência: a última lida vale
+    var l = Object.keys(porIni).sort().map(function (k) { return porIni[k]; });
+    return l.map(function (r, i) {
+      var fim = r.fim || (l[i + 1] && l[i + 1].ini ? mesAnterior(l[i + 1].ini) : null);
+      return { ini: r.ini || null, fim: fim, classTrib: r.classTrib, descricao: CLASSTRIB_DESC[r.classTrib] || (r.classTrib ? 'classTrib ' + r.classTrib : 'classTrib não informado'), cprb: r.cprb };
+    });
+  }
+  function regimeEm(hist, comp) { // vigência mais recente com ini <= comp (fim explícito já vencido => sem regime); null se não identificado
+    var ok = null;
+    hist.forEach(function (h) { if (!h.ini || h.ini <= comp) ok = h; });
+    if (ok && ok.fim && ok.fim < comp) ok = null;
+    return ok && ok.classTrib ? ok : null;
+  }
+
   /**
    * @param {Array} lidos  resultados de lerXml
-   * @param {{hoje?: Date, terceiros?: number}} opts
+   * @param {{hoje?: Date, terceiros?: number, terceirosExcecao?: {ini:string, fim:string}|null, forcarEscopo?: boolean}} opts
    */
   function apurar(lidos, opts) {
     opts = opts || {};
     var terceiros = opts.terceiros == null ? TERCEIROS_PADRAO : Number(opts.terceiros);
     var limite = cincoAnos(opts.hoje);
-    var rubricas = {}, estabs = {}, lotacoes = {}, empregador = { cnpjRaiz: '', nome: '' };
-    var remun = {}, contagem = { 'S-1000': 0, 'S-1005': 0, 'S-1010': 0, 'S-1020': 0, 'S-1200': 0 }, avisos = [];
+    var exc = opts.terceirosExcecao && opts.terceirosExcecao.ini && opts.terceirosExcecao.fim ? opts.terceirosExcecao : null;
+    var forcar = opts.forcarEscopo === true;
+    var rubricas = {}, estabs = {}, lotacoes = {}, empregador = { cnpjRaiz: '', nome: '' }, regs = [];
+    var cands = [], exclusoes = [], contagem = { 'S-1000': 0, 'S-1005': 0, 'S-1010': 0, 'S-1020': 0, 'S-1200': 0, 'S-2299': 0, 'S-3000': 0 }, avisos = [];
     lidos.forEach(function (l) {
       l.eventos.forEach(function (ev) {
         contagem[ev.tipo] = (contagem[ev.tipo] || 0) + 1;
@@ -125,6 +192,14 @@
         if (ide && !empregador.cnpjRaiz) empregador.cnpjRaiz = txt(ide, 'nrInsc');
         if (ev.tipo === 'S-1000') {
           var info = todos(n, 'infoCadastro')[0]; if (info) empregador.nome = empregador.nome || txt(info, 'nmRazao');
+          // vigências: inclusao/alteracao com idePeriodo(iniValid, fimValid) e infoCadastro(classTrib, indDesFolha) — a validar com XML real (Sodimac)
+          var ops = []; ['inclusao', 'alteracao'].forEach(function (op) { todos(n, op).forEach(function (o) { ops.push(o); }); });
+          if (!ops.length && info) ops.push(n);
+          ops.forEach(function (o) {
+            var ic = todos(o, 'infoCadastro')[0] || o, ct = acharTxt(ic, TAGS_CLASSTRIB); if (!ct) return;
+            var idp = todos(o, 'idePeriodo')[0];
+            regs.push({ ini: idp ? txt(idp, 'iniValid') : '', fim: idp ? txt(idp, 'fimValid') : '', classTrib: ct, cprb: acharTxt(ic, TAGS_DESFOLHA) === '1' });
+          });
         } else if (ev.tipo === 'S-1010') {
           ['inclusao', 'alteracao'].forEach(function (op) {
             todos(n, op).forEach(function (o) {
@@ -155,15 +230,41 @@
           var ie2 = filho(n, 'ideEvento'), it = filho(n, 'ideTrabalhador');
           var per = txt(ie2, 'perApur'), ind = txt(ie2, 'indApuracao') || '1';
           var comp = /^\d{4}$/.test(per) ? per + '-12' : per;
-          var chave = txt(it, 'cpfTrab') + '|' + per + '|' + ind;
-          var retif = txt(ie2, 'indRetif') === '2';
-          // retificadora substitui a original da mesma pessoa, competência e tipo de apuração
-          if (!remun[chave] || retif || !remun[chave].retif) remun[chave] = { comp: comp, retif: retif, no: n, arquivo: l.arquivo };
+          cands.push({ tipo: 'S-1200', chave: txt(it, 'cpfTrab') + '|' + per + '|' + ind, cpf: txt(it, 'cpfTrab'), comp: comp, retif: txt(ie2, 'indRetif') === '2', no: n, arquivo: l.arquivo, recibo: reciboDe(n) });
+        } else if (ev.tipo === 'S-2299') {
+          // leiaute a validar com XML real (Sodimac): cpf em ideVinculo; competência = perApur se existir, senão mês de dtDeslig
+          var cpfR = acharTxt(n, ['cpfTrab']), dt = acharTxt(n, ['dtDeslig']), pr = acharTxt(filho(n, 'ideEvento'), ['perApur']);
+          var compR = /^\d{4}$/.test(pr) ? pr + '-12' : (pr || dt.slice(0, 7));
+          cands.push({ tipo: 'S-2299', chave: cpfR + '|' + compR + '|resc', cpf: cpfR, comp: compR, retif: txt(filho(n, 'ideEvento'), 'indRetif') === '2', no: n, arquivo: l.arquivo, recibo: reciboDe(n) });
+        } else if (ev.tipo === 'S-3000') {
+          exclusoes.push({ nrRecEvt: acharTxt(n, ['nrRecEvt']), tpEvento: acharTxt(n, ['tpEvento']) });
         }
       });
     });
 
+    // S-3000: descarta o evento lido cujo recibo case com nrRecEvt (só quando o XML traz o recibo)
+    var pareadas = 0;
+    exclusoes.forEach(function (x) {
+      var achou = false;
+      if (x.nrRecEvt) cands = cands.filter(function (c) { if (c.recibo && c.recibo === x.nrRecEvt) { achou = true; return false; } return true; });
+      if (achou) pareadas++;
+    });
+    if (exclusoes.length - pareadas > 0) avisos.push(exclusoes.length - pareadas + ' evento(s) S-3000 (exclusão) sem evento pareado nos arquivos lidos (recibo não localizado): conferir se algum S-1200/S-2299 lido foi excluído.');
+    // retificadora substitui a original da mesma pessoa, competência e tipo de apuração
+    var remun = {};
+    cands.forEach(function (c) { if (!remun[c.chave] || c.retif || !remun[c.chave].retif) remun[c.chave] = c; });
+
+    // regime por competência (S-1000)
+    var historico = montaHistorico(regs);
+    var regimeNaoIdent = false, excluidas = {}, cprbComps = {}, classExcl = {};
+    function regime(comp) {
+      var h = regimeEm(historico, comp);
+      if (!h) { regimeNaoIdent = true; return { ok: true, cprb: false, classTrib: '' }; }
+      return { ok: h.classTrib === CLASSTRIB_ESCOPO, cprb: h.cprb, classTrib: h.classTrib };
+    }
+
     var porTese = {}, semCadastro = {}, semIncidencia = {}, semTese = {}, rubricasUsadas = {}, comps = {}, reflexos = { base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, porComp: {} };
+    var pend065 = [], baseTrab = {}, semSM = {};
     function acumula(tese, r, base, aliq, comp, motivo) {
       var t = porTese[tese] = porTese[tese] || { id: tese, nome: NOMES[tese], base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, competencias: {}, porComp: {} };
       var noPrazo = comp >= limite;
@@ -172,12 +273,21 @@
       var k = r.tab + '|' + r.cod, x = t.rubricas[k] = t.rubricas[k] || { cod: r.cod, tab: r.tab, dsc: r.dsc, natRubr: r.natRubr, codIncCP: r.codIncCP, motivo: motivo, base: 0 };
       x.base += base;
     }
+    function compDoEl(el, padrao) { // períodos anteriores do S-2299 (infoPerAnt): competência = perRef (a validar com XML real)
+      for (var a = el.pai, i = 0; a && i < 6; a = a.pai, i++) { var p = filho(a, 'perRef'); if (p && /^\d{4}-\d{2}/.test(txt(a, 'perRef'))) return txt(a, 'perRef').slice(0, 7); }
+      return padrao;
+    }
     Object.keys(remun).forEach(function (k) {
-      var e = remun[k], comp = e.comp; comps[comp] = 1;
+      var e = remun[k]; comps[e.comp] = 1;
       todos(e.no, 'ideEstabLot').forEach(function (el) {
+        var comp = e.tipo === 'S-2299' ? compDoEl(el, e.comp) : e.comp; comps[comp] = 1;
+        var reg = regime(comp);
+        if (!reg.ok) { excluidas[comp] = 1; classExcl[reg.classTrib] = 1; if (!forcar) return; }
+        if (reg.cprb) cprbComps[comp] = 1;
         var nrInsc = txt(el, 'nrInsc'), est = estabs[nrInsc] ? vigente(estabs[nrInsc], comp) : null;
         var ratAj = est ? est.rat / 100 * est.fap : null;
-        todos(el, 'itensRemun').forEach(function (ir) {
+        var itens = []; TAGS_ITENS.forEach(function (tg) { todos(el, tg).forEach(function (x) { itens.push(x); }); });
+        itens.forEach(function (ir) {
           var cod = txt(ir, 'codRubr'), tab = txt(ir, 'ideTabRubr'), vr = num(txt(ir, 'vrRubr'));
           var lista = rubricas[tab + '|' + cod];
           if (!lista) { semCadastro[tab + '|' + cod] = (semCadastro[tab + '|' + cod] || 0) + vr; return; }
@@ -187,10 +297,12 @@
             if (vr > 0) { var kn = r.dsc + ' (tipo ' + (r.tpRubr || '?') + ', incidência ' + (r.codIncCP || 'não informada') + ')'; semIncidencia[kn] = (semIncidencia[kn] || 0) + vr; }
             return;
           }
-          var c = classificar(r.dsc);
+          if (exc && comp >= exc.ini && comp <= exc.fim) baseTrab[e.cpf + '|' + comp] = (baseTrab[e.cpf + '|' + comp] || 0) + vr; // base do trabalhador (todos os estabelecimentos)
+          var c = classificar(r.dsc, e.tipo === 'S-2299');
           if (!c && !(REFLEXOS.test(norm(r.dsc)) && ratAj)) semTese[r.dsc] = (semTese[r.dsc] || 0) + vr;
-          var aliq = CPP + (ratAj || 0) + terceiros;
-          if (c) acumula(c.id, r, vr, aliq, comp, c.motivo);
+          var aliq = (reg.cprb ? 0 : CPP) + (ratAj || 0) + terceiros; // CPRB: retira os 20% de CPP
+          if (c && c.id === 'T065') pend065.push({ cpf: e.cpf, k: tab + '|' + cod, comp: comp, vr: vr, aliq: aliq, r: r, motivo: c.motivo });
+          else if (c) acumula(c.id, r, vr, aliq, comp, c.motivo);
           if (REFLEXOS.test(norm(r.dsc)) && ratAj) {
             reflexos.base += vr; reflexos.valor += vr * ratAj; reflexos.porComp[comp] = (reflexos.porComp[comp] || 0) + vr * ratAj;
             if (comp >= limite) { reflexos.baseNoPrazo += vr; reflexos.valorNoPrazo += vr * ratAj; }
@@ -201,19 +313,70 @@
         if (!est) avisos.push('Estabelecimento ' + nrInsc + ' sem S-1005: RAT e FAP não aplicados nas competências dele.');
       });
     });
+
+    // T065: habitualidade — mesma rubrica, mesmo trabalhador, 3 ou mais competências dentro de 12 meses => habitual (fora da T065)
+    var idxMes = function (c) { return +c.slice(0, 4) * 12 + (+c.slice(5, 7)); };
+    var grupos = {}; pend065.forEach(function (p) { (grupos[p.cpf + '|' + p.k] = grupos[p.cpf + '|' + p.k] || []).push(p); });
+    var hab = { base: 0, valor: 0, n: 0 };
+    Object.keys(grupos).forEach(function (g) {
+      var itensG = grupos[g], ms = {}; itensG.forEach(function (p) { ms[idxMes(p.comp)] = 1; });
+      var lm = Object.keys(ms).map(Number).sort(function (a, b) { return a - b; }), habitual = {};
+      lm.forEach(function (m0) { var jan = lm.filter(function (m) { return m >= m0 && m <= m0 + 11; }); if (jan.length >= 3) jan.forEach(function (m) { habitual[m] = 1; }); });
+      itensG.forEach(function (p) {
+        if (habitual[idxMes(p.comp)]) { hab.base += p.vr; hab.valor += p.vr * p.aliq; hab.n++; } else acumula('T065', p.r, p.vr, p.aliq, p.comp, p.motivo);
+      });
+    });
+    if (hab.n) avisos.push('Gratificações/prêmios pagos de forma habitual (mesma rubrica, mesmo trabalhador, 3 ou mais competências em 12 meses) foram descartados da T065: ' + hab.n + ' lançamento(s), base ' + brl(hab.base) + ', contribuição estimada ' + brl(hab.valor) + '.');
+
+    // T008 (exceção): terceiros sobre o que excede 20 salários mínimos por trabalhador e competência
+    if (exc) {
+      var t8 = { id: 'T008', nome: NOMES.T008, base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, competencias: {}, porComp: {} };
+      Object.keys(baseTrab).forEach(function (k) {
+        var comp = k.split('|')[1], sm = salarioMinimo(comp);
+        if (sm == null) { semSM[comp] = 1; return; }
+        var excesso = Math.max(0, baseTrab[k] - 20 * sm); if (excesso <= 0) return;
+        t8.base += excesso; t8.valor += excesso * terceiros; t8.competencias[comp] = 1; t8.porComp[comp] = (t8.porComp[comp] || 0) + excesso * terceiros;
+        if (comp >= limite) { t8.baseNoPrazo += excesso; t8.valorNoPrazo += excesso * terceiros; }
+      });
+      if (t8.base > 0) porTese.T008 = t8;
+      if (Object.keys(semSM).length) avisos.push('T008: sem salário mínimo na tabela para as competências ' + Object.keys(semSM).sort().join(', ') + ' (não calculadas).');
+      avisos.push('T008 pode se sobrepor à parcela de terceiros das demais teses para trabalhadores acima de 20 salários mínimos: conferir antes de somar.');
+    }
     if (reflexos.base > 0) porTese.T069 = { id: 'T069', nome: NOMES.T069, base: reflexos.base, baseNoPrazo: reflexos.baseNoPrazo, valor: reflexos.valor, valorNoPrazo: reflexos.valorNoPrazo, rubricas: reflexos.rubricas, competencias: {}, porComp: reflexos.porComp };
+    if (porTese.T005) avisos.push('13º sobre aviso-prévio indenizado: decisão pendente');
+
+    // escopo: ok = ao menos uma competência no escopo (ou nenhuma competência apurada)
+    var cs = Object.keys(comps).sort(), exclLista = Object.keys(excluidas).sort();
+    var ultimo = historico[historico.length - 1] || null;
+    var todasFora = cs.length > 0 && exclLista.length === cs.length;
+    var escopo = { ok: !todasFora || forcar, classTrib: ultimo ? ultimo.classTrib : '', cprb: ultimo ? ultimo.cprb : false, motivo: null, historico: historico, competenciasExcluidas: exclLista, forcado: false };
+    var rotulo = Object.keys(classExcl).sort().join(', ');
+    if (todasFora) {
+      escopo.motivo = 'regime fora do escopo (classTrib ' + rotulo + ')';
+      if (forcar) { escopo.forcado = true; escopo.ok = false; avisos.unshift('Escopo forçado: ' + escopo.motivo + '. Cálculo feito assim mesmo, sem validade para o regime.'); }
+      else { escopo.ok = false; avisos.unshift('Cálculo bloqueado: ' + escopo.motivo + '. A ferramenta atende só Lucro Real/Presumido (classTrib 99).'); porTese = {}; }
+    } else if (exclLista.length) {
+      var txtC = exclLista.length > 12 ? exclLista.slice(0, 12).join(', ') + ' e mais ' + (exclLista.length - 12) : exclLista.join(', ');
+      if (forcar) { escopo.forcado = true; avisos.unshift('Escopo forçado: competências com regime fora do escopo (classTrib ' + rotulo + ') foram calculadas assim mesmo: ' + txtC + '.'); }
+      else avisos.unshift('Competências excluídas do cálculo por regime fora do escopo (classTrib ' + rotulo + '): ' + txtC + '.');
+    }
+    if (regimeNaoIdent) avisos.push('Regime não identificado (sem S-1000/classTrib ou competência fora das vigências): competências sem regime foram calculadas como Lucro Real/Presumido.');
+    if (Object.keys(cprbComps).length) avisos.push('CPRB (indDesFolha = 1) nas competências ' + Object.keys(cprbComps).sort().join(', ') + ': alíquota patronal = RAT×FAP + terceiros, sem os 20% de CPP.');
 
     var r2 = function (v) { return Math.round(v * 100) / 100; };
     var teses = Object.keys(porTese).map(function (id) {
       var t = porTese[id];
       return { id: id, nome: t.nome, base: r2(t.base), baseNoPrazo: r2(t.baseNoPrazo), valor: r2(t.valor), valorNoPrazo: r2(t.valorNoPrazo),
         competencias: Object.keys(t.competencias).length,
+        condicional: !!CONDICOES[id], condicao: CONDICOES[id] || null,
         porCompetencia: Object.keys(t.porComp).sort().map(function (k) { return { competencia: k, valor: r2(t.porComp[k]), noPrazo: k >= limite }; }), // valor por competência (base da atualização pela Selic)
         rubricas: Object.keys(t.rubricas).map(function (k) { var x = t.rubricas[k]; return Object.assign({}, x, { base: r2(x.base) }); }).sort(function (a, b) { return b.base - a.base; }) };
     }).sort(function (a, b) { return b.valorNoPrazo - a.valorNoPrazo; });
-    var cs = Object.keys(comps).sort();
+    // sensibilidade da borda: competência do limite (dentro) x a imediatamente anterior (fora; entraria se o prazo contasse do dia do pagamento, dia 20 do mês seguinte)
+    var totComp = function (c) { return r2(Object.keys(porTese).reduce(function (s, id) { return s + (porTese[id].porComp[c] || 0); }, 0)); };
+    var sens = cs.length && teses.length ? { limite: limite, dentro: totComp(limite), fora: totComp(mesAnterior(limite)) } : null;
     if (!contagem['S-1010']) avisos.unshift('Faltam os eventos S-1010 (tabela de rubricas): sem eles não é possível saber a incidência de cada rubrica.');
-    if (!contagem['S-1200']) avisos.unshift('Faltam os eventos S-1200 (remuneração): sem eles não há base para o cálculo.');
+    if (!contagem['S-1200'] && !contagem['S-2299']) avisos.unshift('Faltam os eventos S-1200 (remuneração): sem eles não há base para o cálculo.');
     if (!contagem['S-1005']) avisos.push('Faltam os eventos S-1005 (estabelecimentos): o RAT ajustado pelo FAP não foi aplicado.');
     var lista = function (o) { return Object.keys(o).sort(function (a, b) { return o[b] - o[a]; }).slice(0, 8).join('; '); };
     if (Object.keys(semIncidencia).length) avisos.push('Rubricas sem incidência patronal declarada no S-1010 (só rubricas de vencimento com código de incidência 11, 12, 21 ou 22 entram no cálculo): ' + lista(semIncidencia) + '.');
@@ -225,14 +388,18 @@
       eventos: contagem, trabalhadoresCompetencias: Object.keys(remun).length,
       estabelecimentos: Object.keys(estabs).map(function (k) { var e = vigente(estabs[k], cs[cs.length - 1] || '9999-12'); return { nrInsc: k, cnae: e.cnae, rat: e.rat, fap: e.fap }; }),
       lotacoes: Object.keys(lotacoes).map(function (k) { var x = lotacoes[k][lotacoes[k].length - 1]; return { cod: k, fpas: x.fpas, codTercs: x.codTercs }; }),
-      premissas: { cpp: CPP, terceiros: terceiros, incidencias: Object.keys(INCIDE_PATRONAL) },
+      premissas: { cpp: CPP, terceiros: terceiros, incidencias: Object.keys(INCIDE_PATRONAL), terceirosExcecao: exc },
+      escopo: escopo,
       teses: teses,
       total: { valor: r2(teses.reduce(function (s, t) { return s + t.valor; }, 0)), valorNoPrazo: r2(teses.reduce(function (s, t) { return s + t.valorNoPrazo; }, 0)) },
+      rescisoes: { eventos: contagem['S-2299'], exclusoes: { encontradas: exclusoes.length, pareadas: pareadas } },
+      sensibilidadeBorda: sens,
+      pagamento: 'nao-confirmado', // os valores são estimativa: pagamento da contribuição não confirmado (GFIP/DCTFWeb/DARF)
       rubricasAnalisadas: Object.keys(rubricasUsadas).length,
       avisos: avisos.filter(function (a, i) { return avisos.indexOf(a) === i; })
     };
   }
 
-  var api = { VERSAO: VERSAO, lerXml: lerXml, apurar: apurar, classificar: classificar, parseXml: parseXml, INCIDE_PATRONAL: INCIDE_PATRONAL, NOMES: NOMES };
+  var api = { VERSAO: VERSAO, lerXml: lerXml, apurar: apurar, classificar: classificar, parseXml: parseXml, INCIDE_PATRONAL: INCIDE_PATRONAL, NOMES: NOMES, SALARIO_MINIMO: SALARIO_MINIMO, CONDICOES: CONDICOES };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MotorEsocial = api;
 })(typeof self !== 'undefined' ? self : this);
