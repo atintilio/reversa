@@ -136,7 +136,7 @@
       var AN = { tributario: 'tribfiscal', fiscal: 'tribfiscal', completo: 'consolidado' }, OK = { tribfiscal: 1, prev: 1, consolidado: 1 }, mm = (/[?&]modo=([a-z]+)/.exec(location.search) || [])[1];
       mm = AN[mm] || mm; if (!OK[mm]) { try { mm = localStorage.getItem('rv_modo_diag'); mm = AN[mm] || mm; } catch (e) { mm = null; } } if (!OK[mm]) mm = 'consolidado';
       var dm = DEMO_AMB ? '&demo=1' : '';
-      a += [['tribfiscal', 'Tributário e fiscal'], ['prev', 'Previdenciário'], ['consolidado', 'Relatório consolidado']].map(function (m) {
+      a += [['tribfiscal', 'Tributário e fiscal'], ['prev', 'Previdenciário'], ['consolidado', 'Diagnóstico consolidado']].map(function (m) {
         return '<a class="it sub" href="/?modo=' + m[0] + dm + '" data-modo-link="' + m[0] + '"' + (mm === m[0] ? ' aria-current="true"' : '') + '><span>' + m[1] + '</span></a>';
       }).join('');
     }
