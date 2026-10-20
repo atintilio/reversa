@@ -496,7 +496,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
 
   // ---- apresentação ao cliente (versão enxuta do DTI): classificação e filtros
   // teses do motor de PIS/COFINS -> código da base de diagnóstico (segurança/classificação; o código nunca vai para o texto)
-  var TESE_MOTOR = { tema69: 'T001', icmsSt: 'T002', monofasico: 'T046', insumos: 'T016', saldoCredor: 'T011', valeTransporte: 'T097' };
+  var TESE_MOTOR = { tema69: 'T001', icmsSt: 'T002', monofasico: 'T046', insumos: 'T016', saldoCredor: 'T011', valeTransporte: 'T097', veiculosUsados: 'T098' };
   function diagTese(id) { return root.TesesDiagnostico && root.TesesDiagnostico.de ? root.TesesDiagnostico.de(TESE_MOTOR[id] || id) : null; }
   function ocultoClienteTese(id) { return ocultoCliente(id) || (TESE_MOTOR[id] ? ocultoCliente(TESE_MOTOR[id]) : false); }
   function classeCliente(id, alt) { var d = diagTese(id); return d && d.seguranca === 'verde' ? 'Provável' : d && d.seguranca === 'amarelo' ? 'Possível' : d && d.seguranca === 'vermelho' ? 'Remoto' : (alt || 'A confirmar'); }

@@ -199,6 +199,50 @@
     return out;
   }
 
-  var api = { VERSAO: VERSAO, valeTransporte: valeTransporte, duvidas: duvidas, lerEcd: lerEcd, partidasPorConta: partidasPorConta, resumo: resumo };
+  // Veículos usados (T098): venda (receita) e custo (CMV) por competência, a partir das contas analíticas de resultado com nome de veículo usado/seminovo.
+  var RE_VU = /(VEICUL|AUTOMOV|CARRO|CAMINHONETE|MOTO).*(USAD|SEMI ?NOV)|(USAD|SEMI ?NOV).*(VEICUL|AUTOMOV|CARRO|CAMINHONETE|MOTO)/;
+  var RE_VU_CUSTO = /CUSTO|\bCMV\b|\bCPV\b/, RE_VU_IGNORA = /DEVOL|CANCEL|IMPOSTO|\bPIS\b|COFINS|ICMS|ESTOQUE|A PAGAR|ADIANT|COMISS|DESPESA/;
+  function veiculosUsados(lido) {
+    var out = { cnpj: (lido && lido.cnpj) || '', porCompetencia: {}, contasVenda: [], contasCusto: [], avisos: [] };
+    var contas = (lido && lido.contas) || [], filhosDe = {};
+    contas.forEach(function (c) { if (c.superior) (filhosDe[c.superior] = filhosDe[c.superior] || []).push(c); });
+    function analiticasAbaixo(c, acc) {
+      (filhosDe[c.codigo] || []).forEach(function (f) { if (f.tipo === 'A') acc[f.codigo] = f; else analiticasAbaixo(f, acc); });
+      return acc;
+    }
+    var alvo = {};
+    contas.forEach(function (c) {
+      if (!RE_VU.test(normNome(c.nome))) return;
+      if (c.tipo === 'A') alvo[c.codigo] = c; else analiticasAbaixo(c, alvo);
+    });
+    var venda = {}, custo = {};
+    Object.keys(alvo).forEach(function (cod) {
+      var c = alvo[cod], nm = normNome(c.nome);
+      if (RE_VU_IGNORA.test(nm) && !RE_VU_CUSTO.test(nm)) return;
+      if (!(c.natureza === '04' || !c.natureza)) return; // só contas de resultado
+      if (RE_VU_CUSTO.test(nm)) custo[cod] = c; else venda[cod] = c;
+    });
+    out.contasVenda = Object.keys(venda).map(function (k) { return { conta: k, nome: venda[k].nome }; });
+    out.contasCusto = Object.keys(custo).map(function (k) { return { conta: k, nome: custo[k].nome }; });
+    var naoMensal = 0, visto = {};
+    ((lido && lido.saldos) || []).forEach(function (sd) {
+      var ehV = !!venda[sd.conta], ehC = !!custo[sd.conta];
+      if (!ehV && !ehC) return;
+      var fin = sd.fin || '', ini = sd.ini || '';
+      if (!/^\d{4}-\d{2}/.test(fin)) return;
+      var chave = [sd.conta, sd.ccus, ini, fin].join('|');
+      if (visto[chave]) return; visto[chave] = 1;
+      if (ini.slice(0, 7) !== fin.slice(0, 7)) naoMensal++;
+      var comp = fin.slice(0, 7), x = out.porCompetencia[comp] = out.porCompetencia[comp] || { venda: 0, custo: 0 };
+      if (ehV) x.venda = r2(x.venda + sd.cred - sd.deb); else x.custo = r2(x.custo + sd.deb - sd.cred);
+    });
+    Object.keys(out.porCompetencia).forEach(function (k) { var x = out.porCompetencia[k]; if (x.venda < 0) x.venda = 0; if (x.custo < 0) x.custo = 0; });
+    if (naoMensal) out.avisos.push('ECD com período de saldo não mensal em ' + naoMensal + ' linha(s) de veículos usados: o valor foi atribuído ao mês final do período; confira.');
+    if (!out.contasVenda.length) out.avisos.push('ECD sem conta de receita identificável como venda de veículos usados (nome com "veículo(s) usado(s)"/"seminovo"): a venda será lida da EFD ou informada manualmente.');
+    else if (!out.contasCusto.length) out.avisos.push('ECD sem conta de custo (CMV) de veículos usados: o custo de aquisição será estimado pela EFD ou deve ser informado manualmente.');
+    return out;
+  }
+
+  var api = { VERSAO: VERSAO, valeTransporte: valeTransporte, veiculosUsados: veiculosUsados, duvidas: duvidas, lerEcd: lerEcd, partidasPorConta: partidasPorConta, resumo: resumo };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MotorEcd = api;
 })(typeof self !== 'undefined' ? self : this);

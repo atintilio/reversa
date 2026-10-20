@@ -92,6 +92,8 @@
   var L = {
     '0000': { COD_VER: 1, TIPO_ESCRIT: 2, IND_SIT_ESP: 3, NUM_REC_ANT: 4, DT_INI: 5, DT_FIN: 6, NOME: 7, CNPJ: 8, UF: 9, COD_MUN: 10 },
     '0110': { COD_INC_TRIB: 1, IND_APRO_CRED: 2, COD_TIPO_CONT: 3, IND_REG_CUM: 4 },
+    '0111': { REC_BRU_NCUM_TRIB_MI: 1, REC_BRU_NCUM_NT_MI: 2, REC_BRU_NCUM_EXP: 3, REC_BRU_CUM: 4, REC_BRU_TOTAL: 5 },
+    'M105': { NAT_BC_CRED: 1, CST_PIS: 2, VL_BC_PIS_TOT: 3, VL_BC_PIS_CUM: 4, VL_BC_PIS_NC: 5, VL_BC_PIS: 6 },
     '0140': { COD_EST: 1, NOME: 2, CNPJ: 3 },
     '0200': { COD_ITEM: 1, DESCR_ITEM: 2, UNID_INV: 5, TIPO_ITEM: 6, COD_NCM: 7, EX_IPI: 8 },
     'C010': { CNPJ: 1, IND_ESCRI: 2 },
@@ -251,7 +253,7 @@
   function lerEfdContribuicoes(texto, nomeArquivo) {
     var res = {
       arquivo: nomeArquivo || '(sem nome)',
-      meta: null, itens: [], entradas: [], consolidados: [], saldoCredito: { pis: 0, cofins: 0, registros: 0 }, creditosApropriados: { pis: 0, cofins: 0, registros: 0 }, produtos: 0, avisos: [], erros: [],
+      meta: null, itens: [], entradas: [], consolidados: [], saldoCredito: { pis: 0, cofins: 0, registros: 0 }, creditosApropriados: { pis: 0, cofins: 0, registros: 0 }, rateio: { apropriacao: '', rec: null, m105: [], m505: [] }, produtos: 0, avisos: [], erros: [],
       estatisticas: { linhas: 0, registros: {}, c100Saida: 0, c100Entrada: 0, c100SaidaSemItens: 0, c100Ignorados: 0, consolidados: 0, itensSemNcm: 0 }
     };
     var linhas = texto.split(/\r?\n/);
@@ -312,8 +314,15 @@
         } else if (reg === '0110') {
           if (res.meta) {
             res.meta.regimeCodigo = f[L['0110'].COD_INC_TRIB];
+            res.rateio.apropriacao = f[L['0110'].IND_APRO_CRED] || '';
             res.meta.regime = REGIME[res.meta.regimeCodigo] || ('Código ' + f[1]);
           }
+        } else if (reg === '0111') {
+          var q = L['0111'];
+          res.rateio.rec = { ncTrib: cv(f[q.REC_BRU_NCUM_TRIB_MI]), ncNt: cv(f[q.REC_BRU_NCUM_NT_MI]), ncExp: cv(f[q.REC_BRU_NCUM_EXP]), cum: cv(f[q.REC_BRU_CUM]), total: cv(f[q.REC_BRU_TOTAL]) };
+        } else if (reg === 'M105' || reg === 'M505') {
+          var q5 = L.M105;
+          res.rateio[reg === 'M105' ? 'm105' : 'm505'].push({ natBcCred: f[q5.NAT_BC_CRED] || '', cst: f[q5.CST_PIS] || '', tot: cv(f[q5.VL_BC_PIS_TOT]), cum: cv(f[q5.VL_BC_PIS_CUM]), nc: cv(f[q5.VL_BC_PIS_NC]) });
         } else if (reg === '0140') {
           estab0140 = f[L['0140'].CNPJ] || null;
         } else if (reg === '0200') {
@@ -597,6 +606,9 @@
     { id: 'valeTransporte', nome: 'Crédito de PIS/COFINS sobre vale-transporte', curto: 'Vale-transporte (insumo/despesa com pessoal)',
       classificacao: 'Em disputa — validar (sem precedente vinculante favorável)', natureza: 'potencial', regimes: 'Só Lucro Real (não cumulativo)', calculada: true,
       fundamento: 'STJ, Tema 779 (REsp 1.221.170/PR: essencialidade e relevância); PN COSIT 5/2018. A IN RFB 2.121/2022, art. 176, e as Soluções de Consulta Cosit só admitem o crédito em hipóteses restritas (mão de obra empregada diretamente no processo produtivo; conferir o texto vigente). Há decisões favoráveis isoladas em primeira instância (liminares) e decisões contrárias de tribunais regionais; não há precedente vinculante a favor. Só a parcela custeada pelo empregador gera crédito (a descontada do empregado, até 6% do salário, não). Valor informado por competência (EFD-Contribuições não traz o vale-transporte como item de nota).' },
+    { id: 'veiculosUsados', nome: 'Revenda de veículos usados equiparada à consignação — rateio de créditos pela margem', curto: 'Veículos usados (rateio pela margem)',
+      classificacao: 'Em disputa — validar (amparo em solução de consulta, sem precedente judicial vinculante)', natureza: 'potencial', regimes: 'Só empresa com os dois regimes (Lucro Real, cumulativo e não cumulativo, com rateio proporcional)', calculada: true,
+      fundamento: 'Lei 9.716/1998, art. 5º (equiparação da venda de veículos usados à consignação); Leis 10.637/2002 e 10.833/2003, art. 3º, §§ 7º a 9º, e arts. 8º, VII, "c", e 10, VII, "c"; IN SRF 247/2002, art. 100, e IN SRF 404/2004, art. 21; Parecer Cosit 45/2003; Solução de Consulta Cosit 543/2017 (19/12/2017): na equiparação a receita de usados é só a margem (venda menos custo de aquisição), também no rateio dos créditos comuns. Fontes consultadas são secundárias: conferir o texto oficial da SC 543/2017.' },
     { id: 'tema118', nome: 'Exclusão do ISS da base do PIS/COFINS', curto: 'ISS na base (Tema 118)',
       classificacao: 'Em julgamento — alto risco', natureza: 'monitorar', regimes: 'Lucro Real e Presumido', calculada: false,
       fundamento: 'STF, RE 592.616 (Tema 118): placar empatado em 5 x 5, julgamento retirado da pauta de 25/02/2026. Só por ação judicial; não entra no recuperável.' },
@@ -630,6 +642,11 @@
       ['competencia', 'Competência', 't'], ['cnpjMatriz', 'CNPJ', 't'], ['modo', 'Modo', 't'], ['valorBruto', 'Total pago', 'm'], ['origemPago', 'Origem', 't'],
       ['descontoEmpregado', 'Desconto do empregado', 'm'], ['origemDesconto', 'Origem', 't'],
       ['jaApropriado', 'Já creditado (F100)', 'm'], ['base', 'Base líquida da empresa', 'm'], ['pis', 'PIS potencial', 'm'], ['cofins', 'COFINS potencial', 'm'], ['status', 'Situação', 't']],
+    veiculosUsados: [
+      ['competencia', 'Competência', 't'], ['cnpjMatriz', 'CNPJ', 't'], ['modo', 'Modo', 't'], ['vendaUsados', 'Venda de usados', 'm'], ['origemVenda', 'Origem', 't'],
+      ['custoUsados', 'Custo de aquisição', 'm'], ['origemCusto', 'Origem', 't'], ['margem', 'Margem', 'm'],
+      ['coefDeclarado', 'Coeficiente declarado (%)', 't'], ['coefMargem', 'Coeficiente pela margem (%)', 't'], ['baseComumPis', 'Créditos comuns (base PIS)', 'm'], ['baseComumCofins', 'Créditos comuns (base COFINS)', 'm'],
+      ['pis', 'PIS potencial', 'm'], ['cofins', 'COFINS potencial', 'm'], ['status', 'Situação', 't']],
     lei14592: [
       ['data', 'Data', 't'], ['doc', 'NF', 't'], ['codItem', 'Produto', 't'], ['cfop', 'CFOP', 't'], ['vlItem', 'Valor item', 'm'], ['vlIcms', 'ICMS', 'm'],
       ['bcPis', 'Base do crédito', 'm'], ['excessoPis', 'ICMS na base', 'm'], ['pis', 'PIS em risco', 'm'], ['cofins', 'COFINS em risco', 'm'], ['status', 'Situação', 't']]
@@ -929,6 +946,84 @@
     T.valeTransporte.modo = Object.keys(vtModos).join(' / ') || null;
     if (T.valeTransporte.modo) T.valeTransporte.avisos.push('Modo de apuração: ' + T.valeTransporte.modo + '. Total pago, parcela do empregado e base líquida da empresa aparecem separados por competência, com a origem de cada valor.');
     if (T.valeTransporte.aplicavel) T.valeTransporte.avisos.push('Tese em disputa: a Receita só admite o crédito para mão de obra empregada diretamente na produção ou prestação do serviço (IN RFB 2.121/2022, art. 176 — conferir). Valor potencial, fora do recuperável; depende de decisão judicial ou de pedido administrativo. Se a empresa já tomou crédito, ele foi abatido apenas quando o F100 descreve o vale-transporte.');
+
+    // Veículos usados equiparados à consignação (T098): rateio dos créditos comuns (0111 + M105/M505) recalculado com a margem no lugar da venda total.
+    // Venda e custo por competência: manual (opts.veiculosUsados {'AAAA-MM': {venda, custo}}, sobrescreve) > ECD (opts.ecd) > EFD (itens de saída/entrada de veículo usado).
+    var vuIn = opts.veiculosUsados || {}, vuEnt = {}, vuSemEfd = {}, vuModos = {};
+    var normV = function (t) { return String(t || '').toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); };
+    var RE_VEIC = /VEICUL|AUTOMOVEL|CARRO\b|CAMINHONETE|CAMIONETE|MOTOCICLETA|\bMOTO\b|UTILITARIO|PICK ?UP|\bSUV\b|SEDAN|HATCH/, RE_USADO = /USAD|SEMI ?NOV/;
+    var ehVeicUsado = function (it) {
+      var d = normV(it.descricao), ncm = String(it.ncm || '').replace(/\D/g, '');
+      return (/^(8703|8704|8711)/.test(ncm) || RE_VEIC.test(d)) && RE_USADO.test(d);
+    };
+    var raizDe = function (l) { return String(l.meta.cnpj).replace(/\D/g, '').slice(0, 8); };
+    var efdVC = {}; // raiz|comp -> { venda, custo } somados nos arquivos EFD
+    usados.forEach(function (l) {
+      var v = 0, c = 0;
+      l.itens.forEach(function (it) { if (ehVeicUsado(it)) v += (it.vlItem || 0) - (it.vlDesc || 0); });
+      (l.entradas || []).forEach(function (it) { if (ehVeicUsado(it)) c += (it.vlItem || 0) - (it.vlDesc || 0); });
+      if (v > 0 || c > 0) { var k = raizDe(l) + '|' + l.meta.competencia; var x = efdVC[k] = efdVC[k] || { venda: 0, custo: 0 }; x.venda += v; x.custo += c; }
+    });
+    Object.keys(efdVC).forEach(function (k) {
+      var x = efdVC[k], pz = k.split('|');
+      if (x.venda > 0) vuEnt[k] = { raiz: pz[0], comp: pz[1], venda: x.venda, custo: x.custo, origemVenda: 'EFD', origemCusto: x.custo > 0 ? 'EFD' : 'não identificado' };
+    });
+    (opts.ecd || []).forEach(function (ecd) {
+      var MEcd = (typeof root !== 'undefined' && root.MotorEcd) || (function () { try { return require('./motor-ecd.js'); } catch (e) { return null; } })();
+      if (!MEcd || !MEcd.veiculosUsados) return;
+      var rr = MEcd.veiculosUsados(ecd), raiz = String(ecd.cnpj || '').replace(/\D/g, '').slice(0, 8);
+      rr.avisos.forEach(function (m) { T.veiculosUsados.avisos.push('ECD ' + (ecd.arquivo || raiz) + ': ' + m); });
+      if (rr.contasVenda.length || rr.contasCusto.length) T.veiculosUsados.avisos.push('ECD ' + (ecd.arquivo || raiz) + ': contas lidas — venda: ' + (rr.contasVenda.map(function (c) { return c.conta + ' ' + c.nome; }).join('; ') || '—') + '; custo: ' + (rr.contasCusto.map(function (c) { return c.conta + ' ' + c.nome; }).join('; ') || '—') + '.');
+      Object.keys(rr.porCompetencia).forEach(function (comp) {
+        var x = rr.porCompetencia[comp];
+        if (!(x.venda > 0)) return;
+        var venda = cent(x.venda), custo = cent(x.custo), ef = efdVC[raiz + '|' + comp];
+        var oc = 'ECD';
+        if (!(custo > 0) && ef && ef.custo > 0) { custo = ef.custo; oc = 'EFD'; } else if (!(custo > 0)) oc = 'não identificado';
+        vuEnt[raiz + '|' + comp] = { raiz: raiz, comp: comp, venda: venda, custo: custo, origemVenda: 'ECD', origemCusto: oc };
+      });
+    });
+    Object.keys(vuIn).forEach(function (comp) { // manual sobrescreve o que veio de ECD/EFD na mesma competência
+      var v = vuIn[comp] || {}, venda = cent(v.venda), custo = cent(v.custo);
+      if (venda <= 0) return;
+      Object.keys(vuEnt).forEach(function (k) { if (vuEnt[k].comp === comp) delete vuEnt[k]; });
+      vuEnt['*|' + comp] = { raiz: null, comp: comp, venda: venda, custo: custo, origemVenda: 'manual', origemCusto: custo > 0 ? 'manual' : 'não identificado' };
+    });
+    Object.keys(vuEnt).sort(function (a, b) { return vuEnt[a].comp < vuEnt[b].comp ? -1 : vuEnt[a].comp > vuEnt[b].comp ? 1 : a < b ? -1 : 1; }).forEach(function (k) {
+      var e = vuEnt[k], comp = e.comp;
+      var alvos = usados.filter(function (l) { return l.meta.competencia === comp && (e.raiz == null || raizDe(l) === e.raiz); });
+      if (!alvos.length) { vuSemEfd[comp] = 1; return; }
+      var l = alvos.filter(function (x) { return /0001\d\d$/.test(String(x.meta.cnpj).replace(/\D/g, '')); })[0] || alvos[0]; // 0111 e M105/M505 são da escrituração da matriz
+      var tag = 'Competência ' + comp + ' (' + l.meta.cnpj + '): ';
+      if (l.meta.regimeCodigo !== '3') { T.veiculosUsados.avisos.push(tag + 'não aplicável: a empresa não está nos dois regimes (cumulativo e não cumulativo) na EFD (0110).'); return; }
+      var r = l.rateio || {};
+      if (r.apropriacao && r.apropriacao !== '2') { T.veiculosUsados.avisos.push(tag + 'não aplicável: os créditos não são apropriados por rateio proporcional (0110, IND_APRO_CRED = ' + r.apropriacao + ').'); return; }
+      if (!r.rec || !(r.rec.total > 0)) { T.veiculosUsados.avisos.push(tag + 'EFD sem o registro 0111 (receita bruta para o rateio): não foi possível recalcular o coeficiente.'); return; }
+      if (!(e.custo > 0)) { T.veiculosUsados.avisos.push(tag + 'venda de usados de ' + formatarReais(e.venda) + ' identificada (' + e.origemVenda + '), mas o custo de aquisição não foi identificado: informe-o em opts.veiculosUsados para calcular a margem.'); return; }
+      var di = l.meta.dtIni, prescrito = di ? new Date(di.ano, di.mes - 1, 1) < limite : false;
+      var nc = r.rec.ncTrib + r.rec.ncNt + r.rec.ncExp, margem = Math.max(0, e.venda - e.custo), reduz = e.venda - margem;
+      var coefDecl = nc / r.rec.total, den = r.rec.total - reduz, coefNovo = den > 0 ? nc / den : coefDecl;
+      var pct = function (x) { return (Math.round(x * 10000) / 100).toFixed(2) + '%'; };
+      var baseComum = function (rows) { return rows.filter(function (x) { return x.cum > 0; }).reduce(function (s, x) { return s + x.tot; }, 0); };
+      var bPis = baseComum(r.m105), bCof = baseComum(r.m505);
+      var totPis = r.m105.reduce(function (s, x) { return s + x.tot; }, 0), ncPis = r.m105.reduce(function (s, x) { return s + x.nc; }, 0);
+      var notas = [];
+      var jaMargem = r.rec.cum < e.venda - 100; // receita cumulativa menor que a venda de usados: a venda total não está no 0111
+      if (totPis > 0 && Math.abs(ncPis / totPis - coefDecl) > 0.005) notas.push('o coeficiente efetivo do M105 (' + pct(ncPis / totPis) + ') difere do calculado pelo 0111 (' + pct(coefDecl) + ')');
+      var dif = jaMargem ? 0 : (coefNovo - coefDecl);
+      var pis = Math.round(bPis * dif * ALIQ_NC.pis / 100), cofins = Math.round(bCof * dif * ALIQ_NC.cofins / 100);
+      var modo = e.origemVenda === e.origemCusto ? e.origemVenda : e.origemVenda + ' + ' + e.origemCusto;
+      vuModos[modo] = 1;
+      var st = jaMargem ? 'Sem diferença — a receita cumulativa do 0111 (' + formatarReais(r.rec.cum) + ') é menor que a venda de usados: a margem parece já usada no rateio'
+        : (!(bPis || bCof) ? 'Sem créditos comuns rateados (M105/M505) no período' : 'A validar — tese em disputa');
+      st += (e.origemCusto === 'EFD' ? ' · Custo estimado pelas entradas de veículos usados no mês; confirmar por operação' : '') +
+        ' · Confirmar a opção pela equiparação à consignação (Lei 9.716/1998, art. 5º) e o controle de custo e margem por operação' + (notas.length ? ' · Atenção: ' + notas.join('; ') : '');
+      lancar('veiculosUsados', l, comp, prescrito, { modo: modo, vendaUsados: e.venda, origemVenda: e.origemVenda, custoUsados: e.custo, origemCusto: e.origemCusto, margem: margem,
+        coefDeclarado: pct(coefDecl), coefMargem: pct(coefNovo), baseComumPis: bPis, baseComumCofins: bCof, status: st }, pis, cofins);
+    });
+    Object.keys(vuSemEfd).sort().forEach(function (c) { T.veiculosUsados.avisos.push('Competência ' + c + ': sem EFD-Contribuições correspondente; valor não calculado.'); });
+    T.veiculosUsados.modo = Object.keys(vuModos).join(' / ') || null;
+    if (T.veiculosUsados.aplicavel) T.veiculosUsados.avisos.push('Tese em disputa: depende de a empresa ter optado pela equiparação à consignação (Lei 9.716/1998, art. 5º) e de manter controle de custo e margem por operação. O amparo é a Solução de Consulta Cosit 543/2017 (19/12/2017), lida em fontes secundárias: conferir o texto oficial. Valor potencial, fora do recuperável; crédito escritural, sem Selic.');
 
     if (stSemEntrada.itens > 0) {
       T.icmsSt.avisos.push(stSemEntrada.itens + ' item(ns) vendidos com ICMS-ST (CST x60) sem entrada correspondente nos arquivos (receita de ' + formatarReais(stSemEntrada.receita) +
