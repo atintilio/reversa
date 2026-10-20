@@ -148,6 +148,7 @@
   var CFOP_INSUMO = { '101': 1, '111': 1, '116': 1, '120': 1, '122': 1, '126': 1, '128': 1, '351': 1, '352': 1, '353': 1, '354': 1, '356': 1, '407': 1, '556': 1, '653': 1, '933': 1 };
 
   var ALIQ_NC = { pis: 1.65, cofins: 7.6 };
+  var RE_VT = /VALE[ .\-]?TRANSP|\bVT\b|AUXILIO[ -]TRANSPORTE/;
   var INICIO_LEI_14592 = '2023-05';   // MP 1.159/2023 (efeitos a partir de 01/05/2023), convertida na Lei 14.592/2023
 
   // ---------------------------------------------- tabela inicial de monofásicos
@@ -430,6 +431,13 @@
     fecharDoc();
 
     res.blocoF = resumirBlocoF(F);
+    // vale-transporte já lançado como crédito no F100 (descrição): abatido da base da tese valeTransporte para não duplicar crédito já tomado
+    res.vtApropriado = { base: 0, pis: 0, cofins: 0, lancamentos: 0 };
+    F.f100.forEach(function (x) {
+      if (x.indOper === '0' && RE_VT.test(String(x.descricao || '').toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))) {
+        res.vtApropriado.base += x.bcPis; res.vtApropriado.pis += x.vlPis; res.vtApropriado.cofins += x.vlCofins; res.vtApropriado.lancamentos++;
+      }
+    });
     res.apuracaoM = resumirApuracaoM(M, res.avisos);
     if (res.blocoF.presente) res.avisos.push('Bloco F lido (F100: ' + F.f100.length + ', F120: ' + F.f120.length + ', F130: ' + F.f130.length + ', F150: ' + F.f150.length +
       '): receitas e créditos fora de nota fiscal entram apenas no resumo (res.blocoF); nenhuma tese é aplicada a eles.');
@@ -586,6 +594,9 @@
     { id: 'saldoCredor', nome: 'Saldo credor de PIS/COFINS acumulado e não utilizado', curto: 'Saldo credor acumulado (M100/M500)',
       classificacao: 'Consolidada em lei — destino depende da origem do crédito', natureza: 'potencial', regimes: 'Só Lucro Real (não cumulativo)', calculada: true,
       fundamento: 'Leis 10.637/2002, art. 5º, e 10.833/2003, art. 6º; Lei 11.033/2004, art. 17; IN RFB 2.055/2021. Saldo informado pela própria empresa nos registros M100 (PIS) e M500 (COFINS) da última competência lida. Ressarcimento ou compensação dependem da origem do crédito (exportação, suspensão, alíquota zero) e da conferência da escrituração.' },
+    { id: 'valeTransporte', nome: 'Crédito de PIS/COFINS sobre vale-transporte', curto: 'Vale-transporte (insumo/despesa com pessoal)',
+      classificacao: 'Em disputa — validar (sem precedente vinculante favorável)', natureza: 'potencial', regimes: 'Só Lucro Real (não cumulativo)', calculada: true,
+      fundamento: 'STJ, Tema 779 (REsp 1.221.170/PR: essencialidade e relevância); PN COSIT 5/2018. A IN RFB 2.121/2022, art. 176, e as Soluções de Consulta Cosit só admitem o crédito em hipóteses restritas (mão de obra empregada diretamente no processo produtivo; conferir o texto vigente). Há decisões favoráveis isoladas em primeira instância (liminares) e decisões contrárias de tribunais regionais; não há precedente vinculante a favor. Só a parcela custeada pelo empregador gera crédito (a descontada do empregado, até 6% do salário, não). Valor informado por competência (EFD-Contribuições não traz o vale-transporte como item de nota).' },
     { id: 'tema118', nome: 'Exclusão do ISS da base do PIS/COFINS', curto: 'ISS na base (Tema 118)',
       classificacao: 'Em julgamento — alto risco', natureza: 'monitorar', regimes: 'Lucro Real e Presumido', calculada: false,
       fundamento: 'STF, RE 592.616 (Tema 118): placar empatado em 5 x 5, julgamento retirado da pauta de 25/02/2026. Só por ação judicial; não entra no recuperável.' },
@@ -615,6 +626,9 @@
       ['base', 'Base potencial', 'm'], ['pis', 'PIS potencial', 'm'], ['cofins', 'COFINS potencial', 'm'], ['status', 'Situação', 't']],
     saldoCredor: [
       ['competencia', 'Última competência', 't'], ['cnpjMatriz', 'CNPJ', 't'], ['arquivo', 'Arquivo', 't'], ['pis', 'Saldo PIS', 'm'], ['cofins', 'Saldo COFINS', 'm'], ['status', 'Situação', 't']],
+    valeTransporte: [
+      ['competencia', 'Competência', 't'], ['cnpjMatriz', 'CNPJ', 't'], ['valorBruto', 'Vale-transporte pago', 'm'], ['descontoEmpregado', 'Descontado do empregado', 'm'],
+      ['jaApropriado', 'Já creditado (F100)', 'm'], ['base', 'Base do crédito', 'm'], ['pis', 'PIS potencial', 'm'], ['cofins', 'COFINS potencial', 'm'], ['status', 'Situação', 't']],
     lei14592: [
       ['data', 'Data', 't'], ['doc', 'NF', 't'], ['codItem', 'Produto', 't'], ['cfop', 'CFOP', 't'], ['vlItem', 'Valor item', 'm'], ['vlIcms', 'ICMS', 'm'],
       ['bcPis', 'Base do crédito', 'm'], ['excessoPis', 'ICMS na base', 'm'], ['pis', 'PIS em risco', 'm'], ['cofins', 'COFINS em risco', 'm'], ['status', 'Situação', 't']]
@@ -851,6 +865,26 @@
       if (!l.saldoCredito.registros) return;
       lancar('saldoCredor', l, l.meta.competencia, false, { status: (sp || sc) ? 'Saldo informado nos registros M100/M500 — conferir origem' : 'Sem saldo credor informado' }, sp, sc);
     });
+
+    // Vale-transporte: valores informados por competência (opts.valeTransporte = { 'AAAA-MM': reais | { valor, descontoEmpregado } }), só regime não cumulativo.
+    var vtIn = opts.valeTransporte || {};
+    Object.keys(vtIn).sort().forEach(function (comp) {
+      var v = vtIn[comp], bruto = Math.round((typeof v === 'object' && v ? Number(v.valor) : Number(v)) * 100) || 0;
+      var desc = Math.round((typeof v === 'object' && v ? Number(v.descontoEmpregado) : 0) * 100) || 0;
+      if (bruto <= 0) return;
+      var alvo = usados.filter(function (l) { return l.meta.competencia === comp; });
+      if (!alvo.length) { T.valeTransporte.avisos.push('Competência ' + comp + ': sem EFD-Contribuições correspondente; valor não calculado.'); return; }
+      alvo.forEach(function (l) {
+        if (!(l.meta.regimeCodigo === '1' || l.meta.regimeCodigo === '3')) { T.valeTransporte.avisos.push('Competência ' + comp + ' (' + l.meta.cnpj + '): regime cumulativo, sem crédito de PIS/COFINS.'); return; }
+        var di = l.meta.dtIni, prescrito = di ? new Date(di.ano, di.mes - 1, 1) < limite : false;
+        var ja = (l.vtApropriado && l.vtApropriado.base) || 0;
+        var base = Math.max(0, bruto - desc - ja);
+        lancar('valeTransporte', l, comp, prescrito, { valorBruto: bruto, descontoEmpregado: desc, jaApropriado: ja, base: base,
+          status: 'A validar — tese em disputa' + (ja ? ' (descontado o crédito já lançado no F100)' : '') + (desc ? '' : ' (sem a parcela do empregado: confirmar que o valor é só a parte custeada pela empresa)') },
+          Math.round(base * ALIQ_NC.pis / 100), Math.round(base * ALIQ_NC.cofins / 100));
+      });
+    });
+    if (T.valeTransporte.aplicavel) T.valeTransporte.avisos.push('Tese em disputa: a Receita só admite o crédito para mão de obra empregada diretamente na produção ou prestação do serviço (IN RFB 2.121/2022, art. 176 — conferir). Valor potencial, fora do recuperável; depende de decisão judicial ou de pedido administrativo. Se a empresa já tomou crédito, ele foi abatido apenas quando o F100 descreve o vale-transporte.');
 
     if (stSemEntrada.itens > 0) {
       T.icmsSt.avisos.push(stSemEntrada.itens + ' item(ns) vendidos com ICMS-ST (CST x60) sem entrada correspondente nos arquivos (receita de ' + formatarReais(stSemEntrada.receita) +

@@ -496,7 +496,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
 
   // ---- apresentação ao cliente (versão enxuta do DTI): classificação e filtros
   // teses do motor de PIS/COFINS -> código da base de diagnóstico (segurança/classificação; o código nunca vai para o texto)
-  var TESE_MOTOR = { tema69: 'T001', icmsSt: 'T002', monofasico: 'T046', insumos: 'T016', saldoCredor: 'T011' };
+  var TESE_MOTOR = { tema69: 'T001', icmsSt: 'T002', monofasico: 'T046', insumos: 'T016', saldoCredor: 'T011', valeTransporte: 'T097' };
   function diagTese(id) { return root.TesesDiagnostico && root.TesesDiagnostico.de ? root.TesesDiagnostico.de(TESE_MOTOR[id] || id) : null; }
   function ocultoClienteTese(id) { return ocultoCliente(id) || (TESE_MOTOR[id] ? ocultoCliente(TESE_MOTOR[id]) : false); }
   function classeCliente(id, alt) { var d = diagTese(id); return d && d.seguranca === 'verde' ? 'Provável' : d && d.seguranca === 'amarelo' ? 'Possível' : d && d.seguranca === 'vermelho' ? 'Remoto' : (alt || 'A confirmar'); }
@@ -1152,7 +1152,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       });
       var desac = prev.teses.map(function (x) { var dz = root.TesesDiagnostico && root.TesesDiagnostico.desaconselhada ? root.TesesDiagnostico.desaconselhada(x.id) : null; return dz && !x.condicional ? { x: x, dz: dz } : null; }).filter(Boolean);
       if (desac.length) {
-        fonte('helvetica', 'bold', 9.5); cor(COR.tinta); espaco(20); doc.text(t('Teses calculadas e desaconselhadas'), M, y); y += 4;
+        fonte('helvetica', 'bold', 9.5); cor(COR.tinta); espaco(20); doc.text(t('Teses calculadas, a avaliar'), M, y); y += 4;
         paragrafo('Uso interno. Estas teses foram calculadas para conhecimento da equipe, mas têm parecer desfavorável: não constam do relatório do cliente e não devem ser oferecidas como recuperáveis.');
         tabela({
           head: [['Tese', 'Estimativa no prazo', 'Total geral', 'Motivo', 'Precedente']],
@@ -1837,7 +1837,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   function selosTese(id) {
     var TD = window.TesesDiagnostico, out = '';
     var dz = TD && TD.desaconselhada ? TD.desaconselhada(id) : null, rq = TD && TD.requerDocumento ? TD.requerDocumento(id) : null;
-    if (dz) out += ' <span class="pill bad tip" tabindex="0" role="note" title="' + esc(dz.motivo) + '" aria-label="Desaconselhada. ' + esc(dz.motivo) + '">Desaconselhada</span>';
+    if (dz) out += ' <span class="pill neu tip" tabindex="0" role="note" title="' + esc(dz.motivo) + '" aria-label="A avaliar. ' + esc(dz.motivo) + '">A avaliar</span>';
     if (rq) out += ' <span class="pill neu tip" tabindex="0" role="note" title="Documentos necessários: ' + esc(rq.join('; ')) + '" aria-label="Requer documento: ' + esc(rq.join('; ')) + '">Requer documento</span>';
     return out;
   }

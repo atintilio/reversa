@@ -50,7 +50,7 @@
 
   // Crédito escritural de PIS/COFINS não cumulativo: o aproveitamento não tem atualização nem juros
   // (Lei 10.637/2002, art. 13; Lei 10.833/2003, art. 13). No ressarcimento, Selic só a partir do 361º dia do pedido (STJ Tema 1003).
-  var ESCRITURAL = { insumos: 1, saldoCredor: 1 };
+  var ESCRITURAL = { insumos: 1, saldoCredor: 1, valeTransporte: 1 };
   var MOTIVO_ESCRITURAL = 'Crédito escritural — sem Selic (Lei 10.637/2002 e Lei 10.833/2003, art. 13). No ressarcimento, Selic a partir do 361º dia do pedido (STJ Tema 1003).';
 
   // PIS/COFINS (motor-creditos, valores em centavos). Retorna null se a Selic não estiver disponível.
