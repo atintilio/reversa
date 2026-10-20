@@ -64,6 +64,8 @@
       '.rv-side .grp { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #9AA3AE; margin: 18px 10px 6px; font-weight: 500; }',
       '.rv-side a.it { display: flex; align-items: center; gap: 11px; padding: 9px 10px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #3A4655; text-decoration: none; }',
       '.rv-side a.it svg { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }',
+      '.rv-side a.it.sub { margin-left: 29px; padding: 5px 10px; font-size: 13px; font-weight: 400; }',
+      '.rv-side a.it.sub[aria-current="true"] { background: #E6F4F2; color: #16736D; font-weight: 600; }',
       '.rv-side a.it:hover { background: #F4F6F8; color: #0E2239; }',
       '.rv-side a.it[aria-current="page"] { background: #E6F4F2; color: #16736D; font-weight: 600; }',
       '.rv-side a.it[aria-current="page"] svg { opacity: 1; }',
@@ -129,7 +131,15 @@
   var href = function (p) { return p === '/' ? '/' : p + '.html'; };
   var item = function (l) {
     var atual = l[0] === '/' ? aqui === '/' : aqui.indexOf(l[0]) === 0;
-    return '<a class="it" href="' + (l[3] || href(l[0])) + '"' + (l[4] ? ' ' + l[4] + ' hidden' : '') + (atual ? ' aria-current="page"' : '') + '>' + svg(l[2]) + '<span>' + l[1] + '</span></a>';
+    var a = '<a class="it" href="' + (l[3] || href(l[0])) + '"' + (l[4] ? ' ' + l[4] + ' hidden' : '') + (atual ? ' aria-current="page"' : '') + '>' + svg(l[2]) + '<span>' + l[1] + '</span></a>';
+    if (l[2] === 'diag' && atual) {
+      var mq = (/[?&]modo=([a-z]+)/.exec(location.search) || [])[1], mm = mq; if (!{ tributario: 1, fiscal: 1, completo: 1 }[mm]) { try { mm = localStorage.getItem('rv_modo_diag'); } catch (e) { mm = null; } } if (!{ tributario: 1, fiscal: 1, completo: 1 }[mm]) mm = 'completo';
+      var dm = DEMO_AMB ? '&demo=1' : '';
+      a += [['tributario', 'Tributário'], ['fiscal', 'Fiscal'], ['completo', 'Fiscal e previdenciário']].map(function (m) {
+        return '<a class="it sub" href="/?modo=' + m[0] + dm + '" data-modo-link="' + m[0] + '"' + (mm === m[0] ? ' aria-current="true"' : '') + '><span>' + m[1] + '</span></a>';
+      }).join('');
+    }
+    return a;
   };
   var side = document.createElement('aside');
   side.className = 'rv-side'; side.id = 'rv-side'; side.setAttribute('aria-label', 'Menu');

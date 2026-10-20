@@ -237,6 +237,34 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   .head { animation: entra .5s ease-out both; }
   @keyframes entra { from { opacity: 0; transform: translateY(8px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
 }
+
+/* hero compacto + linha do tempo horizontal + sub-abas de diagnóstico */
+.head { gap: 14px; padding: 18px 40px 16px; }
+.hero { grid-template-columns: 1fr; gap: 12px; align-items: stretch; }
+.hero-txt { gap: 4px; }
+.head h1 { font-size: clamp(1.25rem, 2.2vw, 1.65rem); line-height: 1.15; }
+.head h1 em { display: inline; }
+.passos { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; padding: 10px 6px; position: relative; }
+.passos li { position: relative; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; align-items: center; padding: 0 14px; }
+.passos li + li::before { content: ""; position: absolute; left: -6px; top: 50%; width: 12px; border-top: 1px dashed #C78054; }
+.passos b { width: 30px; height: 30px; font-size: .85rem; }
+.passos strong { font-size: .9rem; }
+.passos span { font-size: .78rem; line-height: 1.3; }
+.aviso-prelim { padding-top: 8px; }
+.modos { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 -4px; }
+.modos button { background: transparent; color: var(--fg); border: 1px solid rgba(14,34,57,.18); box-shadow: none; padding: 8px 16px; font-size: .88rem; }
+.modos button[aria-selected="true"] { background: #1E8F88; border-color: #1E8F88; color: #FFFFFF; }
+.modos button:focus-visible { outline: 2px solid #C78054; outline-offset: 2px; }
+body[data-modo="tributario"] #sec-prev, body[data-modo="fiscal"] #sec-prev { display: none !important; }
+@media (max-width: 640px) {
+  .head { padding: 14px 16px 12px; gap: 10px; }
+  .passos { padding: 8px 2px; }
+  .passos li { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 4px; padding: 0 4px; }
+  .passos li + li::before { left: -6px; width: 12px; top: 15px; }
+  .passos span { display: none; }
+  .passos strong { font-size: .76rem; }
+  .modos button { flex: 1 1 auto; padding: 7px 10px; font-size: .8rem; }
+}
 </style>
 
 <a class="skip-link" href="#conteudo">Pular para o conteúdo principal</a>
@@ -251,12 +279,6 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       <div class="hero-txt">
         <div class="eyebrow">Diagnóstico de oportunidades tributárias</div>
         <h1>Onde o rigor técnico <em>e a oportunidade se encontram</em></h1>
-        <p class="lede">Suba os documentos do cliente e receba um diagnóstico preliminar pronto para a conversa com o cliente: o sistema identifica cada documento e calcula as teses tributárias e previdenciárias, separadas em crédito, potencial, risco e monitoramento.</p>
-        <ul class="beneficios">
-          <li><strong>Diagnóstico em minutos</strong><span>Todos os documentos do período de uma vez.</span></li>
-          <li><strong>Memória rastreável</strong><span>Cada valor volta até o documento que o originou.</span></li>
-          <li><strong>Dados no seu navegador</strong><span>Os arquivos são lidos aqui e não são enviados a nenhum servidor.</span></li>
-        </ul>
       </div>
       <ol class="passos" aria-label="Como funciona">
         <li><b>1</b><div><strong>Suba os documentos</strong><span>Os do período do cliente. O sistema identifica cada um.</span></div></li>
@@ -266,6 +288,12 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     </div>
     <p class="aviso-prelim">Diagnóstico preliminar: os valores indicam onde vale aprofundar a análise e não constituem crédito reconhecido.</p>
   </header>
+
+  <nav class="modos" id="modos" role="tablist" aria-label="Tipo de diagnóstico">
+    <button type="button" role="tab" data-modo="tributario" aria-selected="false" title="PIS/COFINS e IRPJ/CSLL (SPED Contribuições, ECD, ECF)">Diagnóstico tributário</button>
+    <button type="button" role="tab" data-modo="fiscal" aria-selected="false" title="Tributário + ICMS (EFD ICMS/IPI)">Diagnóstico fiscal</button>
+    <button type="button" role="tab" data-modo="completo" aria-selected="true" title="Fiscal + previdenciário (eSocial)">Diagnóstico fiscal e previdenciário</button>
+  </nav>
 
   <section aria-labelledby="envio">
     <h2 id="envio" hidden>Arquivos</h2>
@@ -292,6 +320,25 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       <div class="scroll"><table id="fila-tab"></table></div>
     </div>
     <div class="banner" id="banner" role="status" aria-live="polite"></div>
+  </section>
+
+  <section aria-labelledby="t-pdf">
+    <div class="sec-head"><h2 id="t-pdf">Diagnóstico Técnico Inicial — <em>DTI</em></h2></div>
+    <p class="lede">Documento formal com identificação do contribuinte, quadro consolidado, quadro das teses, fundamentação, fonte dos dados com a impressão digital SHA-256 de cada arquivo, metodologia, resumo por competência e detalhamento de cada tese, e bloco de assinatura. É gerado com qualquer combinação de arquivos reconhecidos (EFD-Contribuições, eSocial, ECF, ECD, EFD ICMS/IPI, DARF).</p>
+    <form class="pdf-form" id="form-pdf">
+      <label class="chk" for="pdf-resp-on" style="display:flex;flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:.9rem"><input type="checkbox" id="pdf-resp-on" style="width:auto"> Incluir responsável técnico</label>
+      <label for="pdf-resp">Responsável técnico<input type="text" id="pdf-resp" placeholder="Nome completo" autocomplete="name" disabled></label>
+      <label for="pdf-reg">Registro profissional<input type="text" id="pdf-reg" placeholder="Ex.: CRC SC-000000/O-0" disabled></label>
+      <label for="pdf-local">Local<input type="text" id="pdf-local" placeholder="Florianópolis/SC"></label>
+      <label><input type="checkbox" id="cliente-identificado" checked> Exibir valor identificado na amostra</label>
+      <label><input type="checkbox" id="cliente-projetado"> Exibir projeção de 60 competências</label>
+      <label for="amostra-ano">Primeiro dos cinco anos civis<input type="number" id="amostra-ano" min="2000" max="2100" required></label>
+      <p class="note">A apresentação ao cliente mostra somente os valores selecionados. A projeção inclui a amostra e exige ao menos três meses por ano, por empresa e tese. Confirme o período e a representatividade da amostra. A apresentação reúne PIS/COFINS (EFD-Contribuições) e o previdenciário (eSocial), sem as teses de parecer desfavorável; IRPJ/CSLL da ECF não entra. A projeção previdenciária exige o 13º salário apurado à parte.</p>
+      <button type="button" id="btn-cliente">Gerar apresentação ao cliente</button>
+      <button type="submit" id="btn-pdf">Gerar memória técnica completa</button>
+      <button type="button" id="btn-pasta" class="sec" hidden>Salvar na pasta do cliente</button>
+    </form>
+    <p class="note" id="pasta-status" role="status" aria-live="polite" hidden></p>
   </section>
 
   <section aria-labelledby="resumo">
@@ -370,25 +417,6 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     </div>
     <div class="scroll" style="max-height: 560px"><table id="tab-mem"></table></div>
     <p class="note">Cada linha aponta o número da linha do registro C170 no arquivo SPED de origem, para conferência no PVA ou num editor de texto.</p>
-  </section>
-
-  <section aria-labelledby="t-pdf">
-    <div class="sec-head"><h2 id="t-pdf">Diagnóstico Técnico Inicial — <em>DTI</em></h2></div>
-    <p class="lede">Documento formal com identificação do contribuinte, quadro consolidado, quadro das teses, fundamentação, fonte dos dados com a impressão digital SHA-256 de cada arquivo, metodologia, resumo por competência e detalhamento de cada tese, e bloco de assinatura. É gerado com qualquer combinação de arquivos reconhecidos (EFD-Contribuições, eSocial, ECF, ECD, EFD ICMS/IPI, DARF).</p>
-    <form class="pdf-form" id="form-pdf">
-      <label class="chk" for="pdf-resp-on" style="display:flex;flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:.9rem"><input type="checkbox" id="pdf-resp-on" style="width:auto"> Incluir responsável técnico</label>
-      <label for="pdf-resp">Responsável técnico<input type="text" id="pdf-resp" placeholder="Nome completo" autocomplete="name" disabled></label>
-      <label for="pdf-reg">Registro profissional<input type="text" id="pdf-reg" placeholder="Ex.: CRC SC-000000/O-0" disabled></label>
-      <label for="pdf-local">Local<input type="text" id="pdf-local" placeholder="Florianópolis/SC"></label>
-      <label><input type="checkbox" id="cliente-identificado" checked> Exibir valor identificado na amostra</label>
-      <label><input type="checkbox" id="cliente-projetado"> Exibir projeção de 60 competências</label>
-      <label for="amostra-ano">Primeiro dos cinco anos civis<input type="number" id="amostra-ano" min="2000" max="2100" required></label>
-      <p class="note">A apresentação ao cliente mostra somente os valores selecionados. A projeção inclui a amostra e exige ao menos três meses por ano, por empresa e tese. Confirme o período e a representatividade da amostra. A apresentação reúne PIS/COFINS (EFD-Contribuições) e o previdenciário (eSocial), sem as teses de parecer desfavorável; IRPJ/CSLL da ECF não entra. A projeção previdenciária exige o 13º salário apurado à parte.</p>
-      <button type="button" id="btn-cliente">Gerar apresentação ao cliente</button>
-      <button type="submit" id="btn-pdf">Gerar memória técnica completa</button>
-      <button type="button" id="btn-pasta" class="sec" hidden>Salvar na pasta do cliente</button>
-    </form>
-    <p class="note" id="pasta-status" role="status" aria-live="polite" hidden></p>
   </section>
 
   <section aria-labelledby="t-met">
@@ -2155,7 +2183,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     }
     // Previdenciário (motor eSocial, valores em reais -> centavos): só entra no resumo quando houver resultado dentro do escopo
     var p = estado.prev, prevCorpo = null;
-    if (p && p.teses && p.teses.length && p.escopo && p.escopo.ok !== false) {
+    if (p && p.teses && p.teses.length && p.escopo && p.escopo.ok !== false && document.body.getAttribute('data-modo') === 'completo') {
       prevCorpo = {
         tipo: 'previdenciario', contato: contatoResp, taxpayer: corpo.taxpayer, periodStart: p.periodo.inicio, periodEnd: p.periodo.fim, files: estado.nEs || 0, engineVersion: p.versaoMotor,
         teses: p.teses.filter(function (t) { return !t.condicional || estado.prevIncluir[t.id]; }).map(function (t) { return { id: t.id, nome: t.nome, curto: t.nome, natureza: 'credito', itens: t.competencias, valorCentavos: Math.round(t.valor * 100), valorNoPrazoCentavos: Math.round(t.valorNoPrazo * 100) }; })
@@ -2187,5 +2215,25 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
 })();
 </script>
 
+<script>
+(function () {
+  var MODOS = { tributario: 1, fiscal: 1, completo: 1 };
+  function lerModo() {
+    var m = (/[?&]modo=([a-z]+)/.exec(location.search) || [])[1];
+    if (!MODOS[m]) { try { m = localStorage.getItem('rv_modo_diag'); } catch (e) { m = null; } }
+    return MODOS[m] ? m : 'completo';
+  }
+  function aplicar(m, atualizaUrl) {
+    document.body.setAttribute('data-modo', m);
+    Array.prototype.forEach.call(document.querySelectorAll('#modos [data-modo]'), function (b) { b.setAttribute('aria-selected', String(b.getAttribute('data-modo') === m)); });
+    try { localStorage.setItem('rv_modo_diag', m); } catch (e) {}
+    if (atualizaUrl && history.replaceState) { var q = location.search.replace(/([?&])modo=[a-z]*&?/, '$1').replace(/[?&]$/, ''); history.replaceState(null, '', location.pathname + q + (q ? '&' : '?') + 'modo=' + m); }
+    Array.prototype.forEach.call(document.querySelectorAll('[data-modo-link]'), function (a) { if (a.getAttribute('data-modo-link') === m) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    document.dispatchEvent(new CustomEvent('rv-modo', { detail: m }));
+  }
+  document.getElementById('modos').addEventListener('click', function (e) { var b = e.target.closest('[data-modo]'); if (b) aplicar(b.getAttribute('data-modo'), true); });
+  aplicar(lerModo(), false);
+})();
+</script>
 </body>
 </html>
