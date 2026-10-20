@@ -32,6 +32,7 @@
   .cartao .passo { font-size: 12px; color: var(--fg); background: var(--soft); border-radius: 5px; padding: 4px 6px; }
   .chips { display: flex; gap: 4px; flex-wrap: wrap; }
   .chip { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: var(--soft); color: var(--muted); white-space: nowrap; }
+  .msg-alerta { margin: 6px 0; padding: 6px 8px; border-radius: 6px; background: #FBF1DC; color: #7A5A12; font-size: 13px; }
   .chip.verde { background: var(--ok-bg); color: var(--ok); }
   .chip.amarelo { background: var(--warn-bg); color: var(--warn); }
   .chip.vermelho { background: var(--bad-bg); color: var(--bad); }
@@ -193,6 +194,10 @@
     <section>
       <h3>Dados públicos do CNPJ</h3>
       <div id="f-pub" class="pub"></div>
+    </section>
+    <section>
+      <h3>Enriquecimento <span class="chip">Receita · Apollo</span></h3>
+      <div id="f-enr" class="pub"></div>
     </section>
 
     <section><h3>Diagnóstico preliminar</h3><div id="f-diag" style="display:grid;gap:14px"></div></section>
@@ -364,7 +369,7 @@
     $('f-passo').value = caso.nextStep || ''; $('f-prev').value = caso.expectedCloseDate ? String(caso.expectedCloseDate).slice(0, 10) : '';
     $('f-resp').innerHTML = membros.map(function (m) { return '<option value="' + m.id + '">' + esc(m.name) + '</option>'; }).join('');
     var eu = RV.usuario && RV.usuario.user; var meu = membros.filter(function (m) { return eu && m.name === eu.name; })[0]; if (meu) $('f-resp').value = meu.id;
-    renderComissao(); renderAgente(); renderLinha(); renderContatos(); renderPub(); renderDiag(); renderHist(); acoesCard();
+    renderComissao(); renderAgente(); renderLinha(); renderContatos(); renderPub(); renderEnr(); renderDiag(); renderHist(); acoesCard();
     document.querySelectorAll('#ficha [data-write]').forEach(function (el) { if (!RV.pode('write')) { el.hidden = el.tagName === 'FORM'; el.disabled = true; } });
   }
 
@@ -539,6 +544,33 @@
   });
 
   // dados públicos
+  function renderEnr() {
+    var c = atual.cliente, e = c.enriquecimento || {}, a = c.apollo || {}, pode = RV.pode('write'), h = '';
+    var end = e.endereco || {};
+    var linha = function (r, v) { return v ? '<div><b>' + r + ':</b> ' + esc(v) + '</div>' : ''; };
+    var endTxt = [[end.logradouro, end.numero].filter(Boolean).join(', '), end.complemento, end.bairro, end.cep].filter(Boolean).join(' · ');
+    h += linha('Endereço', endTxt) + linha('Cidade/UF', end.municipio ? end.municipio + '/' + (end.uf || '') : (e.municipio ? e.municipio + '/' + (e.uf || '') : ''));
+    h += linha('Regime (SPED)', c.taxRegime) + linha('Regime (Receita)', e.regimeReceita ? e.regimeReceita.valor + (e.regimeReceita.ano ? ' · ' + e.regimeReceita.ano : '') : '');
+    if (e.divergenciaRegime) h += '<div class="msg-alerta"><b>Atenção:</b> o regime do SPED (' + esc(e.divergenciaRegime.sped) + ') difere do da Receita (' + esc(e.divergenciaRegime.receita) + '). Confirme antes de apresentar.</div>';
+    var o = a.organizacao;
+    if (o) h += '<div style="margin-top:6px"><span class="chip argus">Apollo</span> ' + esc(o.nome || '') + '</div>' + linha('Site', o.site) + linha('Segmento', o.industria) + linha('Porte', o.porte) + linha('Telefone', o.telefone) + linha('LinkedIn', o.linkedin);
+    else if (a.consultadoEm) h += '<div class="muted" style="margin-top:6px">Apollo: empresa não encontrada.</div>';
+    var r = a.responsavel;
+    if (r) h += '<div style="margin-top:6px"><b>Responsável sugerido:</b> ' + esc(r.nome || '—') + ' <span class="chip argus">Apollo</span> <span class="muted">(a confirmar)</span></div>' + linha('Cargo', r.cargo) + linha('E-mail', r.email) + linha('Telefone', r.telefone) + linha('LinkedIn', r.linkedin);
+    if (a.limiteDiario) h += '<div class="muted">Limite diário de consultas do Apollo atingido: e-mail e telefone não foram obtidos.</div>';
+    if (!h) h = '<p class="muted" style="margin:0">Ainda não enriquecido.</p>';
+    if (a.consultadoEm) h += '<div class="muted">Apollo consultado em ' + RV.data(a.consultadoEm, true) + '</div>';
+    if (pode) h += '<div class="acoes" style="margin-top:6px"><button type="button" class="sec mini" id="enr-agora">Enriquecer agora</button>' + (c.apolloAtivo === false ? ' <span class="muted">Apollo desligado (chave não configurada); só a Receita será consultada.</span>' : '') + '</div>';
+    $('f-enr').innerHTML = h;
+    var b = $('enr-agora');
+    if (b) b.addEventListener('click', function () {
+      b.disabled = true; b.textContent = 'Consultando…';
+      API('POST', '/api/v1/crm/clients/' + c.id + '/enriquecer', {}).then(function (j) { atual.cliente = j.cliente; renderEnr(); })
+        .then(function () { return API('GET', '/api/v1/crm/clients/' + c.id).then(function (j) { atual = j; renderContatos(); renderEnr(); }); })
+        .then(function () { RV.toast('Cadastro enriquecido'); })
+        .catch(function (e) { RV.toast(e.message); b.disabled = false; b.textContent = 'Enriquecer agora'; });
+    });
+  }
   function renderPub() {
     var p = atual.cliente.publico, pode = RV.pode('write');
     $('f-pub').innerHTML = (p ? [

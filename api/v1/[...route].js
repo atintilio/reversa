@@ -149,6 +149,7 @@ async function route(req, res) {
         res.setHeader('Cache-Control', 'no-store');
         return res.end(r.pdf);
       }
+      if (sub === 'clients' && sid && sact === 'enriquecer' && m === 'POST') { deny(ctx, 'write', 'crm.enriquecer'); return json(res, 200, await crm.enriquecerAgora(ctx, sid)); }
       if (sub === 'clients' && sid && sact === 'cnpj' && m === 'POST') { deny(ctx, 'write', 'crm.cnpj'); return json(res, 200, await crm.refreshCnpj(ctx, sid)); }
       if (sub === 'clients' && sid && sact === 'agent' && m === 'POST') { deny(ctx, 'write', 'crm.agent'); return json(res, 200, await crm.runAgent(ctx, sid, body)); }
       if (sub === 'contacts') {
