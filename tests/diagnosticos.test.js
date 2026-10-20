@@ -69,3 +69,10 @@ test('gerar link do contrato leva o caso a "aguardando autorização"', async ()
   assert.equal((await sql`select commercial_stage from tax_cases`)[0].commercial_stage, 'aguardando_autorizacao');
   assert.equal((await sql`select count(*)::int n from audit_events where event_type = 'case.stage_changed'`)[0].n, 1);
 });
+
+test('gerar de novo o mesmo resultado não cria versão nova (repetido)', async () => {
+  const antes = (await sql`select count(*)::int n from diagnostics`)[0].n;
+  const r = await salvar({ teses: [credito(20000, 0)] }); assert.equal(r.statusCode, 201, r.body);
+  const b = J(r); assert.equal(b.repetido, true); assert.equal(b.versao, 2);
+  assert.equal((await sql`select count(*)::int n from diagnostics`)[0].n, antes);
+});

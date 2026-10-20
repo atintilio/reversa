@@ -1589,6 +1589,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     renderPrev(); renderCobertura(); renderTecnico(tec);
     estado.dti = true; secaoDti(true); // o DTI é gerado sempre, com o que houver de arquivo reconhecido
     toast('Diagnóstico gerado com ' + (validos.length + es.length + tec.length + dv.length) + ' arquivo(s)');
+    if (window.salvarPastaAuto) window.salvarPastaAuto();
     $(validos.length ? 'resumo' : es.length ? 't-prev' : tec.length ? 't-tec' : 't-pdf').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   $('arquivos').addEventListener('change', function (e) { aoEscolher(e.target.files); e.target.value = ''; });
@@ -2016,10 +2017,10 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     $('btn-pasta').hidden = false;
     var sc = document.createElement('script'); sc.src = '/shell.js'; document.body.appendChild(sc); // barra de navegação da Reversa
   }
-  $('btn-pasta').addEventListener('click', function () {
+  function salvarPasta(auto) {
     var temSped = !!(estado.res && estado.res.competencias.length), temPrev = !!(estado.prev && estado.prev.teses && estado.prev.teses.length);
-    if (!temSped && !temPrev) { toast('Carregue os arquivos do cliente antes de salvar.'); return; }
-    if (estado.exemplo) { toast('Estes são os dados de exemplo. Carregue os SPEDs do cliente para salvar na pasta.'); return; }
+    if (!temSped && !temPrev) { if (!auto) toast('Carregue os arquivos do cliente antes de salvar.'); return; }
+    if (estado.exemplo) { if (!auto) toast('Estes são os dados de exemplo. Carregue os SPEDs do cliente para salvar na pasta.'); return; }
     var lidos = estado.lidos.filter(function (x) { return x.meta && x.meta.cnpj; });
     var cnpj, ref, comps = [];
     if (lidos.length) {
@@ -2029,7 +2030,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       comps = lidos.map(function (l) { return l.meta.competencia; }).filter(Boolean).sort();
     } else {
       cnpj = String(estado.cnpjBase || '').replace(/\D/g, '');
-      if (cnpj.length !== 14) { toast('Não encontrei o CNPJ do contribuinte nos arquivos.'); return; }
+      if (cnpj.length !== 14) { if (!auto) toast('Não encontrei o CNPJ do contribuinte nos arquivos.'); else { var s0 = $('pasta-status'); s0.textContent = 'Diagnóstico gerado, mas não entrou no CRM: não encontrei o CNPJ do contribuinte nos arquivos.'; s0.hidden = false; } return; }
       ref = { nome: (estado.prev.empregador && estado.prev.empregador.nome) || '', regime: '' };
     }
     var res = estado.res, btn = $('btn-pasta'), st = $('pasta-status');
@@ -2054,8 +2055,8 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
     }
     var codigos = [], pendencias = [], idCliente = null, aviso = '';
     (temSped ? enviar(corpo) : Promise.resolve(null))
-      .then(function (j) { if (!j) return; codigos.push(j.diagnosticCode + ' v' + j.versao + ' (PIS/COFINS)'); idCliente = j.taxpayerId; pendencias = j.pendencias || []; })
-      .then(function () { if (!prevCorpo) return; return enviar(prevCorpo).then(function (j) { codigos.push(j.diagnosticCode + ' v' + j.versao + ' (Previdenciário)'); idCliente = j.taxpayerId; pendencias = j.pendencias || pendencias; }).catch(function (e) { aviso = ' O previdenciário não foi salvo: ' + e.message; }); })
+      .then(function (j) { if (!j) return; codigos.push(j.diagnosticCode + ' v' + j.versao + ' (PIS/COFINS)' + (j.repetido ? ' sem mudanças' : '')); idCliente = j.taxpayerId; pendencias = j.pendencias || []; })
+      .then(function () { if (!prevCorpo) return; return enviar(prevCorpo).then(function (j) { codigos.push(j.diagnosticCode + ' v' + j.versao + ' (Previdenciário)' + (j.repetido ? ' sem mudanças' : '')); idCliente = j.taxpayerId; pendencias = j.pendencias || pendencias; }).catch(function (e) { aviso = ' O previdenciário não foi salvo: ' + e.message; }); })
       .then(function () {
         if (!codigos.length) throw new Error('nenhum resultado dentro do escopo para salvar' + aviso);
         st.innerHTML = 'Diagnóstico salvo na pasta de <strong>' + esc(ref.nome || cnpjFmt(cnpj)) + '</strong>: ' + esc(codigos.join(' · ')) + '. Os créditos ficam <em>pendentes de aprovação</em> até a revisão.' +
@@ -2064,7 +2065,9 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       })
       .catch(function (e) { st.textContent = 'Não foi possível salvar: ' + e.message; st.hidden = false; })
       .then(function () { btn.disabled = false; btn.textContent = 'Salvar na pasta do cliente'; });
-  });
+  }
+  $('btn-pasta').addEventListener('click', function () { salvarPasta(false); });
+  window.salvarPastaAuto = function () { if (hospedado) salvarPasta(true); }; // diagnóstico gerado = cadastro no CRM, sem clique
   window.REVERSA_LOGO = document.querySelector('.logo.escuro').src;
   // emblema do login (com sombra) para a capa do DTI
   fetch('/assets/logo-login.png').then(function (r) { return r.ok ? r.blob() : null; }).then(function (b) { if (!b) return; var fr = new FileReader(); fr.onload = function () { window.REVERSA_EMBLEMA = fr.result; }; fr.readAsDataURL(b); }).catch(function () {});
