@@ -26,12 +26,16 @@
  *     Exceção opcional opts.terceirosExcecao {ini, fim}: tese T008 (limite de 20 salários mínimos por trabalhador e competência).
  *   - Rescisões (S-2299): mesma classificação por rubrica + T073 (férias indenizadas e 1/3), T071 (multa art. 477 CLT), T072 (art. 479 CLT / Lei 7.238 art. 9º).
  *   - Teses condicionais (condicional/condicao), teste de habitualidade na T065 e sensibilidade da borda do prazo de 5 anos.
+ * v0.3.0:
+ *   - T074: INSS do SEGURADO descontado a maior/em duplicidade. Rubricas de desconto (tpRubr 2 com natRubr 9201, ou codIncCP 31 + descrição INSS/PREVID)
+ *     somadas por trabalhador e competência; devido = tabela progressiva do ano sobre a base (tpRubr 1, codIncCP 11/21), limitada ao teto; excesso = retido - devido.
+ *     Não é contribuição patronal: valor = excesso integral (restituição ao empregado + compensação). 13º (codIncCP 12/22 ou perApur anual) fica fora, com aviso.
  *   Todo o valor é estimativa (pagamento: 'nao-confirmado'). Tags/leiaute marcados "a validar com XML real (Sodimac)" são tolerantes a variações de nome.
  * Funciona no navegador (window.MotorEsocial) e no Node (module.exports).
  */
 (function (root) {
   'use strict';
-  var VERSAO = '0.2.0';
+  var VERSAO = '0.3.0';
   var CPP = 0.20, TERCEIROS_PADRAO = 0.058;
   // a validar com XML real (Sodimac): nomes de tag aceitos (comparação sem diferenciar maiúsculas/minúsculas)
   var TAGS_CLASSTRIB = ['classTrib'], TAGS_DESFOLHA = ['indDesFolha', 'indDesoneracao', 'indCPRB'];
@@ -42,6 +46,27 @@
   var SM_VIGENCIAS = [['2019-01', 998], ['2020-01', 1039], ['2020-02', 1045], ['2021-01', 1100], ['2022-01', 1212], ['2023-01', 1302], ['2023-05', 1320], ['2024-01', 1412], ['2025-01', 1518], ['2026-01', 1621]];
   var SALARIO_MINIMO = {};
   (function () { for (var a = 2019; a <= 2026; a++) for (var m = 1; m <= 12; m++) { var c = a + '-' + (m < 10 ? '0' : '') + m, v; SM_VIGENCIAS.forEach(function (x) { if (x[0] <= c) v = x[1]; }); SALARIO_MINIMO[c] = v; } })();
+  // Tabela progressiva do INSS do segurado (contribuição empregado): [[limite da faixa, alíquota]...]; o último limite é o teto.
+  // 2020-03 a 2022: portarias SEPRT 914/2020, ME 477/2021 e 12/2022 (2022 conferida com o cenário Grupo Mateus).
+  // CONFERIR com a portaria: 2023 a 2026 (valores de memória; 2026 sem confirmação).
+  var INSS_TABELAS = [
+    { ini: '2020-03', fim: '2020-12', conferir: false, f: [[1045.00, 0.075], [2089.60, 0.09], [3134.40, 0.12], [6101.06, 0.14]] },
+    { ini: '2021-01', fim: '2021-12', conferir: false, f: [[1100.00, 0.075], [2203.48, 0.09], [3305.22, 0.12], [6433.57, 0.14]] },
+    { ini: '2022-01', fim: '2022-12', conferir: false, f: [[1212.00, 0.075], [2427.35, 0.09], [3641.03, 0.12], [7087.22, 0.14]] },
+    { ini: '2023-01', fim: '2023-04', conferir: true, f: [[1302.00, 0.075], [2571.29, 0.09], [3856.94, 0.12], [7507.49, 0.14]] },
+    { ini: '2023-05', fim: '2023-12', conferir: true, f: [[1320.00, 0.075], [2571.29, 0.09], [3856.94, 0.12], [7507.49, 0.14]] },
+    { ini: '2024-01', fim: '2024-12', conferir: true, f: [[1412.00, 0.075], [2666.68, 0.09], [4000.03, 0.12], [7786.02, 0.14]] },
+    { ini: '2025-01', fim: '2025-12', conferir: true, f: [[1518.00, 0.075], [2793.88, 0.09], [4190.83, 0.12], [8157.41, 0.14]] },
+    { ini: '2026-01', fim: '2026-12', conferir: true, f: [[1621.00, 0.075], [2902.84, 0.09], [4354.27, 0.12], [8475.55, 0.14]] }
+  ];
+  function tabelaInss(comp) { for (var i = 0; i < INSS_TABELAS.length; i++) if (comp >= INSS_TABELAS[i].ini && comp <= INSS_TABELAS[i].fim) return INSS_TABELAS[i]; return null; }
+  /** INSS devido: soma exata das faixas sobre a base limitada ao teto, arredondada ao centavo no final. */
+  function contribInss(base, tab) {
+    var teto = tab.f[tab.f.length - 1][0], restante = Math.min(base, teto), ant = 0, v = 0;
+    tab.f.forEach(function (x) { var parte = Math.max(0, Math.min(restante, x[0]) - ant); v += parte * x[1]; ant = x[0]; });
+    return Math.round(v * 100 + 1e-7) / 100;
+  }
+  function ehInssSegurado(r) { return r.tpRubr === '2' && (r.natRubr === '9201' || (r.codIncCP === '31' && /INSS|PREVID/.test(norm(r.dsc)))); }
   var CONDICOES = {
     T063: 'Depende de acordo de PLR firmado conforme a Lei 10.101/2000.',
     T065: 'Apenas gratificações e prêmios eventuais (habituais ficam de fora).',
@@ -138,7 +163,8 @@
     T008: 'Contribuições a terceiros: limite de 20 salários mínimos (empresa com ação ou decisão favorável)',
     T073: 'Contribuição previdenciária sobre férias indenizadas e terço constitucional de férias indenizadas',
     T071: 'Contribuição previdenciária sobre multa do art. 477 da CLT (multa rescisória)',
-    T072: 'Contribuição previdenciária sobre indenização por dispensa (art. 479 da CLT / Lei 7.238/84, art. 9º)'
+    T072: 'Contribuição previdenciária sobre indenização por dispensa (art. 479 da CLT / Lei 7.238/84, art. 9º)',
+    T074: 'INSS do segurado descontado a maior ou em duplicidade (restituição ao empregado e compensação)'
   };
   function classificar(dsc, resc) {
     var d = norm(dsc);
@@ -230,7 +256,7 @@
           var ie2 = filho(n, 'ideEvento'), it = filho(n, 'ideTrabalhador');
           var per = txt(ie2, 'perApur'), ind = txt(ie2, 'indApuracao') || '1';
           var comp = /^\d{4}$/.test(per) ? per + '-12' : per;
-          cands.push({ tipo: 'S-1200', chave: txt(it, 'cpfTrab') + '|' + per + '|' + ind, cpf: txt(it, 'cpfTrab'), comp: comp, retif: txt(ie2, 'indRetif') === '2', no: n, arquivo: l.arquivo, recibo: reciboDe(n) });
+          cands.push({ tipo: 'S-1200', chave: txt(it, 'cpfTrab') + '|' + per + '|' + ind, cpf: txt(it, 'cpfTrab'), comp: comp, anual: /^\d{4}$/.test(per), retif: txt(ie2, 'indRetif') === '2', no: n, arquivo: l.arquivo, recibo: reciboDe(n) });
         } else if (ev.tipo === 'S-2299') {
           // leiaute a validar com XML real (Sodimac): cpf em ideVinculo; competência = perApur se existir, senão mês de dtDeslig
           var cpfR = acharTxt(n, ['cpfTrab']), dt = acharTxt(n, ['dtDeslig']), pr = acharTxt(filho(n, 'ideEvento'), ['perApur']);
@@ -265,6 +291,7 @@
 
     var porTese = {}, semCadastro = {}, semIncidencia = {}, semTese = {}, rubricasUsadas = {}, comps = {}, reflexos = { base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, porComp: {} };
     var pend065 = [], baseTrab = {}, semSM = {};
+    var inssRet = {}, inssBase = {}, inssDecimo = {};
     function acumula(tese, r, base, aliq, comp, motivo) {
       var t = porTese[tese] = porTese[tese] || { id: tese, nome: NOMES[tese], base: 0, baseNoPrazo: 0, valor: 0, valorNoPrazo: 0, rubricas: {}, competencias: {}, porComp: {} };
       var noPrazo = comp >= limite;
@@ -293,6 +320,12 @@
           if (!lista) { semCadastro[tab + '|' + cod] = (semCadastro[tab + '|' + cod] || 0) + vr; return; }
           var r = vigente(lista, comp);
           rubricasUsadas[tab + '|' + cod] = r;
+          var kI = e.cpf + '|' + comp;
+          if (ehInssSegurado(r)) { if (vr > 0) { inssRet[kI] = (inssRet[kI] || 0) + vr; if (e.anual) inssDecimo[kI] = 1; } return; } // INSS do segurado: analisado na T074, não é patronal
+          if (r.tpRubr === '1' && vr > 0) {
+            if (e.anual || r.codIncCP === '12' || r.codIncCP === '22') inssDecimo[kI] = 1;
+            else if (r.codIncCP === '11' || r.codIncCP === '21') inssBase[kI] = (inssBase[kI] || 0) + vr;
+          }
           if (r.tpRubr !== '1' || !INCIDE_PATRONAL[r.codIncCP] || vr <= 0) {
             if (vr > 0) { var kn = r.dsc + ' (tipo ' + (r.tpRubr || '?') + ', incidência ' + (r.codIncCP || 'não informada') + ')'; semIncidencia[kn] = (semIncidencia[kn] || 0) + vr; }
             return;
@@ -327,6 +360,28 @@
       });
     });
     if (hab.n) avisos.push('Gratificações/prêmios pagos de forma habitual (mesma rubrica, mesmo trabalhador, 3 ou mais competências em 12 meses) foram descartados da T065: ' + hab.n + ' lançamento(s), base ' + brl(hab.base) + ', contribuição estimada ' + brl(hab.valor) + '.');
+
+    // T074: INSS do segurado retido acima do devido pela tabela progressiva (por trabalhador e competência)
+    var inssPorComp = {}, n13 = 0, nSemBase = 0, semTabela = {}, conferirTab = {};
+    Object.keys(inssRet).forEach(function (k) {
+      var comp = k.split('|')[1];
+      if (inssDecimo[k]) { n13++; return; }
+      var tab = tabelaInss(comp); if (!tab) { semTabela[comp] = 1; return; }
+      var base = inssBase[k] || 0; if (base <= 0) { nSemBase++; return; }
+      if (tab.conferir) conferirTab[comp.slice(0, 4)] = 1;
+      var retido = Math.round(inssRet[k] * 100) / 100, devido = contribInss(base, tab), exc2 = Math.round((retido - devido) * 100) / 100;
+      var x = inssPorComp[comp] = inssPorComp[comp] || { competencia: comp, trabalhadores: 0, salario: 0, devido: 0, retido: 0, excesso: 0, comExcesso: 0 };
+      x.trabalhadores++; x.salario += base; x.devido += devido; x.retido += retido;
+      if (exc2 > 0.05) { x.excesso += exc2; x.comExcesso++; }
+    });
+    var inssLista = Object.keys(inssPorComp).sort().map(function (c) { var x = inssPorComp[c]; return { competencia: c, trabalhadores: x.trabalhadores, comExcesso: x.comExcesso, salario: Math.round(x.salario * 100) / 100, devido: Math.round(x.devido * 100) / 100, retido: Math.round(x.retido * 100) / 100, excesso: Math.round(x.excesso * 100) / 100, noPrazo: c >= limite }; });
+    inssLista.forEach(function (x) {
+      if (x.excesso > 0) acumula('T074', { tab: 'INSS', cod: 'segurado', dsc: 'INSS do segurado retido acima do devido (tabela progressiva)', natRubr: '9201', codIncCP: '31' }, x.excesso, 1, x.competencia, 'INSS do segurado descontado a maior ou em duplicidade');
+    });
+    if (n13) avisos.push('INSS do segurado: ' + n13 + ' trabalhador(es)/competência com 13º salário não foram calculados na T074 (tabela e base do 13º são separadas).');
+    if (nSemBase) avisos.push('INSS do segurado: ' + nSemBase + ' trabalhador(es)/competência com desconto de INSS, mas sem base de cálculo identificada (tpRubr 1 com incidência 11/21), foram ignorados na T074.');
+    if (Object.keys(semTabela).length) avisos.push('INSS do segurado: sem tabela progressiva para as competências ' + Object.keys(semTabela).sort().join(', ') + ' (antes de 03/2020 a alíquota não era progressiva): requer conferência manual e não entrou na T074.');
+    if (Object.keys(conferirTab).length) avisos.push('INSS do segurado: tabela de ' + Object.keys(conferirTab).sort().join(', ') + ' a conferir com a portaria interministerial vigente antes de usar o valor.');
 
     // T008 (exceção): terceiros sobre o que excede 20 salários mínimos por trabalhador e competência
     if (exc) {
@@ -393,6 +448,7 @@
       teses: teses,
       total: { valor: r2(teses.reduce(function (s, t) { return s + t.valor; }, 0)), valorNoPrazo: r2(teses.reduce(function (s, t) { return s + t.valorNoPrazo; }, 0)) },
       rescisoes: { eventos: contagem['S-2299'], exclusoes: { encontradas: exclusoes.length, pareadas: pareadas } },
+      inssSegurado: inssLista.length ? { porCompetencia: inssLista, principal: Math.round(inssLista.reduce(function (s, x) { return s + x.excesso; }, 0) * 100) / 100 } : null,
       sensibilidadeBorda: sens,
       pagamento: 'nao-confirmado', // os valores são estimativa: pagamento da contribuição não confirmado (GFIP/DCTFWeb/DARF)
       rubricasAnalisadas: Object.keys(rubricasUsadas).length,
@@ -400,6 +456,6 @@
     };
   }
 
-  var api = { VERSAO: VERSAO, lerXml: lerXml, apurar: apurar, classificar: classificar, parseXml: parseXml, INCIDE_PATRONAL: INCIDE_PATRONAL, NOMES: NOMES, SALARIO_MINIMO: SALARIO_MINIMO, CONDICOES: CONDICOES };
+  var api = { VERSAO: VERSAO, lerXml: lerXml, apurar: apurar, classificar: classificar, parseXml: parseXml, INCIDE_PATRONAL: INCIDE_PATRONAL, NOMES: NOMES, SALARIO_MINIMO: SALARIO_MINIMO, CONDICOES: CONDICOES, INSS_TABELAS: INSS_TABELAS, contribInss: contribInss, tabelaInss: tabelaInss };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MotorEsocial = api;
 })(typeof self !== 'undefined' ? self : this);

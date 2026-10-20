@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTabRubrica/v_S_01_03_00">
+  <!--Cenario sintetico; desconto duplicado intencional; sem assinatura; nao transmitir.-->
+  <evtTabRubrica Id="ID1990012010001702023033012000000006">
+    <ideEvento>
+      <tpAmb>2</tpAmb>
+      <procEmi>1</procEmi>
+      <verProc>1.0</verProc>
+    </ideEvento>
+    <ideEmpregador>
+      <tpInsc>1</tpInsc>
+      <nrInsc>99001201</nrInsc>
+    </ideEmpregador>
+    <infoRubrica>
+      <inclusao>
+        <ideRubrica>
+          <codRubr>2103</codRubr>
+          <ideTabRubr>TAB01</ideTabRubr>
+          <iniValid>2022-10</iniValid>
+        </ideRubrica>
+        <dadosRubrica>
+          <dscRubr>INSS SEGURADO MENSAL DUPLICADO</dscRubr>
+          <natRubr>9201</natRubr>
+          <tpRubr>2</tpRubr>
+          <codIncCP>31</codIncCP>
+          <codIncIRRF>41</codIncIRRF>
+          <codIncFGTS>00</codIncFGTS>
+          <observacao>Cenario sintetico com duplicidade intencional para o motor detectar excesso.</observacao>
+        </dadosRubrica>
+      </inclusao>
+    </infoRubrica>
+  </evtTabRubrica>
+</eSocial>

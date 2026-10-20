@@ -1,0 +1,19 @@
+{
+  "empresa_nome_de_referencia": "Grupo Mateus",
+  "cnpj_artificial": "99001201000170",
+  "competencias": [
+    "2022-10",
+    "2022-11"
+  ],
+  "credito_pis": "5445.00",
+  "credito_cofins": "25080.00",
+  "credito_tributario_principal": "30525.00",
+  "credito_previdenciario_principal": "49826.02",
+  "selic_previdenciaria": "1905.88",
+  "previdenciario_atualizado": "51731.90",
+  "total_principal": "80351.02",
+  "total_com_atualizacao_previdenciaria": "82256.90",
+  "resultado_motor_referencia": true,
+  "motor_reversa_executado": false,
+  "quantidade_xml_esocial": 106
+}

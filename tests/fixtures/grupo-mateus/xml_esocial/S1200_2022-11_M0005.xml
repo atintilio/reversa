@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtRemun/v_S_01_03_00">
+  <!--Cenario sintetico; desconto duplicado intencional; sem assinatura; nao transmitir.-->
+  <evtRemun Id="ID1990012010001702023033012000000061">
+    <ideEvento>
+      <indRetif>1</indRetif>
+      <indApuracao>1</indApuracao>
+      <perApur>2022-11</perApur>
+      <tpAmb>2</tpAmb>
+      <procEmi>1</procEmi>
+      <verProc>1.0</verProc>
+    </ideEvento>
+    <ideEmpregador>
+      <tpInsc>1</tpInsc>
+      <nrInsc>99001201</nrInsc>
+    </ideEmpregador>
+    <ideTrabalhador>
+      <cpfTrab>93001000503</cpfTrab>
+    </ideTrabalhador>
+    <dmDev>
+      <ideDmDev>D202211</ideDmDev>
+      <codCateg>101</codCateg>
+      <infoPerApur>
+        <ideEstabLot>
+          <tpInsc>1</tpInsc>
+          <nrInsc>99001201000170</nrInsc>
+          <codLotacao>L001</codLotacao>
+          <remunPerApur>
+            <matricula>M0005</matricula>
+            <itensRemun>
+              <codRubr>1000</codRubr>
+              <ideTabRubr>TAB01</ideTabRubr>
+              <vrRubr>3241.72</vrRubr>
+            </itensRemun>
+            <itensRemun>
+              <codRubr>2102</codRubr>
+              <ideTabRubr>TAB01</ideTabRubr>
+              <vrRubr>298.01</vrRubr>
+            </itensRemun>
+            <itensRemun>
+              <codRubr>2103</codRubr>
+              <ideTabRubr>TAB01</ideTabRubr>
+              <vrRubr>298.01</vrRubr>
+            </itensRemun>
+          </remunPerApur>
+        </ideEstabLot>
+      </infoPerApur>
+    </dmDev>
+  </evtRemun>
+</eSocial>

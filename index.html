@@ -1224,6 +1224,28 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
       });
     }
 
+    if (res && res.creditosAproveitados) {
+      var ca = res.creditosAproveitados;
+      doc.addPage(); y = M + 6;
+      titulo(++sec, 'Créditos escriturais apropriados e utilizados (informativo)');
+      paragrafo(t(ca.nota));
+      tabela({
+        head: [['CNPJ', 'Competência', 'PIS apropriado', 'COFINS apropriado']],
+        body: ca.linhas.map(function (l) { return [t(l.cnpj), t(l.competencia), RP(l.pis / 100), RP(l.cofins / 100)]; }).concat([[{ content: 'Total', colSpan: 2, styles: { fontStyle: 'bold' } }, RP(ca.total.pis / 100), RP(ca.total.cofins / 100)]]),
+        columnStyles: { 2: { halign: 'right' }, 3: { halign: 'right' } }
+      });
+    }
+    if (prev && prev.inssSegurado) {
+      doc.addPage(); y = M + 6;
+      titulo(++sec, 'INSS do segurado: devido x retido por competência (T074)');
+      paragrafo('Excesso = INSS retido na folha menos o calculado pela tabela progressiva sobre a base de incidência (limitada ao teto). O valor pertence ao empregado (restituição) e a empresa compensa o que repassar; 13º salário excluído. Tabelas de 2023 em diante a conferir.');
+      tabela({
+        head: [['Competência', 'Devido', 'Retido', 'Excesso']],
+        body: prev.inssSegurado.porCompetencia.map(function (x) { return [t(x.competencia || x.comp || ''), RP(x.devido), RP(x.retido), RP(x.excesso)]; }).concat([[{ content: 'Total', colSpan: 3, styles: { fontStyle: 'bold' } }, RP(prev.inssSegurado.principal)]]),
+        columnStyles: { 1: { halign: 'right' }, 2: { halign: 'right' }, 3: { halign: 'right' } }
+      });
+    }
+
     doc.addPage(); y = M + 6;
     titulo(++sec, 'Avisos e limitações');
     var av = [];

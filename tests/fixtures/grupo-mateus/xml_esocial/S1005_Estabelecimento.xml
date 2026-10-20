@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTabEstab/v_S_01_03_00">
+  <!--Cenario sintetico; desconto duplicado intencional; sem assinatura; nao transmitir.-->
+  <evtTabEstab Id="ID1990012010001702023033012000000002">
+    <ideEvento>
+      <tpAmb>2</tpAmb>
+      <procEmi>1</procEmi>
+      <verProc>1.0</verProc>
+    </ideEvento>
+    <ideEmpregador>
+      <tpInsc>1</tpInsc>
+      <nrInsc>99001201</nrInsc>
+    </ideEmpregador>
+    <infoEstab>
+      <inclusao>
+        <ideEstab>
+          <tpInsc>1</tpInsc>
+          <nrInsc>99001201000170</nrInsc>
+          <iniValid>2022-10</iniValid>
+        </ideEstab>
+        <dadosEstab>
+          <cnaePrep>6201501</cnaePrep>
+          <aliqGilrat>
+            <aliqRat>2</aliqRat>
+            <fap>1.0000</fap>
+          </aliqGilrat>
+        </dadosEstab>
+      </inclusao>
+    </infoEstab>
+  </evtTabEstab>
+</eSocial>

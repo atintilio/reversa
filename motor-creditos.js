@@ -250,7 +250,7 @@
   function lerEfdContribuicoes(texto, nomeArquivo) {
     var res = {
       arquivo: nomeArquivo || '(sem nome)',
-      meta: null, itens: [], entradas: [], consolidados: [], saldoCredito: { pis: 0, cofins: 0, registros: 0 }, produtos: 0, avisos: [], erros: [],
+      meta: null, itens: [], entradas: [], consolidados: [], saldoCredito: { pis: 0, cofins: 0, registros: 0 }, creditosApropriados: { pis: 0, cofins: 0, registros: 0 }, produtos: 0, avisos: [], erros: [],
       estatisticas: { linhas: 0, registros: {}, c100Saida: 0, c100Entrada: 0, c100SaidaSemItens: 0, c100Ignorados: 0, consolidados: 0, itensSemNcm: 0 }
     };
     var linhas = texto.split(/\r?\n/);
@@ -350,6 +350,7 @@
         } else if (reg === 'M100' || reg === 'M500') {
           var qm = L[reg], sld = cv(f[qm.SLD_CRED]);
           res.saldoCredito[reg === 'M100' ? 'pis' : 'cofins'] += sld; res.saldoCredito.registros++;
+          res.creditosApropriados[reg === 'M100' ? 'pis' : 'cofins'] += cv(f[qm.VL_CRED]); res.creditosApropriados.registros++; // créditos da própria escrituração (informativo)
         } else if (reg === 'C100') {
           fecharDoc();
           var c = L.C100;
@@ -866,6 +867,14 @@
       t.competencias = Object.keys(t.competencias).sort().map(function (k) { return t.competencias[k]; });
       return t;
     });
+    // Créditos escriturais já apropriados na escrituração (M100/M500) e utilizados contra os débitos do mês: informativo, NÃO é oportunidade nem entra nos totais.
+    var credAprov = { linhas: [], total: { pis: 0, cofins: 0 }, nota: 'Créditos escriturais apropriados e utilizados (informativo, não é oportunidade). Já foram descontados das contribuições a recolher na própria EFD; recuperar de novo exigiria crédito não apropriado.' };
+    usados.forEach(function (l) {
+      var ca = l.creditosApropriados; if (!ca || !(ca.pis || ca.cofins)) return;
+      credAprov.linhas.push({ cnpj: l.meta.cnpj, competencia: l.meta.competencia, pis: ca.pis, cofins: ca.cofins, saldoPis: l.saldoCredito.pis, saldoCofins: l.saldoCredito.cofins });
+      credAprov.total.pis += ca.pis; credAprov.total.cofins += ca.cofins;
+    });
+    credAprov.linhas.sort(function (a, b) { return a.competencia < b.competencia ? -1 : 1; });
     var recuperavel = { pis: 0, cofins: 0 }, recuperavelNoPrazo = { pis: 0, cofins: 0 }, potencial = { pis: 0, cofins: 0 }, risco = { pis: 0, cofins: 0 };
     teses.forEach(function (t) {
       if (t.natureza === 'credito') {
@@ -886,6 +895,7 @@
       // Todas as teses
       teses: teses,
       resumo: { recuperavel: recuperavel, recuperavelNoPrazo: recuperavelNoPrazo, potencial: potencial, risco: risco },
+      creditosAproveitados: credAprov.linhas.length ? credAprov : null,
       catalogo: CATALOGO,
       leitura: leitura,
       // Bloco F e apuração M, uma linha por CNPJ/competência (somente leitura; nenhuma tese é calculada sobre o bloco F).
