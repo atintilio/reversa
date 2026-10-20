@@ -255,7 +255,8 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
 .modos button { background: transparent; color: var(--fg); border: 1px solid rgba(14,34,57,.18); box-shadow: none; padding: 8px 16px; font-size: .88rem; }
 .modos button[aria-selected="true"] { background: #1E8F88; border-color: #1E8F88; color: #FFFFFF; }
 .modos button:focus-visible { outline: 2px solid #C78054; outline-offset: 2px; }
-body[data-modo="tributario"] #sec-prev, body[data-modo="fiscal"] #sec-prev { display: none !important; }
+body[data-modo="tribfiscal"] #sec-prev { display: none !important; }
+body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] section[aria-labelledby="resumo"], body[data-modo="prev"] section[aria-labelledby="t-teses"], body[data-modo="prev"] #sec-cob, body[data-modo="prev"] #sec-tec, body[data-modo="prev"] section[aria-labelledby="t-arquivos"], body[data-modo="prev"] section[aria-labelledby="t-det"] { display: none !important; }
 @media (max-width: 640px) {
   .head { padding: 14px 16px 12px; gap: 10px; }
   .passos { padding: 8px 2px; }
@@ -290,9 +291,9 @@ body[data-modo="tributario"] #sec-prev, body[data-modo="fiscal"] #sec-prev { dis
   </header>
 
   <nav class="modos" id="modos" role="tablist" aria-label="Tipo de diagnóstico">
-    <button type="button" role="tab" data-modo="tributario" aria-selected="false" title="PIS/COFINS e IRPJ/CSLL (SPED Contribuições, ECD, ECF)">Diagnóstico tributário</button>
-    <button type="button" role="tab" data-modo="fiscal" aria-selected="false" title="Tributário + ICMS (EFD ICMS/IPI)">Diagnóstico fiscal</button>
-    <button type="button" role="tab" data-modo="completo" aria-selected="true" title="Fiscal + previdenciário (eSocial)">Diagnóstico fiscal e previdenciário</button>
+    <button type="button" role="tab" data-modo="tribfiscal" aria-selected="false" title="PIS/COFINS, IRPJ/CSLL e ICMS (SPED Contribuições, ECD, ECF, EFD ICMS/IPI)">Diagnóstico tributário e fiscal</button>
+    <button type="button" role="tab" data-modo="prev" aria-selected="false" title="Somente a parte previdenciária (eSocial)">Diagnóstico previdenciário</button>
+    <button type="button" role="tab" data-modo="consolidado" aria-selected="true" title="Tributário, fiscal e previdenciário juntos">Relatório diagnóstico consolidado</button>
   </nav>
 
   <section aria-labelledby="envio">
@@ -2183,7 +2184,7 @@ body[data-modo="tributario"] #sec-prev, body[data-modo="fiscal"] #sec-prev { dis
     }
     // Previdenciário (motor eSocial, valores em reais -> centavos): só entra no resumo quando houver resultado dentro do escopo
     var p = estado.prev, prevCorpo = null;
-    if (p && p.teses && p.teses.length && p.escopo && p.escopo.ok !== false && document.body.getAttribute('data-modo') === 'completo') {
+    if (p && p.teses && p.teses.length && p.escopo && p.escopo.ok !== false && document.body.getAttribute('data-modo') !== 'tribfiscal') {
       prevCorpo = {
         tipo: 'previdenciario', contato: contatoResp, taxpayer: corpo.taxpayer, periodStart: p.periodo.inicio, periodEnd: p.periodo.fim, files: estado.nEs || 0, engineVersion: p.versaoMotor,
         teses: p.teses.filter(function (t) { return !t.condicional || estado.prevIncluir[t.id]; }).map(function (t) { return { id: t.id, nome: t.nome, curto: t.nome, natureza: 'credito', itens: t.competencias, valorCentavos: Math.round(t.valor * 100), valorNoPrazoCentavos: Math.round(t.valorNoPrazo * 100) }; })
@@ -2191,7 +2192,7 @@ body[data-modo="tributario"] #sec-prev, body[data-modo="fiscal"] #sec-prev { dis
       if (!prevCorpo.periodStart || !prevCorpo.teses.length) prevCorpo = null;
     }
     var codigos = [], pendencias = [], idCliente = null, aviso = '';
-    (temSped ? enviar(corpo) : Promise.resolve(null))
+    (temSped && document.body.getAttribute('data-modo') !== 'prev' ? enviar(corpo) : Promise.resolve(null))
       .then(function (j) { if (!j) return; codigos.push(j.diagnosticCode + ' v' + j.versao + ' (PIS/COFINS)' + (j.repetido ? ' sem mudanças' : '')); idCliente = j.taxpayerId; pendencias = j.pendencias || []; })
       .then(function () { if (!prevCorpo) return; return enviar(prevCorpo).then(function (j) { codigos.push(j.diagnosticCode + ' v' + j.versao + ' (Previdenciário)' + (j.repetido ? ' sem mudanças' : '')); idCliente = j.taxpayerId; pendencias = j.pendencias || pendencias; }).catch(function (e) { aviso = ' O previdenciário não foi salvo: ' + e.message; }); })
       .then(function () {
@@ -2217,11 +2218,12 @@ body[data-modo="tributario"] #sec-prev, body[data-modo="fiscal"] #sec-prev { dis
 
 <script>
 (function () {
-  var MODOS = { tributario: 1, fiscal: 1, completo: 1 };
+  var MODOS = { tribfiscal: 1, prev: 1, consolidado: 1 }, ANTIGOS = { tributario: 'tribfiscal', fiscal: 'tribfiscal', completo: 'consolidado' };
+  function norm(m) { m = ANTIGOS[m] || m; return MODOS[m] ? m : null; }
   function lerModo() {
-    var m = (/[?&]modo=([a-z]+)/.exec(location.search) || [])[1];
-    if (!MODOS[m]) { try { m = localStorage.getItem('rv_modo_diag'); } catch (e) { m = null; } }
-    return MODOS[m] ? m : 'completo';
+    var m = norm((/[?&]modo=([a-z]+)/.exec(location.search) || [])[1]);
+    if (!m) { try { m = norm(localStorage.getItem('rv_modo_diag')); } catch (e) { m = null; } }
+    return m || 'consolidado';
   }
   function aplicar(m, atualizaUrl) {
     document.body.setAttribute('data-modo', m);
