@@ -458,6 +458,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
 <script src="/motor-esocial-extra.js"></script>
 <script src="/motor-esocial.js"></script>
 <script src="/motor-ecf.js"></script>
+<script src="/motor-irpj-veiculos.js"></script>
 <script src="/motor-ecd.js"></script>
 <script src="/motor-efd-icms.js"></script>
 <script src="/motor-darf.js"></script>
@@ -1744,6 +1745,33 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
   ];
   function RP(v) { return R(Math.round(v * 100)); } // o motor eSocial trabalha em reais; formatarReais espera centavos
   // Seção técnica interna: ECF (tese ainda sem base legal confirmada) e leitura de ECD / EFD ICMS-IPI.
+  // REV-IRPJ-CSLL-VEICULOS-001 (T099): relatório preliminar. Só aparece com ECF do Lucro Presumido (P200 a P500) ou ECD com contas de veículos usados.
+  // Oportunidade estimada, em disputa judicial: nunca crédito disponível e fora do total recuperável.
+  function relatorioIrpjVeiculos(tec) {
+    var MI = window.MotorIrpjVeiculos; if (!MI) return '';
+    var ecfs = [], ecds = [];
+    tec.forEach(function (x) {
+      if (x.tipo === 'ecf') { var e = MI.lerEcfPresumido(x.texto, x.nome); if (e.p.P200.length || e.p.P300.length || e.p.P400.length || e.p.P500.length) ecfs.push(e); }
+      else if (x.tipo === 'ecd') ecds.push(x.lido);
+    });
+    if (!ecfs.length) return '';
+    var r = MI.analisar({ ecfs: ecfs, ecds: ecds, contribuinte: {}, trimestres: {} }, { hoje: estado.hoje });
+    var L = function (a) { return a.length ? '<ul class="msgs">' + a.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') + '</ul>' : ''; };
+    var c = function (v) { return RP(v / 100); };
+    var h = '<h3>IRPJ e CSLL na revenda de veículos usados (REV-IRPJ-CSLL-VEICULOS-001) — oportunidade estimada, em disputa judicial</h3>';
+    h += '<p class="note"><strong>Risco jurídico ' + esc(r.risco.grau) + '.</strong> ' + esc(r.risco.texto) + ' Triagem: <strong>' + esc(r.triagem.classe) + '</strong>. Estado: ' + esc(r.estadoAtual.replace(/_/g, ' ')) + '. Não soma com a tese de PIS/COFINS (T098) nem com ICMS; fora do total recuperável.</p>';
+    h += '<div class="scroll"><table><thead><tr><th>Trimestre</th><th class="r">Margem</th><th class="r">Apurado (32%)</th><th class="r">Recalculado (8% / 12%)</th><th class="r">Diferença nominal</th><th>Situação</th></tr></thead><tbody>' +
+      (r.trimestres.length ? r.trimestres.map(function (l) {
+        return '<tr><td>' + esc(l.chave) + '</td><td class="r">' + (l.margem != null ? c(l.margem) : '—') + '</td><td class="r">' + (l.original ? c(l.original.total) : '—') + '</td><td class="r">' + (l.tese ? c(l.tese.total) : '—') + '</td><td class="r">' + (l.diferencaNominal != null ? c(l.diferencaNominal) : '—') + '</td><td>' + esc(l.status || '') + '</td></tr>';
+      }).join('') : '<tr><td colspan="6">Sem margem de veículos usados: envie a ECD com as contas de venda e custo, ou informe venda e custo por trimestre.</td></tr>') +
+      '</tbody><tfoot><tr><td><strong>Total</strong></td><td class="r">' + c(r.total.margem) + '</td><td class="r">' + c(r.total.apuradoOriginal) + '</td><td class="r">' + c(r.total.recalculadoTese) + '</td><td class="r"><strong>' + c(r.total.diferencaNominal) + '</strong></td><td>no prazo (5 anos): ' + c(r.total.noPrazo) + '</td></tr></tfoot></table></div>';
+    h += '<p class="note">Valores nominais, sem Selic (fase posterior). Pagamento não confirmado até a conferência de DARF/DCTF. Nenhum crédito disponível: compensação só após trânsito em julgado e habilitação; sem PER/DCOMP.</p>';
+    h += '<h3>Fundamentos e divergência</h3>' + L(r.fundamentos.map(function (f) { return f.norma + ': ' + f.papel; }));
+    h += L(r.precedentes.map(function (p) { return 'STJ ' + p.processo + ' (' + p.orgao + ', ' + p.relator + ', publ. ' + p.publicacao + '): ' + p.situacao + '; não repetitivo, não vinculante'; }));
+    h += L(r.divergenciaAdministrativa.map(function (d) { return 'Divergência administrativa — ' + d.ato + ': ' + d.conteudo; }));
+    h += '<h3>Pendências e avisos</h3>' + L(r.pendencias.concat(r.alertas, r.triagem.motivos, r.avisos));
+    return h;
+  }
   function renderTecnico(tec) {
     var sec = $('sec-tec'), h = '', estimadosTec = null;
     estado.tecDados = null; estado.sdEcf = null;
@@ -1798,6 +1826,7 @@ button, .btn { border-radius: 6px; font-weight: 500; box-shadow: 0 1px 2px rgba(
         linhasR.map(function (p) { return '<tr><th scope="row">' + p[0] + '</th><td>' + esc(String(p[1] == null ? '' : p[1])) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
         lista('Avisos', av.map(esc)) + '<p class="note">Leitura apenas — nenhuma tese calculada a partir deste arquivo ainda.</p>';
     });
+    h += relatorioIrpjVeiculos(tec);
     $('tec-corpo').innerHTML = h; sec.hidden = false;
     var ns = notaSelic(estimadosTec); $('tec-selic').innerHTML = ns || 'Valores nominais, sem Selic.';
   }
