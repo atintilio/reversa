@@ -25,7 +25,7 @@ test('bloqueia lacunas anuais, mistura de regimes, duplicidades e seleção vazi
   assert.throws(() => M.apresentar(M.calcular(amostra(), 2021, false), {}), /Selecione/);
 });
 test('meses sem oportunidade contam na média e valor ocultado não aparece no PDF', () => {
-  const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
+  const html = fs.readFileSync(require.resolve('../tax/index.html'), 'utf8');
   const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x => x[1]).find(x => x.includes('root.GeradorMemoria ='));
   const textos = [];
   function PDF() { // stub do jsPDF: registra textos e tabelas; demais métodos são no-op
@@ -50,7 +50,7 @@ test('meses sem oportunidade contam na média e valor ocultado não aparece no P
 });
 
 test('apresentação ao cliente: condicional só entra se marcada, regime sempre consta e sem código técnico', () => {
-  const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
+  const html = fs.readFileSync(require.resolve('../tax/index.html'), 'utf8');
   const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x => x[1]).find(x => x.includes('root.GeradorMemoria ='));
   const textos = [];
   function PDF() {
@@ -82,7 +82,7 @@ test('apresentação ao cliente: condicional só entra se marcada, regime sempre
 });
 
 test('relatório técnico interno traz "Teses calculadas, a avaliar"; o do cliente não', () => {
-  const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
+  const html = fs.readFileSync(require.resolve('../tax/index.html'), 'utf8');
   const script = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(x => x[1]).find(x => x.includes('root.GeradorMemoria ='));
   const textos = [];
   function PDF() {
@@ -115,7 +115,7 @@ test('relatório técnico interno traz "Teses calculadas, a avaliar"; o do clien
 });
 
 test('selos da tela previdenciária: tooltip da T007 e chip "Requer documento"', () => {
-  const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
+  const html = fs.readFileSync(require.resolve('../tax/index.html'), 'utf8');
   assert.ok(/function selosTese/.test(html) && /class="pill neu tip" tabindex="0"/.test(html) && /Requer documento/.test(html));
   const TD = require('../teses-diagnostico');
   assert.equal(TD.desaconselhada('T007').motivo, 'Tema 985 do STF é desfavorável, com modulação a partir de 15/09/2020.');
