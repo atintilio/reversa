@@ -5,7 +5,7 @@ import { neon } from '@neondatabase/serverless';
 // atrás do login, como as demais páginas internas da plataforma.
 // /assets/ e o favicon ficam públicos porque a landing da marca os carrega antes de qualquer login.
 // O "$" isenta a raiz: sem ele, "/" casaria com o grupo e cairia no redirecionamento para /login.html.
-export const config = { matcher: '/((?!login\\.html|reset-password\\.html|aprovacao\\.html|aprovacao\\.js|validacao-contador\\.html|validacao-contador\\.js|assets/|favicon\\.(ico|png)|robots\\.txt|api/|index\\.html|$).*)' };
+export const config = { matcher: '/((?!login\\.html|reset-password\\.html|aprovacao\\.html|aprovacao\\.js|validacao-contador\\.html|validacao-contador\\.js|assets/|favicon\\.ico|favicon\\.png|robots\\.txt|api/|index\\.html|$).*)' };
 
 const COOKIE = 'rv_sessao';
 const enc = new TextEncoder();
