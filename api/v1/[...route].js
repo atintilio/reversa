@@ -247,6 +247,9 @@ async function route(req, res) {
       if (m !== 'GET') return method(res, ['GET']);
       return json(res, 200, await tax.dashboard(ctx));
 
+    case 'gov':
+      return require('../../lib/domain/gov-routes')({ ctx, m, query, body, parts: segments(req), deny }, res);
+
     default:
       return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Rota não encontrada.' } });
   }
