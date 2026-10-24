@@ -27,6 +27,9 @@ async function bootstrapOwner(sql, send = sendInvite) {
     await sql`insert into organization_members (organization_id, user_id, role, status)
               values (${org.id}, ${user.id}, 'owner', ${user.status === 'active' ? 'active' : 'invited'})
               on conflict (organization_id, user_id) do update set role = 'owner', updated_at = now()`;
+    await sql`insert into suite_access (organization_id, user_id, suite, granted_by)
+              values (${org.id}, ${user.id}, 'tax', ${user.id})
+              on conflict (organization_id, user_id, suite) do nothing`;
     if (user.status === 'blocked') { console.log('bootstrap-owner: proprietário bloqueado; nada a enviar'); return 'blocked'; }
     // "Já acessou" = criou senha por link ou entrou com sucesso (registrado na auditoria). Cobre owner criado ativo com senha aleatória.
     const accessed = (await sql`select 1 from audit_events where actor_user_id = ${user.id}

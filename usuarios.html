@@ -39,8 +39,8 @@
   <section class="card" aria-labelledby="t-lista">
     <h2 id="t-lista">Equipe</h2>
     <div class="tabela"><table>
-      <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Situação</th><th>Último acesso</th><th></th></tr></thead>
-      <tbody id="lista"><tr><td colspan="6" class="vazio">Carregando…</td></tr></tbody>
+      <thead><tr><th>Nome</th><th>E-mail</th><th>Perfil</th><th>Suites</th><th>Situação</th><th>Último acesso</th><th></th></tr></thead>
+      <tbody id="lista"><tr><td colspan="7" class="vazio">Carregando…</td></tr></tbody>
     </table></div>
   </section>
 </main>
@@ -51,6 +51,11 @@
     <p class="muted" id="ed-email"></p>
     <label>Nome<input id="ed-nome" maxlength="180" required></label>
     <label>Perfil<select id="ed-papel"><option value="analyst">Analista</option><option value="admin">Administrador</option><option value="viewer">Leitor</option><option value="support">Suporte</option><option value="owner">Proprietário</option></select></label>
+    <fieldset id="ed-suites" style="border:1px solid var(--line);padding:12px 14px;border-radius:10px">
+      <legend style="font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700">Suites</legend>
+      <label style="display:flex;flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:.9rem"><input type="checkbox" id="ed-suite-tax" style="width:auto" checked disabled> Reversa Tax <span class="hint" style="font-size:.78rem">acesso base do vínculo</span></label>
+      <label style="display:flex;flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:.9rem"><input type="checkbox" id="ed-suite-gov" style="width:auto"> Reversa Gov <span class="hint" style="font-size:.78rem">IRRF municipal</span></label>
+    </fieldset>
     <div class="acoes" style="justify-content:space-between">
       <div class="acoes">
         <button type="button" class="sec" id="ed-ativo"></button>
@@ -71,18 +76,19 @@
 
   function mostrar(tipo, html) { var m = $('m-conv'); m.className = 'msg ' + tipo; m.innerHTML = html; m.hidden = false; }
   function render() {
-    if (!membros.length) { $('lista').innerHTML = '<tr><td colspan="6" class="vazio">Nenhum usuário ainda.</td></tr>'; return; }
+    if (!membros.length) { $('lista').innerHTML = '<tr><td colspan="7" class="vazio">Nenhum usuário ainda.</td></tr>'; return; }
     $('lista').innerHTML = membros.map(function (u) {
       var s = SIT[u.status] || [u.status, ''];
       return '<tr><td><strong>' + RV.esc(u.name) + '</strong>' + (u.isYou ? ' <span class="pill">você</span>' : '') + '</td>' +
         '<td>' + RV.esc(u.email) + '</td><td>' + RV.esc(RV.PAPEIS[u.role] || u.role) + '</td>' +
+        '<td>' + ((u.suites || []).map(function (x) { return '<span class="pill">' + (x === 'gov' ? 'Gov' : 'Tax') + '</span>'; }).join(' ') || '—') + '</td>' +
         '<td><span class="pill ' + s[1] + '">' + s[0] + '</span></td><td>' + RV.data(u.lastLoginAt, true) + '</td>' +
         '<td class="num"><button class="mini sec" data-editar="' + u.id + '">Editar</button></td></tr>';
     }).join('');
   }
   function carregar() {
     return RV.api('GET', '/api/v1/members').then(function (j) { membros = j.members; render(); })
-      .catch(function (e) { $('lista').innerHTML = '<tr><td colspan="6" class="vazio">' + RV.esc(e.message) + '</td></tr>'; });
+      .catch(function (e) { $('lista').innerHTML = '<tr><td colspan="7" class="vazio">' + RV.esc(e.message) + '</td></tr>'; });
   }
   function resultado(j, email) {
     if (j.linkedExistingAccount) mostrar('ok', '<strong>' + RV.esc(email) + '</strong> já tinha conta ativa e foi vinculado à equipe.');
@@ -105,6 +111,9 @@
     atual = membros.filter(function (x) { return x.id === b.dataset.editar; })[0];
     $('ed-email').textContent = atual.email + ' · ' + (SIT[atual.status] || [atual.status])[0];
     $('ed-nome').value = atual.name; $('ed-papel').value = atual.role;
+    var suites = atual.suites || ['tax'];
+    $('ed-suite-tax').checked = suites.indexOf('tax') >= 0;
+    $('ed-suite-gov').checked = suites.indexOf('gov') >= 0;
     $('ed-ativo').hidden = atual.status === 'invited';
     $('ed-ativo').textContent = atual.status === 'suspended' ? 'Reativar acesso' : 'Suspender acesso';
     $('ed-reenviar').hidden = atual.status !== 'invited';
@@ -118,7 +127,10 @@
   $('ed-cancel').onclick = function () { $('dlg').close(); };
   $('f-ed').addEventListener('submit', function (e) {
     e.preventDefault();
-    aplicar(RV.api('PATCH', '/api/v1/members/' + atual.id, { name: $('ed-nome').value.trim(), role: $('ed-papel').value }), 'Usuário atualizado');
+    var suites = [];
+    if ($('ed-suite-tax').checked) suites.push('tax');
+    if ($('ed-suite-gov').checked) suites.push('gov');
+    aplicar(RV.api('PATCH', '/api/v1/members/' + atual.id, { name: $('ed-nome').value.trim(), role: $('ed-papel').value, suites: suites }), 'Usuário atualizado');
   });
   $('ed-ativo').onclick = function () {
     var novo = atual.status === 'suspended' ? 'active' : 'suspended';

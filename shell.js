@@ -120,14 +120,15 @@
     users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
     met: '<path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h7M8 11h7"/>',
     pgfn: '<path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M9 21v-6h6v6"/>',
-    master: '<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>'
+    master: '<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>',
+    gov: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>'
   };
   var svg = function (k) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICO[k] + '</svg>'; };
   var aqui = location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
   // [caminho, rótulo, ícone, href alternativo, atributo de visibilidade]
   var principais = DEMO_AMB
     ? [['/demonstracao', 'Início', 'inicio'], ['/', 'Diagnosticar', 'diag', '/?demo=1'], ['/lei-do-bem', 'Lei do Bem', 'lei', '/lei-do-bem.html?demo=1'], ['/teses', 'Teses', 'teses', '/teses.html?demo=1'], ['/metodologia', 'Metodologia', 'met'], ['/execucao', 'Retificação', 'exe'], ['/pgfn', 'Transação PGFN', 'pgfn']]
-    : [['/', 'Diagnosticar', 'diag'], ['/lei-do-bem', 'Lei do Bem', 'lei'], ['/crm', 'CRM', 'crm'], ['/clientes', 'Clientes', 'cli'], ['/teses', 'Teses', 'teses'], ['/metodologia', 'Metodologia', 'met'], ['/dashboard', 'Dashboard', 'dash']];
+    : [['/suite/gov', 'Reversa Gov', 'gov', '/suite/gov/entrar', 'data-suite-gov'], ['/lei-do-bem', 'Lei do Bem', 'lei'], ['/crm', 'CRM', 'crm'], ['/clientes', 'Clientes', 'cli'], ['/teses', 'Teses', 'teses'], ['/metodologia', 'Metodologia', 'met'], ['/dashboard', 'Dashboard', 'dash']];
   var plataforma = DEMO_AMB ? [] : [['/execucao', 'Execução', 'exe', null, 'data-plat'], ['/pgfn', 'Transação PGFN', 'pgfn', null, 'data-plat'], ['/usuarios', 'Usuários', 'users', null, 'data-admin'], ['/master', 'Master', 'master', null, 'data-master']];
   var href = function (p) { return p === '/' ? '/' : p + '.html'; };
   var item = function (l) {
@@ -206,6 +207,7 @@
       if (eu.permissions && eu.permissions.manageMembers) side.querySelectorAll('[data-admin]').forEach(function (a) { a.hidden = false; });
       if (eu.master) side.querySelectorAll('[data-master]').forEach(function (a) { a.hidden = false; });
       if (eu.organization && eu.organization.kind === 'plataforma') side.querySelectorAll('[data-plat]').forEach(function (a) { a.hidden = false; });
+      if (eu.suites && eu.suites.indexOf('gov') >= 0) side.querySelectorAll('[data-suite-gov]').forEach(function (a) { a.hidden = false; });
       var grp = side.querySelector('[data-grp]');
       if (grp) grp.hidden = !side.querySelector('[data-plat]:not([hidden]),[data-admin]:not([hidden]),[data-master]:not([hidden])');
     }

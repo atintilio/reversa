@@ -1,8 +1,9 @@
 // Roteador único do domínio (/api/v1/*) — uma função serverless só, para caber no limite do plano Hobby.
 // Toda rota autentica, resolve a organização do usuário e checa o papel no backend (Tech Spec §13).
-const { parseBody, json, method } = require('../../lib/http');
+const { parseBody, json, method, redirect } = require('../../lib/http');
 const { context, can, permissions, HttpError } = require('../../lib/authz');
 const { audit } = require('../../lib/audit');
+const { SUITES, TTL_SEGUNDOS, assinarSuiteToken, segredoSuite } = require('../../lib/suites');
 const members = require('../../lib/domain/members');
 const tax = require('../../lib/domain/tax');
 const crm = require('../../lib/domain/crm');
@@ -66,7 +67,32 @@ async function route(req, res) {
   switch (resource) {
     case 'me':
       if (m !== 'GET') return method(res, ['GET']);
-      return json(res, 200, { user: { name: ctx.user.name, email: ctx.user.email, legacy: ctx.user.legacy }, organization: ctx.organization, role: ctx.role, master: Boolean(ctx.master), permissions: permissions(ctx) });
+      return json(res, 200, { user: { name: ctx.user.name, email: ctx.user.email, legacy: ctx.user.legacy }, organization: ctx.organization, role: ctx.role, master: Boolean(ctx.master), permissions: permissions(ctx), suites: ctx.suites || [] });
+
+    case 'suite': {
+      // Passagem de sessao entre suites. O admin da organizacao concedeu o acesso
+      // (suite_access); aqui o token curto e assinado e o destino cria a sessao
+      // la — login unico, sem senha de novo.
+      if (!id) return method(res, ['GET']);
+      if (action !== 'entrar') return method(res, ['POST', 'GET']);
+      const suite = String(id);
+      if (!SUITES.includes(suite)) return json(res, 404, { error: { code: 'NOT_FOUND', message: 'Suite não encontrada.' } });
+      if (!(ctx.suites || []).includes(suite)) {
+        audit('suite.handoff.denied', { outcome: 'denied', organizationId: ctx.organization.id, actorUserId: ctx.user.id, entityType: 'suite', entityId: suite, metadata: { suite } });
+        return json(res, 403, { error: { code: 'FORBIDDEN', message: 'Você não tem acesso a esta suite.' } });
+      }
+      const destino = process.env[`SUITE_URL_${suite.toUpperCase()}`];
+      if (!destino) return json(res, 503, { error: { code: 'SUITE_NOT_CONFIGURED', message: 'Suite não configurada.' } });
+      const token = assinarSuiteToken({
+        u: ctx.user.id, e: ctx.user.email, n: ctx.user.name,
+        o: ctx.organization.id, g: ctx.organization.name, r: ctx.role,
+        x: Math.floor(Date.now() / 1000) + TTL_SEGUNDOS,
+      }, segredoSuite());
+      audit('suite.handoff', { organizationId: ctx.organization.id, actorUserId: ctx.user.id, entityType: 'suite', entityId: suite, metadata: { suite } });
+      const url = `${String(destino).replace(/\/$/, '')}/entrar?token=${encodeURIComponent(token)}`;
+      if (m === 'POST') return json(res, 200, { ok: true, url });
+      return redirect(res, url);
+    }
 
     case 'members':
       deny(ctx, 'manageMembers', 'members');
