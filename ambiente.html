@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Escolha o ambiente · Reversa Tax</title>
+<title>Escolha o caminho · Reversa</title>
 <link rel="icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
@@ -23,29 +23,29 @@
 </head>
 <body class="rv">
 <main>
-  <div class="cab"><div><h1>Olá<span id="ola"></span>. Onde você quer <em>trabalhar</em>?</h1>
-    <p class="sub">Você pode trocar de ambiente a qualquer momento pelo botão no topo da tela.</p></div></div>
+  <div class="cab"><div><h1>Olá<span id="ola"></span>. Por qual caminho você quer <em>seguir</em>?</h1>
+    <p class="sub">Você pode trocar de caminho a qualquer momento pelo botão no rodapé do menu.</p></div></div>
   <div class="escolha">
-    <button type="button" class="amb prod" data-amb="prod">
-      <span class="tag">Produção</span>
-      <h2>Casos reais</h2>
-      <p>Clientes, diagnósticos, Lei do Bem e CRM com dados reais. Tudo o que você salvar aqui fica registrado na pasta do cliente.</p>
-      <ul><li>Diagnóstico tributário e previdenciário</li><li>Lei do Bem, CRM, contratos e comissões</li></ul>
-      <span class="ir">Entrar na produção</span>
+    <button type="button" class="amb prod" data-dest="/">
+      <span class="tag">Empresas privadas</span>
+      <h2>Reversa Tax</h2>
+      <p>Diagnóstico tributário e previdenciário de empresas, Lei do Bem, CRM, contratos e comissões.</p>
+      <ul><li>Créditos de PIS, COFINS, IRPJ, CSLL, IPI e INSS</li><li>Teses, clientes e acompanhamento da execução</li></ul>
+      <span class="ir">Seguir pelo Reversa Tax</span>
     </button>
-    <button type="button" class="amb demo" data-amb="demo">
-      <span class="tag">Demonstração</span>
-      <h2>Exemplos para apresentar</h2>
-      <p>Casos fictícios para mostrar a ferramenta a clientes e parceiros. Nada é gravado e nada aparece na produção.</p>
-      <ul><li>Diagnóstico de exemplo com DTI</li><li>Lei do Bem com cerca de R$ 2 milhões de economia</li><li>Teses × carteira com clientes fictícios</li></ul>
-      <span class="ir">Abrir a demonstração</span>
+    <button type="button" class="amb prod" data-dest="/gov.html">
+      <span class="tag">Setor público</span>
+      <h2>Reversa Gov</h2>
+      <p>Diagnóstico de prefeituras, estados e União, quando aplicável: recuperação previdenciária, IRRF e arrecadação própria.</p>
+      <ul><li>Fluxo de caixa projetado para o ente público</li><li>Relatórios técnico e comercial por município</li></ul>
+      <span class="ir">Seguir pelo Reversa Gov</span>
     </button>
   </div>
 </main>
 <script src="/shell.js"></script>
 <script>
-  document.querySelectorAll('[data-amb]').forEach(function (b) {
-    b.addEventListener('click', function () { RV.definirAmbiente(b.dataset.amb); location.href = b.dataset.amb === 'demo' ? '/demonstracao.html' : '/'; });
+  document.querySelectorAll('[data-dest]').forEach(function (b) {
+    b.addEventListener('click', function () { RV.definirAmbiente('prod'); location.href = b.dataset.dest; });
   });
   RV.eu.then(function (eu) { var n = eu && eu.user && eu.user.name; if (n) document.getElementById('ola').textContent = ', ' + n.split(' ')[0]; });
 </script>
