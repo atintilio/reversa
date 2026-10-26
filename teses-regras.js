@@ -33,7 +33,9 @@
     { id: 'jcp', rotulo: 'Distribui ou poderia distribuir JCP', grupo: 'Situação fiscal' },
     { id: 'indebito', rotulo: 'Recebeu restituição/compensação com Selic', grupo: 'Situação fiscal' }
   ];
-  var REGIMES = { real: 'Lucro Real', presumido: 'Lucro Presumido', simples: 'Simples Nacional' };
+  var REGIMES = { real: 'Lucro Real', presumido: 'Lucro Presumido', simples: 'Simples Nacional', ente: 'Ente público (RGPS)' };
+  // Ente público (prefeitura, câmara, fundo, autarquia) no Regime Geral: só folha de pagamento. Sem terceiros (T008), produção rural (T041) e PLR (T063).
+  var ENTE_FORA = ['T008', 'T041', 'T063'];
   var RP = ['real', 'presumido'], R = ['real'], P = ['presumido'], TODOS = ['real', 'presumido', 'simples'];
 
   // tributo · via (do catálogo) · risco (do catálogo) · regimes · algum (basta um) · todos (exige todos) · motor (id no motor de cálculo)
@@ -116,6 +118,7 @@
   /** Normaliza o regime do cadastro ("Lucro Real", "Não cumulativo", "Presumido", "Simples") para real/presumido/simples. */
   function regimeDe(txt) {
     var s = String(txt || '').toLowerCase();
+    if (/ente\s*p[uú]blico|prefeitura|munic[ií]pio|[oó]rg[aã]o\s*p[uú]blico|c[aâ]mara\s*municipal|autarquia/.test(s)) return 'ente';
     if (/simples/.test(s)) return 'simples';
     if (/presumid|cumulativo/.test(s) && !/n[ãa]o\s*cumulativo/.test(s)) return 'presumido';
     if (/real|n[ãa]o\s*cumulativo|misto/.test(s)) return 'real';
@@ -135,6 +138,11 @@
     var regime = cliente && (REGIMES[cliente.regime] ? cliente.regime : regimeDe(cliente.regime));
     var motivos = [], faltam = [], nao = false;
     if (!regime) faltam.push('regime tributário');
+    else if (regime === 'ente') {
+      if (tese.tributo !== 'Previdenciário') { nao = true; motivos.push('Não se aplica a ente público: o município é imune a impostos e não tem faturamento tributável'); }
+      else if (ENTE_FORA.indexOf(tese.id) >= 0) { nao = true; motivos.push('Não se aplica a ente público (administração direta não recolhe terceiros; sem PLR nem produção rural)'); }
+      if (perfil.folha !== false) perfil = Object.assign({}, perfil, { folha: true });
+    }
     else if (tese.regimes.indexOf(regime) < 0) { nao = true; motivos.push('Não se aplica ao ' + REGIMES[regime] + ' (vale para ' + tese.regimes.map(function (r) { return REGIMES[r]; }).join(', ') + ')'); }
     (tese.todos || []).forEach(function (k) {
       var v = valor(perfil, k);
@@ -172,7 +180,7 @@
     return { matriz: matriz, porTese: porTese };
   }
 
-  var api = { VERSAO: VERSAO, PERFIL: PERFIL, REGIMES: REGIMES, TESES: TESES, PESO_RISCO: PESO_RISCO, regimeDe: regimeDe, avaliar: avaliar, cruzar: cruzar };
+  var api = { VERSAO: VERSAO, PERFIL: PERFIL, REGIMES: REGIMES, TESES: TESES, PESO_RISCO: PESO_RISCO, regimeDe: regimeDe, ENTE_FORA: ENTE_FORA, avaliar: avaliar, cruzar: cruzar };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.TesesRegras = api;
 })(typeof window !== 'undefined' ? window : this);

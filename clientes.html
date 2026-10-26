@@ -84,7 +84,8 @@
     <h2 id="dlg-t">Nova empresa</h2>
     <label>Razão social<input id="c-nome" required maxlength="240"></label>
     <label>CNPJ<input id="c-cnpj" inputmode="numeric" placeholder="00.000.000/0000-00"></label>
-    <label>Regime<select id="c-regime"><option value="">—</option><option>Lucro Real</option><option>Lucro Presumido</option></select></label>
+    <label>Regime<select id="c-regime"><option value="">—</option><option>Lucro Real</option><option>Lucro Presumido</option><option>Ente público (RGPS)</option></select></label>
+    <label id="c-grupo-l" hidden>Grupo econômico: órgãos e entidades (uma por linha: nome; CNPJ opcional)<textarea id="c-grupo" rows="5" maxlength="4000" placeholder="Fundo Municipal de Saúde; 00.000.000/0001-00&#10;Câmara Municipal"></textarea></label>
     <div class="acoes" style="justify-content:flex-end"><button type="button" class="sec" id="c-cancel">Cancelar</button><button type="submit">Salvar</button></div>
   </form>
 </dialog>
@@ -197,7 +198,7 @@
             '<td class="num">' + (podeRev ? '<button class="mini sec" data-rev="' + a.id + '">Revisar</button>' : '') + '</td></tr>';
         }).join('') + '</tbody></table></div></div>';
     }).join('') : '<p class="vazio">Nenhum diagnóstico salvo. Diagnostique na aba Diagnosticar e clique em “Salvar na pasta do cliente”.</p>';
-    $('p-ficha').innerHTML = [['Regime', t.taxRegime || '—'], ['Caso', caso ? caso.title : '—'], ['Situação técnica do caso', caso ? caso.status : '—']]
+    $('p-ficha').innerHTML = [['Regime', t.taxRegime || '—'], ['Grupo econômico', t.grupo && t.grupo.membros && t.grupo.membros.length ? t.grupo.membros.length + ' órgão(s) e entidade(s): ' + t.grupo.membros.map(function (m) { return m.nome; }).join(', ') : '—'], ['Caso', caso ? caso.title : '—'], ['Situação técnica do caso', caso ? caso.status : '—']]
       .map(function (x) { return '<div><div class="r">' + x[0] + '</div><div class="v">' + RV.esc(x[1]) + '</div></div>'; }).join('');
     $('p-hist').innerHTML = j.history.length ? j.history.map(function (h) {
       var m = h.metadata || {};
@@ -314,15 +315,24 @@
   function abrir(t) {
     $('dlg-t').textContent = t ? 'Editar dados da empresa' : 'Nova empresa';
     $('c-nome').value = t ? t.legalName : ''; $('c-cnpj').value = t ? RV.cnpj(t.cnpj) : ''; $('c-cnpj').disabled = !!t;
-    $('c-regime').value = t && t.taxRegime && /Real|Presumido/.test(t.taxRegime) ? (/Real/.test(t.taxRegime) ? 'Lucro Real' : 'Lucro Presumido') : '';
+    $('c-regime').value = t && t.taxRegime ? (/Ente/i.test(t.taxRegime) ? 'Ente público (RGPS)' : /Real/.test(t.taxRegime) ? 'Lucro Real' : /Presumido/.test(t.taxRegime) ? 'Lucro Presumido' : '') : '';
+    $('c-grupo').value = t && t.grupo ? (t.grupo.membros || []).map(function (m) { return m.nome + (m.cnpj ? '; ' + RV.cnpj(m.cnpj) : ''); }).join('\n') : '';
+    mostrarGrupo();
     $('dlg').showModal(); $('c-nome').focus();
+  }
+  function mostrarGrupo() { $('c-grupo-l').hidden = $('c-regime').value !== 'Ente público (RGPS)'; }
+  $('c-regime').addEventListener('change', mostrarGrupo);
+  function lerGrupo() {
+    if ($('c-regime').value !== 'Ente público (RGPS)') return null;
+    var membros = $('c-grupo').value.split('\n').map(function (l) { var p = l.split(';'); return { nome: (p[0] || '').trim(), cnpj: (p[1] || '').trim() }; }).filter(function (m) { return m.nome || m.cnpj; });
+    return membros.length ? { nome: 'Grupo econômico: ' + $('c-nome').value.trim(), membros: membros } : null;
   }
   $('b-novo').onclick = function () { abrir(null); };
   $('p-editar').onclick = function () { abrir(pasta.taxpayer); };
   $('c-cancel').onclick = function () { $('dlg').close(); };
   $('f-cli').addEventListener('submit', function (e) {
     e.preventDefault();
-    var dados = { legalName: $('c-nome').value.trim(), taxRegime: $('c-regime').value };
+    var dados = { legalName: $('c-nome').value.trim(), taxRegime: $('c-regime').value, grupo: lerGrupo() };
     var p = pasta ? RV.api('PATCH', '/api/v1/taxpayers/' + pasta.taxpayer.id, dados) : RV.api('POST', '/api/v1/taxpayers', Object.assign({ cnpj: $('c-cnpj').value }, dados));
     p.then(function (j) { $('dlg').close(); if (pasta) { RV.toast('Dados atualizados'); carregarPasta(); } else location.href = '/clientes.html?id=' + j.id; })
       .catch(function (e) { RV.toast(e.message); });

@@ -280,11 +280,11 @@
 
   /**
    * @param {Array} lidos  resultados de lerXml
-   * @param {{hoje?: Date, terceiros?: number, terceirosExcecao?: {ini:string, fim:string}|null, forcarEscopo?: boolean}} opts
+   * @param {{hoje?: Date, terceiros?: number, entePublico?: boolean, terceirosExcecao?: {ini:string, fim:string}|null, forcarEscopo?: boolean}} opts
    */
   function apurarBase(lidos, opts) {
     opts = opts || {};
-    var terceiros = opts.terceiros == null ? TERCEIROS_PADRAO : Number(opts.terceiros);
+    var terceiros = opts.terceiros != null ? Number(opts.terceiros) : opts.entePublico === true ? 0 : TERCEIROS_PADRAO;
     var limite = cincoAnos(opts.hoje);
     var exc = opts.terceirosExcecao && opts.terceirosExcecao.ini && opts.terceirosExcecao.fim ? opts.terceirosExcecao : null;
     var forcar = opts.forcarEscopo === true;
@@ -346,6 +346,15 @@
         }
       });
     });
+
+    // FPAS 582 (administração pública direta): sem contribuições a terceiros. Só vale se todas as lotações lidas forem 582 e opts.terceiros não foi informado.
+    var codsL = Object.keys(lotacoes);
+    if (opts.terceiros == null && opts.entePublico !== true && codsL.length &&
+        codsL.every(function (k) { return lotacoes[k][lotacoes[k].length - 1].fpas === '582'; })) {
+      terceiros = 0;
+      avisos.push('Todas as lotações do S-1020 estão no FPAS 582 (administração pública): terceiros calculado em zero.');
+    }
+    if (opts.entePublico === true && opts.terceiros == null) avisos.push('Ente público informado: terceiros calculado em zero (confirme o FPAS no S-1020).');
 
     // S-3000: descarta o evento lido cujo recibo case com nrRecEvt (só quando o XML traz o recibo)
     var pareadas = 0;
