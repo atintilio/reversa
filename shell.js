@@ -56,10 +56,10 @@
     st.textContent = [
       'html.rv-menu body { padding-left: 244px; }',
       '.rv-side { position: fixed; inset: 0 auto 0 0; width: 244px; z-index: 60; background: #fff; border-right: 1px solid #E5E7EB; display: flex; flex-direction: column; padding: 18px 14px 14px; font-family: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; color: #0E2239; -webkit-font-smoothing: antialiased; overflow-y: auto; }',
-      '.rv-side .marca { display: flex; align-items: center; gap: 11px; color: #1F1A14; text-decoration: none; font-weight: 700; letter-spacing: .16em; font-size: 14px; margin: 2px 6px 22px; padding-bottom: 18px; border-bottom: 1px solid #E3DDD3; }',
-      '.rv-side .marca img { height: 30px; width: auto; }',
-      '.rv-side .marca b { color: #9C7D53; font-weight: 700; }',
-      '.rv-side .marca:focus-visible, .rv-side .amb:focus-visible { outline: 2px solid #9C7D53; outline-offset: 2px; }',
+      '.rv-side .marca { display: flex; align-items: center; gap: 10px; color: #0E2239; text-decoration: none; font-weight: 600; letter-spacing: .02em; font-size: 15px; margin: 0 6px 22px; }',
+      '.rv-side .marca img { height: 32px; width: auto; }',
+      '.rv-side .marca b { color: #1E8F88; font-weight: 600; }',
+      '.rv-side .marca small { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0; color: #5C6672; }',
       '.rv-side nav { display: grid; gap: 2px; }',
       '.rv-side .grp { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: #9AA3AE; margin: 18px 10px 6px; font-weight: 500; }',
       '.rv-side a.it { display: flex; align-items: center; gap: 11px; padding: 9px 10px; border-radius: 8px; font-size: 14px; font-weight: 500; color: #3A4655; text-decoration: none; }',
@@ -70,12 +70,12 @@
       '.rv-side a.it[aria-current="page"] { background: #E6F4F2; color: #16736D; font-weight: 600; }',
       '.rv-side a.it[aria-current="page"] svg { opacity: 1; }',
       '.rv-side [hidden] { display: none !important; }',
-      '.rv-side .pe { margin-top: auto; padding-top: 16px; display: grid; gap: 14px; }',
-      '.rv-side .amb { display: block; border: 1px solid #E3DDD3; border-radius: 0; padding: 12px 13px; text-decoration: none; font-size: 13px; color: #6B6258; background: #FDFAF6; transition: border-color .3s cubic-bezier(.22,1,.36,1), background-color .3s cubic-bezier(.22,1,.36,1); }',
-      '.rv-side .amb strong { display: block; color: #1F1A14; font-size: 14px; font-weight: 700; margin-bottom: 2px; } .rv-side .amb small { display: block; font-size: 11px; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; color: #7E6340; margin-bottom: 6px; }',
-      '.rv-side .assina { display: flex; align-items: center; gap: 10px; padding-top: 14px; border-top: 1px solid #E3DDD3; font-size: 12px; line-height: 1.35; color: #6B6258; } .rv-side .assina img { width: 30px; height: auto; flex: none; } .rv-side .assina b { display: block; color: #1F1A14; font-weight: 600; }',
-      '.rv-side .amb.demo { background: #FBF3E8; border-color: #F0DDC4; }',
-      '.rv-side .amb:hover { border-color: #9C7D53; background: #F2EDE3; }',
+      '.rv-side .pe { margin-top: auto; padding-top: 16px; display: grid; gap: 8px; }',
+      '.rv-side .amb { display: block; border: 1px solid #E5E7EB; border-radius: 12px; padding: 11px 12px; text-decoration: none; font-size: 12px; color: #5C6672; }',
+      '.rv-side .amb strong { display: flex; align-items: center; gap: 7px; color: #0E2239; font-size: 13px; font-weight: 600; }',
+      '.rv-side .amb strong i { width: 8px; height: 8px; border-radius: 50%; background: #1E8F88; }',
+      '.rv-side .amb.demo { background: #FBF3E8; border-color: #F0DDC4; } .rv-side .amb.demo strong i { background: #C78054; }',
+      '.rv-side .amb:hover { border-color: #1E8F88; }',
       '.rv-top { position: sticky; top: 0; z-index: 50; height: 60px; background: rgba(255,255,255,.92); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid #E5E7EB; display: flex; align-items: center; gap: 14px; padding: 0 24px; font-family: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; color: #0E2239; -webkit-font-smoothing: antialiased; }',
       '.rv-top .abre { display: none; border: 1px solid #E5E7EB; background: #fff; border-radius: 8px; width: 36px; height: 36px; padding: 0; cursor: pointer; color: #0E2239; box-shadow: none; }',
       '.rv-top .abre svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }',
@@ -147,11 +147,10 @@
   };
   var side = document.createElement('aside');
   side.className = 'rv-side'; side.id = 'rv-side'; side.setAttribute('aria-label', 'Menu');
-  side.innerHTML = '<a class="marca" href="' + (NO_GOV ? '/gov.html' : (DEMO_AMB ? '/demonstracao.html' : '/')) + '"><img src="/assets/reversa-r.png" alt=""><span>REVERSA <b>' + (NO_GOV ? 'GOV' : 'TAX') + '</b></span></a>' +
+  side.innerHTML = '<a class="marca" href="' + (DEMO_AMB ? '/demonstracao.html' : '/') + '"><img src="/assets/reversa-r.png" alt=""><span>REVERSA <b>TAX</b><small>Uma solução Argus Prime</small></span></a>' +
     '<nav aria-label="Seções">' + principais.map(item).join('') +
     (plataforma.length ? '<div class="grp" data-grp hidden>Plataforma</div>' + plataforma.map(item).join('') : '') + '</nav>' +
-    '<div class="pe"><a href="/ambiente.html" class="amb ' + (DEMO_AMB && !NO_GOV ? 'demo' : 'prod') + '"><small>Você está em</small><strong>' + (NO_GOV ? 'Reversa Gov' : (DEMO_AMB ? 'Demonstração' : 'Reversa Tax')) + '</strong>Trocar para ' + (NO_GOV ? 'Reversa Tax' : 'Reversa Gov') + ' →</a>' +
-    '<div class="assina"><img src="/assets/argus-prime-monograma.png" alt="Argus Prime" width="30" height="33"><span>Reversa é uma solução da <b>Argus Prime</b></span></div></div>';
+    '<div class="pe"><a href="/ambiente.html" class="amb prod" title="Trocar de caminho"><strong><i></i>' + (NO_GOV ? 'Reversa Gov' : (DEMO_AMB ? 'Demonstração' : 'Reversa Tax')) + '</strong>Trocar para ' + (NO_GOV ? 'Reversa Tax' : 'Reversa Gov') + ' →</a><span class="ap" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted,#5A6878)"><img src="/assets/argus-prime-monograma.png" alt="" style="height:20px;width:auto">Uma solução Argus Prime</span></div>';
   var nav = document.createElement('header');
   nav.className = 'rv-top';
   nav.innerHTML = '<button type="button" class="abre" aria-label="Abrir menu" aria-controls="rv-side" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>' +
