@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov — IRRF Municipal</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+<style>
+  .gov-page { max-width: 1200px; margin: 0 auto; padding: 28px 20px 64px; }
+  .gov-kpi { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
+  .gov-kpi .r { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
+  .gov-kpi .v { font-family: var(--f-head); font-size: 1.55rem; font-weight: 700; margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .gov-kpi .n { font-size: 13px; color: var(--muted); margin-top: 2px; }
+</style>
+</head>
+<body class="rv">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>Reversa Gov <em>IRRF Municipal</em></h1>
+      <p class="sub">Identificação e análise de créditos tributários potencialmente recuperáveis por municípios. Nenhum valor é apresentado como crédito reconhecido sem trilha de evidências e revisão humana.</p>
+    </div>
+    <span class="gov-badge info" id="badge-status">Ambiente de desenvolvimento</span>
+  </div>
+
+  <div class="gov-grid">
+    <div class="gov-kpi">
+      <div class="r">Municípios cadastrados</div>
+      <div class="v" id="kpi-municipios">—</div>
+      <div class="n">Entes públicos mapeados</div>
+    </div>
+    <div class="gov-kpi">
+      <div class="r">Candidatos a análise</div>
+      <div class="v" id="kpi-candidatos">—</div>
+      <div class="n">Eventos candidatos a crédito</div>
+    </div>
+    <div class="gov-kpi">
+      <div class="r">Em revisão</div>
+      <div class="v" id="kpi-revisao">—</div>
+      <div class="n">Aguardando revisão humana</div>
+    </div>
+    <div class="gov-kpi">
+      <div class="r">Validados</div>
+      <div class="v" id="kpi-validados">—</div>
+      <div class="n">Após revisão jurídica</div>
+    </div>
+  </div>
+
+  <section class="gov-card" aria-labelledby="t-municipios">
+    <h2 id="t-municipios">Municípios</h2>
+    <div class="gov-actions" style="margin-bottom: 14px;">
+      <input type="text" id="busca-municipio" placeholder="Buscar município ou UF…">
+    </div>
+    <div class="tabela">
+      <table class="gov-table">
+        <thead>
+          <tr><th>Município</th><th class="num">IBGE</th><th>UF</th><th class="num">CNPJ raiz</th><th>Status</th></tr>
+        </thead>
+        <tbody id="tbody-municipios"><tr><td colspan="5" class="gov-empty">Carregando…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="gov-card" aria-labelledby="t-candidatos">
+    <h2 id="t-candidatos">Candidatos a análise</h2>
+    <div class="gov-actions" style="margin-bottom: 14px;">
+      <select id="filtro-status">
+        <option value="">Todos os status</option>
+        <option value="DRAFT">Rascunho</option>
+        <option value="NEEDS_EVIDENCE">Pendente de evidência</option>
+        <option value="UNDER_REVIEW">Em revisão</option>
+        <option value="VALIDATED">Validado</option>
+        <option value="REJECTED">Rejeitado</option>
+      </select>
+    </div>
+    <div class="tabela">
+      <table class="gov-table">
+        <thead>
+          <tr><th>Entidade</th><th class="num">Período</th><th class="num">Retido (R$)</th><th class="num">Potencial (R$)</th><th>Confiança</th><th>Status</th></tr>
+        </thead>
+        <tbody id="tbody-candidatos"><tr><td colspan="6" class="gov-empty">Carregando…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="gov-card" aria-labelledby="t-alerta">
+    <h2 id="t-alerta">Aviso importante</h2>
+    <div class="gov-alert warn">
+      <strong>Este módulo está em desenvolvimento.</strong> Dados públicos geram apenas sinais e indícios.
+      Não configuram retenção comprovada nem crédito recuperável. Toda conclusão exige evidência documental
+      e revisão humana/jurídica.
+    </div>
+  </section>
+</main>
+
+<script src="/shell.js"></script>
+<script src="/gov.js"></script>
+</body>
+</html>
