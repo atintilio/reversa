@@ -60,7 +60,7 @@ test('sem sessão, as rotas Gov respondem 401', async () => {
 });
 
 test('POST /api/v1/gov/municipios cria município e GET lista na organização', async () => {
-  const r = await v1('gov/municipios', { method: 'POST', cookie: admin, body: { ibgeCode: '4205402', name: 'Florianópolis', state: 'SC', cnpjRoot: '82345678' } });
+  const r = await v1('gov/municipios', { method: 'POST', cookie: admin, body: { ibgeCode: '4205407', name: 'Florianópolis', state: 'SC', cnpjRoot: '82345678' } });
   assert.equal(r.statusCode, 201);
   const criado = J(r);
   assert.equal(criado.name, 'Florianópolis');
@@ -69,17 +69,29 @@ test('POST /api/v1/gov/municipios cria município e GET lista na organização',
 
   const lista = await v1('gov/municipios', { cookie: admin });
   assert.equal(lista.statusCode, 200);
-  assert.equal(J(lista).municipios.length, 1);
+  const lc = J(lista);
+  assert.equal(lc.total, 5571);
+  const floripa = lc.municipios.find((m) => m.ibgeCode === '4205407');
+  if (floripa) assert.equal(floripa.status, 'active');
   municipio = criado.id;
 });
 
 test('filtro por UF e por busca no cadastro de municípios', async () => {
   await v1('gov/municipios', { method: 'POST', cookie: admin, body: { ibgeCode: '3550308', name: 'São Paulo', state: 'SP' } });
-  const sc = await v1('gov/municipios', { cookie: admin, query: { uf: 'SC' } });
-  assert.equal(J(sc).municipios.length, 1);
-  assert.equal(J(sc).municipios[0].state, 'SC');
+  const sc = await v1('gov/municipios', { cookie: admin, query: { uf: 'SC', limit: '200' } });
+  assert.equal(J(sc).total, 295);
+  assert.ok(J(sc).municipios.every((m) => m.state === 'SC'));
   const busca = await v1('gov/municipios', { cookie: admin, query: { q: 'florian' } });
-  assert.equal(J(busca).municipios.length, 1);
+  assert.equal(J(busca).municipios.find((m) => m.ibgeCode === '4205407').status, 'active');
+  // catálogo: pré-cadastrado, busca sem acento e por código IBGE
+  const tupa = await v1('gov/municipios', { cookie: admin, query: { q: 'tupaciguara' } });
+  assert.equal(J(tupa).municipios.length, 1);
+  assert.equal(J(tupa).municipios[0].status, 'precadastrado');
+  assert.equal(J(tupa).municipios[0].id, null);
+  const sp = await v1('gov/municipios', { cookie: admin, query: { q: 'sao paulo', uf: 'SP' } });
+  assert.equal(J(sp).municipios[0].status, 'active');
+  const ibge = await v1('gov/municipios', { cookie: admin, query: { q: '3169604' } });
+  assert.equal(J(ibge).municipios[0].name, 'Tupaciguara');
 });
 
 test('IBGE, UF ou CNPJ raiz inválidos são recusados', async () => {
@@ -143,12 +155,12 @@ test('dashboard do Gov conta municípios e candidatos da organização', async (
 });
 
 test('isolamento: a outra organização não enxerga nem pode escrever os dados', async () => {
-  const lista = await v1('gov/municipios', { cookie: outro });
-  assert.equal(J(lista).municipios.length, 0);
+  const lista = await v1('gov/municipios', { cookie: outro, query: { q: 'florian' } });
+  assert.equal(J(lista).municipios.find((m) => m.ibgeCode === '4205407').status, 'precadastrado');
   const id = globalThis.__candidato;
   const um = await v1(`gov/candidatos/${id}`, { cookie: outro });
   assert.equal(um.statusCode, 404);
-  const mesmo = await v1('gov/municipios', { method: 'POST', cookie: outro, body: { ibgeCode: '4205402', name: 'Florianópolis', state: 'SC' } });
+  const mesmo = await v1('gov/municipios', { method: 'POST', cookie: outro, body: { ibgeCode: '4205407', name: 'Florianópolis', state: 'SC' } });
   assert.equal(mesmo.statusCode, 201); // mesmo IBGE, outra organização — permitido pela migration 015
 });
 

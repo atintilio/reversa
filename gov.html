@@ -29,7 +29,7 @@
 
   <div class="gov-grid">
     <div class="gov-kpi">
-      <div class="r">Municípios cadastrados</div>
+      <div class="r">Municípios no catálogo</div>
       <div class="v" id="kpi-municipios">—</div>
       <div class="n">Entes públicos mapeados</div>
     </div>
@@ -53,15 +53,22 @@
   <section class="gov-card" aria-labelledby="t-municipios">
     <h2 id="t-municipios">Municípios</h2>
     <div class="gov-actions" style="margin-bottom: 14px;">
-      <input type="text" id="busca-municipio" placeholder="Buscar município ou UF…">
+      <input type="text" id="busca-municipio" placeholder="Buscar por nome, UF ou código IBGE…">
+      <select id="filtro-uf" aria-label="Filtrar por UF"><option value="">Todas as UFs</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select>
+      <span id="mun-resumo" class="gov-empty" style="padding:0;white-space:nowrap"></span>
     </div>
     <div class="tabela">
       <table class="gov-table">
         <thead>
-          <tr><th>Município</th><th class="num">IBGE</th><th>UF</th><th class="num">CNPJ raiz</th><th>Status</th></tr>
+          <tr><th>Município</th><th class="num">IBGE</th><th>UF</th><th>Região</th><th>Situação</th></tr>
         </thead>
         <tbody id="tbody-municipios"><tr><td colspan="5" class="gov-empty">Carregando…</td></tr></tbody>
       </table>
+    </div>
+    <div class="gov-actions" style="margin-top:12px;justify-content:space-between">
+      <button type="button" id="mun-anterior" class="btn">← Anterior</button>
+      <span id="mun-pagina"></span>
+      <button type="button" id="mun-proxima" class="btn">Próxima →</button>
     </div>
   </section>
 
