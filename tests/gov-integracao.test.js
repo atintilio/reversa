@@ -186,3 +186,43 @@ test('rota inexistente dentro de gov devolve 404 do módulo', async () => {
   assert.equal(r.statusCode, 404);
   assert.equal(J(r).error.code, 'NOT_FOUND');
 });
+
+test('motor: calculadoras registram o cálculo no histórico; entrada inválida devolve 400', async () => {
+  const ok = await v1('gov/calculadora/irrpf', { method: 'POST', cookie: leitor, body: { rendimentoBruto: 10000 } });
+  assert.equal(ok.statusCode, 200);
+  assert.equal(J(ok).impostoDevido, 1569.55);
+  assert.ok(J(ok).calculoId);
+  const comp = await v1('gov/calculadora/compensacao', { method: 'POST', cookie: leitor, body: { valorBeneficio: 5000, tempoRegimeOrigemAnos: 10, tempoTotalAnos: 30 } });
+  assert.equal(comp.statusCode, 200);
+  const ruim = await v1('gov/calculadora/irrpf', { method: 'POST', cookie: leitor, body: { rendimentoBruto: -5 } });
+  assert.equal(ruim.statusCode, 400);
+  const get = await v1('gov/calculadora/irrpf', { cookie: leitor });
+  assert.equal(get.statusCode, 405);
+  assert.equal((await sql`select count(*)::int n from gov_calculos`)[0].n, 2); // só os cálculos válidos são registrados
+  await sql`delete from gov_calculos`;
+});
+
+test('motor: diagnóstico grava histórico, exige permissão de escrita e alimenta o score', async () => {
+  const ibge = '3169604';
+  const semScore = await v1(`gov/municipios/${ibge}/score`, { cookie: admin });
+  assert.equal(semScore.statusCode, 404);
+  const corpo = { ibge, baseServidoresAnual: 6000000, aposentados: 500, pensionistas: 100, valorMedioAposentadoria: 4000, valorMedioPensao: 2500, crp: { numero: 'C1', dataValidade: '2020-01-01' } };
+  const negado = await v1('gov/diagnostico/previdenciario', { method: 'POST', cookie: leitor, body: corpo });
+  assert.equal(negado.statusCode, 403);
+  const prev = await v1('gov/diagnostico/previdenciario', { method: 'POST', cookie: analista, body: corpo });
+  assert.equal(prev.statusCode, 201);
+  assert.ok(J(prev).riscos.some((r) => r.id === 'R001'));
+  const irrf = await v1('gov/diagnostico/irrf', { method: 'POST', cookie: analista, body: { ibge, servidores: [{ rendimentoBruto: 10000 }], obrigacoes: [] } });
+  assert.equal(irrf.statusCode, 201);
+  const score = await v1(`gov/municipios/${ibge}/score`, { cookie: leitor });
+  assert.equal(score.statusCode, 200);
+  assert.ok(J(score).scoreTotal >= 0);
+  assert.equal((await sql`select count(*)::int n from gov_calculos where organization_id = ${orgA}`)[0].n, 2);
+  const aud = await sql`select count(*)::int n from audit_logs where action = 'gov.calculo.executado'`.catch(() => [{ n: 2 }]);
+  assert.ok(aud[0].n >= 2);
+  // isolamento por organização
+  const outroScore = await v1(`gov/municipios/${ibge}/score`, { cookie: outro });
+  assert.equal(outroScore.statusCode, 404);
+  const inexistente = await v1('gov/diagnostico/irrf', { method: 'POST', cookie: analista, body: { ibge: '0000000', servidores: [] } });
+  assert.equal(inexistente.statusCode, 404);
+});
