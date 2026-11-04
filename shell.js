@@ -76,6 +76,8 @@
       '.rv-side .amb strong i { width: 8px; height: 8px; border-radius: 50%; background: #1E8F88; }',
       '.rv-side .amb.demo { background: #FBF3E8; border-color: #F0DDC4; } .rv-side .amb.demo strong i { background: #C78054; }',
       '.rv-side .amb:hover { border-color: #1E8F88; }',
+      '.rv-side .demo-lnk { background: none; border: 0; box-shadow: none; padding: 4px 6px; font: 500 12px/1.2 "Geist", system-ui, sans-serif; color: #7B8794; text-align: left; cursor: pointer; border-radius: 6px; }',
+      '.rv-side .demo-lnk:hover { color: #0E2239; background: #F4F6F8; filter: none; }',
       '.rv-top { position: sticky; top: 0; z-index: 50; height: 60px; background: rgba(255,255,255,.92); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid #E5E7EB; display: flex; align-items: center; gap: 14px; padding: 0 24px; font-family: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; color: #0E2239; -webkit-font-smoothing: antialiased; }',
       '.rv-top .abre { display: none; border: 1px solid #E5E7EB; background: #fff; border-radius: 8px; width: 36px; height: 36px; padding: 0; cursor: pointer; color: #0E2239; box-shadow: none; }',
       '.rv-top .abre svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; }',
@@ -121,21 +123,31 @@
     met: '<path d="M4 19.5V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h7M8 11h7"/>',
     pgfn: '<path d="M3 21h18"/><path d="M5 21V10l7-5 7 5v11"/><path d="M9 21v-6h6v6"/>',
     master: '<path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/>',
+    mun: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/>',
+    casos: '<path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/>',
+    doc: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/>',
     gov: '<path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"/><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/>'
   };
   var svg = function (k) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICO[k] + '</svg>'; };
   var aqui = location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
   // [caminho, rótulo, ícone, href alternativo, atributo de visibilidade]
-  var NO_GOV = /^\/gov(\.html)?(\/|$)/.test(location.pathname);
-  var principais = NO_GOV ? [['/gov', 'Reversa Gov', 'gov']] : DEMO_AMB
+  var NO_GOV = /^\/gov(-[a-z]+)?(\.html)?/.test(location.pathname);
+  var principais = NO_GOV
+    ? [['/gov', 'Início', 'inicio'], ['/gov-municipios', 'Municípios', 'mun'], ['/gov-diagnosticar', 'Diagnosticar', 'diag'], ['/gov-casos', 'Casos', 'casos'], ['/gov-crm', 'CRM Gov', 'crm'], ['/gov-teses', 'Teses', 'teses'], ['/gov-metodologia', 'Metodologia', 'met'], ['/gov-exemplo', 'Exemplo de entrega', 'doc']]
+    : DEMO_AMB
     ? [['/demonstracao', 'Início', 'inicio'], ['/', 'Diagnosticar', 'diag', '/?demo=1'], ['/lei-do-bem', 'Lei do Bem', 'lei', '/lei-do-bem.html?demo=1'], ['/teses', 'Teses', 'teses', '/teses.html?demo=1'], ['/metodologia', 'Metodologia', 'met'], ['/execucao', 'Retificação', 'exe'], ['/pgfn', 'Transação PGFN', 'pgfn']]
     : [['/', 'Diagnosticar', 'diag'], ['/lei-do-bem', 'Lei do Bem', 'lei'], ['/crm', 'CRM', 'crm'], ['/clientes', 'Clientes', 'cli'], ['/teses', 'Teses', 'teses'], ['/metodologia', 'Metodologia', 'met'], ['/dashboard', 'Dashboard', 'dash']];
   var plataforma = (DEMO_AMB || NO_GOV) ? [] : [['/execucao', 'Execução', 'exe', null, 'data-plat'], ['/pgfn', 'Transação PGFN', 'pgfn', null, 'data-plat'], ['/usuarios', 'Usuários', 'users', null, 'data-admin'], ['/master', 'Master', 'master', null, 'data-master']];
   var href = function (p) { return p === '/' ? '/' : p + '.html'; };
   var item = function (l) {
-    var atual = l[0] === '/' ? aqui === '/' : aqui.indexOf(l[0]) === 0;
+    var atual = NO_GOV ? aqui === l[0] : (l[0] === '/' ? aqui === '/' : aqui.indexOf(l[0]) === 0);
     var a = '<a class="it" href="' + (l[3] || href(l[0])) + '"' + (l[4] ? ' ' + l[4] + ' hidden' : '') + (atual ? ' aria-current="page"' : '') + '>' + svg(l[2]) + '<span>' + l[1] + '</span></a>';
-    if (l[2] === 'diag' && atual) {
+    if (NO_GOV && l[2] === 'diag' && atual) {
+      var tg = (/[?&]tipo=([a-z]+)/.exec(location.search) || [])[1], ib = (/[?&]ibge=(\d+)/.exec(location.search) || [])[1];
+      a += [['fiscal', 'Fiscal (IRRF)'], ['previdenciario', 'Previdenciário'], ['consolidado', 'Consolidado']].map(function (m) {
+        return '<a class="it sub" href="/gov-diagnosticar.html?tipo=' + m[0] + (ib ? '&ibge=' + ib : '') + '" data-tipo-link="' + m[0] + '"' + (tg === m[0] ? ' aria-current="true"' : '') + '><span>' + m[1] + '</span></a>';
+      }).join('');
+    } else if (l[2] === 'diag' && atual) {
       var AN = { tributario: 'tribfiscal', fiscal: 'tribfiscal', completo: 'consolidado' }, OK = { tribfiscal: 1, prev: 1, consolidado: 1 }, mm = (/[?&]modo=([a-z]+)/.exec(location.search) || [])[1];
       mm = AN[mm] || mm; if (!OK[mm]) { try { mm = localStorage.getItem('rv_modo_diag'); mm = AN[mm] || mm; } catch (e) { mm = null; } } if (!OK[mm]) mm = 'consolidado';
       var dm = DEMO_AMB ? '&demo=1' : '';
@@ -147,15 +159,17 @@
   };
   var side = document.createElement('aside');
   side.className = 'rv-side'; side.id = 'rv-side'; side.setAttribute('aria-label', 'Menu');
-  side.innerHTML = '<a class="marca" href="' + (DEMO_AMB ? '/demonstracao.html' : '/') + '"><img src="/assets/reversa-r.png" alt=""><span>REVERSA <b>TAX</b><small>Uma solução Argus Prime</small></span></a>' +
+  side.innerHTML = '<a class="marca" href="' + (NO_GOV ? '/gov.html' : DEMO_AMB ? '/demonstracao.html' : '/') + '"><img src="/assets/reversa-r.png" alt=""><span>REVERSA <b>' + (NO_GOV ? 'GOV' : 'TAX') + '</b><small>Uma solução Argus Prime</small></span></a>' +
     '<nav aria-label="Seções">' + principais.map(item).join('') +
     (plataforma.length ? '<div class="grp" data-grp hidden>Plataforma</div>' + plataforma.map(item).join('') : '') + '</nav>' +
-    '<div class="pe"><a href="/ambiente.html" class="amb prod" title="Trocar de caminho"><strong><i></i>' + (NO_GOV ? 'Reversa Gov' : (DEMO_AMB ? 'Demonstração' : 'Reversa Tax')) + '</strong>Trocar para ' + (NO_GOV ? 'Reversa Tax' : 'Reversa Gov') + ' →</a><span class="ap" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted,#5A6878)"><img src="/assets/argus-prime-monograma.png" alt="" style="height:20px;width:auto">Uma solução Argus Prime</span></div>';
+    '<div class="pe">' + (NO_GOV ? '<button type="button" class="demo-lnk" data-demo>Demonstração</button>' : '') + '<a href="/ambiente.html" class="amb prod" title="Trocar de caminho"><strong><i></i>' + (NO_GOV ? 'Reversa Gov' : (DEMO_AMB ? 'Demonstração' : 'Reversa Tax')) + '</strong>Trocar para ' + (NO_GOV ? 'Reversa Tax' : 'Reversa Gov') + ' →</a><span class="ap" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted,#5A6878)"><img src="/assets/argus-prime-monograma.png" alt="" style="height:20px;width:auto">Uma solução Argus Prime</span></div>';
   var nav = document.createElement('header');
   nav.className = 'rv-top';
   nav.innerHTML = '<button type="button" class="abre" aria-label="Abrir menu" aria-controls="rv-side" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>' +
-    '<form role="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" name="q" placeholder="' + (DEMO_AMB ? 'Ir para uma seção…' : 'Buscar cliente, CNPJ ou seção…') + '" aria-label="Buscar"><kbd>⌘K</kbd></form>' +
+    '<form role="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" name="q" placeholder="' + (DEMO_AMB || NO_GOV ? 'Ir para uma seção…' : 'Buscar cliente, CNPJ ou seção…') + '" aria-label="Buscar"><kbd>⌘K</kbd></form>' +
     '<div class="eu"><div class="av" aria-hidden="true">·</div><div class="quem"><span class="nome"></span><small class="papel"></small></div><a class="sair" href="/api/logout">Sair</a></div>';
+  var bd = side.querySelector('[data-demo]');
+  if (bd) bd.addEventListener('click', function () { RV.definirAmbiente('demo'); location.href = '/demonstracao.html'; });
   var veu = document.createElement('div'); veu.className = 'rv-veu';
   var raiz = document.documentElement;
   function menu(abrir) { raiz.classList.toggle('rv-menu-aberto', abrir); nav.querySelector('.abre').setAttribute('aria-expanded', String(abrir)); }
@@ -169,7 +183,7 @@
     var n = t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
     var achou = Array.prototype.filter.call(side.querySelectorAll('a.it:not([hidden])'), function (a) { return a.textContent.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').indexOf(n) === 0; })[0];
     if (achou) location.href = achou.getAttribute('href');
-    else if (!DEMO_AMB) location.href = '/clientes.html?busca=' + encodeURIComponent(t);
+    else if (!DEMO_AMB && !NO_GOV) location.href = '/clientes.html?busca=' + encodeURIComponent(t);
   });
   document.addEventListener('keydown', function (e) {
     if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); campo.focus(); campo.select(); }

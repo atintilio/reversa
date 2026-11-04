@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Casos</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+</head>
+<body class="rv" data-gov-pag="casos">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1 id="cab-titulo">Reversa Gov <em>Casos</em></h1>
+      <p class="sub" id="cab-sub">Todos os diagnósticos cadastrados, com etapa, valor estimado e histórico.</p>
+    </div>
+  </div>
+
+  <section class="gov-card" id="vista-lista" hidden aria-labelledby="t-casos">
+    <h2 id="t-casos">Casos</h2>
+    <div class="gov-actions" style="margin-bottom:14px">
+      <select id="filtro-etapa" aria-label="Filtrar por etapa"></select>
+      <span id="casos-resumo" class="gov-empty" style="padding:0;white-space:nowrap"></span>
+      <a class="btn sec" href="/gov-municipios.html" style="margin-left:auto">Novo diagnóstico</a>
+    </div>
+    <div class="tabela">
+      <table class="gov-table">
+        <thead><tr><th>Número</th><th>Município/UF</th><th>Tipo</th><th class="num">Valor estimado</th><th>Etapa</th><th class="num">Criado em</th></tr></thead>
+        <tbody id="tbody-casos"><tr><td colspan="6" class="gov-empty">Carregando…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="gov-detalhe" id="vista-detalhe" hidden></div>
+</main>
+
+<script src="/shell.js"></script>
+<script src="/gov-fluxo.js"></script>
+</body>
+</html>

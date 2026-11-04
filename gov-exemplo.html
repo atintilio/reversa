@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Exemplo de entrega</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+</head>
+<body class="rv">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>Reversa Gov <em>Exemplo de entrega</em></h1>
+      <p class="sub">Veja o que o município recebe ao final de um diagnóstico, com um caso real usado como ilustração.</p>
+    </div>
+  </div>
+
+  <section class="gov-card gov-exemplo" aria-labelledby="t-exemplo">
+    <h2 id="t-exemplo">Exemplo de entrega <span class="gov-badge warn">Exemplo</span></h2>
+    <p class="gov-ex-sub">Prefeitura Municipal de Tupaciguara/MG: caso real usado para ilustrar o que o município recebe.</p>
+    <div class="gov-ex-grid" id="ex-numeros">
+      <div class="gov-ex-n"><span>Caixa em 36 meses (referência)</span><strong id="ex-caixa">—</strong></div>
+      <div class="gov-ex-n"><span>Crédito compensado em 18 parcelas</span><strong id="ex-retro">—</strong></div>
+      <div class="gov-ex-n"><span>Economia permanente por ano</span><strong id="ex-rec">—</strong></div>
+      <div class="gov-ex-n"><span>IRRF de arrecadação própria por ano</span><strong id="ex-irrf">—</strong></div>
+    </div>
+    <div class="gov-actions" style="margin-top:16px">
+      <button type="button" class="btn" data-relatorio="comercial">Gerar relatório comercial (PDF)</button>
+      <button type="button" class="btn sec" data-relatorio="tecnico">Gerar relatório técnico (PDF)</button>
+    </div>
+    <p class="gov-ex-nota">O relatório comercial é o que se apresenta ao município. O técnico é de uso interno.</p>
+  </section>
+</main>
+
+<script src="/shell.js"></script>
+<script src="/gov.js"></script>
+</body>
+</html>

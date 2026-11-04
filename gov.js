@@ -1,16 +1,20 @@
-// Reversa Gov — frontend do módulo IRRF Municipal (isolado, aditivo).
-// Chamadas API via RV.api() e estado de tela.
+// Reversa Gov: frontend do módulo IRRF Municipal (isolado, aditivo).
+// Carregado em gov.html (candidatos), gov-municipios.html (catálogo e seleção) e gov-exemplo.html (exemplo de entrega).
+// Cada bloco só roda se os elementos da página existirem. Chamadas API via RV.api() e estado de tela.
 // Nenhuma interação com páginas ou rotas existentes do Reversa.
 
 (function () {
   'use strict';
 
+  const $ = (id) => document.getElementById(id);
   let paginaMun = 1;
+  let selecionado = null; // { ibge, nome, uf }
   const POR_PAGINA = 50;
   const ROTULO_STATUS = { precadastrado: 'Pré-cadastrado', active: 'No CRM', suspended: 'Suspenso', archived: 'Arquivado' };
 
   async function carregarMunicipios() {
     const tbody = document.getElementById('tbody-municipios');
+    if (!tbody) return;
     try {
       const q = document.getElementById('busca-municipio').value.trim();
       const uf = document.getElementById('filtro-uf').value;
@@ -32,7 +36,7 @@
       }
 
       tbody.innerHTML = dados.municipios.map((m) => `
-        <tr class="click" data-ibge="${RV.esc(m.ibgeCode)}">
+        <tr class="click${selecionado && selecionado.ibge === String(m.ibgeCode) ? ' sel' : ''}" tabindex="0" aria-selected="${selecionado && selecionado.ibge === String(m.ibgeCode)}" data-ibge="${RV.esc(m.ibgeCode)}" data-nome="${RV.esc(m.name)}" data-uf="${RV.esc(m.state)}">
           <td><strong>${RV.esc(m.name)}</strong>${m.isCapital ? ' <span class="gov-badge warn">Capital</span>' : ''}</td>
           <td class="num">${RV.esc(m.ibgeCode)}</td>
           <td>${RV.esc(m.state)}</td>
@@ -46,6 +50,7 @@
   }
 
   async function carregarCandidatos() {
+    if (!document.getElementById('tbody-candidatos')) return;
     try {
       const status = document.getElementById('filtro-status').value;
       const params = status ? `?status=${encodeURIComponent(status)}` : '';
@@ -79,10 +84,12 @@
       // Tenta buscar dashboard; se não existir ainda, exibe placeholders
       try {
         const dados = await RV.api('GET', '/api/v1/gov/dashboard');
-        document.getElementById('kpi-municipios').textContent = (dados.catalogo ?? dados.municipios ?? '—').toLocaleString('pt-BR');
-        document.getElementById('kpi-candidatos').textContent = dados.candidatos ?? '—';
-        document.getElementById('kpi-revisao').textContent = dados.emRevisao ?? '—';
-        document.getElementById('kpi-validados').textContent = dados.validados ?? '—';
+        const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+        const cat = dados.catalogo ?? dados.municipios;
+        set('kpi-municipios', cat == null ? '—' : Number(cat).toLocaleString('pt-BR'));
+        set('kpi-candidatos', dados.candidatos ?? '—');
+        set('kpi-revisao', dados.emRevisao ?? '—');
+        set('kpi-validados', dados.validados ?? '—');
       } catch (e) {
         // Dashboard ainda não implementado no backend; manter placeholders
       }
@@ -94,22 +101,51 @@
   function esc(s) { return RV.esc(s == null ? '' : s); }
 
   let temporizador;
-  document.getElementById('busca-municipio').addEventListener('input', () => {
-    clearTimeout(temporizador);
-    temporizador = setTimeout(() => { paginaMun = 1; carregarMunicipios(); }, 250);
-  });
-  document.getElementById('filtro-uf').addEventListener('change', () => { paginaMun = 1; carregarMunicipios(); });
-  document.getElementById('mun-anterior').addEventListener('click', () => { paginaMun -= 1; carregarMunicipios(); });
-  document.getElementById('mun-proxima').addEventListener('click', () => { paginaMun += 1; carregarMunicipios(); });
-  document.getElementById('filtro-status').addEventListener('change', carregarCandidatos);
+  if ($('busca-municipio')) {
+    $('busca-municipio').addEventListener('input', () => {
+      clearTimeout(temporizador);
+      temporizador = setTimeout(() => { paginaMun = 1; carregarMunicipios(); }, 250);
+    });
+    $('filtro-uf').addEventListener('change', () => { paginaMun = 1; carregarMunicipios(); });
+    $('mun-anterior').addEventListener('click', () => { paginaMun -= 1; carregarMunicipios(); });
+    $('mun-proxima').addEventListener('click', () => { paginaMun += 1; carregarMunicipios(); });
+  }
+  if ($('filtro-status')) $('filtro-status').addEventListener('change', carregarCandidatos);
 
-  // Navegação: clique em linha de município pode abrir detalhe (placeholder)
-  document.getElementById('tbody-municipios').addEventListener('click', (e) => {
-    const tr = e.target.closest('tr[data-ibge]');
-    if (tr) RV.toast(`Município ${tr.dataset.ibge} — o diagnóstico será gerado na próxima fase.`);
-  });
+  // Seleção de município: habilita "Confirmar", que leva ao diagnóstico do município escolhido.
+  function marcarMunicipio(tr) {
+    selecionado = { ibge: tr.dataset.ibge, nome: tr.dataset.nome, uf: tr.dataset.uf };
+    document.querySelectorAll('#tbody-municipios tr.sel').forEach((x) => { x.classList.remove('sel'); x.setAttribute('aria-selected', 'false'); });
+    tr.classList.add('sel'); tr.setAttribute('aria-selected', 'true');
+    atualizarConfirmar();
+  }
+  function atualizarConfirmar() {
+    const bt = $('mun-confirmar'); if (!bt) return;
+    bt.disabled = !selecionado;
+    $('mun-escolhido').innerHTML = selecionado
+      ? `Município escolhido: <strong>${esc(selecionado.nome)}/${esc(selecionado.uf)}</strong> <span class="mono">(${esc(selecionado.ibge)})</span>`
+      : 'Selecione um município na lista para continuar.';
+  }
+  if ($('tbody-municipios')) {
+    $('tbody-municipios').addEventListener('click', (e) => {
+      const tr = e.target.closest('tr[data-ibge]');
+      if (tr) marcarMunicipio(tr);
+    });
+    $('tbody-municipios').addEventListener('keydown', (e) => {
+      const tr = e.target.closest('tr[data-ibge]');
+      if (tr && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); marcarMunicipio(tr); }
+    });
+    $('tbody-municipios').addEventListener('dblclick', (e) => {
+      const tr = e.target.closest('tr[data-ibge]');
+      if (tr) { marcarMunicipio(tr); location.href = '/gov-diagnosticar.html?ibge=' + encodeURIComponent(tr.dataset.ibge); }
+    });
+    $('mun-confirmar').addEventListener('click', () => {
+      if (selecionado) location.href = '/gov-diagnosticar.html?ibge=' + encodeURIComponent(selecionado.ibge);
+    });
+    atualizarConfirmar();
+  }
 
-  document.getElementById('tbody-candidatos').addEventListener('click', (e) => {
+  if ($('tbody-candidatos')) $('tbody-candidatos').addEventListener('click', (e) => {
     const tr = e.target.closest('tr[data-id]');
     if (tr) RV.toast(`Candidato ${tr.dataset.id} — detalhamento em próxima fase.`);
   });
@@ -127,7 +163,8 @@
       document.getElementById('ex-irrf').textContent = brl(ex.irrf.porAno);
     } catch (e) { /* o card segue sem números; os botões continuam */ }
   }
-  document.querySelector('.gov-exemplo').addEventListener('click', (e) => {
+  const cardExemplo = document.querySelector('.gov-exemplo');
+  if (cardExemplo) cardExemplo.addEventListener('click', (e) => {
     const bt = e.target.closest('[data-relatorio]');
     if (!bt) return;
     const tipo = bt.dataset.relatorio;
@@ -152,5 +189,5 @@
   });
 
   // Inicialização
-  Promise.all([carregarMunicipios(), carregarCandidatos(), carregarKPIs(), carregarExemplo()]);
+  Promise.all([carregarMunicipios(), carregarCandidatos(), carregarKPIs(), cardExemplo ? carregarExemplo() : null]);
 })();

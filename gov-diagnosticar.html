@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Diagnosticar</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+</head>
+<body class="rv" data-gov-pag="diagnosticar">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>Reversa Gov <em>Diagnosticar</em></h1>
+      <p class="sub">Escolha o tipo de diagnóstico para o município selecionado. O caso é cadastrado agora e acompanhado no CRM Gov.</p>
+    </div>
+  </div>
+
+  <section class="gov-card gov-mun-escolhido" id="dg-municipio" aria-live="polite"><div class="meta">Carregando município…</div></section>
+
+  <section aria-labelledby="t-tipos">
+    <h2 id="t-tipos" class="gov-sr">Tipo de diagnóstico</h2>
+    <div class="gov-tipos" role="radiogroup" aria-label="Tipo de diagnóstico">
+      <button type="button" class="gov-tipo" role="radio" aria-checked="false" data-tipo="fiscal">
+        <span class="tag">Fiscal</span>
+        <h3>Fiscal (IRRF)</h3>
+        <p>Imposto de renda retido na fonte pelo município, com possível recuperação sobre a arrecadação própria.</p>
+        <ul><li>Análise do IRRF retido</li><li>Base: folha e pagamentos</li></ul>
+      </button>
+      <button type="button" class="gov-tipo" role="radio" aria-checked="false" data-tipo="previdenciario">
+        <span class="tag">Previdenciário</span>
+        <h3>Previdenciário</h3>
+        <p>Contribuições previdenciárias do ente público e possíveis valores a recuperar.</p>
+        <ul><li>Análise das contribuições</li><li>Base: folha de pagamento</li></ul>
+      </button>
+      <button type="button" class="gov-tipo" role="radio" aria-checked="false" data-tipo="consolidado">
+        <span class="tag">Consolidado</span>
+        <h3>Consolidado</h3>
+        <p>Fiscal e previdenciário juntos, em um único caso e uma única visão para o município.</p>
+        <ul><li>IRRF e previdenciário</li><li>Um só relatório e um só caso</li></ul>
+      </button>
+    </div>
+  </section>
+
+  <section class="gov-card" aria-labelledby="t-gerar">
+    <h2 id="t-gerar">Gerar caso</h2>
+    <div class="gov-alert info gov-nota-dados">
+      <strong>O caso nasce cadastrado, com o diagnóstico pendente de dados.</strong>
+      <span>Sem dados de folha, o sistema não calcula valores: o caso entra no CRM Gov na etapa "A apresentar", sem valor estimado, e o cálculo acontece depois que os dados do município forem enviados.</span>
+    </div>
+    <div class="gov-actions">
+      <button type="button" id="dg-gerar" disabled>Gerar caso</button>
+      <span id="dg-aviso" class="muted" style="font-size:13px"></span>
+    </div>
+  </section>
+</main>
+
+<script src="/shell.js"></script>
+<script src="/gov-fluxo.js"></script>
+</body>
+</html>

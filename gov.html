@@ -3,21 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reversa Gov — IRRF Municipal</title>
+<title>Reversa Gov · Início</title>
 <link rel="icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
 <link rel="stylesheet" href="/shell.css">
 <link rel="stylesheet" href="/gov.css">
-<style>
-  .gov-page { max-width: 1200px; margin: 0 auto; padding: 28px 20px 64px; }
-  .gov-kpi { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; }
-  .gov-kpi .r { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 700; }
-  .gov-kpi .v { font-family: var(--f-head); font-size: 1.55rem; font-weight: 700; margin-top: 6px; font-variant-numeric: tabular-nums; }
-  .gov-kpi .n { font-size: 13px; color: var(--muted); margin-top: 2px; }
-</style>
 </head>
-<body class="rv">
+<body class="rv" data-gov-pag="inicio">
 <main class="gov-page">
   <div class="gov-header">
     <div>
@@ -29,67 +22,44 @@
 
   <div class="gov-grid">
     <div class="gov-kpi">
-      <div class="r">Municípios no catálogo</div>
-      <div class="v" id="kpi-municipios">—</div>
-      <div class="n">Entes públicos mapeados</div>
+      <div class="r">Total de casos</div>
+      <div class="v" id="kpi-casos">—</div>
+      <div class="n">Casos cadastrados</div>
     </div>
     <div class="gov-kpi">
-      <div class="r">Candidatos a análise</div>
-      <div class="v" id="kpi-candidatos">—</div>
-      <div class="n">Eventos candidatos a crédito</div>
+      <div class="r">Valor em carteira</div>
+      <div class="v" id="kpi-carteira">—</div>
+      <div class="n">Soma dos valores estimados</div>
     </div>
     <div class="gov-kpi">
-      <div class="r">Em revisão</div>
-      <div class="v" id="kpi-revisao">—</div>
-      <div class="n">Aguardando revisão humana</div>
+      <div class="r">Em andamento</div>
+      <div class="v" id="kpi-andamento">—</div>
+      <div class="n">Fora de concluídos e perdidos</div>
     </div>
     <div class="gov-kpi">
-      <div class="r">Validados</div>
-      <div class="v" id="kpi-validados">—</div>
-      <div class="n">Após revisão jurídica</div>
+      <div class="r">Concluídos</div>
+      <div class="v" id="kpi-concluidos">—</div>
+      <div class="n">Casos finalizados</div>
     </div>
   </div>
 
-  <section class="gov-card gov-exemplo" aria-labelledby="t-exemplo">
-    <h2 id="t-exemplo">Exemplo de entrega <span class="gov-badge warn">Exemplo</span></h2>
-    <p class="gov-ex-sub">Prefeitura Municipal de Tupaciguara/MG — caso real usado para ilustrar o que o município recebe.</p>
-    <div class="gov-ex-grid" id="ex-numeros">
-      <div class="gov-ex-n"><span>Caixa em 36 meses (referência)</span><strong id="ex-caixa">—</strong></div>
-      <div class="gov-ex-n"><span>Crédito compensado em 18 parcelas</span><strong id="ex-retro">—</strong></div>
-      <div class="gov-ex-n"><span>Economia permanente por ano</span><strong id="ex-rec">—</strong></div>
-      <div class="gov-ex-n"><span>IRRF de arrecadação própria por ano</span><strong id="ex-irrf">—</strong></div>
-    </div>
+  <section class="gov-card" aria-labelledby="t-etapas">
+    <h2 id="t-etapas">Casos por etapa</h2>
+    <div id="painel-etapas"><div class="gov-empty">Carregando…</div></div>
     <div class="gov-actions" style="margin-top:16px">
-      <button type="button" class="btn" data-relatorio="comercial">Gerar relatório comercial (PDF)</button>
-      <button type="button" class="btn sec" data-relatorio="tecnico">Gerar relatório técnico (PDF)</button>
-    </div>
-    <p class="gov-ex-nota">O relatório comercial é o que se apresenta ao município. O técnico é de uso interno.</p>
-  </section>
-
-  <section class="gov-card" aria-labelledby="t-municipios">
-    <h2 id="t-municipios">Municípios</h2>
-    <div class="gov-actions" style="margin-bottom: 14px;">
-      <input type="text" id="busca-municipio" placeholder="Buscar por nome, UF ou código IBGE…">
-      <select id="filtro-uf" aria-label="Filtrar por UF"><option value="">Todas as UFs</option><option value="AC">AC</option><option value="AL">AL</option><option value="AP">AP</option><option value="AM">AM</option><option value="BA">BA</option><option value="CE">CE</option><option value="DF">DF</option><option value="ES">ES</option><option value="GO">GO</option><option value="MA">MA</option><option value="MT">MT</option><option value="MS">MS</option><option value="MG">MG</option><option value="PA">PA</option><option value="PB">PB</option><option value="PR">PR</option><option value="PE">PE</option><option value="PI">PI</option><option value="RJ">RJ</option><option value="RN">RN</option><option value="RS">RS</option><option value="RO">RO</option><option value="RR">RR</option><option value="SC">SC</option><option value="SP">SP</option><option value="SE">SE</option><option value="TO">TO</option></select>
-      <span id="mun-resumo" class="gov-empty" style="padding:0;white-space:nowrap"></span>
-    </div>
-    <div class="tabela">
-      <table class="gov-table">
-        <thead>
-          <tr><th>Município</th><th class="num">IBGE</th><th>UF</th><th>Região</th><th>Situação</th></tr>
-        </thead>
-        <tbody id="tbody-municipios"><tr><td colspan="5" class="gov-empty">Carregando…</td></tr></tbody>
-      </table>
-    </div>
-    <div class="gov-actions" style="margin-top:12px;justify-content:space-between">
-      <button type="button" id="mun-anterior" class="btn">← Anterior</button>
-      <span id="mun-pagina"></span>
-      <button type="button" id="mun-proxima" class="btn">Próxima →</button>
+      <a class="btn" href="/gov-municipios.html">Novo diagnóstico</a>
+      <a class="btn sec" href="/gov-crm.html">Abrir o CRM Gov</a>
+      <a class="btn sec" href="/gov-casos.html">Ver todos os casos</a>
     </div>
   </section>
 
   <section class="gov-card" aria-labelledby="t-candidatos">
     <h2 id="t-candidatos">Candidatos a análise</h2>
+    <div class="gov-grid" style="margin-bottom:16px">
+      <div class="gov-kpi"><div class="r">Candidatos a análise</div><div class="v" id="kpi-candidatos">—</div><div class="n">Eventos candidatos a crédito</div></div>
+      <div class="gov-kpi"><div class="r">Em revisão</div><div class="v" id="kpi-revisao">—</div><div class="n">Aguardando revisão humana</div></div>
+      <div class="gov-kpi"><div class="r">Validados</div><div class="v" id="kpi-validados">—</div><div class="n">Após revisão jurídica</div></div>
+    </div>
     <div class="gov-actions" style="margin-bottom: 14px;">
       <select id="filtro-status">
         <option value="">Todos os status</option>
@@ -122,5 +92,6 @@
 
 <script src="/shell.js"></script>
 <script src="/gov.js"></script>
+<script src="/gov-fluxo.js"></script>
 </body>
 </html>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · CRM Gov</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+</head>
+<body class="rv" data-gov-pag="crm">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>CRM <em>Gov</em></h1>
+      <p class="sub">Acompanhe cada caso até a conclusão. Arraste o cartão para outra coluna ou use o seletor do cartão.</p>
+    </div>
+  </div>
+
+  <div id="crm-erro" hidden></div>
+  <section class="gov-card gov-vazio-crm" id="crm-vazio" hidden>
+    <p><strong>Nenhum caso cadastrado ainda.</strong> Gere um diagnóstico em Municípios ou cadastre o caso de exemplo para ver o quadro funcionando.</p>
+    <button type="button" id="bt-exemplo">Cadastrar exemplo Tupaciguara</button>
+  </section>
+
+  <div class="gov-kanban" id="gov-kanban" aria-label="Quadro de casos por etapa"></div>
+</main>
+
+<script src="/shell.js"></script>
+<script src="/gov-fluxo.js"></script>
+</body>
+</html>
