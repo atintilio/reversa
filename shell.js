@@ -133,7 +133,7 @@
   // [caminho, rótulo, ícone, href alternativo, atributo de visibilidade]
   var NO_GOV = /^\/gov(-[a-z]+)?(\.html)?/.test(location.pathname);
   var principais = NO_GOV
-    ? [['/gov', 'Início', 'inicio'], ['/gov-municipios', 'Municípios', 'mun'], ['/gov-diagnosticar', 'Diagnosticar', 'diag'], ['/gov-casos', 'Casos', 'casos'], ['/gov-crm', 'CRM Gov', 'crm'], ['/gov-teses', 'Teses', 'teses'], ['/gov-metodologia', 'Metodologia', 'met'], ['/gov-exemplo', 'Exemplo de entrega', 'doc']]
+    ? [['/gov', 'Início', 'inicio'], ['/gov-municipios', 'Municípios', 'mun'], ['/gov-diagnosticar', 'Diagnosticar', 'diag'], ['/gov-crm', 'CRM Gov', 'crm'], ['/gov-teses', 'Teses', 'teses'], ['/gov-metodologia', 'Metodologia', 'met']]
     : DEMO_AMB
     ? [['/demonstracao', 'Início', 'inicio'], ['/', 'Diagnosticar', 'diag', '/?demo=1'], ['/lei-do-bem', 'Lei do Bem', 'lei', '/lei-do-bem.html?demo=1'], ['/teses', 'Teses', 'teses', '/teses.html?demo=1'], ['/metodologia', 'Metodologia', 'met'], ['/execucao', 'Retificação', 'exe'], ['/pgfn', 'Transação PGFN', 'pgfn']]
     : [['/', 'Diagnosticar', 'diag'], ['/lei-do-bem', 'Lei do Bem', 'lei'], ['/crm', 'CRM', 'crm'], ['/clientes', 'Clientes', 'cli'], ['/teses', 'Teses', 'teses'], ['/metodologia', 'Metodologia', 'met'], ['/dashboard', 'Dashboard', 'dash']];
@@ -169,7 +169,7 @@
     '<form role="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" name="q" placeholder="' + (DEMO_AMB || NO_GOV ? 'Ir para uma seção…' : 'Buscar cliente, CNPJ ou seção…') + '" aria-label="Buscar"><kbd>⌘K</kbd></form>' +
     '<div class="eu"><div class="av" aria-hidden="true">·</div><div class="quem"><span class="nome"></span><small class="papel"></small></div><a class="sair" href="/api/logout">Sair</a></div>';
   var bd = side.querySelector('[data-demo]');
-  if (bd) bd.addEventListener('click', function () { RV.definirAmbiente('demo'); location.href = '/demonstracao.html'; });
+  if (bd) bd.addEventListener('click', function () { location.href = '/gov-exemplo.html'; });
   var veu = document.createElement('div'); veu.className = 'rv-veu';
   var raiz = document.documentElement;
   function menu(abrir) { raiz.classList.toggle('rv-menu-aberto', abrir); nav.querySelector('.abre').setAttribute('aria-expanded', String(abrir)); }

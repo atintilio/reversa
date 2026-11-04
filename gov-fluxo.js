@@ -253,7 +253,7 @@
       caso = umCaso(await api('GET', '/api/v1/gov/casos/' + encodeURIComponent(id)));
       await completar([caso]);
     } catch (e) {
-      box.innerHTML = erroHtml(e) + '<p><a class="gov-link" href="/gov-casos.html">← Voltar para os casos</a></p>';
+      box.innerHTML = erroHtml(e) + '<p><a class="gov-link" href="/gov-crm.html">← Voltar para o CRM</a></p>';
       return;
     }
     function desenhar() {
@@ -262,7 +262,7 @@
       $('cab-titulo').innerHTML = `Caso <em>${esc(caso.numero || caso.id)}</em>`;
       $('cab-sub').textContent = `${rotuloMun(caso)} · ${nomeTipo(caso.tipo)}`;
       box.innerHTML = `
-        <p style="margin:0"><a class="gov-link" href="/gov-casos.html">← Voltar para os casos</a></p>
+        <p style="margin:0"><a class="gov-link" href="/gov-crm.html">← Voltar para o CRM</a></p>
         <section class="gov-card" aria-labelledby="t-dados">
           <h2 id="t-dados">Dados do caso</h2>
           <dl class="gov-def">
