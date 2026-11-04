@@ -50,3 +50,11 @@
   .gov-header { flex-direction: column; align-items: flex-start; }
   .gov-grid { grid-template-columns: 1fr; }
 }
+/* Exemplo de entrega */
+.gov-ex-sub { margin: 0 0 14px; color: #5F6965; }
+.gov-ex-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.gov-ex-n { background: #F6F4EE; border-left: 3px solid #0E7A5C; border-radius: 6px; padding: 12px 14px; }
+.gov-ex-n:last-child { border-left-color: #A9864F; }
+.gov-ex-n span { display: block; font-size: 12px; color: #5F6965; margin-bottom: 4px; }
+.gov-ex-n strong { font-size: 22px; color: #14201C; }
+.gov-ex-nota { margin: 12px 0 0; font-size: 12.5px; color: #5F6965; }

@@ -164,6 +164,23 @@ test('isolamento: a outra organização não enxerga nem pode escrever os dados'
   assert.equal(mesmo.statusCode, 201); // mesmo IBGE, outra organização — permitido pela migration 015
 });
 
+test('exemplo Tupaciguara: dados do caso e relatórios em PDF (comercial e técnico)', async () => {
+  const d = await v1('gov/exemplo', { cookie: admin });
+  assert.equal(d.statusCode, 200);
+  const ref = J(d).cenarios.find((c) => c.destaque);
+  assert.equal(ref.retro, 1830000);
+  assert.ok(Math.abs(ref.total36 - 2800750) < 1);
+  for (const tipo of ['comercial', 'tecnico']) {
+    const r = await v1('gov/exemplo/relatorio', { cookie: admin, query: { tipo } });
+    assert.equal(r.statusCode, 200);
+    assert.match(String(r.headers['Content-Type'] || r.headers['content-type']), /application\/pdf/);
+  }
+  const ruim = await v1('gov/exemplo/relatorio', { cookie: admin, query: { tipo: 'x' } });
+  assert.equal(ruim.statusCode, 400);
+  const semSessao = await v1('gov/exemplo');
+  assert.equal(semSessao.statusCode, 401);
+});
+
 test('rota inexistente dentro de gov devolve 404 do módulo', async () => {
   const r = await v1('gov/inexistente', { cookie: admin });
   assert.equal(r.statusCode, 404);

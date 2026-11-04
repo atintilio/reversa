@@ -114,6 +114,43 @@
     if (tr) RV.toast(`Candidato ${tr.dataset.id} — detalhamento em próxima fase.`);
   });
 
+  // Exemplo de entrega (Tupaciguara/MG): números e download dos relatórios em PDF.
+  function brl(v) { return 'R$ ' + Math.round(v).toLocaleString('pt-BR'); }
+  function milhoes(v) { return 'R$ ' + (v / 1e6).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' mi'; }
+  async function carregarExemplo() {
+    try {
+      const ex = await RV.api('GET', '/api/v1/gov/exemplo');
+      const ref = ex.cenarios.find((c) => c.destaque);
+      document.getElementById('ex-caixa').textContent = milhoes(ref.total36);
+      document.getElementById('ex-retro').textContent = milhoes(ref.retro);
+      document.getElementById('ex-rec').textContent = brl(ref.recAno);
+      document.getElementById('ex-irrf').textContent = brl(ex.irrf.porAno);
+    } catch (e) { /* o card segue sem números; os botões continuam */ }
+  }
+  document.querySelector('.gov-exemplo').addEventListener('click', (e) => {
+    const bt = e.target.closest('[data-relatorio]');
+    if (!bt) return;
+    const tipo = bt.dataset.relatorio;
+    const rotulo = bt.textContent;
+    bt.disabled = true; bt.textContent = 'Gerando…';
+    RV.toast('Gerando o PDF…');
+    fetch('/api/v1/gov/exemplo/relatorio?tipo=' + encodeURIComponent(tipo), { credentials: 'same-origin' })
+      .then((r) => {
+        if (r.status === 401) { location.href = '/login.html'; throw new Error('Sessão expirada.'); }
+        if (!r.ok) return r.json().then((j) => { throw new Error((j.error && j.error.message) || 'Falha ao gerar o PDF.'); });
+        return r.blob();
+      })
+      .then((b) => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(b);
+        a.download = 'Reversa-Gov-Tupaciguara-MG-Relatorio-' + (tipo === 'tecnico' ? 'Tecnico' : 'Comercial') + '.pdf';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+      })
+      .catch((err) => RV.toast(err.message))
+      .finally(() => { bt.disabled = false; bt.textContent = rotulo; });
+  });
+
   // Inicialização
-  Promise.all([carregarMunicipios(), carregarCandidatos(), carregarKPIs()]);
+  Promise.all([carregarMunicipios(), carregarCandidatos(), carregarKPIs(), carregarExemplo()]);
 })();
