@@ -19,6 +19,8 @@
   .amb ul { margin: 0; padding-left: 18px; color: var(--muted); font-weight: 500; line-height: 1.7; }
   .amb .ir { justify-self: start; margin-top: 6px; background: var(--teal); color: #fff; border-radius: 8px; padding: 10px 18px; font-weight: 700; }
   .amb.demo .ir { background: var(--navy); }
+  .rv .btn-demo { background: none; border: 1px solid var(--line); color: var(--muted); font: inherit; font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 999px; cursor: pointer; }
+  .rv .btn-demo:hover { color: var(--navy); border-color: var(--navy); }
 </style>
 </head>
 <body class="rv">
@@ -41,6 +43,7 @@
       <span class="ir">Seguir pelo Reversa Gov</span>
     </button>
   </div>
+  <div style="margin-top:18px"><button type="button" class="btn-demo" id="btn-demo">Demonstração</button></div>
   <p style="margin-top:28px;display:flex;align-items:center;gap:10px;color:var(--muted);font-weight:500"><img src="/assets/argus-prime-monograma.png" alt="Argus Prime" style="height:28px;width:auto">Reversa é uma solução <strong style="margin-left:-6px">Argus Prime</strong></p>
 </main>
 <script src="/shell.js"></script>
@@ -48,6 +51,7 @@
   document.querySelectorAll('[data-dest]').forEach(function (b) {
     b.addEventListener('click', function () { RV.definirAmbiente('prod'); location.href = b.dataset.dest; });
   });
+  document.getElementById('btn-demo').addEventListener('click', function () { RV.definirAmbiente('demo'); location.href = '/demonstracao.html'; });
   RV.eu.then(function (eu) { var n = eu && eu.user && eu.user.name; if (n) document.getElementById('ola').textContent = ', ' + n.split(' ')[0]; });
 </script>
 </body>
