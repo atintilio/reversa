@@ -77,6 +77,9 @@
       '.rv-side .amb.demo { background: #FBF3E8; border-color: #F0DDC4; } .rv-side .amb.demo strong i { background: #C78054; }',
       '.rv-side .amb:hover { border-color: #1E8F88; }',
       '.rv-side .demo-lnk { background: none; border: 0; box-shadow: none; padding: 4px 6px; font: 500 12px/1.2 "Geist", system-ui, sans-serif; color: #7B8794; text-align: left; cursor: pointer; border-radius: 6px; }',
+      '.rv-top .demo-top { margin-left: auto; margin-right: 12px; background: none; border: 1px solid #D5DBE1; box-shadow: none; padding: 5px 12px; font: 600 12px/1.2 "Geist", system-ui, sans-serif; color: #7B8794; border-radius: 999px; cursor: pointer; white-space: nowrap; }',
+      '.rv-top .demo-top + .eu { margin-left: 0; }',
+      '.rv-top .demo-top:hover { color: #0E2239; border-color: #0E2239; filter: none; }',
       '.rv-side .demo-lnk:hover { color: #0E2239; background: #F4F6F8; filter: none; }',
       '.rv-top { position: sticky; top: 0; z-index: 50; height: 60px; background: rgba(255,255,255,.92); backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid #E5E7EB; display: flex; align-items: center; gap: 14px; padding: 0 24px; font-family: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif; color: #0E2239; -webkit-font-smoothing: antialiased; }',
       '.rv-top .abre { display: none; border: 1px solid #E5E7EB; background: #fff; border-radius: 8px; width: 36px; height: 36px; padding: 0; cursor: pointer; color: #0E2239; box-shadow: none; }',
@@ -162,13 +165,14 @@
   side.innerHTML = '<a class="marca" href="' + (NO_GOV ? '/gov.html' : DEMO_AMB ? '/demonstracao.html' : '/') + '"><img src="/assets/reversa-r.png" alt=""><span>REVERSA <b>' + (NO_GOV ? 'GOV' : 'TAX') + '</b><small>Uma solução Argus Prime</small></span></a>' +
     '<nav aria-label="Seções">' + principais.map(item).join('') +
     (plataforma.length ? '<div class="grp" data-grp hidden>Plataforma</div>' + plataforma.map(item).join('') : '') + '</nav>' +
-    '<div class="pe">' + (NO_GOV ? '<button type="button" class="demo-lnk" data-demo>Demonstração</button>' : '') + '<a href="/ambiente.html" class="amb prod" title="Trocar de caminho"><strong><i></i>' + (NO_GOV ? 'Reversa Gov' : (DEMO_AMB ? 'Demonstração' : 'Reversa Tax')) + '</strong>Trocar para ' + (NO_GOV ? 'Reversa Tax' : 'Reversa Gov') + ' →</a><span class="ap" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted,#5A6878)"><img src="/assets/argus-prime-monograma.png" alt="" style="height:20px;width:auto">Uma solução Argus Prime</span></div>';
+    '<div class="pe">' + '<a href="/ambiente.html" class="amb prod" title="Trocar de caminho"><strong><i></i>' + (NO_GOV ? 'Reversa Gov' : (DEMO_AMB ? 'Demonstração' : 'Reversa Tax')) + '</strong>Trocar para ' + (NO_GOV ? 'Reversa Tax' : 'Reversa Gov') + ' →</a><span class="ap" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted,#5A6878)"><img src="/assets/argus-prime-monograma.png" alt="" style="height:20px;width:auto">Uma solução Argus Prime</span></div>';
   var nav = document.createElement('header');
   nav.className = 'rv-top';
   nav.innerHTML = '<button type="button" class="abre" aria-label="Abrir menu" aria-controls="rv-side" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>' +
     '<form role="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" name="q" placeholder="' + (DEMO_AMB || NO_GOV ? 'Ir para uma seção…' : 'Buscar cliente, CNPJ ou seção…') + '" aria-label="Buscar"><kbd>⌘K</kbd></form>' +
+    (NO_GOV ? '<button type="button" class="demo-top" data-demo>Demonstração</button>' : '') +
     '<div class="eu"><div class="av" aria-hidden="true">·</div><div class="quem"><span class="nome"></span><small class="papel"></small></div><a class="sair" href="/api/logout">Sair</a></div>';
-  var bd = side.querySelector('[data-demo]');
+  var bd = nav.querySelector('[data-demo]');
   if (bd) bd.addEventListener('click', function () { location.href = '/gov-exemplo.html'; });
   var veu = document.createElement('div'); veu.className = 'rv-veu';
   var raiz = document.documentElement;
