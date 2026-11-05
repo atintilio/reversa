@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Ficha do município</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+<style>
+  .gm-cab { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+  .gm-cab h2 { margin: 0 0 4px; font-size: 1.5rem; }
+  .gm-cab .meta { margin: 0; color: var(--muted); font-size: 13.5px; overflow-wrap: anywhere; }
+  .gm-cab .meta .mono { font-variant-numeric: tabular-nums; }
+  .gm-chips { margin-top: 10px; }
+  .gm-bloco .gs-lab { display: block; }
+  .gm-bloco h3 { margin: 2px 0 12px; font-size: 1.05rem; }
+  .gm-bloco .gs-mini { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .gm-bloco .rot { color: var(--muted); font-size: 12px; }
+  .gm-bloco .val { font-size: 1.6rem; font-weight: 800; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .gm-bloco .acao { margin-top: 14px; font-size: 13.5px; }
+  .gm-off { color: var(--muted); font-size: 14px; margin: 8px 0 0; }
+  .gm-sec { margin-top: 16px; }
+  .gm-ctr .gs-row { flex-wrap: wrap; }
+  .gm-ctr .gs-row small { color: var(--muted); display: block; width: 100%; }
+  .gm-soma .gs-big { overflow-wrap: anywhere; }
+  .gm-tbl-wrap { overflow-x: auto; }
+  .gm-tbl-wrap table { min-width: 560px; }
+  .gm-tbl-wrap a.gov-link { overflow-wrap: anywhere; }
+  .gm-tabs-wrap { margin-top: 22px; }
+  @media (max-width: 640px) { .gs-pcts { font-size: 2.2rem; } .gm-bloco .val { font-size: 1.3rem; } }
+</style>
+</head>
+<body class="rv" data-gov-pag="municipio">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>Reversa Gov <em>Ficha do município</em></h1>
+      <p class="sub">Os dois tributos são acompanhados separadamente: cada um é um caso e um contrato próprios.</p>
+    </div>
+  </div>
+  <div id="ficha-app" aria-live="polite"><div class="gov-empty">Carregando…</div></div>
+</main>
+
+<script src="/shell.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-municipio-pag.js"></script>
+</body>
+</html>

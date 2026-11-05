@@ -3,95 +3,44 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reversa Gov · Início</title>
+<title>Reversa Gov · Visão geral</title>
 <link rel="icon" href="/favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
 <link rel="stylesheet" href="/shell.css">
 <link rel="stylesheet" href="/gov.css">
+<style>
+  .gs-hero .gs-lab { letter-spacing: .08em; }
+  .gs-hero .gs-big { overflow-wrap: anywhere; }
+  .gs-mini > div { min-width: 0; }
+  .gs-mini .v.ok { color: var(--ok); }
+  .gs-bloco-linha .gs-pcts { line-height: 1.1; }
+  .gs-bloco-linha > div { min-width: 0; }
+  .vis-aviso { margin-top: 24px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .vis-graf svg { display: block; max-width: 100%; height: auto; }
+  .vis-alertas .gs-row span:first-child { min-width: 0; overflow-wrap: anywhere; }
+  .vis-tbl td, .vis-tbl th { white-space: nowrap; }
+  .vis-tbl td.cas { white-space: normal; }
+  @media (max-width: 520px) { .vis-tbl td, .vis-tbl th { white-space: normal; padding: 8px 5px; font-size: 12.5px; } .vis-tbl { table-layout: fixed; min-width: 0; } .vis-tbl th { font-size: 10px; letter-spacing: 0; } .vis-tbl th:nth-child(1) { width: 30%; } .vis-tbl th:nth-child(2) { width: 19%; } .vis-tbl th:nth-child(3) { width: 26%; } .vis-tbl .gov-etapa { white-space: normal; overflow-wrap: anywhere; font-size: 11px; padding: 2px 6px; } .vis-tbl .gs-chip { font-size: 10.5px; padding: 2px 6px; margin: 0; } .gs-big { font-size: 2.1rem; } .gs-pcts { font-size: 2.2rem; } .gs-mini { grid-template-columns: 1fr 1fr; gap: 12px; } .gs-mini .v { font-size: 1.15rem; } }
+</style>
 </head>
-<body class="rv" data-gov-pag="inicio">
+<body class="rv" data-gov-pag="visao-geral">
 <main class="gov-page">
   <div class="gov-header">
     <div>
-      <h1>Reversa Gov <em>IRRF Municipal</em></h1>
-      <p class="sub">Identificação e análise de créditos tributários potencialmente recuperáveis por municípios. Nenhum valor é apresentado como crédito reconhecido sem trilha de evidências e revisão humana.</p>
-    </div>
-    <span class="gov-badge info" id="badge-status">Produção</span>
-  </div>
-
-  <div class="gov-grid">
-    <div class="gov-kpi">
-      <div class="r">Total de casos</div>
-      <div class="v" id="kpi-casos">—</div>
-      <div class="n">Casos cadastrados</div>
-    </div>
-    <div class="gov-kpi">
-      <div class="r">Valor em carteira</div>
-      <div class="v" id="kpi-carteira">—</div>
-      <div class="n">Soma dos valores estimados</div>
-    </div>
-    <div class="gov-kpi">
-      <div class="r">Em andamento</div>
-      <div class="v" id="kpi-andamento">—</div>
-      <div class="n">Fora de concluídos e perdidos</div>
-    </div>
-    <div class="gov-kpi">
-      <div class="r">Concluídos</div>
-      <div class="v" id="kpi-concluidos">—</div>
-      <div class="n">Casos finalizados</div>
+      <h1>Visão geral</h1>
+      <p class="sub">Os dois tributos são acompanhados separadamente: cada um é um caso e um contrato. O município pode contratar só um.</p>
     </div>
   </div>
 
-  <section class="gov-card" aria-labelledby="t-etapas">
-    <h2 id="t-etapas">Casos por etapa</h2>
-    <div id="painel-etapas"><div class="gov-empty">Carregando…</div></div>
-    <div class="gov-actions" style="margin-top:16px">
-      <a class="btn" href="/gov-municipios.html">Novo diagnóstico</a>
-      <a class="btn sec" href="/gov-crm.html">Abrir o CRM Gov</a>
-      <a class="btn sec" href="/gov-casos.html">Ver todos os casos</a>
-    </div>
-  </section>
+  <div id="conteudo"><div class="gov-empty">Carregando…</div></div>
 
-  <section class="gov-card" aria-labelledby="t-candidatos">
-    <h2 id="t-candidatos">Candidatos a análise</h2>
-    <div class="gov-grid" style="margin-bottom:16px">
-      <div class="gov-kpi"><div class="r">Candidatos a análise</div><div class="v" id="kpi-candidatos">—</div><div class="n">Eventos candidatos a crédito</div></div>
-      <div class="gov-kpi"><div class="r">Em revisão</div><div class="v" id="kpi-revisao">—</div><div class="n">Aguardando revisão humana</div></div>
-      <div class="gov-kpi"><div class="r">Validados</div><div class="v" id="kpi-validados">—</div><div class="n">Após revisão jurídica</div></div>
-    </div>
-    <div class="gov-actions" style="margin-bottom: 14px;">
-      <select id="filtro-status">
-        <option value="">Todos os status</option>
-        <option value="DRAFT">Rascunho</option>
-        <option value="NEEDS_EVIDENCE">Pendente de evidência</option>
-        <option value="UNDER_REVIEW">Em revisão</option>
-        <option value="VALIDATED">Validado</option>
-        <option value="REJECTED">Rejeitado</option>
-      </select>
-    </div>
-    <div class="tabela">
-      <table class="gov-table">
-        <thead>
-          <tr><th>Entidade</th><th class="num">Período</th><th class="num">Retido (R$)</th><th class="num">Potencial (R$)</th><th>Confiança</th><th>Status</th></tr>
-        </thead>
-        <tbody id="tbody-candidatos"><tr><td colspan="6" class="gov-empty">Carregando…</td></tr></tbody>
-      </table>
-    </div>
-  </section>
-
-  <section class="gov-card" aria-labelledby="t-alerta">
-    <h2 id="t-alerta">Aviso importante</h2>
-    <div class="gov-alert warn">
-      <strong>Critério de evidência.</strong> Dados públicos geram apenas sinais e indícios.
-      Não configuram retenção comprovada nem crédito recuperável. Toda conclusão exige evidência documental
-      e revisão humana/jurídica.
-    </div>
-  </section>
+  <p class="vis-aviso"><strong>Critério de evidência.</strong> Dados públicos geram apenas sinais e indícios. Não configuram retenção comprovada nem crédito recuperável. Toda conclusão exige evidência documental e revisão humana/jurídica.</p>
 </main>
 
 <script src="/shell.js"></script>
-<script src="/gov.js"></script>
-<script src="/gov-fluxo.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-visao.js"></script>
 </body>
 </html>

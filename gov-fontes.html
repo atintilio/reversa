@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Fontes de dados</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+<style>
+  .gf-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  @media (max-width: 1000px) { .gf-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px) { .gf-grid { grid-template-columns: 1fr; } }
+  .gf-grid .gs-card { display: flex; flex-direction: column; gap: 10px; }
+  .gf-grid .gs-card h3 { margin: 0; font-size: 1.05rem; }
+  .gf-grid .gs-card p { margin: 0; color: var(--muted); font-size: 13.5px; flex: 1; }
+  .gf-grid .gs-st { align-self: flex-start; }
+  .gf-nota { margin-top: 18px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body class="rv" data-gov-pag="fontes">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>Fontes de <em>dados</em></h1>
+      <p class="sub">De onde vêm os números do diagnóstico e da análise documentada.</p>
+    </div>
+  </div>
+  <section class="gf-grid" id="gf-grid" aria-label="Fontes de dados"></section>
+  <p class="gf-nota" id="gf-nota"></p>
+</main>
+<script src="/shell.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-fontes-pag.js"></script>
+</body>
+</html>

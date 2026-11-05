@@ -8,10 +8,10 @@
   var AVISO = 'DADOS SIMULADOS PARA DEMONSTRAÇÃO. Notas, emitentes e valores são fictícios.';
   var MUNICIPIO = 'Prefeitura Municipal de Tupaciguara/MG (exemplo)';
   var SEED = 20260611;
-  var ALVO_TOTAL = 62353229; // R$ 623.532,29 de potencial de IRRF (soma das diferenças)
+  var ALVO_TOTAL = 200000000; // R$ 2.000.000,00 de potencial de IRRF (soma das diferenças)
   var ANOS = [2021, 2022, 2023, 2024, 2025];
   var QTD_ANO = { 2021: 330, 2022: 350, 2023: 365, 2024: 380, 2025: 375 }; // 1.800 notas
-  var ALVO_ANO = { 2021: 12148000, 2022: 12391000, 2023: 12587000, 2024: 12695000, 2025: 12532229 }; // soma = 62353229
+  var ALVO_ANO = { 2021: 36000000, 2022: 38000000, 2023: 40000000, 2024: 42000000, 2025: 44000000 }; // soma = 200000000
   var ALIQ = { servico: 0.048, bem: 0.012 };
   var ALIQ_INSS = 0.11;
 

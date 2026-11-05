@@ -9,6 +9,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
 <link rel="stylesheet" href="/shell.css">
 <link rel="stylesheet" href="/gov.css">
+<style>
+  .gmc-wrap { overflow-x: auto; }
+  .gmc-wrap table { min-width: 640px; }
+  #carteira { margin-bottom: 20px; }
+  #carteira .sub2 { color: var(--muted); font-size: 13.5px; margin: -6px 0 12px; }
+</style>
 </head>
 <body class="rv">
 <main class="gov-page">
@@ -18,6 +24,8 @@
       <p class="sub">Escolha o município que será diagnosticado. Selecione uma linha e confirme para seguir ao diagnóstico.</p>
     </div>
   </div>
+
+  <section class="gov-card" id="carteira" aria-labelledby="t-carteira" hidden></section>
 
   <div class="gov-grid">
     <div class="gov-kpi">
@@ -56,5 +64,7 @@
 
 <script src="/shell.js"></script>
 <script src="/gov.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-municipios-carteira.js"></script>
 </body>
 </html>

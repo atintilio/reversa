@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Arquivos e API</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+<style>
+  .ga-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  @media (max-width: 860px) { .ga-grid { grid-template-columns: 1fr; } }
+  .ga-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; min-width: 0; }
+  .ga-card h2 { margin: 0 0 2px; font-size: 1.05rem; } .ga-card .s { color: var(--muted); font-size: 12.5px; margin: 0 0 14px; }
+  .ga-lin { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14px; flex-wrap: wrap; }
+  .ga-lin:last-child { border-bottom: 0; }
+  .ga-lin .nm { font-weight: 600; word-break: break-all; flex: 1 1 200px; min-width: 0; }
+  .ga-lin small { color: var(--muted); }
+  .ga-cod { background: #0E2239; color: #E6EEF7; border-radius: 10px; padding: 14px 16px; margin: 0 0 12px; overflow-x: auto; font: 500 13px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .ga-cod code { font: inherit; white-space: pre; }
+  .ga-bt { font: 700 13px var(--f-body, inherit); padding: 8px 16px; border-radius: 8px; border: 1px solid var(--teal); background: var(--teal); color: #fff; cursor: pointer; }
+  .ga-bt:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .ga-aviso { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn); border-radius: 8px; padding: 12px 14px; font-size: 14px; margin-bottom: 16px; }
+</style>
+</head>
+<body class="rv" data-gov-pag="arquivos">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>Arquivos e <em>API</em></h1>
+      <p class="sub">Importação de documentos e envio de notas pelo ERP do município.</p>
+    </div>
+  </div>
+  <div id="ga-aviso" class="ga-aviso" role="status" hidden>A importação de arquivos será liberada em breve.</div>
+  <div class="ga-grid">
+    <section class="ga-card" id="ga-import" aria-labelledby="ga-t1">
+      <h2 id="ga-t1">Importações recentes</h2>
+      <p class="s">O sistema troca a estimativa pelo documento quando ele chega.</p>
+      <div id="ga-lista"></div>
+    </section>
+    <section class="ga-card" aria-labelledby="ga-t2">
+      <h2 id="ga-t2">Envio pelo ERP</h2>
+      <p class="s">Modelo de campos para o ERP enviar as notas. Um registro por nota paga.</p>
+      <pre class="ga-cod" tabindex="0" aria-label="Modelo de campos"><code id="ga-modelo">chave, data_emissao, cnpj_fornecedor,
+natureza_servico, valor, irrf_retido,
+inss_retido, data_pagamento, empenho</code></pre>
+      <button type="button" class="ga-bt" id="ga-copiar">Copiar modelo</button>
+    </section>
+  </div>
+</main>
+<script src="/shell.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-arquivos-pag.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Estoque de créditos</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+<style>
+  .ge-kpis { margin: 0 0 16px; }
+  .ge-kpis .gov-kpi .v { overflow-wrap: anywhere; }
+  .ge-nota { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+  .ge-card h3 span { color: var(--muted); font-weight: 600; }
+  .ge-lg { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+  .ge-lg > div { font-size: 12.5px; color: var(--muted); min-width: 0; }
+  .ge-lg b { display: block; color: var(--fg); font-size: 14px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .ge-lg .pc { font-weight: 700; color: var(--fg); }
+  @media (max-width: 640px) { .ge-lg { grid-template-columns: 1fr 1fr; } }
+</style>
+</head>
+<body class="rv" data-gov-pag="estoque">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>Reversa Gov <em>Estoque de créditos</em></h1>
+      <p class="sub">Do identificado ao recuperado, separado por tributo.</p>
+    </div>
+  </div>
+  <div id="estoque-app" aria-live="polite"><div class="gov-empty">Carregando…</div></div>
+</main>
+
+<script src="/shell.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-estoque-pag.js"></script>
+</body>
+</html>

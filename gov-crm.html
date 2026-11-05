@@ -9,13 +9,21 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
 <link rel="stylesheet" href="/shell.css">
 <link rel="stylesheet" href="/gov.css">
+<style>
+  .gov-cc.t-irrf { border-left: 4px solid #2A5B93; }
+  .gov-cc.t-prev { border-left: 4px solid #1E9488; }
+  .gov-cc.t-consolidado { border-left: 4px solid #0E2239; }
+  .gov-cc .num { white-space: nowrap; }
+  .gs-tabs .n { font-weight: 600; opacity: .75; margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .gs-tabs button:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+</style>
 </head>
 <body class="rv" data-gov-pag="crm">
 <main class="gov-page">
   <div class="gov-header">
     <div>
       <h1>CRM <em>Gov</em></h1>
-      <p class="sub">Acompanhe cada caso até a conclusão. Arraste o cartão para outra coluna ou use o seletor do cartão.</p>
+      <p class="sub">Um caso por tributo, cada um com seu contrato. Arraste o cartão para outra coluna ou use o seletor do cartão.</p>
     </div>
   </div>
 
@@ -25,10 +33,18 @@
     <button type="button" id="bt-exemplo">Cadastrar exemplo Tupaciguara</button>
   </section>
 
+  <div class="gs-tabs" id="crm-abas" role="group" aria-label="Filtrar casos por tributo">
+    <button type="button" data-filtro="todos" aria-pressed="true">Todos <span class="n"></span></button>
+    <button type="button" data-filtro="irrf" aria-pressed="false">IRRF <span class="n"></span></button>
+    <button type="button" data-filtro="prev" aria-pressed="false">Previdenciário <span class="n"></span></button>
+  </div>
+
   <div class="gov-kanban" id="gov-kanban" aria-label="Quadro de casos por etapa"></div>
 </main>
 
 <script src="/shell.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
 <script src="/gov-fluxo.js"></script>
 </body>
 </html>

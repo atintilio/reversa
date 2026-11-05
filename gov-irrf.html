@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Acompanhamento IRRF</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+<style>
+  .kp .kv { font-size: 1.55rem; font-weight: 800; margin-top: 6px; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .kp .kn { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .kp.irrf .kv { color: var(--gs-irrf); }
+  .gr svg { display: block; max-width: 100%; height: auto; }
+  .gs-row > span:first-child { min-width: 0; overflow-wrap: anywhere; }
+  .gs-barra-linha { margin-bottom: 4px; }
+  .pg-tbl td, .pg-tbl th { white-space: nowrap; }
+  .pg-acoes { display: flex; gap: 10px; flex-wrap: wrap; }
+  @media (max-width: 520px) { .gs-g4 { grid-template-columns: 1fr 1fr; } .kp .kv { font-size: 1.2rem; } .kp { padding: 14px; } }
+</style>
+</head>
+<body class="rv" data-gov-pag="acomp-irrf">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>Acompanhamento · IRRF retido na fonte</h1>
+      <p class="sub">Casos só de imposto de renda retido (fiscal). Receita própria do município.</p>
+    </div>
+    <div class="pg-acoes"><a class="btn" href="/gov-diagnosticar.html?tipo=fiscal">Novo caso IRRF</a></div>
+  </div>
+  <div id="conteudo"><div class="gov-empty">Carregando…</div></div>
+</main>
+<script src="/shell.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-irrf-pag.js"></script>
+</body>
+</html>

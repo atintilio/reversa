@@ -339,18 +339,43 @@
   /* ------------------------------------------------------------ CRM Gov */
   async function crm() {
     const quadro = $('gov-kanban');
+    const DEMO = !!window.RV_GOV_DEMO;
+    const CHAVE_DEMO = 'rv-gov-demo-etapas'; // etapas alteradas na demonstração (somente nesta aba)
     let todos = [];
     let pendente = null; // { id, etapa }: aguardando o motivo para perdido_pausado
     let arrastando = null;
+    let filtro = 'todos'; // todos | irrf | prev
+
+    // tributo do caso: fiscal -> IRRF, previdenciario -> Previdenciário, consolidado aparece nos dois filtros
+    const tribDe = (c) => (c.tipo === 'fiscal' ? 'irrf' : c.tipo === 'previdenciario' ? 'prev' : 'consolidado');
+    const passaFiltro = (c) => filtro === 'todos' || tribDe(c) === filtro || tribDe(c) === 'consolidado';
+    const chipTrib = (c) => {
+      const t = tribDe(c);
+      return t === 'irrf' ? '<span class="gs-chip i">IRRF</span>' : t === 'prev' ? '<span class="gs-chip p">Previdenciário</span>' : '<span class="gs-chip a">IRRF + Prev.</span>';
+    };
+    const lerEtapasDemo = () => { try { return JSON.parse(sessionStorage.getItem(CHAVE_DEMO) || '{}') || {}; } catch (e) { return {}; } };
+    const gravarEtapaDemo = (id, etapa) => { try { const m = lerEtapasDemo(); m[id] = etapa; sessionStorage.setItem(CHAVE_DEMO, JSON.stringify(m)); } catch (e) { /* sem sessionStorage: fica só em memória */ } };
+    async function casosDemo() {
+      if (!window.GovDados) throw new Error('Dados da demonstração indisponíveis.');
+      const D = await window.GovDados.carregar();
+      const ov = lerEtapasDemo();
+      return D.casos.map((c) => ({
+        id: c.id, numero: c.numero, ibge_code: c.ibge, municipio: c.municipio, uf: c.uf,
+        tipo: c.tributo === 'irrf' ? 'fiscal' : c.tributo === 'prev' ? 'previdenciario' : 'consolidado',
+        valor_estimado: c.valor, etapa: ov[c.id] || c.etapa, created_at: c.criado, updated_at: c.criado,
+      }));
+    }
 
     function cartao(c) {
-      return `<article class="gov-cc" draggable="true" data-id="${esc(c.id)}">
-        <div class="topo"><a class="num" href="/gov-casos.html?id=${encodeURIComponent(c.id)}">${esc(c.numero || c.id)}</a><span class="gov-etapa" style="font-size:11px;padding:2px 8px">${esc(nomeTipo(c.tipo))}</span></div>
+      const trib = tribDe(c);
+      const numero = DEMO ? `<span class="num">${esc(c.numero || c.id)}</span>` : `<a class="num" href="/gov-casos.html?id=${encodeURIComponent(c.id)}">${esc(c.numero || c.id)}</a>`;
+      return `<article class="gov-cc t-${trib}" draggable="true" data-id="${esc(c.id)}">
+        <div class="topo">${numero}${chipTrib(c)}</div>
         <div class="nm">${esc(rotuloMun(c))}</div>
         <div class="meta"><span class="val">${esc(textoValor(c, true))}</span><span title="Última movimentação">${RV.data(c.updated_at || c.created_at)}</span></div>
         <div class="acoes-cc">
           <select aria-label="Mover o caso ${esc(c.numero || c.id)} para outra etapa" data-mover="${esc(c.id)}">${ETAPAS.map((e) => `<option value="${e.id}"${e.id === c.etapa ? ' selected' : ''}>${esc(e.nome)}</option>`).join('')}</select>
-          <details><summary>Exportar PDF</summary><div class="menu-pdf"><button type="button" data-pdf="tecnico" data-id="${esc(c.id)}">PDF técnico</button><button type="button" data-pdf="comercial" data-id="${esc(c.id)}">PDF comercial</button></div></details>
+          ${DEMO ? '' : `<details><summary>Exportar PDF</summary><div class="menu-pdf"><button type="button" data-pdf="tecnico" data-id="${esc(c.id)}">PDF técnico</button><button type="button" data-pdf="comercial" data-id="${esc(c.id)}">PDF comercial</button></div></details>`}
         </div>
       </article>`;
     }
@@ -365,13 +390,14 @@
     }
     function desenhar() {
       quadro.innerHTML = ETAPAS.map((e) => {
-        const col = todos.filter((c) => c.etapa === e.id);
+        const col = todos.filter((c) => c.etapa === e.id && passaFiltro(c));
         const soma = col.reduce((s, c) => s + (valorCaso(c) || 0), 0);
         return `<section class="gov-col" data-etapa="${e.id}" aria-label="${esc(e.nome)}"><header><b>${esc(e.nome)} · ${col.length}</b><span>${col.length ? brlCurto(soma) : 'R$ 0'}</span></header>` +
           (pendente && pendente.etapa === e.id ? formMotivo() : '') +
           (col.length ? col.map(cartao).join('') : '<p class="vazio-col">Nenhum caso</p>') + '</section>';
       }).join('');
-      $('crm-vazio').hidden = todos.length > 0;
+      $('crm-vazio').hidden = todos.length > 0 || DEMO;
+      atualizarAbas();
       const f = quadro.querySelector('textarea'); if (f) f.focus();
     }
 
@@ -379,6 +405,14 @@
       const c = todos.find((x) => String(x.id) === String(id));
       if (!c || c.etapa === etapa) { pendente = null; desenhar(); return; }
       if (etapa === 'perdido_pausado' && !nota) { pendente = { id, etapa }; desenhar(); return; }
+      if (DEMO) {
+        // demonstração: apenas estado local da aba, nenhuma escrita no servidor
+        c.etapa = etapa; c.updated_at = new Date().toISOString(); gravarEtapaDemo(c.id, etapa);
+        pendente = null;
+        RV.toast(`${c.numero || c.id} movido para ${nomeEtapa(etapa)} (simulado, nada foi gravado).`);
+        desenhar();
+        return;
+      }
       try {
         const r = await moverEtapa(id, etapa, nota);
         const novo = r && norm(r.caso || (r.id != null ? r : null));
@@ -430,6 +464,20 @@
       mover(id, col.dataset.etapa);
     });
 
+    function atualizarAbas() {
+      const abas = document.getElementById('crm-abas'); if (!abas) return;
+      const cont = { todos: todos.length, irrf: todos.filter((c) => tribDe(c) !== 'prev').length, prev: todos.filter((c) => tribDe(c) !== 'irrf').length };
+      abas.querySelectorAll('button[data-filtro]').forEach((b) => {
+        b.setAttribute('aria-pressed', b.dataset.filtro === filtro ? 'true' : 'false');
+        const n = b.querySelector('.n'); if (n) n.textContent = cont[b.dataset.filtro];
+      });
+    }
+    const abasEl = document.getElementById('crm-abas');
+    if (abasEl) abasEl.addEventListener('click', (e) => {
+      const b = e.target.closest('button[data-filtro]'); if (!b) return;
+      filtro = b.dataset.filtro; pendente = null; desenhar();
+    });
+
     $('bt-exemplo').addEventListener('click', async (e) => {
       const bt = e.currentTarget; bt.disabled = true;
       try {
@@ -442,7 +490,7 @@
 
     quadro.innerHTML = '<div class="gov-empty" style="grid-column:1/-1">Carregando casos…</div>';
     quadro.setAttribute('aria-busy', 'true');
-    try { todos = await listarCasos(); }
+    try { todos = DEMO ? await casosDemo() : await listarCasos(); }
     catch (e) { $('crm-erro').innerHTML = erroHtml(e); $('crm-erro').hidden = false; todos = []; }
     quadro.removeAttribute('aria-busy');
     desenhar();

@@ -135,14 +135,30 @@
   var aqui = location.pathname.replace(/\.html$/, '').replace(/\/index$/, '/') || '/';
   // [caminho, rótulo, ícone, href alternativo, atributo de visibilidade]
   var NO_GOV = /^\/gov(-[a-z]+)?(\.html)?/.test(location.pathname);
+  // Reversa Gov: modo Demonstração (dados simulados de Tupaciguara/MG). Liga com ?demo=1 e desliga com ?demo=0; vale na aba.
+  var GOV_DEMO = false;
+  if (NO_GOV) {
+    var qd = /[?&]demo=([01])/.exec(location.search);
+    try { if (qd) sessionStorage.setItem('rv-gov-demo', qd[1]); GOV_DEMO = sessionStorage.getItem('rv-gov-demo') === '1'; } catch (e) { GOV_DEMO = !!(qd && qd[1] === '1'); }
+  }
+  window.RV_GOV_DEMO = GOV_DEMO;
+  var GOV_MENU = [
+    ['@', 'Visão geral'], ['/gov', 'Visão geral', 'dash'],
+    ['@', 'Acompanhamento'], ['/gov-irrf', 'IRRF retido na fonte', 'doc'], ['/gov-previdenciario', 'Previdenciário', 'pgfn'],
+    ['@', 'Cadastro'], ['/gov-municipios', 'Municípios', 'mun'], ['/gov-municipio', 'Ficha do município', 'casos'], ['/gov-diagnosticar', 'Diagnosticar', 'diag'], ['/gov-crm', 'CRM Gov', 'crm'], ['/gov-teses', 'Teses', 'teses'], ['/gov-contratos', 'Contratos', 'cli'],
+    ['@', 'Evidências'], ['/gov-notas', 'Notas analisadas (IRRF)', 'doc'], ['/gov-documentos', 'Documentos (Previdenciário)', 'doc'], ['/gov-estoque', 'Estoque de créditos', 'inicio']
+  ];
+  if (GOV_DEMO) GOV_MENU = GOV_MENU.concat([['@', 'Espaço de trabalho'], ['/gov-mensagens', 'Mensagens', 'exe'], ['/gov-fontes', 'Fontes de dados', 'pgfn'], ['/gov-arquivos', 'Arquivos e API', 'exe'], ['/gov-exemplo', 'Relatório de exemplo', 'met']]);
+  GOV_MENU.push(['@', 'Referência'], ['/gov-metodologia', 'Metodologia', 'met']);
   var principais = NO_GOV
-    ? [['/gov', 'Início', 'inicio'], ['/gov-municipios', 'Municípios', 'mun'], ['/gov-diagnosticar', 'Diagnosticar', 'diag'], ['/gov-crm', 'CRM Gov', 'crm'], ['/gov-teses', 'Teses', 'teses'], ['/gov-metodologia', 'Metodologia', 'met']]
+    ? GOV_MENU
     : DEMO_AMB
     ? [['/demonstracao', 'Início', 'inicio'], ['/', 'Diagnosticar', 'diag', '/?demo=1'], ['/lei-do-bem', 'Lei do Bem', 'lei', '/lei-do-bem.html?demo=1'], ['/teses', 'Teses', 'teses', '/teses.html?demo=1'], ['/metodologia', 'Metodologia', 'met'], ['/execucao', 'Retificação', 'exe'], ['/pgfn', 'Transação PGFN', 'pgfn']]
     : [['/', 'Diagnosticar', 'diag'], ['/lei-do-bem', 'Lei do Bem', 'lei'], ['/crm', 'CRM', 'crm'], ['/clientes', 'Clientes', 'cli'], ['/teses', 'Teses', 'teses'], ['/metodologia', 'Metodologia', 'met'], ['/dashboard', 'Dashboard', 'dash']];
   var plataforma = (DEMO_AMB || NO_GOV) ? [] : [['/execucao', 'Execução', 'exe', null, 'data-plat'], ['/pgfn', 'Transação PGFN', 'pgfn', null, 'data-plat'], ['/usuarios', 'Usuários', 'users', null, 'data-admin'], ['/master', 'Master', 'master', null, 'data-master']];
   var href = function (p) { return p === '/' ? '/' : p + '.html'; };
   var item = function (l) {
+    if (l[0] === '@') return '<div class="grp">' + l[1] + '</div>';
     var atual = NO_GOV ? aqui === l[0] : (l[0] === '/' ? aqui === '/' : aqui.indexOf(l[0]) === 0);
     var a = '<a class="it" href="' + (l[3] || href(l[0])) + '"' + (l[4] ? ' ' + l[4] + ' hidden' : '') + (atual ? ' aria-current="page"' : '') + '>' + svg(l[2]) + '<span>' + l[1] + '</span></a>';
     if (NO_GOV && l[2] === 'diag' && atual) {
@@ -170,10 +186,10 @@
   nav.className = 'rv-top';
   nav.innerHTML = '<button type="button" class="abre" aria-label="Abrir menu" aria-controls="rv-side" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>' +
     '<form role="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" name="q" placeholder="' + (DEMO_AMB || NO_GOV ? 'Ir para uma seção…' : 'Buscar cliente, CNPJ ou seção…') + '" aria-label="Buscar"><kbd>⌘K</kbd></form>' +
-    (NO_GOV ? '<button type="button" class="demo-top" data-demo>Demonstração</button>' : '') +
+    (NO_GOV ? '<button type="button" class="demo-top" data-demo>' + (GOV_DEMO ? 'Sair da demonstração' : 'Demonstração') + '</button>' : '') +
     '<div class="eu"><div class="av" aria-hidden="true">·</div><div class="quem"><span class="nome"></span><small class="papel"></small></div><a class="sair" href="/api/logout">Sair</a></div>';
   var bd = nav.querySelector('[data-demo]');
-  if (bd) bd.addEventListener('click', function () { location.href = '/gov-exemplo.html'; });
+  if (bd) bd.addEventListener('click', function () { location.href = GOV_DEMO ? '/gov.html?demo=0' : '/gov.html?demo=1'; });
   var veu = document.createElement('div'); veu.className = 'rv-veu';
   var raiz = document.documentElement;
   function menu(abrir) { raiz.classList.toggle('rv-menu-aberto', abrir); nav.querySelector('.abre').setAttribute('aria-expanded', String(abrir)); }

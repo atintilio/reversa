@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Mensagens</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+<style>
+  .gm { display: grid; grid-template-columns: 300px minmax(0, 1fr); background: var(--card); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; min-height: 420px; }
+  @media (max-width: 760px) { .gm { grid-template-columns: 1fr; } }
+  .gm-l { border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+  @media (max-width: 760px) { .gm-l { border-right: 0; border-bottom: 1px solid var(--line); } }
+  .gm-l button { text-align: left; background: transparent; border: 0; border-bottom: 1px solid var(--line); padding: 14px 16px; cursor: pointer; font-family: inherit; color: var(--fg); display: block; width: 100%; }
+  .gm-l button:last-child { border-bottom: 0; }
+  .gm-l button b { display: block; font-size: 14.5px; } .gm-l button small { color: var(--muted); font-size: 12px; }
+  .gm-l button[aria-current="true"] { background: #E3F3F1; }
+  .gm-l button:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
+  .gm-r { display: flex; flex-direction: column; min-width: 0; }
+  .gm-t { padding: 14px 20px; border-bottom: 1px solid var(--line); font-weight: 700; }
+  .gm-b { padding: 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto; max-height: 460px; }
+  .gm-bub { max-width: 78%; background: #F0F4F8; border-radius: 12px; padding: 10px 14px; font-size: 14px; overflow-wrap: anywhere; }
+  .gm-bub.me { align-self: flex-end; background: var(--teal); color: #fff; }
+  .gm-f { display: flex; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--line); }
+  .gm-f input { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font: inherit; background: var(--card); color: var(--fg); }
+  .gm-f button { font: 700 13px inherit; padding: 0 18px; border-radius: 8px; border: 0; background: var(--teal); color: #fff; cursor: pointer; }
+  .gm-f button:focus-visible, .gm-f input:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+  .gm-sim { color: var(--muted); font-size: 12px; margin: 10px 2px 0; }
+</style>
+</head>
+<body class="rv" data-gov-pag="mensagens">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1><em>Mensagens</em></h1>
+      <p class="sub">Conversa com municípios e parceiros dentro de cada caso.</p>
+    </div>
+  </div>
+  <div id="gm-raiz"></div>
+</main>
+<script src="/shell.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-mensagens-pag.js"></script>
+</body>
+</html>
