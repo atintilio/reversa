@@ -161,7 +161,7 @@
         if (a.dataset.tipoLink === tipo) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
       });
       btn.disabled = !(municipio && tipo);
-      btn.textContent = tipo ? `Gerar caso ${nomeTipo(tipo).toLowerCase()}` : 'Gerar caso';
+      btn.textContent = 'Diagnóstico';
       aviso.textContent = !municipio ? 'Escolha um município para continuar.' : !tipo ? 'Escolha um tipo de diagnóstico.' : '';
     }
     document.querySelector('.gov-tipos').addEventListener('click', (e) => {
@@ -190,7 +190,7 @@
     btn.addEventListener('click', async () => {
       if (!municipio || !tipo) return;
       const rotulo = btn.textContent;
-      btn.disabled = true; btn.textContent = 'Gerando caso…';
+      btn.disabled = true; btn.textContent = 'Gerando diagnóstico…';
       try {
         const d = await api('POST', '/api/v1/gov/casos', { ibge: ibge, tipo: tipo });
         const caso = umCaso(d);
@@ -279,7 +279,7 @@
         </section>
         <section class="gov-card" aria-labelledby="t-res">
           <h2 id="t-res">Resultado do diagnóstico</h2>
-          ${res || '<div class="gov-alert warn" style="margin:0"><strong>Diagnóstico pendente de dados.</strong> Este caso foi cadastrado sem dados de folha. O valor estimado e o resultado só aparecem depois que os dados do município forem enviados e o cálculo for feito.</div>'}
+          ${res || '<div class="gov-alert warn" style="margin:0"><strong>Diagnóstico ainda não executado para este caso.</strong></div>'}
         </section>
         <section class="gov-card" aria-labelledby="t-etapa">
           <h2 id="t-etapa">Mover de etapa</h2>
