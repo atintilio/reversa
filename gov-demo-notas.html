@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Demonstração · Notas analisadas</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+</head>
+<body class="rv" data-gov-pag="demo-notas">
+<div class="gov-simula" role="note"><b>Simulado</b><span>DADOS SIMULADOS PARA DEMONSTRAÇÃO. Notas, emitentes e valores são fictícios.</span></div>
+<main class="gov-page">
+  <nav class="gov-abas" aria-label="Seções da demonstração">
+    <a href="/gov-exemplo.html">Relatório (exemplo)</a>
+    <a href="/gov-demo-notas.html" aria-current="page">Notas analisadas <small>simulado</small></a>
+    <a href="/gov-demo-resultado.html">Resultado <small>simulado</small></a>
+  </nav>
+
+  <div class="gov-header">
+    <div>
+      <h1>Notas <em>analisadas</em></h1>
+      <p class="sub">Como ficaria a análise nota a nota com os dados reais do município: cada pagamento, o IRRF devido, o que foi retido e a diferença. Aqui, tudo é simulado.</p>
+    </div>
+    <button type="button" id="bt-csv" class="sec">Exportar CSV</button>
+  </div>
+
+  <section class="gov-card gov-filtros" aria-label="Filtros">
+    <div class="gov-filtros-grade">
+      <label>Ano<select id="f-ano"><option value="">Todos</option><option>2021</option><option>2022</option><option>2023</option><option>2024</option><option>2025</option></select></label>
+      <label>Tipo<select id="f-tipo"><option value="">Todos</option><option>NF-e</option><option>NFS-e</option></select></label>
+      <label>Cor<select id="f-cor"><option value="">Todas</option><option value="verde">Verde</option><option value="amarelo">Amarelo</option><option value="vermelho">Vermelho</option></select></label>
+      <label>Diferença<select id="f-dif"><option value="">Todas as notas</option><option value="1">Somente com diferença</option></select></label>
+      <label class="busca">Buscar<input type="search" id="f-q" placeholder="Chave de acesso, CNPJ ou emitente" autocomplete="off"></label>
+      <button type="button" id="f-limpar" class="sec">Limpar filtros</button>
+    </div>
+    <p class="gov-chip" id="chip-forn" hidden></p>
+    <p class="gov-resumo-filtro" id="resumo-filtro" aria-live="polite"></p>
+  </section>
+
+  <section class="gov-card gov-tabela-card" aria-label="Notas analisadas">
+    <div class="gov-tabela-scroll" tabindex="0" role="region" aria-label="Tabela de notas (rola para o lado em telas pequenas)">
+      <table class="gov-table gov-notas">
+        <thead><tr>
+          <th scope="col"><span class="gov-sr">Ver</span></th>
+          <th scope="col">Chave de acesso</th><th scope="col" class="num">Nº</th><th scope="col">Emissão</th><th scope="col">Emitente</th><th scope="col">Natureza</th>
+          <th scope="col" class="num">Valor pago</th><th scope="col" class="num">IRRF devido</th><th scope="col" class="num">IRRF retido</th><th scope="col" class="num">Diferença</th><th scope="col">Cor</th>
+        </tr></thead>
+        <tbody id="tb-notas"></tbody>
+      </table>
+    </div>
+    <div class="gov-pag">
+      <span id="pg-info" aria-live="polite"></span>
+      <div class="gov-pag-bt">
+        <label class="gov-pag-tam">Por página<select id="f-tam"><option>25</option><option>50</option><option>100</option></select></label>
+        <button type="button" class="sec mini" id="pg-prim" aria-label="Primeira página">«</button>
+        <button type="button" class="sec mini" id="pg-ant">Anterior</button>
+        <button type="button" class="sec mini" id="pg-prox">Próxima</button>
+        <button type="button" class="sec mini" id="pg-ult" aria-label="Última página">»</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="gov-painel-veu" id="painel-veu"></div>
+<aside class="gov-painel" id="painel" role="dialog" aria-modal="true" aria-labelledby="painel-tit" aria-hidden="true">
+  <header class="gov-painel-topo">
+    <div><h2 id="painel-tit">Nota fiscal</h2><span class="gov-painel-pos" id="painel-pos"></span></div>
+    <div class="gov-painel-bt">
+      <button type="button" class="sec mini" id="pn-ant" aria-label="Nota anterior">‹ Anterior</button>
+      <button type="button" class="sec mini" id="pn-prox" aria-label="Próxima nota">Próxima ›</button>
+      <button type="button" class="sec mini" id="painel-x" aria-label="Fechar painel (Esc)">Fechar</button>
+    </div>
+  </header>
+  <div class="gov-painel-corpo" id="painel-corpo"></div>
+</aside>
+
+<script src="/shell.js"></script>
+<script src="/gov-demo-dados.js"></script>
+<script src="/gov-demo-comum.js"></script>
+<script src="/gov-demo-notas.js"></script>
+</body>
+</html>

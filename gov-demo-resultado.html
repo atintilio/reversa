@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Demonstração · Resultado</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+</head>
+<body class="rv" data-gov-pag="demo-resultado">
+<div class="gov-simula" role="note"><b>Simulado</b><span>DADOS SIMULADOS PARA DEMONSTRAÇÃO. Notas, emitentes e valores são fictícios.</span></div>
+<main class="gov-page">
+  <nav class="gov-abas" aria-label="Seções da demonstração">
+    <a href="/gov-exemplo.html">Relatório (exemplo)</a>
+    <a href="/gov-demo-notas.html">Notas analisadas <small>simulado</small></a>
+    <a href="/gov-demo-resultado.html" aria-current="page">Resultado <small>simulado</small></a>
+  </nav>
+
+  <div class="gov-header">
+    <div>
+      <h1>Resultado <em>simulado</em></h1>
+      <p class="sub">O que a análise nota a nota entregaria ao município: quanto foi analisado, quanto de IRRF era devido, quanto foi retido e onde está a diferença.</p>
+    </div>
+    <button type="button" id="bt-csv" class="sec">Exportar CSV</button>
+  </div>
+
+  <div class="gov-kpis" id="kpis"></div>
+  <p class="gov-kpi-prev" id="kpi-prev"></p>
+
+  <section class="gov-card" aria-labelledby="t-ano">
+    <h2 id="t-ano">Potencial de IRRF por ano</h2>
+    <div class="gov-grafico" id="grafico"></div>
+  </section>
+
+  <section aria-labelledby="t-cor">
+    <h2 class="gov-h2" id="t-cor">Quebra por cor de segurança</h2>
+    <div class="gov-cores" id="cores"></div>
+  </section>
+
+  <section class="gov-card" aria-labelledby="t-forn">
+    <h2 id="t-forn">Dez fornecedores com maior diferença</h2>
+    <div class="gov-tabela-scroll" tabindex="0" role="region" aria-label="Fornecedores (rola para o lado em telas pequenas)">
+      <table class="gov-table gov-forn">
+        <thead><tr><th scope="col" class="num">#</th><th scope="col">Fornecedor (fictício)</th><th scope="col">CNPJ (fictício)</th><th scope="col" class="num">Notas com diferença</th><th scope="col" class="num">Diferença</th><th scope="col" class="num">% do total</th><th scope="col"><span class="gov-sr">Notas</span></th></tr></thead>
+        <tbody id="tb-forn"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="gov-alert info gov-leitura" role="note">
+    <strong>Como ler este resultado.</strong> É um potencial de triagem, sujeito à confirmação documental e à revisão jurídica. Não é crédito reconhecido. As notas verdes têm prova consistente, as amarelas dependem de documentos e as vermelhas não devem ser oferecidas sem nova análise. Com dados reais, cada valor seria conferido nota a nota antes de qualquer proposta.
+  </div>
+</main>
+
+<script src="/shell.js"></script>
+<script src="/gov-demo-dados.js"></script>
+<script src="/gov-demo-comum.js"></script>
+<script src="/gov-demo-resultado.js"></script>
+</body>
+</html>
