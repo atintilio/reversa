@@ -33,6 +33,16 @@
   },
   "rewrites": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "reversa-gov.argusprime.com.br"
+        }
+      ],
+      "destination": "/gov.html"
+    },
+    {
       "source": "/api/v1/([^/]+)/(.+)",
       "destination": "/api/v1/rota?rvpath=$1/$2"
     }
