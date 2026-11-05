@@ -12,14 +12,15 @@
 
   GovDados.carregar().then(function () {
     if (!GovDados.demo) return vazio('Nenhum documento analisado ainda', 'Os documentos aparecem quando o município enviar XML do eSocial, folha analítica e guias.');
-    if (params.get('ibge') && params.get('ibge') !== IBGE_DEMO) return vazio('Sem documentos para este município na demonstração', 'Só Tupaciguara/MG (3169604) tem dados simulados.');
+    if (params.get('ibge') && params.get('ibge') !== IBGE_DEMO && !window.GovDemoCfg) return vazio('Município não encontrado na carteira', 'Escolha um município da carteira de demonstração.');
+    if (window.GovDemoCfg && !window.GovDemoCfg.temPrev) return vazio('Este município não contratou o previdenciário', window.GovDemoCfg.nome + ' tem só o diagnóstico fiscal (IRRF). Veja as notas analisadas ou escolha outro município.');
     iniciar();
   }, function () { vazio('Não foi possível carregar os dados', 'Tente novamente em instantes.'); });
 
   function iniciar() {
     var P = window.GovDemoPrev, U = window.GovDemoUI, esc = U.esc, DOCS = P.docs;
     $('conteudo').hidden = false; $('acoes').hidden = false; $('aviso-sim').hidden = false;
-    $('cab-sub').textContent = 'Tupaciguara/MG (simulado). Cada inconsistência aponta para o documento (XML do eSocial) onde foi encontrada. Clique no olho para abrir o detalhe.';
+    $('cab-sub').textContent = ((window.GovDemoCfg && window.GovDemoCfg.nome) || 'Tupaciguara/MG') + ' (simulado). Cada inconsistência aponta para o documento (XML do eSocial) onde foi encontrada. Clique no olho para abrir o detalhe.';
 
     DOCS.forEach(function (d) { d._txt = U.norm([d.competenciaTxt, d.competencia, d.evento, d.arquivo, d.rubrica, d.inconsistencia, d.origem].join(' ')); });
     var T = P.totais();

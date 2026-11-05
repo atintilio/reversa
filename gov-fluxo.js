@@ -79,14 +79,38 @@
   const rotuloMun = (c) => (c.municipio ? c.municipio + (c.uf ? '/' + c.uf : '') : 'IBGE ' + c.ibge_code);
 
   async function listarCasos() {
+    if (demoOn()) return casosDemoG();
     const d = await api('GET', '/api/v1/gov/casos');
     return completar(lista(d));
   }
+
+  // ---- Demonstração: casos vêm da carteira simulada (nenhuma chamada à API)
+  const demoOn = () => !!window.RV_GOV_DEMO;
+  const CHAVE_ET = 'rv-gov-demo-etapas';
+  const lerEt = () => { try { return JSON.parse(sessionStorage.getItem(CHAVE_ET) || '{}') || {}; } catch (e) { return {}; } };
+  async function casosDemoG() {
+    if (!window.GovDados) throw new Error('Dados da demonstração indisponíveis.');
+    const D = await window.GovDados.carregar(); const ov = lerEt();
+    return D.casos.map((c) => {
+      const m = (D.municipios || []).find((x) => String(x.ibge) === String(c.ibge)) || {};
+      const tipo = c.tributo === 'irrf' ? 'fiscal' : c.tributo === 'prev' ? 'previdenciario' : 'consolidado';
+      const etapa = ov[c.id] || c.etapa;
+      return {
+        id: c.id, numero: c.numero, ibge_code: c.ibge, municipio: c.municipio, uf: c.uf, tipo, valor_estimado: c.valor, etapa,
+        periodo_anos: 5, created_at: c.criado, updated_at: ov[c.id] ? new Date().toISOString() : c.criado,
+        resultado: { potencial_estimado: brl(c.valor), tributo: tipo === 'fiscal' ? 'IRRF retido na fonte' : 'Contribuição previdenciária (RGPS)', 'honorário_previsto': brl(Math.round((c.valor || 0) * (c.honorarioPct || 0.2))), origem: c.origem, 'responsável': c.responsavel, 'observação': 'Valores simulados para demonstração. Gere o relatório para ver metodologia, teses e memória de cálculo.' },
+        historico: [{ de: null, para: 'a_apresentar', em: c.criado, nota: 'Caso cadastrado a partir do diagnóstico.' }].concat(etapa !== 'a_apresentar' ? [{ de: 'a_apresentar', para: etapa, em: ov[c.id] ? new Date().toISOString() : c.criado, nota: ov[c.id] ? 'Alterado na demonstração (simulado).' : 'Etapa registrada no CRM.' }] : []),
+      };
+    });
+  }
+  async function casoDemoPorId(id) { const l = await casosDemoG(); const c = l.find((x) => String(x.id) === String(id)); if (!c) throw new Error('Caso não encontrado na demonstração.'); return c; }
+  const buscarCaso = async (id) => (demoOn() ? casoDemoPorId(id) : umCaso(await api('GET', '/api/v1/gov/casos/' + encodeURIComponent(id))));
 
   const pillEtapa = (id) => `<span class="gov-etapa e-${esc(id)}">${esc(nomeEtapa(id))}</span>`;
   const erroHtml = (e) => `<div class="gov-alert bad" role="alert">${esc(e.message || e)}</div>`;
 
   function moverEtapa(id, etapa, nota) {
+    if (demoOn()) { try { const m = lerEt(); m[id] = etapa; sessionStorage.setItem(CHAVE_ET, JSON.stringify(m)); } catch (e) { /* só em memória */ } return Promise.resolve({}); }
     const corpo = { etapa };
     if (nota) corpo.nota = nota;
     return api('POST', `/api/v1/gov/casos/${encodeURIComponent(id)}/etapa`, corpo);
@@ -94,6 +118,7 @@
 
   // Download do PDF como blob (mesmo padrão do exemplo de entrega). Se a API responder 501, mostra a mensagem do servidor.
   function baixarPdf(caso, tipo, botao) {
+    if (demoOn() && window.GovRelatorio) { window.GovRelatorio.abrir(caso.ibge_code, caso.tipo === 'fiscal' ? 'irrf' : caso.tipo === 'previdenciario' ? 'prev' : 'consolidado'); return Promise.resolve(); }
     const rotulo = botao ? botao.textContent : '';
     if (botao) { botao.disabled = true; botao.textContent = 'Gerando…'; }
     RV.toast('Gerando o PDF…');
@@ -250,7 +275,7 @@
     box.innerHTML = '<div class="gov-empty">Carregando caso…</div>';
     let caso;
     try {
-      caso = umCaso(await api('GET', '/api/v1/gov/casos/' + encodeURIComponent(id)));
+      caso = await buscarCaso(id);
       await completar([caso]);
     } catch (e) {
       box.innerHTML = erroHtml(e) + '<p><a class="gov-link" href="/gov-crm.html">← Voltar para o CRM</a></p>';
@@ -326,7 +351,7 @@
         try {
           await moverEtapa(caso.id, sel.value, nota.value.trim());
           RV.toast('Etapa atualizada.');
-          const novo = umCaso(await api('GET', '/api/v1/gov/casos/' + encodeURIComponent(id)));
+          const novo = await buscarCaso(id);
           caso = await completar([novo]).then((a) => a[0]);
           desenhar();
         } catch (err) { erro.textContent = err.message; erro.hidden = false; bt.disabled = false; }

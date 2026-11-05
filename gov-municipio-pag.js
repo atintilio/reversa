@@ -42,6 +42,7 @@
     var tag = fisc ? 'FISCAL' : 'SOCIAL', rot = fisc ? 'potencial de incremento de receita' : 'potencial de recuperação';
     var cab = '<span class="gs-lab">' + tag + '</span><h3>' + NOME[t] + '</h3>';
     if (!m[t]) return '<div class="gs-card ' + t + ' gm-bloco">' + cab + '<p class="gm-off">Este município não contratou este tributo.</p></div>';
+    if (m.detalhe === false) { var row = (X.municipios || []).filter(function (r) { return String(r.ibge) === String(m.ibge); })[0] || {}; X = Object.assign({}, X, row, { pct: row.base ? row.potencial / row.base : null }); }
     var pot = soma(X.municipios, m.ibge), h = '';
     var vHtml = '<div class="val">' + G.brl(pot) + '</div>';
     if (X.pct != null && X.base != null && pot != null) {
@@ -54,7 +55,7 @@
     }
     var k = fisc
       ? [['Notas analisadas', G.int(X.notas)], ['Notas com diferença', G.int(X.comDiferenca)], ['Devido', G.brlCurto(X.devido)], ['Retido', G.brlCurto(X.retido)]]
-      : [['Competências', G.int(X.competencias)], ['Inconsistências', G.int(X.inconsistencias)], ['Passivo identificado', G.brlCurto(X.passivo)], ['CRP vencido', X.crpVencidoDias == null ? '—' : G.int(X.crpVencidoDias) + ' dias']];
+      : [['Competências', G.int(X.competencias)], ['Inconsistências', G.int(X.inconsistencias)], ['Passivo identificado', G.brlCurto(X.passivo)], ['CRP', X.crpVencidoDias == null ? 'Sem registro' : X.crpVencidoDias === 0 ? 'Em dia' : 'vencido há ' + G.int(X.crpVencidoDias) + ' dias']];
     var mini = '<div class="gs-mini">' + k.map(function (x) { return '<div><div class="v">' + esc(x[1]) + '</div><small>' + esc(x[0]) + '</small></div>'; }).join('') + '</div>';
     var link = fisc ? '<a class="gov-link" href="/gov-notas.html?ibge=' + encodeURIComponent(m.ibge) + '">Ver notas ›</a>' : '<a class="gov-link" href="/gov-documentos.html?ibge=' + encodeURIComponent(m.ibge) + '">Ver documentos ›</a>';
     return '<div class="gs-card ' + t + ' gm-bloco">' + cab + h + mini + '<div class="acao">' + link + '</div></div>';
@@ -84,8 +85,9 @@
   function painel(D, m, aba) {
     if (aba === 'irrf' || aba === 'prev') {
       var X = D[aba], h = '';
-      if (X.porAno && X.porAno.length) {
-        h += '<div class="gs-card gm-sec"><h3>Potencial por ano</h3><p class="gs-s">R$ milhões</p><div style="max-width:560px">' + GG.barras(X.porAno.map(function (a) { return G.num(a.potencial) / 1e6; }), X.porAno.map(function (a) { return String(a.ano); }), COR[aba], function (v) { return v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }) + '</div></div>';
+      var pa = m.detalhe === false ? (((X.municipios || []).filter(function (r) { return String(r.ibge) === String(m.ibge); })[0]) || {}).porAno : X.porAno;
+      if (pa && pa.length) {
+        h += '<div class="gs-card gm-sec"><h3>Potencial por ano</h3><p class="gs-s">R$ milhões</p><div style="max-width:560px">' + GG.barras(pa.map(function (a) { return G.num(a.potencial) / 1e6; }), pa.map(function (a) { return String(a.ano); }), COR[aba], function (v) { return v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }) + '</div></div>';
       }
       return h + '<div class="gs-g21">' + timeline(D, m, aba) + contratos(D, m, aba) + '</div>';
     }
@@ -114,7 +116,8 @@
     abas.push(['documentos', 'Documentos']);
     var meta = ['IBGE <span class="mono">' + esc(ibge) + '</span>']; if (cnpj(m.cnpj)) meta.unshift('CNPJ <span class="mono">' + esc(cnpj(m.cnpj)) + '</span>');
     app.innerHTML =
-      '<section class="gov-card"><div class="gm-cab"><div><h2>' + esc(nomeMun(m, ibge)) + '</h2><p class="meta">' + meta.join(' · ') + '</p><div class="gm-chips">' + chips(m) + '</div></div><a class="gov-link" href="/gov-municipio.html">Trocar município</a></div></section>' +
+      '<section class="gov-card"><div class="gm-cab"><div><h2>' + esc(nomeMun(m, ibge)) + '</h2><p class="meta">' + meta.join(' · ') + '</p><div class="gm-chips">' + chips(m) + '</div></div><a class="gov-link" href="/gov-municipio.html">Trocar município</a></div>' + (window.GovRelatorio ? '<div class="gm-sec" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><b style="font-size:13px">Gerar relatório:</b>' + window.GovRelatorio.botoes(ibge) + (m.prev && window.RV_GOV_DEMO ? ' <a class="btn" href="/gov-diag-prev.html?ibge=' + encodeURIComponent(ibge) + '">Diagnóstico previdenciário</a>' : '') + '</div>' : '') + '</section>' +
+      (window.GovIBGE ? window.GovIBGE.perfil(D, m) : '') +
       '<div class="gs-g2 gm-sec">' + bloco(D, m, 'irrf') + bloco(D, m, 'prev') + '</div>' +
       '<div class="gm-tabs-wrap"><div class="gs-tabs" role="group" aria-label="Detalhe por tributo">' + abas.map(function (a) { return '<button type="button" data-aba="' + a[0] + '" aria-pressed="false">' + a[1] + '</button>'; }).join('') + '</div><div id="ficha-painel"></div></div>';
     function mostrar(a) {

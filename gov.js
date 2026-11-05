@@ -21,7 +21,15 @@
       const params = new URLSearchParams({ page: String(paginaMun), limit: String(POR_PAGINA) });
       if (q) params.set('q', q);
       if (uf) params.set('uf', uf);
-      const dados = await RV.api('GET', `/api/v1/gov/municipios?${params}`);
+      let dados;
+      if (window.RV_GOV_DEMO) {
+        // demonstração: lista a carteira simulada (nenhuma chamada à API)
+        await new Promise((r) => (document.readyState === 'complete' ? r() : window.addEventListener('load', r)));
+        const D = await window.GovDados.carregar(), REG = { MG: 'Sudeste', PR: 'Sul', GO: 'Centro-Oeste' };
+        const todos = D.municipios.map((m) => ({ ibgeCode: m.ibge, name: m.nome, state: m.uf, region: REG[m.uf] || '', status: 'active', isCapital: false }))
+          .filter((m) => (!uf || m.state === uf) && (!q || (m.name + ' ' + m.state + ' ' + m.ibgeCode).toLowerCase().includes(q.toLowerCase())));
+        dados = { total: todos.length, page: paginaMun, municipios: todos.slice((paginaMun - 1) * POR_PAGINA, paginaMun * POR_PAGINA) };
+      } else dados = await RV.api('GET', `/api/v1/gov/municipios?${params}`);
 
       const total = dados.total || 0;
       const paginas = Math.max(1, Math.ceil(total / POR_PAGINA));
@@ -82,6 +90,12 @@
   async function carregarKPIs() {
     try {
       // Tenta buscar dashboard; se não existir ainda, exibe placeholders
+      if (window.RV_GOV_DEMO) {
+        await new Promise((r) => (document.readyState === 'complete' ? r() : window.addEventListener('load', r)));
+        const D = await window.GovDados.carregar(), el = document.getElementById('kpi-municipios');
+        if (el) el.textContent = String(D.municipios.length);
+        return;
+      }
       try {
         const dados = await RV.api('GET', '/api/v1/gov/dashboard');
         const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };

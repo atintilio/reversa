@@ -349,3 +349,15 @@
 .gs-gaveta-fundo { position: fixed; inset: 0; background: rgba(6,18,31,.35); z-index: 60; } .gs-gaveta { position: fixed; top: 0; right: 0; bottom: 0; width: min(520px, 100vw); background: var(--card); z-index: 61; padding: 24px; overflow: auto; box-shadow: -12px 0 32px rgba(6,18,31,.2); }
 .gs-gaveta h2 { margin: 0 0 4px; font-size: 1.2rem; } .gs-gaveta .fechar { float: right; }
 .gs-alerta-n { font-weight: 700; }
+
+/* Visão geral: carteira de municípios */
+.vis-cart{margin:16px 0}.vis-cart .vis-cab{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.vis-ufs{display:flex;gap:6px;flex-wrap:wrap}.vis-uf{border:1px solid #D5DCE4;background:#fff;border-radius:999px;padding:5px 12px;font:600 12px Manrope,Arial,sans-serif;cursor:pointer;color:#0E2239}.vis-uf.on{background:#1E8F88;border-color:#1E8F88;color:#fff}
+.vis-cart .vis-bar{min-width:160px}.vis-cart .vis-bar i{display:block;height:7px;border-radius:4px;margin:2px 0}
+.vis-cart .vis-acoes{white-space:nowrap}.vis-cart .vis-acoes .vis-rel{display:inline-block;margin-left:10px;position:relative}.vis-cart .vis-rel summary{cursor:pointer;list-style:none}.vis-cart .vis-rel-pop{position:absolute;right:0;z-index:5;background:#fff;border:1px solid #D5DCE4;border-radius:8px;padding:8px;box-shadow:0 8px 24px rgba(14,34,57,.15);display:flex;flex-direction:column;gap:4px;min-width:150px}
+.vis-cart tr[hidden]{display:none}
+
+/* Ficha: perfil IBGE e leitura de inteligência */
+.gm-perfil .gm-perfil-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0}
+.gm-perfil-kpis>div{background:#F5F7F9;border-radius:10px;padding:12px 14px}.gm-perfil-kpis .v{font:700 20px "Open Sans",Arial,sans-serif;color:#0E2239}.gm-perfil-kpis small{display:block;color:#5B6B7C;font-size:12px;margin-top:2px}.gm-perfil-kpis small.s2{color:#1E8F88;font-weight:600}
+.gm-perfil-h{margin:14px 0 6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#5B6B7C}.gm-perfil-lista{margin:0;padding-left:18px}.gm-perfil-lista li{margin:9px 0;line-height:1.5}.gm-perfil-fonte{margin:12px 0 0}

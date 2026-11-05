@@ -14,8 +14,8 @@
     if (!GovDados.demo) {
       return vazio('Nenhuma nota analisada ainda', 'As notas aparecem aqui quando o município enviar o arquivo de pagamentos pelo ERP.');
     }
-    if (params.get('ibge') && params.get('ibge') !== IBGE_DEMO) {
-      return vazio('Sem notas para este município na demonstração', 'Só Tupaciguara/MG (3169604) tem dados simulados. Abra a demonstração sem filtro de município.');
+    if (params.get('ibge') && params.get('ibge') !== IBGE_DEMO && !window.GovDemoCfg) {
+      return vazio('Município não encontrado na carteira', 'Escolha um município da carteira de demonstração.');
     }
     iniciar();
   }, function () {
@@ -25,7 +25,7 @@
   function iniciar() {
     var G = window.GovDemo, U = window.GovDemoUI, esc = U.esc;
     $('conteudo').hidden = false; $('acoes').hidden = false; $('aviso-sim').hidden = false;
-    $('cab-sub').textContent = 'Tupaciguara/MG (simulado). Cada valor aponta para a nota que o originou: clique no olho para abrir a nota e ver o cálculo.';
+    $('cab-sub').textContent = ((window.GovDemoCfg && window.GovDemoCfg.nome) || 'Tupaciguara/MG') + ' (simulado). Cada valor aponta para a nota que o originou: clique no olho para abrir a nota e ver o cálculo.';
 
     G.notas.forEach(function (n) {
       n._txt = U.norm([n.chave, n.emitente.razao, U.cnpj(n.emitente.cnpj), n.numero, n.natureza].join(' '));

@@ -30,6 +30,24 @@
 </main>
 
 <script src="/shell.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-prev-motor.js"></script>
+<script>/* gov-metodologia-demo */(function () {
+  if (!window.RV_GOV_DEMO || !window.GovPrevMotor) return;
+  var sec = document.querySelector('.gov-wip'); if (!sec) return;
+  var G = window.GovDados, P = window.GovPrevMotor;
+  G.carregar().then(function (D) {
+    var m = D.municipios.filter(function (x) { return x.ibge === '3169604'; })[0], R = P.calcular(D, m);
+    var st = document.createElement('style'); st.textContent = P.CSS; document.head.appendChild(st);
+    sec.className = 'gov-card'; sec.removeAttribute('aria-labelledby');
+    sec.innerHTML = '<h2>Como o Reversa Gov chega a cada valor</h2><p>Em todo diagnóstico o caminho é o mesmo: documento de origem, regra, cálculo e classificação. O exemplo abaixo usa Tupaciguara/MG, com dados simulados.</p>' +
+      '<h3 style="margin:18px 0 6px">Fiscal (IRRF retido na fonte)</h3><p><b>Fato gerador.</b> O município retém imposto de renda nos pagamentos a fornecedores e o IRRF retido é receita própria (CF, art. 158, I). A retenção segue a IN RFB 1.234/2012 e a alíquota depende da natureza do serviço ou do bem. <b>Como se apura.</b> Nota a nota: o valor devido pela regra, menos o retido, é a diferença. A soma das diferenças é o potencial de incremento de receita, classificado em verde, amarelo e vermelho pela segurança da prova.</p>' +
+      '<h3 style="margin:18px 0 6px">Previdenciário (RGPS)</h3>' + P.metodologia(m, R) +
+      '<div class="gov-alert info" style="margin-top:14px"><strong>Ambiente de demonstração.</strong> O conteúdo jurídico deve ser revisado por quem responde pela parte jurídica antes do uso com clientes. Todo valor é estimativa sujeita à evidência documental.</div><div class="gov-actions"><a class="btn" href="/gov-diag-prev.html">Ver diagnóstico previdenciário</a><a class="btn sec" href="/gov-teses.html">Ver teses</a></div>';
+    var b = document.querySelector('.gov-badge.warn'); if (b) { b.className = 'gov-badge info'; b.textContent = 'Demonstração'; }
+  });
+})();</script>
 
 </body>
 </html>

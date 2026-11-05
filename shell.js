@@ -70,6 +70,18 @@
       '.rv-side a.it[aria-current="page"] { background: #E6F4F2; color: #16736D; font-weight: 600; }',
       '.rv-side a.it[aria-current="page"] svg { opacity: 1; }',
       '.rv-side [hidden] { display: none !important; }',
+      '.rv-side a.it[aria-current="page"] { box-shadow: inset 3px 0 0 #1E9488; }',
+      '.rv-side a.it.pai { color: #16736D; font-weight: 600; }',
+      '.rv-side a.it:focus-visible, .rv-side summary:focus-visible, .gov-bc a:focus-visible { outline: 2px solid #1E9488; outline-offset: 2px; }',
+      '.rv-side details.mais > summary { cursor: pointer; list-style: none; }',
+      '.rv-side details.mais > summary::-webkit-details-marker { display: none; }',
+      '.rv-side details.mais > summary::after { content: " ▸"; } .rv-side details.mais[open] > summary::after { content: " ▾"; }',
+      '.gov-header:has(> .gov-bc) { flex-wrap: wrap; } .gov-bc { flex: 0 0 100%; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0 0 10px; font-size: 13px; }',
+      '.gov-bc ol { display: flex; flex-wrap: wrap; gap: 4px; list-style: none; margin: 0; padding: 0; }',
+      '.gov-bc li + li::before { content: "›"; margin-right: 4px; opacity: .6; }',
+      '.gov-bc a, .gov-bc span { color: inherit; opacity: .85; text-decoration: none; } .gov-bc a:hover { opacity: 1; text-decoration: underline; }',
+      '.gov-bc [aria-current] { opacity: 1; font-weight: 600; }',
+      '.gov-bc .gov-bc-voltar { border: 1px solid currentColor; border-radius: 999px; padding: 2px 10px; opacity: .9; }',
       '.rv-side .pe { margin-top: auto; padding-top: 16px; display: grid; gap: 8px; }',
       '.rv-side .amb { display: block; border: 1px solid #E5E7EB; border-radius: 12px; padding: 11px 12px; text-decoration: none; font-size: 12px; color: #5C6672; }',
       '.rv-side .amb strong { display: flex; align-items: center; gap: 7px; color: #0E2239; font-size: 13px; font-weight: 600; }',
@@ -120,6 +132,7 @@
     crm: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/><path d="M15 4v10"/>',
     cli: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M9 21v-4h6v4"/><path d="M8 7h.01M12 7h.01M16 7h.01M8 11h.01M12 11h.01M16 11h.01"/>',
     exe: '<path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/>',
+    radar: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12 19 5"/>',
     teses: '<path d="M12 3v18"/><path d="M5 21h14"/><path d="M3 7h18"/><path d="m6 7-3 7a3 3 0 0 0 6 0z"/><path d="m18 7-3 7a3 3 0 0 0 6 0z"/>',
     dash: '<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>',
     users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
@@ -142,14 +155,18 @@
     try { if (qd) sessionStorage.setItem('rv-gov-demo', qd[1]); GOV_DEMO = sessionStorage.getItem('rv-gov-demo') === '1'; } catch (e) { GOV_DEMO = !!(qd && qd[1] === '1'); }
   }
   window.RV_GOV_DEMO = GOV_DEMO;
+  // Menu do Gov agrupado por tarefa. A ficha do município aparece como subitem de Municípios só quando há um município aberto.
   var GOV_MENU = [
-    ['@', 'Visão geral'], ['/gov', 'Visão geral', 'dash'],
-    ['@', 'Acompanhamento'], ['/gov-irrf', 'IRRF retido na fonte', 'doc'], ['/gov-previdenciario', 'Previdenciário', 'pgfn'],
-    ['@', 'Cadastro'], ['/gov-municipios', 'Municípios', 'mun'], ['/gov-municipio', 'Ficha do município', 'casos'], ['/gov-diagnosticar', 'Diagnosticar', 'diag'], ['/gov-crm', 'CRM Gov', 'crm'], ['/gov-teses', 'Teses', 'teses'], ['/gov-contratos', 'Contratos', 'cli'],
+    ['@', 'Painel'], ['/gov', 'Visão geral', 'dash'],
+    ['@', 'Municípios'], ['/gov-municipios', 'Carteira de municípios', 'mun'], ['/gov-diagnosticar', 'Novo diagnóstico', 'diag'],
+    ['@', 'Comercial'], ['/gov-crm', 'CRM', 'crm'], ['/gov-contratos', 'Contratos', 'cli'],
+    ['@', 'Tributos (separados)'], ['/gov-irrf', 'Fiscal tributário', 'doc'], ['/gov-previdenciario', 'Fiscal previdenciário', 'pgfn'],
+    ['@', 'Inteligência'], ['/gov-radar', 'Direct Point', 'radar'],
     ['@', 'Evidências'], ['/gov-notas', 'Notas analisadas (IRRF)', 'doc'], ['/gov-documentos', 'Documentos (Previdenciário)', 'doc'], ['/gov-estoque', 'Estoque de créditos', 'inicio']
   ];
-  if (GOV_DEMO) GOV_MENU = GOV_MENU.concat([['@', 'Espaço de trabalho'], ['/gov-mensagens', 'Mensagens', 'exe'], ['/gov-fontes', 'Fontes de dados', 'pgfn'], ['/gov-arquivos', 'Arquivos e API', 'exe'], ['/gov-exemplo', 'Relatório de exemplo', 'met']]);
-  GOV_MENU.push(['@', 'Referência'], ['/gov-metodologia', 'Metodologia', 'met']);
+  var GOV_MAIS = [['/gov-teses', 'Teses', 'teses'], ['/gov-metodologia', 'Metodologia', 'met']];
+  if (GOV_DEMO) GOV_MAIS = GOV_MAIS.concat([['/gov-mensagens', 'Mensagens', 'exe'], ['/gov-fontes', 'Fontes de dados', 'pgfn'], ['/gov-arquivos', 'Arquivos e API', 'exe'], ['/gov-exemplo', 'Relatório de exemplo', 'met']]);
+  var GOV_IBGE = NO_GOV && aqui === '/gov-municipio' ? (/[?&]ibge=(\d+)/.exec(location.search) || [])[1] : null;
   var principais = NO_GOV
     ? GOV_MENU
     : DEMO_AMB
@@ -161,10 +178,13 @@
     if (l[0] === '@') return '<div class="grp">' + l[1] + '</div>';
     var atual = NO_GOV ? aqui === l[0] : (l[0] === '/' ? aqui === '/' : aqui.indexOf(l[0]) === 0);
     var a = '<a class="it" href="' + (l[3] || href(l[0])) + '"' + (l[4] ? ' ' + l[4] + ' hidden' : '') + (atual ? ' aria-current="page"' : '') + '>' + svg(l[2]) + '<span>' + l[1] + '</span></a>';
-    if (NO_GOV && l[2] === 'diag' && atual) {
+    if (NO_GOV && l[0] === '/gov-municipios' && aqui === '/gov-municipio') {
+      a = a.replace('class="it"', 'class="it pai"');
+      a += '<a class="it sub" href="' + location.pathname + location.search + '" aria-current="page"><span data-ficha-nome>' + (GOV_IBGE ? 'Ficha do município' : 'Escolher município') + '</span></a>';
+    } else if (NO_GOV && l[2] === 'diag' && atual) {
       var tg = (/[?&]tipo=([a-z]+)/.exec(location.search) || [])[1], ib = (/[?&]ibge=(\d+)/.exec(location.search) || [])[1];
       a += [['fiscal', 'Fiscal (IRRF)'], ['previdenciario', 'Previdenciário'], ['consolidado', 'Consolidado']].map(function (m) {
-        return '<a class="it sub" href="/gov-diagnosticar.html?tipo=' + m[0] + (ib ? '&ibge=' + ib : '') + '" data-tipo-link="' + m[0] + '"' + (tg === m[0] ? ' aria-current="true"' : '') + '><span>' + m[1] + '</span></a>';
+        return '<a class="it sub" href="' + (GOV_DEMO && m[0] === 'previdenciario' ? '/gov-diag-prev.html' + (ib ? '?ibge=' + ib : '') : '/gov-diagnosticar.html?tipo=' + m[0] + (ib ? '&ibge=' + ib : '')) + '" data-tipo-link="' + m[0] + '"' + (tg === m[0] ? ' aria-current="true"' : '') + '><span>' + m[1] + '</span></a>';
       }).join('');
     } else if (l[2] === 'diag' && atual) {
       var AN = { tributario: 'tribfiscal', fiscal: 'tribfiscal', completo: 'consolidado' }, OK = { tribfiscal: 1, prev: 1, consolidado: 1 }, mm = (/[?&]modo=([a-z]+)/.exec(location.search) || [])[1];
@@ -180,6 +200,7 @@
   side.className = 'rv-side'; side.id = 'rv-side'; side.setAttribute('aria-label', 'Menu');
   side.innerHTML = '<a class="marca" href="' + (NO_GOV ? '/gov.html' : DEMO_AMB ? '/demonstracao.html' : '/') + '"><img src="/assets/reversa-r.png" alt=""><span>REVERSA <b>' + (NO_GOV ? 'GOV' : 'TAX') + '</b><small>Uma solução Argus Prime</small></span></a>' +
     '<nav aria-label="Seções">' + principais.map(item).join('') +
+    (NO_GOV ? '<details class="mais"' + (GOV_MAIS.some(function (l) { return l[0] === aqui; }) ? ' open' : '') + '><summary class="grp">Mais' + (GOV_DEMO ? ' · referência e trabalho' : ' · referência') + '</summary>' + GOV_MAIS.map(item).join('') + '</details>' : '') +
     (plataforma.length ? '<div class="grp" data-grp hidden>Plataforma</div>' + plataforma.map(item).join('') : '') + '</nav>' +
     '<div class="pe">' + '<a href="/ambiente.html" class="amb prod" title="Trocar de caminho"><strong><i></i>' + (NO_GOV ? 'Reversa Gov' : (DEMO_AMB ? 'Demonstração' : 'Reversa Tax')) + '</strong>Trocar para ' + (NO_GOV ? 'Reversa Tax' : 'Reversa Gov') + ' →</a><span class="ap" style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted,#5A6878)"><img src="/assets/argus-prime-monograma.png" alt="" style="height:20px;width:auto">Uma solução Argus Prime</span></div>';
   var nav = document.createElement('header');
@@ -215,6 +236,25 @@
     document.body.insertBefore(nav, document.body.firstChild);
     document.body.insertBefore(side, document.body.firstChild);
     var velho = document.getElementById('sair'); if (velho) velho.remove();
+    if (NO_GOV) trilha();
+  }
+  // Trilha de contexto (Visão geral › Municípios › Londrina/PR) e botão voltar nas páginas internas do Gov.
+  function trilha() {
+    var cab = document.querySelector('main.gov-page > .gov-header'); if (!cab || aqui === '/gov' || cab.querySelector('.gov-bc')) return;
+    var h1 = cab.querySelector('h1'), atual = h1 ? h1.textContent.replace(/^Reversa Gov\s*/, '').trim() : document.title.replace(/^.*·\s*/, '');
+    var pai = aqui === '/gov-municipio' ? ['/gov-municipios.html', 'Municípios'] : null;
+    var volta = pai ? pai[0] : '/gov.html';
+    var bc = document.createElement('nav'); bc.className = 'gov-bc'; bc.setAttribute('aria-label', 'Você está em');
+    bc.innerHTML = '<a class="gov-bc-voltar" href="' + volta + '" aria-label="Voltar">‹ Voltar</a><ol><li><a href="/gov.html">Visão geral</a></li>' +
+      (pai ? '<li><a href="' + pai[0] + '">' + pai[1] + '</a></li>' : '') + '<li><span aria-current="page" data-bc-atual>' + atual.replace(/[<>&]/g, '') + '</span></li></ol>';
+    bc.querySelector('.gov-bc-voltar').addEventListener('click', function (e) {
+      try { if (document.referrer && new URL(document.referrer).origin === location.origin && history.length > 1) { e.preventDefault(); history.back(); } } catch (x) {}
+    });
+    cab.insertBefore(bc, cab.firstChild);
+    if (GOV_IBGE) {
+      var achar = function () { var h2 = document.querySelector('.gm-cab h2'); if (!h2) return false; var n = h2.textContent.trim(); bc.querySelector('[data-bc-atual]').textContent = n; var f = side.querySelector('[data-ficha-nome]'); if (f) f.textContent = n; return true; };
+      if (!achar() && 'MutationObserver' in window) { var mo = new MutationObserver(function () { if (achar()) mo.disconnect(); }); mo.observe(document.querySelector('main') || document.body, { childList: true, subtree: true }); setTimeout(function () { mo.disconnect(); }, 15000); }
+    }
   }
   if (document.body) montar(); else document.addEventListener('DOMContentLoaded', montar);
 

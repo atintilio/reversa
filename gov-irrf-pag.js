@@ -11,7 +11,7 @@
     var nRec = casos.filter(function (c) { return c.etapa === 'em_execucao' || c.etapa === 'concluido'; }).length;
     var pctDif = d.notas ? G.pct(d.comDiferenca / d.notas, 0) + ' das notas' : '';
     var anos = d.porAno || [];
-    var h = '<div class="gs-g4">' +
+    var h = G.notaDetalhe(D) + '<div class="gs-g4">' +
       kpi('Potencial de incremento', esc(G.brl(d.potencial)), d.pct != null ? G.pct(d.pct) + ' do IRRF retido' : 'receita própria do município') +
       kpi('Notas analisadas', esc(G.int(d.notas)), anos.length ? anos[0].ano + ' a ' + anos[anos.length - 1].ano : 'análise documentada') +
       kpi('Notas com diferença', esc(G.int(d.comDiferenca)), pctDif) +

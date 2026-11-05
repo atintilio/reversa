@@ -23,6 +23,13 @@
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
   }
+  (function () {
+    var C = window.GovDemoCfg; if (!C) return;
+    SEED = C.seed; ALVO_TOTAL = C.alvoIrrf; MUNICIPIO = 'Prefeitura Municipal de ' + C.nome;
+    var s = ALVO_TOTAL / 200000000, pesos = [0.18, 0.19, 0.20, 0.21, 0.22], tot = 0;
+    ANOS.forEach(function (a, k) { QTD_ANO[a] = Math.max(15, Math.round(QTD_ANO[a] * s)); ALVO_ANO[a] = Math.round(ALVO_TOTAL * pesos[k] / 100) * 100; tot += ALVO_ANO[a]; });
+    ALVO_ANO[2025] += ALVO_TOTAL - tot;
+  })();
   var R = rng(SEED);
   function inteiro(a, b) { return a + Math.floor(R() * (b - a + 1)); }
   function pad(n, w) { var s = String(n); while (s.length < w) s = '0' + s; return s; }
@@ -177,6 +184,7 @@
     g.forEach(function (n) { n.bruto = Math.round(n.bruto0 * fator); calcula(n); soma += n.diff; });
     var delta = soma - ALVO_ANO[ano], alvo = null;
     for (var j = g.length - 1; j >= 0; j--) if (g[j].sit === 'D' && g[j].diff > 20000) { alvo = g[j]; break; }
+    if (!alvo) { g.forEach(function (n) { if (!alvo || n.diff > alvo.diff) alvo = n; }); }
     alvo.ajuste += delta; calcula(alvo);
   });
 

@@ -37,6 +37,19 @@
 </main>
 
 <script src="/shell.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-prev-motor.js"></script>
+<script src="/gov-rubricas.js"></script>
+<script src="/gov-relatorio.js"></script>
+<script>/* gov-exemplo-demo */(function(){if(!window.RV_GOV_DEMO)return;document.addEventListener("click",function(e){var b=e.target.closest&&e.target.closest("[data-relatorio]");if(!b)return;e.preventDefault();e.stopImmediatePropagation();window.GovRelatorio.abrir("3169604",b.getAttribute("data-relatorio")==="tecnico"?"prev":"consolidado");},true);})();</script>
 <script src="/gov.js"></script>
+<script>/* gov-exemplo-kpis */(function () {
+  if (!window.RV_GOV_DEMO) return;
+  var f = function (v) { return 'R$ ' + Math.round(v).toLocaleString('pt-BR'); };
+  var pI = 2000000, pP = 1800000, ano = pI / 5, eco = pP / 5;
+  var set = function (id, v) { var e = document.getElementById(id); if (e) e.textContent = v; };
+  set('ex-retro', f(pP) + ' (18 × ' + f(pP / 18) + ')'); set('ex-rec', f(eco) + ' por ano'); set('ex-irrf', f(ano) + ' por ano'); set('ex-caixa', f(pP + 3 * (eco + ano)));
+  var n = document.querySelector('.gov-ex-nota'); if (n) n.insertAdjacentHTML('afterend', '<p class="gov-ex-nota">Valores simulados, calculados sobre o potencial do caso: por ano = potencial ÷ 5 anos; caixa em 36 meses = crédito compensado + 3 anos de economia e de IRRF.</p>');
+})();</script>
 </body>
 </html>

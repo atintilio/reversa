@@ -7,7 +7,7 @@
 
   G.carregar().then(function (D) {
     var d = D.prev, anos = d.porAno || [];
-    var h = '<div class="gs-g4">' +
+    var h = G.notaDetalhe(D) + '<div class="gs-g4">' +
       kpi('Potencial de recuperação', esc(G.brl(d.potencial)), d.pct != null ? G.pct(d.pct) + ' das contribuições' : 'recolhido a maior') +
       kpi('Passivo identificado', esc(G.brlInt(d.passivo)), 'exposição, não soma ao potencial') +
       kpi('Inconsistências', esc(G.int(d.inconsistencias)), d.competenciasComInconsistencia != null ? 'em ' + G.int(d.competenciasComInconsistencia) + ' competências' : 'análise documentada') +

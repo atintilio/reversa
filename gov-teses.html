@@ -30,6 +30,29 @@
 </main>
 
 <script src="/shell.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-rubricas.js"></script>
+<script src="/gov-prev-motor.js"></script>
+<script>/* gov-teses-demo */(function () {
+  if (!window.RV_GOV_DEMO || !window.GovPrevMotor) return;
+  var P = window.GovPrevMotor, esc = function (s) { return RV.esc(s == null ? '' : s); };
+  var CL = { verde: ['Provável', '#1A7F4B'], amarelo: ['Possível', '#C58A12'], vermelho: ['Remoto', '#B3402F'] };
+  var lista = P.TESES.concat([P.REMOTA]);
+  var linhas = lista.map(function (t) { var c = CL[t.cor] || CL.amarelo; return '<tr><td><b>' + esc(t.id) + '</b></td><td><b>' + esc(t.nome) + '</b><small style="display:block;color:#5B6B7C;margin-top:2px">' + esc(t.orig) + '</small></td><td>' + esc(t.base) + '</td><td>' + esc(t.prec) + '</td><td><span style="color:' + c[1] + ';font-weight:700">' + c[0] + '</span><small style="display:block;color:#5B6B7C">' + esc(t.mat) + '</small></td><td>' + esc(t.docs) + '</td><td>' + esc(t.nota) + '</td></tr>'; }).join('');
+  var sec = document.querySelector('.gov-wip'); if (!sec) return;
+  sec.className = 'gov-card'; sec.removeAttribute('aria-labelledby');
+  sec.innerHTML = '<h2>Catálogo de teses previdenciárias</h2><p>As teses abaixo sustentam o diagnóstico previdenciário do Reversa Gov. Cada uma traz a base legal, o precedente, o documento de prova e o grau de segurança jurídica (Provável, Possível ou Remoto, conforme o critério do CPC 25). Remoto é listado só por transparência e não entra em nenhum valor.</p><div style="overflow:auto"><table class="gov-table"><thead><tr><th>Código</th><th>Tese e origem na folha</th><th>Base legal</th><th>Precedente</th><th>Classificação</th><th>Documento de prova</th><th>Observação</th></tr></thead><tbody>' + linhas + '</tbody></table></div><div class="gov-alert info" style="margin-top:14px"><strong>Ambiente de demonstração.</strong> O conteúdo jurídico deve ser revisado por quem responde pela parte jurídica antes do uso com clientes. Todo valor é estimativa sujeita à evidência documental.</div><div class="gov-actions"><a class="btn" href="/gov-diag-prev.html">Abrir diagnóstico previdenciário</a><a class="btn sec" href="/gov-casos.html">Ver casos</a></div>';
+  if (window.GovRubricas) {
+    var R = window.GovRubricas, ct = R.contagem(), ordem = ['todos', 'nao', 'dis', 'cnf', 'inc', 'fora'];
+    var cx = document.createElement('section'); cx.className = 'gov-card'; cx.style.marginTop = '18px';
+    var st = document.createElement('style'); st.textContent = R.CSS; document.head.appendChild(st);
+    cx.innerHTML = '<h2>Base jurídica das rubricas da folha</h2><p>' + esc(R.AVISO) + '</p><div class="rb-f">' + ordem.map(function (k) { var n = k === 'todos' ? R.LISTA.length : (ct[k] || 0); return '<button type="button" data-f="' + k + '"' + (k === 'todos' ? ' class="on"' : '') + '>' + (k === 'todos' ? 'Todas' : R.T[k][0]) + ' (' + n + ')</button>'; }).join('') + '</div><div id="rb-tab">' + R.tabela('todos') + '</div>';
+    sec.parentNode.insertBefore(cx, sec.nextSibling);
+    cx.querySelector('.rb-f').addEventListener('click', function (e) { var b = e.target.closest('button'); if (!b) return; cx.querySelectorAll('.rb-f button').forEach(function (x) { x.classList.toggle('on', x === b); }); cx.querySelector('#rb-tab').innerHTML = R.tabela(b.getAttribute('data-f')); });
+  }
+  var b = document.querySelector('.gov-badge.warn'); if (b) { b.className = 'gov-badge info'; b.textContent = 'Demonstração'; }
+})();</script>
 
 </body>
 </html>

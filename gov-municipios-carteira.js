@@ -22,10 +22,10 @@
     var linhas = D.municipios.map(function (m) {
       var nome = m.nome ? m.nome + (m.uf ? '/' + m.uf : '') : 'IBGE ' + m.ibge, e = etapaMax(D, m.ibge);
       var chips = (m.irrf ? G.chip('irrf') : '') + (m.prev ? G.chip('prev') : '') || '<span class="gs-chip n">—</span>';
-      return '<tr class="click" data-ibge="' + esc(m.ibge) + '"><td><a class="gov-link" href="/gov-municipio.html?ibge=' + encodeURIComponent(m.ibge) + '"><b>' + esc(nome) + '</b></a></td><td>' + chips + '</td><td class="num">' + G.brlInt(soma(D.irrf.municipios, m.ibge)) + '</td><td class="num">' + G.brlInt(soma(D.prev.municipios, m.ibge)) + '</td><td>' + (e ? G.etapaPill(e) : '—') + '</td></tr>';
+      return '<tr class="click" data-ibge="' + esc(m.ibge) + '"><td><a class="gov-link" href="/gov-municipio.html?ibge=' + encodeURIComponent(m.ibge) + '"><b>' + esc(nome) + '</b></a></td><td>' + chips + '</td><td class="num">' + G.brlInt(soma(D.irrf.municipios, m.ibge)) + '</td><td class="num">' + (m.prev ? G.brlInt(soma(D.prev.municipios, m.ibge)) : '<span style="color:#5B6B7C">Não contratado</span>') + '</td><td>' + (e ? G.etapaPill(e) : '—') + '</td><td style="white-space:nowrap">' + (window.GovRelatorio ? window.GovRelatorio.botoes(m.ibge, true) : '') + '</td></tr>';
     }).join('');
     box.innerHTML = '<h2 id="t-carteira">Municípios em carteira</h2><p class="sub2">Municípios com caso cadastrado. Abra a ficha para ver os dois tributos, separados.</p>' +
-      '<div class="gmc-wrap"><table class="gov-table"><thead><tr><th>Município</th><th>Tributos</th><th class="num">Potencial IRRF</th><th class="num">Potencial Prev.</th><th>Etapa</th></tr></thead><tbody>' + linhas + '</tbody></table></div>';
+      '<div class="gmc-wrap"><table class="gov-table"><thead><tr><th>Município</th><th>Tributos</th><th class="num">Potencial IRRF</th><th class="num">Potencial Prev.</th><th>Etapa</th><th>Relatório</th></tr></thead><tbody>' + linhas + '</tbody></table></div>';
     box.hidden = false;
     box.querySelector('tbody').addEventListener('click', function (ev) {
       if (ev.target.closest('a')) return;

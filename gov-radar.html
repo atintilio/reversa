@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Direct Point</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+<style>
+.rd-st{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:14px 0}.rd-st>div{background:#F5F7F9;border-radius:10px;padding:12px 14px}.rd-st b{display:block;font:700 16px "Open Sans",Arial,sans-serif;color:#0E2239}.rd-st small{display:block;color:#5B6B7C;font-size:12px;margin-top:2px}
+.rd-f{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.rd-f button{border:1px solid #D5DCE3;background:#fff;border-radius:999px;padding:6px 12px;font:600 12.5px Manrope,Arial,sans-serif;cursor:pointer;color:#0E2239}.rd-f button.on{background:#0E2239;color:#fff;border-color:#0E2239}
+.rd-it{border:1px solid #E1E6EC;border-left:4px solid var(--c,#8A95A1);border-radius:10px;padding:14px 16px;margin:12px 0;background:#fff}.rd-it h3{margin:0 0 4px;font-size:15px}.rd-meta{display:flex;flex-wrap:wrap;gap:10px;color:#5B6B7C;font-size:12px;margin-bottom:6px}.rd-imp{font-weight:700;color:var(--c)}.rd-it p{margin:6px 0;line-height:1.5}.rd-it .rd-acao{background:#F5F7F9;border-radius:8px;padding:8px 10px;font-size:13px}
+.rd-pas{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0}.rd-pas>div{border:1px solid #E1E6EC;border-top:3px solid #1E9488;padding:10px 12px;font-size:13px;line-height:1.45}.rd-pas b{display:block;margin-bottom:3px}
+</style>
+</head>
+<body class="rv">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>Reversa Gov <em>Direct Point</em></h1>
+      <p class="sub">Agente que consulta as atualizações toda manhã e aponta as decisões que podem afetar o Reversa Gov.</p>
+    </div>
+    <span class="gov-badge warn" id="rd-badge">Ainda não ativado</span>
+  </div>
+  <div id="rd-raiz"></div>
+</main>
+<script src="/shell.js"></script>
+<script src="/gov-rubricas.js"></script>
+<script>/* gov-radar */(function () {
+  var demo = !!window.RV_GOV_DEMO, esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var raiz = document.getElementById('rd-raiz');
+  var passos = '<h2 style="margin-top:20px">Como o agente trabalha</h2><div class="rd-pas"><div><b>1. Consulta</b>Toda manhã, às 7h (Brasília), busca novidades no STF, STJ, TRFs, Receita Federal, PGFN e Diário Oficial da União.</div><div><b>2. Filtra</b>Guarda só o que toca as teses e as rubricas do catálogo: contribuição patronal, RAT, IRRF dos municípios, prescrição e compensação.</div><div><b>3. Cruza</b>Aponta quais teses e rubricas do Reversa Gov a decisão afeta e qual o grau do impacto.</div><div><b>4. Entrega</b>Monta o resumo da manhã com link para a fonte original, pronto para a procuradoria.</div></div>' +
+    '<div class="gov-alert info" style="margin-top:12px"><strong>Regras do agente.</strong> Todo alerta traz a fonte para conferência. O agente não altera cálculo, tese nem relatório sozinho: ele aponta e a procuradoria do município, com o prefeito, decide. Modelo de linguagem: GLM 4.7.</div>';
+  if (!demo) {
+    raiz.innerHTML = '<section class="gov-card"><h2>O agente ainda não foi ativado</h2><p>Quando ativado, o Direct Point roda toda manhã e traz aqui o resumo das decisões que podem afetar o Reversa Gov. Para a ativação são necessários a chave de acesso ao modelo GLM 4.7 e o teste da primeira execução.</p><div class="rd-st"><div><b>GLM 4.7</b><small>modelo</small></div><div><b>07:00</b><small>horário de Brasília, todos os dias</small></div><div><b>Não ativado</b><small>situação</small></div></div>' + passos + '</section>';
+    return;
+  }
+  var b = document.getElementById('rd-badge'); b.className = 'gov-badge info'; b.textContent = 'Demonstração';
+  var hoje = new Date().toLocaleDateString('pt-BR');
+  var COR = { alto: '#B3402F', medio: '#C58A12', baixo: '#1A7F4B', info: '#5B6B7C' }, NOME = { alto: 'Impacto alto', medio: 'Impacto médio', baixo: 'Impacto baixo', info: 'Informativo' };
+  var AL = [
+    ['alto', 'STF', 'Exemplo: nova decisão sobre o terço constitucional de férias', 'O agente leria a decisão, resumiria o que mudou e indicaria se o terço de férias gozadas deixa de ser tese desfavorável.', 'Tese T-FER · Férias e 13º salário', 'Levar à procuradoria antes de qualquer alteração no relatório. Hoje a tese segue fora do potencial.'],
+    ['medio', 'STJ', 'Exemplo: julgado sobre abono pecuniário de férias', 'Seria o tipo de decisão que resolve a divergência apontada no catálogo para o abono pecuniário.', 'Rubrica: abono pecuniário de férias (Conferir)', 'Se confirmar a não incidência, a rubrica passa para "Não integra a base" depois da revisão jurídica.'],
+    ['medio', 'Receita Federal', 'Exemplo: solução de consulta sobre rubricas de folha na DCTFWeb', 'O agente destacaria mudança de orientação da Receita sobre como declarar rubricas e compensar.', 'Todas as teses com compensação via DCTFWeb', 'Conferir o procedimento de compensação do município antes de protocolar.'],
+    ['baixo', 'TRF', 'Exemplo: acórdão regional sobre vale-transporte em dinheiro', 'Decisões regionais que apenas confirmam entendimento já consolidado entram como impacto baixo.', 'Tese VT', 'Sem ação. Fica registrado no histórico do catálogo.'],
+    ['info', 'Diário Oficial da União', 'Exemplo: ato normativo sobre prazos e procedimentos de restituição', 'Atos que mexem em prazo ou em procedimento aparecem como informativo, com o link do ato.', 'Janela de prescrição e procedimentos', 'Atualizar a premissa de prazo no relatório se o ato alterar a contagem.']
+  ];
+  function lista(f) { return AL.filter(function (a) { return f === 'todos' || a[0] === f; }).map(function (a) { return '<article class="rd-it" style="--c:' + COR[a[0]] + '"><div class="rd-meta"><span class="rd-imp">' + NOME[a[0]] + '</span><span>' + esc(a[1]) + '</span><span>' + hoje + ', 07:00</span><span>Exemplo ilustrativo</span></div><h3>' + esc(a[2]) + '</h3><p>' + esc(a[3]) + '</p><p><b>O que afeta:</b> ' + esc(a[4]) + '</p><div class="rd-acao"><b>Ação sugerida:</b> ' + esc(a[5]) + '</div></article>'; }).join('') || '<p>Nenhum alerta neste filtro.</p>'; }
+  raiz.innerHTML = '<section class="gov-card"><h2>Resumo da manhã</h2><div class="gov-alert info"><strong>Ambiente de demonstração.</strong> Os alertas abaixo são exemplos ilustrativos de como o agente apresentará o resultado. Não são decisões reais e não citam processos. Com o agente ativado, cada alerta trará a decisão verdadeira e o link da fonte.</div><div class="rd-st"><div><b>GLM 4.7</b><small>modelo do agente</small></div><div><b>07:00</b><small>consulta diária, horário de Brasília</small></div><div><b>' + AL.length + ' alertas</b><small>no resumo de exemplo</small></div><div><b>6 fontes</b><small>STF, STJ, TRFs, Receita, PGFN, DOU</small></div></div><div class="rd-f">' + [['todos', 'Todos'], ['alto', 'Impacto alto'], ['medio', 'Médio'], ['baixo', 'Baixo'], ['info', 'Informativo']].map(function (k) { return '<button type="button" data-f="' + k[0] + '"' + (k[0] === 'todos' ? ' class="on"' : '') + '>' + k[1] + '</button>'; }).join('') + '</div><div id="rd-l">' + lista('todos') + '</div>' + passos + '</section>';
+  raiz.querySelector('.rd-f').addEventListener('click', function (e) { var bt = e.target.closest('button'); if (!bt) return; raiz.querySelectorAll('.rd-f button').forEach(function (x) { x.classList.toggle('on', x === bt); }); document.getElementById('rd-l').innerHTML = lista(bt.getAttribute('data-f')); });
+})();</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reversa Gov · Diagnóstico previdenciário</title>
+<link rel="icon" href="/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
+<link rel="stylesheet" href="/shell.css">
+<link rel="stylesheet" href="/gov.css">
+<style>
+  .dp-passos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 14px 0 0; }
+  .dp-passo { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--line); background: #fff; opacity: .55; }
+  .dp-passo.on { opacity: 1; border-color: #1E9488; }
+  .dp-passo i { flex: none; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #C78054; color: #C78054; display: grid; place-items: center; font-style: normal; font-weight: 700; font-size: 13px; }
+  .dp-passo.ok i { background: #1E9488; border-color: #1E9488; color: #fff; }
+  .dp-passo b { display: block; font-size: 14px; } .dp-passo small { color: var(--muted); font-size: 12.5px; }
+  .dp-aviso { background: #FFF6E5; border: 1px solid #E8C98A; padding: 10px 14px; font-size: 13px; margin: 14px 0 0; }
+  .dp-sel { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+  .dp-sel select { padding: 9px 12px; border: 1px solid var(--line); font: inherit; min-width: 260px; }
+  .dp-arq { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
+  .dp-arq td, .dp-arq th { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; }
+  .dp-barra { height: 10px; background: #E8EDF2; margin-top: 8px; overflow: hidden; display: flex; }
+  .dp-barra i { display: block; height: 100%; }
+  .dp-cl { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 12.5px; white-space: nowrap; }
+  .dp-cl i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .dp-t td { vertical-align: top; } .dp-t small { color: var(--muted); display: block; margin-top: 2px; line-height: 1.35; }
+  .dp-wrap { overflow-x: auto; } .dp-wrap table { min-width: 860px; }
+  .dp-lim li { margin: 6px 0; font-size: 13.5px; line-height: 1.5; }
+  .dp-ac { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  @media (max-width: 760px) { .dp-passos { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body class="rv" data-gov-pag="diagnostico-prev">
+<main class="gov-page">
+  <div class="gov-header">
+    <div>
+      <h1>Diagnóstico <em>previdenciário</em></h1>
+      <p class="sub">Contribuições previdenciárias do ente público (RGPS): o que vale aprofundar, com base legal, documento de prova e grau de segurança de cada tese.</p>
+    </div>
+  </div>
+  <div id="dp-app" aria-live="polite"><div class="gov-empty">Carregando…</div></div>
+</main>
+<script src="/shell.js"></script>
+<script src="/gov-graficos.js"></script>
+<script src="/gov-dados.js"></script>
+<script src="/gov-rubricas.js"></script>
+<script src="/gov-relatorio.js"></script>
+<script src="/gov-prev-motor.js"></script>
+<script src="/gov-diag-prev.js"></script>
+</body>
+</html>

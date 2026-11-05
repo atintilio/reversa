@@ -20,6 +20,11 @@
       return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
   }
+(function () {
+    var C = window.GovDemoCfg; if (!C) return;
+    SEED = C.seed + 7; ALVO_ATIVO = C.alvoAtivo; ALVO_PASSIVO = C.alvoPassivo;
+    var s = ALVO_ATIVO / 180000000; N_ATIVO = Math.max(24, Math.round(180 * s)); N_PASSIVO = Math.max(8, Math.round(34 * s));
+  })();
   var R = rng(SEED);
   function pad(n, w) { var s = String(n); while (s.length < w) s = '0' + s; return s; }
   function inteiro(a, b) { return a + Math.floor(R() * (b - a + 1)); }
