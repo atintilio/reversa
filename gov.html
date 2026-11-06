@@ -9,34 +9,12 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Open+Sans:wght@700&display=swap">
 <link rel="stylesheet" href="/shell.css">
 <link rel="stylesheet" href="/gov.css">
-<style>
-  .gs-hero .gs-lab { letter-spacing: .08em; }
-  .gs-hero .gs-big { overflow-wrap: anywhere; }
-  .gs-mini > div { min-width: 0; }
-  .gs-mini .v.ok { color: var(--ok); }
-  .gs-bloco-linha .gs-pcts { line-height: 1.1; }
-  .gs-bloco-linha > div { min-width: 0; }
-  .vis-aviso { margin-top: 24px; font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .vis-graf svg { display: block; max-width: 100%; height: auto; }
-  .vis-alertas .gs-row span:first-child { min-width: 0; overflow-wrap: anywhere; }
-  .vis-tbl td, .vis-tbl th { white-space: nowrap; }
-  .vis-tbl td.cas { white-space: normal; }
-  @media (max-width: 520px) { .vis-tbl td, .vis-tbl th { white-space: normal; padding: 8px 5px; font-size: 12.5px; } .vis-tbl { table-layout: fixed; min-width: 0; } .vis-tbl th { font-size: 10px; letter-spacing: 0; } .vis-tbl th:nth-child(1) { width: 30%; } .vis-tbl th:nth-child(2) { width: 19%; } .vis-tbl th:nth-child(3) { width: 26%; } .vis-tbl .gov-etapa { white-space: normal; overflow-wrap: anywhere; font-size: 11px; padding: 2px 6px; } .vis-tbl .gs-chip { font-size: 10.5px; padding: 2px 6px; margin: 0; } .gs-big { font-size: 2.1rem; } .gs-pcts { font-size: 2.2rem; } .gs-mini { grid-template-columns: 1fr 1fr; gap: 12px; } .gs-mini .v { font-size: 1.15rem; } }
-  .vis-atalhos { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; margin: 0 0 18px; }
-  .vis-rel { position: relative; } .vis-rel > summary { list-style: none; cursor: pointer; } .vis-rel > summary::-webkit-details-marker { display: none; }
-  .vis-rel > summary::after { content: ' ▾'; }
-  .vis-rel-pop { position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; min-width: 260px; background: var(--card, #fff); border: 1px solid var(--line); border-radius: 12px; padding: 14px; box-shadow: 0 10px 30px rgba(6,18,31,.14); display: grid; gap: 8px; }
-  .vis-rel-pop select { padding: 8px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
-  .vis-rel-bts { display: flex; flex-wrap: wrap; gap: 6px; }
-  .vis-cab { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-  .vis-det { font-size: 13px; font-weight: 600; }
-</style>
 </head>
 <body class="rv" data-gov-pag="visao-geral">
 <main class="gov-page">
   <div class="gov-header">
     <div>
-      <h1>Visão geral</h1>
+      <h1>Visão geral <em>da carteira</em></h1>
       <p class="sub">Os dois tributos são acompanhados separadamente: cada um é um caso e um contrato. O município pode contratar só um.</p>
     </div>
   </div>
@@ -52,6 +30,8 @@
 <script src="/gov-prev-motor.js"></script>
 <script src="/gov-rubricas.js"></script>
 <script src="/gov-relatorio.js"></script>
+<script src="/gov-visao-calc.js"></script>
+<script src="/gov-mapa.js"></script>
 <script src="/gov-visao.js"></script>
 </body>
 </html>

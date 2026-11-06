@@ -160,7 +160,7 @@
     ['@', 'Painel'], ['/gov', 'Visão geral', 'dash'],
     ['@', 'Municípios'], ['/gov-municipios', 'Carteira de municípios', 'mun'], ['/gov-diagnosticar', 'Novo diagnóstico', 'diag'],
     ['@', 'Comercial'], ['/gov-crm', 'CRM', 'crm'], ['/gov-contratos', 'Contratos', 'cli'],
-    ['@', 'Tributos (separados)'], ['/gov-irrf', 'Fiscal tributário', 'doc'], ['/gov-previdenciario', 'Fiscal previdenciário', 'pgfn'],
+    ['@', 'Tributos'], ['/gov-irrf', 'Fiscal tributário', 'doc'], ['/gov-previdenciario', 'Previdenciário', 'pgfn'],
     ['@', 'Inteligência'], ['/gov-radar', 'Direct Point', 'radar'],
     ['@', 'Evidências'], ['/gov-notas', 'Notas analisadas (IRRF)', 'doc'], ['/gov-documentos', 'Documentos (Previdenciário)', 'doc'], ['/gov-estoque', 'Estoque de créditos', 'inicio']
   ];
