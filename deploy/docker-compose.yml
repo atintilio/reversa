@@ -11,6 +11,7 @@ services:
     environment:
       HOST: 0.0.0.0
       PORT: "3000"
+      GOV_HOST: ${GOV_HOST:-reversa-gov.argusprime.com.br}
     # Sem "ports": o app so e acessivel pelo Caddy, pela rede interna.
     expose:
       - "3000"
@@ -48,6 +49,9 @@ services:
 
   caddy:
     image: caddy:2
+    environment:
+      REVERSA_HOST: ${REVERSA_HOST:-reversa.argusprime.com.br}
+      GOV_HOST: ${GOV_HOST:-reversa-gov.argusprime.com.br}
     ports:
       - "80:80"
       - "443:443"

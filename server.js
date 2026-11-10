@@ -7,7 +7,7 @@ const path = require('node:path');
 const guard = require('./lib/page-guard');
 
 const ROOT = __dirname;
-const HOST_GOV = 'reversa-gov.argusprime.com.br';
+const HOST_GOV = String(process.env.GOV_HOST || 'reversa-gov.argusprime.com.br').toLowerCase();
 const MAX_BODY = 1024 * 1024;
 const MIME = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',

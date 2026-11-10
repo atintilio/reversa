@@ -42,10 +42,10 @@
 	}
 }
 
-reversa.argusprime.com.br {
+{$REVERSA_HOST:reversa.argusprime.com.br} {
 	import reversa
 }
 
-reversa-gov.argusprime.com.br {
+{$GOV_HOST:reversa-gov.argusprime.com.br} {
 	import reversa
 }
