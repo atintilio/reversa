@@ -47,7 +47,10 @@ async function migrate(sql) {
 async function main() {
   const url = process.env.POSTGRES_URL || process.env.DATABASE_URL;
   if (!url) throw new Error('POSTGRES_URL ou DATABASE_URL não configurada');
-  const sql = postgres(url, { max: 1, ssl: 'require', onnotice: () => {} });
+  // Neon exige SSL; Postgres na VPS (rede interna) normalmente não usa. PGSSL=require força SSL.
+  const { usePg } = require('../lib/db');
+  const ssl = usePg(url) ? (process.env.PGSSL === 'require' ? 'require' : false) : 'require';
+  const sql = postgres(url, { max: 1, ssl, onnotice: () => {} });
   try { await migrate(sql); } finally { await sql.end({ timeout: 5 }); }
 }
 
