@@ -1,0 +1,5511 @@
+{
+ "leiaute": "ecf",
+ "origem": "python-sped (MIT, SPED-BR) - base portada por AST; sem tamanhos",
+ "validacao": "[VALIDAR] contra Guia Pratico oficial vigente",
+ "registros": {
+  "0000": {
+   "descricao": "Abertura do Arquivo Digital e Identificação da Pessoa Jurídica\n\n>>> r = Registro0000()\n>>> r.REG\n'0000'\n>>> r.NOME_ESC\n'LECF'\n>>> line='|0000|LECF|1.00|11111111000191|EMPRESA TESTE|0|0|||01012014|31122014|N||0||'\n>>> r = Registro0000(line)\n>>> r.as_line()\n'|0000|LECF|1.00|11111111000191|EMPRESA TESTE|0|0|||01012014|31122014|N||0||'\n>>> r.REG\n'0000'\n>>> r.NOME_ESC\n'LECF'\n>>> r.COD_VER\n'1.00'\n>>> r.CNPJ\n'11111111000191'\n>>> r.NOME\n'EMPRESA TESTE'\n>>> r.DT_INI\ndatetime.date(2014, 1, 1)\n>>> r.NOME = 'EMPRESA DEMO'\n>>> r.NOME\n'EMPRESA DEMO'",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0000"
+    },
+    {
+     "pos": 2,
+     "nome": "NOME_ESC",
+     "tipo": "F",
+     "fixo": "LECF"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_VER",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_SIT_INI_PER",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "SIT_ESPECIAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "PAT_REMAN_CIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "DT_SIT_ESP",
+     "tipo": "D"
+    },
+    {
+     "pos": 10,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 11,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 12,
+     "nome": "RETIFICADORA",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "NUM_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "TIP_ECF",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "COD_SCP",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0001": {
+   "descricao": "Abertura do Bloco 0",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0010": {
+   "descricao": "Parâmetros de Tributação",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0010"
+    },
+    {
+     "pos": 2,
+     "nome": "HASH_ECF_ANTERIOR",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "OPT_REFIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "OPT_PAES",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "FORMA_TRIB",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "FORMA_APUR",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_QUALIF_PJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "FORMA_TRIB_PER",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "MES_BAL_RED",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "TIP_ESC_PRE",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "TIP_ENT",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "FORMA_APUR_I",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "APUR_CSLL",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "OPT_EXT_RTT",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "DIF_FCONT",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0020": {
+   "descricao": "Parâmetros Complementares",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0020"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_ALIQ_CSLL",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_QTE_SCP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_ADM_FUN_CLU",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_PART_CONS",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_OP_EXT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "IND_OP_VINC",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "IND_PJ_ENQUAD",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_PART_EXT",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "IND_ATIV_RURAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_LUC_EXP",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "IND_RED_ISEN",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "IND_FIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "IND_DOA_ELEIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "IND_PART_COLIG",
+     "tipo": "C"
+    },
+    {
+     "pos": 16,
+     "nome": "IND_VEND_EXP",
+     "tipo": "C"
+    },
+    {
+     "pos": 17,
+     "nome": "IND_REC_EXT",
+     "tipo": "C"
+    },
+    {
+     "pos": 18,
+     "nome": "IND_ATIV_EXT",
+     "tipo": "C"
+    },
+    {
+     "pos": 19,
+     "nome": "IND_COM_EXP",
+     "tipo": "C"
+    },
+    {
+     "pos": 20,
+     "nome": "IND_PGTO_EXT",
+     "tipo": "C"
+    },
+    {
+     "pos": 21,
+     "nome": "IND_E_COM_TI",
+     "tipo": "C"
+    },
+    {
+     "pos": 22,
+     "nome": "IND_ROY_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 23,
+     "nome": "IND_ROY_PAG",
+     "tipo": "C"
+    },
+    {
+     "pos": 24,
+     "nome": "IND_REND_SERV",
+     "tipo": "C"
+    },
+    {
+     "pos": 25,
+     "nome": "IND_PGTO_REM",
+     "tipo": "C"
+    },
+    {
+     "pos": 26,
+     "nome": "IND_INOV_TEC",
+     "tipo": "C"
+    },
+    {
+     "pos": 27,
+     "nome": "IND_CAP_INF",
+     "tipo": "C"
+    },
+    {
+     "pos": 28,
+     "nome": "IND_PJ_HAB",
+     "tipo": "C"
+    },
+    {
+     "pos": 29,
+     "nome": "IND_POLO_AM",
+     "tipo": "C"
+    },
+    {
+     "pos": 30,
+     "nome": "IND_ZON_EXP",
+     "tipo": "C"
+    },
+    {
+     "pos": 31,
+     "nome": "IND_AREA_COM",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0030": {
+   "descricao": "Dados Cadastrais",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0030"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CNAE_FISCAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "ENDERECO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COMPL",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "BAIRRO",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "UF",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_MUN",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "CEP",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "NUM_TEL",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "EMAIL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0035": {
+   "descricao": "Identificação das SCP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0035"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_SCP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NOME_SCP",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0930": {
+   "descricao": "Identificação dos Signatários da ECF",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0930"
+    },
+    {
+     "pos": 2,
+     "nome": "IDENT_NOM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IDENT_CPF_CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IDENT_QUALIF",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_CRC",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "EMAIL",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "FONE",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0990": {
+   "descricao": "Encerramento do Bloco 0",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C001": {
+   "descricao": "Abertura do Bloco C – Informações Recuperadas da ECD",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C040": {
+   "descricao": "Identificador da ECD",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C040"
+    },
+    {
+     "pos": 2,
+     "nome": "HASH_ECD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_SIT_ESP",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "NUM_ORD",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "NIRE",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "NAT_LIVR",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "COD_VER_LC",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_ESC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C050": {
+   "descricao": "Plano de Contas da ECD",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C050"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C051": {
+   "descricao": "Plano de Contas Referencial",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C051"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ENT_REF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CTA_REF",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C053": {
+   "descricao": "Subcontas Correlatas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C053"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_IDT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CNT_CORR",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_SUB_CNT",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C100": {
+   "descricao": "Centro de Custos",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C100"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CCUS",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C150": {
+   "descricao": "Identificação do Período dos Saldos Periódicos das Contas Patrimoniais",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C150"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    }
+   ]
+  },
+  "C155": {
+   "descricao": "Detalhes dos Saldos Contábeis das Contas Patrimoniais",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C155"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SLD_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VL_SLD_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DEB",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CRED",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_SLD_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_VL_SLD_FIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "LINHA_ECD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C157": {
+   "descricao": "Transferência de Saldos do Plano de Contas Anterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C157"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SLD_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VL_SLD_FIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "LINHA_ECD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C350": {
+   "descricao": "Identificação da Data dos Saldos das Contas de Resultado Antes do Encerramento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C350"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_RES",
+     "tipo": "D"
+    }
+   ]
+  },
+  "C355": {
+   "descricao": "Detalhes dos Saldos das Contas de Resultado Antes do Encerramento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C355"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CTA",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VL_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "LINHA_ECD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C990": {
+   "descricao": "Encerramento do Bloco C",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "E001": {
+   "descricao": "Abertura do Bloco E – Informações Recuperadas da ECF Anterior e Cálculo Fiscal dos Dados Recuperados da ECD",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "E001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "E010": {
+   "descricao": "Saldos Finais Recuperados da ECF Anterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "E010"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CTA_REF",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DESC_CTA_REF",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VAL_CTA_REF",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_VAL_CTA_REF",
+     "tipo": "C"
+    }
+   ]
+  },
+  "E015": {
+   "descricao": "Contas Contábeis Mapeadas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "E015"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DESC_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VAL_CTA",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_VAL_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "E020": {
+   "descricao": "Saldos Finais das Contas da Parte B do e-Lalur da ECF Imediatamente Anterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "E020"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_B",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESC_CTA_LAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_AP_LAL",
+     "tipo": "D"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_LAN_ORIG",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DESC_LAN_ORIG",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_LIM_LAL",
+     "tipo": "D"
+    },
+    {
+     "pos": 8,
+     "nome": "TRIBUTO",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_SALDO_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "IND_VL_SALDO_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "E030": {
+   "descricao": "Identificação do Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "E030"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "PER_APUR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "E155": {
+   "descricao": "Detalhes dos Saldos Contábeis Calculados com Base nas ECD",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "E155"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SLD_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VL_SLD_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DEB",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CRED",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_SLD_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_VL_SLD_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "E355": {
+   "descricao": "Detalhes dos Saldos das Contas de Resultado Antes do Encerramento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "E355"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SLD_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VL_SLD_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "E990": {
+   "descricao": "Encerramento do Bloco E",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "E990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "J001": {
+   "descricao": "Abertura do Bloco J – Plano de Contas e Mapeamento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J050": {
+   "descricao": "Plano de Contas do Contribuinte",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J050"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J051": {
+   "descricao": "Plano de Contas Referencial",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J051"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CTA_REF",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J053": {
+   "descricao": "Subcontas Correlatas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J053"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_IDT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CNT_CORR",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_SUB_CNT",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J100": {
+   "descricao": "Centro de Custos",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J100"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CCUS",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J990": {
+   "descricao": "Encerramento do Bloco J",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "K001": {
+   "descricao": "Abertura do Bloco K – Saldos das Contas Contábeis e Referenciais",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "K001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "K030": {
+   "descricao": "Identificação dos Períodos e Formas de Apuração do IRPJ e da CSLL no Ano-Calendário",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "K030"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "PER_APUR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "K155": {
+   "descricao": "Detalhes dos Saldos Contábeis (Depois do Encerramento do Resultado do Período)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "K155"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SLD_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VL_SLD_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DEB",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CRED",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_SLD_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_VL_SLD_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "K156": {
+   "descricao": "Mapeamento Referencial do Saldo Final",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "K156"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_REF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_SLD_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_VL_SLD_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "K355": {
+   "descricao": "Saldos Finais das Contas Contábeis de Resultado Antes do Encerramento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "K355"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SLD_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VL_SLD_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "K356": {
+   "descricao": "Mapeamento Referencial dos Saldos Finais das Contas de Resultado Antes do Encerramento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "K356"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_REF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_SLD_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_VL_SLD_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "K990": {
+   "descricao": "Encerramento do Bloco K",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "K990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "L001": {
+   "descricao": "Abertura do Bloco L – Lucro Real",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "L001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "L030": {
+   "descricao": "Identificação dos Períodos e Formas de Apuração do IRPJ e da CSLL no Ano-Calendário",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "L030"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "PER_APUR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "L100": {
+   "descricao": "Balanço Patrimonial",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "L100"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VAL_CTA_REF_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_VAL_CTA_REF_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "VAL_CTA_REF_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_VAL_CTA_REF_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "L200": {
+   "descricao": "Método de Avaliação do Estoque Final",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "L200"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_AVAL_ESTOQ",
+     "tipo": "C"
+    }
+   ]
+  },
+  "L210": {
+   "descricao": "Informativo da Composição de Custos",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "L210"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "L300": {
+   "descricao": "Demonstração do Resultado do Exercício",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "L300"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VALOR",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_VALOR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "L990": {
+   "descricao": "Encerramento do Bloco L",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "L990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M001": {
+   "descricao": "Abertura do Bloco M – Livro Eletrônico de\nApuração do Lucro Real (e-Lalur) e Licro Eletrônico\nde Apuração da Base de Cálculo da CSLL (e-Lacs)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M010": {
+   "descricao": "Identificação da Conta na Parte B e-Lalur e do e-Lacs",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M010"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_B",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESC_CTA_LAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_AP_LAL",
+     "tipo": "D"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_LAN_ORIG",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DESC_LAN_ORIG",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_LIM_LAL",
+     "tipo": "D"
+    },
+    {
+     "pos": 8,
+     "nome": "TRIBUTO",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_SALDO_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "IND_VL_SALDO_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "CNPJ_SIT_ESP",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M030": {
+   "descricao": "Identificação do Período e Forma de Apuração do\nIRPJ e da CSLL das Empresas Tributadas pelo\nLucro Real",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M030"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "PER_APUR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M300": {
+   "descricao": "Lançamentos da Parte A do e-Lalur",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M300"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO_LANCAMENTO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_RELACAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VALOR",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "HIST_LAN_LAL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M305": {
+   "descricao": "Conta da Parte B do e-Lalur",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M305"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_B",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_CTA",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_VL_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M310": {
+   "descricao": "Contas Contábeis Relacionadas ao Lançamento da\nParte A do e-Lalur.",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M310"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CTA",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VL_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M312": {
+   "descricao": "Números dos Lançamentos Relacionados à Conta Contábil",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M312"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_LCTO",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M315": {
+   "descricao": "Identificação de Processos Judiciais e\nAdministrativos Referentes ao Lançamento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M315"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M350": {
+   "descricao": "Lançamentos da Parte A do e-Lacs",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M350"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO_LANCAMENTO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_RELACAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VALOR",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "HIST_LAN_LAL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M355": {
+   "descricao": "Conta da Parte B do e-Lacs",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M355"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_B",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_CTA",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_VL_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M360": {
+   "descricao": "Contas Contábeis Relacionadas ao Lançamento da\nParte A do e-Lacs.",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M360"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CTA",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VL_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M362": {
+   "descricao": "Números dos Lançamentos Relacionados à Conta\nContábil",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M362"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_LCTO",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M365": {
+   "descricao": "Identificação de Processos Judiciais e\nAdministrativos Referentes ao Lançamento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M365"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M410": {
+   "descricao": "Lançamentos na Conta da Parte B do e-Lalur e do e-\nLacs Sem Reflexo na Parte A",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M410"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_B",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_TRIBUTO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VAL_LAN_LALB_PB",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VAL_LAN_LALB_PB",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CTA_B_CTP",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "HIST_LAN_LALB",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "IND_LAN_ANT",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M415": {
+   "descricao": "Identificação de Processos Judiciais e\nAdministrativos Referentes ao Lançamento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M415"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M500": {
+   "descricao": "Controle de Saldos das Contas da Parte B do e-Lalur\ne do e-Lacs",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M500"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_B",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_TRIBUTO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "SD_INI_LAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_SD_INI_LAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_LCTO_PARTE_A",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "IND_VL_LCTO_PARTE_A",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_LCTO_PARTEB",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_ VL_LCTO_PARTEB",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "SD_FIM_LAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_SD_FIM_LAL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M990": {
+   "descricao": "Encerramento do Bloco M",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "N001": {
+   "descricao": "Abertura do bloco N – Cálculo do IRPJ e da CSLL",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "N030": {
+   "descricao": "Identificação do Período e Forma de Apuração do\nIRPJ e da CSLL das Empresas Tributadas pelo\nLucro Real",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N030"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "PER_APUR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "N500": {
+   "descricao": "Base de Cálculo do IRPJ Sobre o Lucro Real Após\nas Compensações de Prejuízo",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N500"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "N600": {
+   "descricao": "Demonstração do Lucro da Exploração",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N600"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "N610": {
+   "descricao": "Cálculo da Isenção e Redução do Imposto sobre\nLucro Real",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N610"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "N615": {
+   "descricao": "Informações da Base de Cálculo de Incentivos Fiscais",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N615"
+    },
+    {
+     "pos": 2,
+     "nome": "BASE_CALC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "PER_INCEN_FINOR",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_LIQ_INCEN_FINOR",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "PER_INCEN_FINAM",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_LIQ_INCEN_FINAM",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_TOTAL",
+     "tipo": "N"
+    }
+   ]
+  },
+  "N620": {
+   "descricao": "Cálculo do IRPJ Mensal por Estimativa",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N620"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "N630": {
+   "descricao": "Cálculo do IRPJ Com Base no Lucro Real",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N630"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "N650": {
+   "descricao": "Base de Cálculo da CSLL Após Compensações das\nBases de Cálculo Negativa",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N650"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "N660": {
+   "descricao": "Cálculo da CSLL Mensal por Estimativa",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N660"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "N670": {
+   "descricao": "Cálculo da CSLL Com Base no Lucro Real",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N670"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "N990": {
+   "descricao": "Encerramento do Bloco N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "N990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "P001": {
+   "descricao": "Abertura do Bloco P – Lucro Presumido",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "P030": {
+   "descricao": "Identificação dos Período e Forma de Apuração do\nIRPJ e da CSLL das Empresas Tributadas pelo\nLucro Presumido",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P030"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "PER_APUR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "P100": {
+   "descricao": "Balanço Patrimonial",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P100"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VAL_CTA_REF_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_VAL_CTA_REF_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "VAL_CTA_REF_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_VAL_CTA_REF_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "P130": {
+   "descricao": "Demonstração das Receitas Incentivadas do Lucro\nPresumido",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P130"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "P150": {
+   "descricao": "Demonstração do Resultado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P150"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VALOR",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_VALOR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "P200": {
+   "descricao": "Apuração da Base de Cálculo do Lucro Presumido",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P200"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "P230": {
+   "descricao": "Cálculo da Isenção e Redução do Lucro Presumido",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P230"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "P300": {
+   "descricao": "Cálculo do IRPJ com Base no Lucro Presumido",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P300"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "P400": {
+   "descricao": "Apuração da Base de Cálculo da CSLL com Base no\nLucro Presumido",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P400"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "P500": {
+   "descricao": "Cálculo da CSLL com Base no Lucro Líquido",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P500"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "P990": {
+   "descricao": "Encerramento do Bloco P",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Q001": {
+   "descricao": "Abertura do Bloco Q",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Q001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Q100": {
+   "descricao": "Demonstrativo do Livro Caixa",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Q100"
+    },
+    {
+     "pos": 2,
+     "nome": "DATA",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "HIST",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ENTRADA",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_SAIDA",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "SLD_FIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Q990": {
+   "descricao": "Encerramento do Bloco Q",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Q990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "T001": {
+   "descricao": "Abertura do Bloco T – Lucro Arbitrado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "T001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "T030": {
+   "descricao": "Identificação dos Período e Forma de Apuração do\nIRPJ e CSLL das Empresas Tributadas pelo Lucro\nArbitrado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "T030"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "PER_APUR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "T120": {
+   "descricao": "Apuração da Base de Cálculo do IRPJ com Base no\nLucro Arbitrado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "T120"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "T150": {
+   "descricao": "Cálculo do Imposto de Renda com Base no Lucro\nArbitrado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "T150"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "T170": {
+   "descricao": "Apuração da Base de Cálculo da CSLL com Base no\nLucro Arbitrado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "T170"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "T181": {
+   "descricao": "Cálculo da CSLL com Base no Lucro Arbitrado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "T181"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "T990": {
+   "descricao": "Encerramento do Bloco T",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "T990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "U001": {
+   "descricao": "Abertura do Bloco U – Imunes e Isentas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "U001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "U030": {
+   "descricao": "Identificação dos Períodos e Formas de Apuração do\nIPRJ e da CSLL das Empressa Imunes e Isentas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "U030"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "PER_APUR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "U100": {
+   "descricao": "Balanço Patrimonial",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "U100"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VAL_CTA_REF_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_VAL_CTA_REF_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "VAL_CTA_REF_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_VAL_CTA_REF_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "U150": {
+   "descricao": "Demonstração do Resultado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "U150"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VALOR",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_VALOR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "U180": {
+   "descricao": "Cálculo do IRPJ das Empresas Imunes ou Isentas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "U180"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "U182": {
+   "descricao": "Cálculo da CSLL das Empresas Imunes ou Isentas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "U182"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "U990": {
+   "descricao": "Encerramento do Bloco U",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "U990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X001": {
+   "descricao": "Abertura do Bloco X – Informações Econômicas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "X280": {
+   "descricao": "Atividades Incentivadas - PJ em Geral",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X280"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_ATIV",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "ATO_CONC",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VIG_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VIG_FIM",
+     "tipo": "C"
+    }
+   ]
+  },
+  "X291": {
+   "descricao": "Operações com o Exterior - Pessoa\nVinculada/Interposta/País com Tributação\nFavorecida.",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X291"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X292": {
+   "descricao": "Operações com o Exterior - Pessoa Não Vinculada/\nNão Interposta/País sem Tributação Favorecida",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X292"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X300": {
+   "descricao": "Operações com o Exterior - Exportações (Entradas\nde Divisas)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X300"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ORDEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "TIP_EXP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DESC_EXP",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "TOT_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_NCM",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "QTDE",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "UNI_MED",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_OPER",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "TIP_MET",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_PAR",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_PRAT",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_AJ",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_JUR",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_JUR_MIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_JUR_MAX",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "COD_CNC",
+     "tipo": "C"
+    },
+    {
+     "pos": 18,
+     "nome": "TIP_MOEDA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "X310": {
+   "descricao": "Operações com o Exterior - Contratantes das\nExportações",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X310"
+    },
+    {
+     "pos": 2,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "COND_PES",
+     "tipo": "C"
+    }
+   ]
+  },
+  "X320": {
+   "descricao": "Operações com o Exterior - Importações (Saídas de Divisas)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X320"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ORD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "TIP_IMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DESC_IMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "TOT_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_NCM",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "QTDE",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "UNI_MED",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "TIP_MET",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_PAR",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_PRAT",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_AJ",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_JUR",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_JUR_MIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_JUR_MAX",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "COD_CNC",
+     "tipo": "C"
+    },
+    {
+     "pos": 17,
+     "nome": "TIP_MOEDA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "X330": {
+   "descricao": "Operações com o Exterior - Contratantes das\nImportações",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X330"
+    },
+    {
+     "pos": 2,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "COND_PES",
+     "tipo": "C"
+    }
+   ]
+  },
+  "X340": {
+   "descricao": "Identificação da Participação no Exterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X340"
+    },
+    {
+     "pos": 2,
+     "nome": "RAZ_SOCIAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NIF",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_CONTROLE",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_REPETRO",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "IND_CONSOL",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "MOT_NAO_CONSOL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "X350": {
+   "descricao": "Participações no Exterior - Resultado do Período de\nApuração",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X350"
+    },
+    {
+     "pos": 2,
+     "nome": "REC_LIQ",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "CUSTOS",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "LUC_BRUTO",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "REC_AUFERIDAS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "REC_OUTRAS_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "DESP_BRASIL",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "DESP_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "LUC_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "REC_PARTIC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "REC_OUTRAS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "DESP_OUTRAS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "LUC_LIQ_ANT_IR",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "IMP_DEV",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "LUC_LIQ",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "LUC_ARB_ANT_IMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "IMP_DEV_ARB",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "LUC_ARB_PER_APUR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X351": {
+   "descricao": "Demonstrativo de Resultados e de Imposto a Pagar\nno Exterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X351"
+    },
+    {
+     "pos": 2,
+     "nome": "RES_INV_PER",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "RES_INV_PER_REAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "RES_REPRETO_PER",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "RES_REPRETO_PER_REAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "RES_NEG_ACUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "RES_POS_TRIB",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "RES_POS_TRIB_REAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IMP_PAG",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "IMP_PAG_REAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "IMP_PAG_REND",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "IMP_PAG_REND_REAL",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X352": {
+   "descricao": "Demonstrativo de Resultados no Exterior de\nColigadas em Regime de Caixa",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X352"
+    },
+    {
+     "pos": 2,
+     "nome": "RES_PER",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "RES_PER_REAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "LUC_DISP",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "LUC_DISP_REAL",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X353": {
+   "descricao": "Demonstrativo de Consolidação",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X353"
+    },
+    {
+     "pos": 2,
+     "nome": "RES_NEG_UTIL",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "RES_NEG_UTIL_REAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "SALDO_RES_NEG_NAO_UTIL",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "SALDO_RES_NEG_NAO_UTIL_REAL",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X354": {
+   "descricao": "Demonstrativo de Prejuízos Acumulados",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X354"
+    },
+    {
+     "pos": 2,
+     "nome": "RES_NEG",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "RES_NEG_REAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "SALDO_RES_NEG",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X355": {
+   "descricao": "Demonstrativo de Rendas Ativas e passivas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X355"
+    },
+    {
+     "pos": 2,
+     "nome": "REND_PASS_PROP",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "REND_PASS_PROP_REAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "REND_TOTAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "REND_TOTAL_REAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "REND_ATIV_PROP",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "REND_ATIV_PROP_REAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "PERCENTUAL",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X356": {
+   "descricao": "Demonstrativo de Imposto Pago no Exterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X366"
+    }
+   ]
+  },
+  "X390": {
+   "descricao": "Origem e Aplicação de Recursos - Imunes ou Isentas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X390"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X400": {
+   "descricao": "Comércio Eletrônico e Tecnologia da Informação",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X400"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X410": {
+   "descricao": "Comércio Eletrônico",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X410"
+    },
+    {
+     "pos": 2,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_HOME_DISP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_SERV_DISP",
+     "tipo": "C"
+    }
+   ]
+  },
+  "X420": {
+   "descricao": "Royalties Recebidos ou Pagos a Beneficiários do\nBrasil e do Exterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X420"
+    },
+    {
+     "pos": 2,
+     "nome": "TIP_ROY",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_EXPL_DIR_SW",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_EXPL_DIR_AUT",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_EXPL_MARCA",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_EXPL_PAT",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_EXPL_KNOW",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_EXPL_FRANQ",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_EXPL_INT",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X430": {
+   "descricao": "Rendimentos Relativos a Serviços, Juros e\nDividendos Recebidos do Brasil e do Exterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X430"
+    },
+    {
+     "pos": 2,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_SERV_ASSIST",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SERV_SEM_ASSIST",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_SERV_SEM_ASSIST_EXT",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_JURO",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_DEMAIS_JUROS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_DIVID",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X450": {
+   "descricao": "Pagamentos/Remessas Relativos a Serviços, Juros e\nDividendos Recebidos do Brasil e do Exterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X450"
+    },
+    {
+     "pos": 2,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_SERV_ASSIST",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SERV_SEM_ASSIST",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_SERV_SEM_ASSIST_EXT",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_JURO_PF",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_JURO_PJ",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_DEMAIS_JUROS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_DIVID_PF",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DIVID_PJ",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X460": {
+   "descricao": "Inovação Tecnológica e Desenvolvimento\nTecnológico",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X460"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X470": {
+   "descricao": "Capacitação de Informática e Inclusão Digital",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X470"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X480": {
+   "descricao": "Repes, Recap, Padis, PATVD, Reidi, Repenec,\nReicomp, Retaero, Recine, Resíduos Sólidos,\nRecopa, Copa do Mundo, Retid, REPNBL-Redes,\nReif e Olimpíadas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X480"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X490": {
+   "descricao": "Pólo Industrial de Manaus e Amazônia Ocidental",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X490"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X500": {
+   "descricao": "Zonas de Processamento de Exportação (ZPE)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X500"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X510": {
+   "descricao": "Áreas de Livre Comércio (ALC)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X510"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "X990": {
+   "descricao": "Encerramento do Bloco X",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "X990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y001": {
+   "descricao": "Abertura do Bloco Y – Informações Gerais",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "Y520": {
+   "descricao": "Pagamentos/Recebimentos do Exterior ou de Não\nResidentes",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y520"
+    },
+    {
+     "pos": 2,
+     "nome": "TIP_EXT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "FORMA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NAT_OPER",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_PERIODO",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y540": {
+   "descricao": "Discriminação da Receita de Vendas dos\nEstabelecimentos por Atividade Econômica",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y540"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ_ESTAB",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_REC_ESTAB",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "CNAE",
+     "tipo": "C"
+    }
+   ]
+  },
+  "Y550": {
+   "descricao": "Vendas a Comercial Exportadora com Fim\nEspecífico de Exportação",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y550"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ_EXP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_NCM",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_VENDA",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y560": {
+   "descricao": "Detalhamento das Exportações da Comercial\nExportadora",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y560"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_NCM",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_COMPRA",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_EXP",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y570": {
+   "descricao": "Demonstrativo do Imposto de Renda e CSLL\nRetidos na Fonte",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y570"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ_FON",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NOM_EMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_ORG_PUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_REND",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "IR_RET",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "CSLL_RET",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y580": {
+   "descricao": "Doações a Campanhas Eleitorais",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y580"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "TIP_BENEF",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "FORM_DOA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_DOA",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y590": {
+   "descricao": "Ativos no Exterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y590"
+    },
+    {
+     "pos": 2,
+     "nome": "TIP_ATIVO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "DISCRIMINACAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_ATUAL",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y600": {
+   "descricao": "Identificação de Sócios ou Titular",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y600"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT_SOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIM_SOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_QUALIF_SOCIO",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "CPF_CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "NOM_EMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "QUALIF",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "PERC_CAP_TOT",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "PERC_CAP_VOT",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "CPF_REP_LEG",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "QUALIF_REP_LEG",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_REM_TRAB",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_LUC_DIV",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_JUR_CAP",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_DEM_REND",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_IR_RET",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y612": {
+   "descricao": "Rendimentos de Dirigentes e Conselheiros - Imunes\nou Isentas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y612"
+    },
+    {
+     "pos": 2,
+     "nome": "CPF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "QUALIF",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_REM_TRAB",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DEM_REND",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_IR_RET",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y620": {
+   "descricao": "Participação Avaliada pelo Método de Equivalência\nPatrimonial",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y620"
+    },
+    {
+     "pos": 2,
+     "nome": "PAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "NOM_EMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VALOR_REAIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VALOR_ESTR",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "PERC_CAP_TOT",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "PERC_CAP_VOT",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "RES_EQ_PAT",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "DATA_AQUIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_PROC_CART",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "NUM_PROC_CART",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "NOME_CART",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "IND_PROC_RFB",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "NUM_PROC_RFB",
+     "tipo": "C"
+    }
+   ]
+  },
+  "Y630": {
+   "descricao": "Fundos/Clubes de Investimento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y630"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "QTE_QUOT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "QTE_QUOTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "PATR_FIN_PER",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DAT_ABERT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "DAT_ENCER",
+     "tipo": "C"
+    }
+   ]
+  },
+  "Y640": {
+   "descricao": "Participações em Consórcios de Empresas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y640"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COND_DECL",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CONS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "CNPJ_LID",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DECL",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y650": {
+   "descricao": "Participantes do Consórcio",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y650"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_PART",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y660": {
+   "descricao": "Dados de Sucessoras",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y660"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NOM_EMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "PERC_PAT_LIQ",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y665": {
+   "descricao": "Demonstrativo das Diferenças na Adoção Inicial",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y665"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DESC_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_SALDO_SOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_VL_SALDO_SOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_SALDO_FIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "IND_VL_SALDO_FIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "DIF_SALDOS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "IND_DIF_SALDOS",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "MET_CONTR",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "COD_SUBCONT",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "COD_CCUS_SUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "DESC_SUB",
+     "tipo": "C"
+    }
+   ]
+  },
+  "Y671": {
+   "descricao": "Outras Informações",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y671"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_AQ_MAQ",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_DOA_CRIANCA",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DOA_IDOSO",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_AQ_IMOBILIZADO",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BX_IMOBILIZADO",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_INC_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_INC_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_CSLL_DEPREC_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DIF_IC_VC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_OC_SEM_IOF",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_FOLHA_ALIQ_RED",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_ALIQ_RED",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "IND_ALTER_CAPITAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "IND_BCN_CSLL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "Y672": {
+   "descricao": "Outras Informações (Lucro Presumido ou Lucro\nArbitrado)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y672"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_CAPITAL_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_CAPITAL",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ESTOQUE_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ESTOQUES",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CAIXA_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CAIXA",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_APLIC_FIN_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_APLIC_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_CTA_REC_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_CTA_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_CTA_PAG_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_CTA_PAG",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_COMPRA_MERC",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_COMPRA_ATIVO",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_RECEITAS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "TOT_ATIVO",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_FOLHA",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "VL_ALIQ_RED",
+     "tipo": "N"
+    },
+    {
+     "pos": 20,
+     "nome": "IND_REG_APUR",
+     "tipo": "C"
+    },
+    {
+     "pos": 21,
+     "nome": "IND_AVAL_ESTOQ",
+     "tipo": "C"
+    }
+   ]
+  },
+  "Y680": {
+   "descricao": "Mês das Informações de Optantes pelo Refis (Lucro\nReal, Presumido e Arbitrado)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y680"
+    },
+    {
+     "pos": 2,
+     "nome": "MES",
+     "tipo": "C"
+    }
+   ]
+  },
+  "Y681": {
+   "descricao": "Informações de Optantes pelo Refis (Lucro Real,\nPresumido e Arbitrado)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y681"
+    },
+    {
+     "pos": 2,
+     "nome": "CODIGO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y682": {
+   "descricao": "Informações de Optantes pelo Refis - Imunes ou\nIsentas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y682"
+    },
+    {
+     "pos": 2,
+     "nome": "MES",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "ACRES_PATR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "Y690": {
+   "descricao": "Informações de Optantes pelo Paes",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y690"
+    },
+    {
+     "pos": 2,
+     "nome": "MES",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_REC_BRU",
+     "tipo": "N"
+    }
+   ]
+  },
+  "Y800": {
+   "descricao": "Outras Informações",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y800"
+    },
+    {
+     "pos": 2,
+     "nome": "ARQ_RTF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_FIM_RTF",
+     "tipo": "C"
+    }
+   ]
+  },
+  "Y990": {
+   "descricao": "Encerramento do Bloco Y",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "Y990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "9001": {
+   "descricao": "Abertura do Bloco 9",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "9100": {
+   "descricao": "Avisos da Escrituração",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9100"
+    },
+    {
+     "pos": 2,
+     "nome": "",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "MSG_REGRA",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "REGISTRO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "CONTEÚDO",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VALOR_ESPERADO",
+     "tipo": "N"
+    }
+   ]
+  },
+  "9900": {
+   "descricao": "Registros do Arquivo",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9900"
+    },
+    {
+     "pos": 2,
+     "nome": "REG_BLC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "QTD_REG_BLC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VERSAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "ID_TAB_DIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "9099": {
+   "descricao": "Encerramento do Bloco 9",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9099"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  },
+  "9999": {
+   "descricao": "Encerramento do Arquivo Digital",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9999"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  }
+ }
+}
