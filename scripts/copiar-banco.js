@@ -51,7 +51,16 @@ async function main() {
     const vOrigem = (await origem`select version from schema_migrations order by 1`).map((r) => r.version);
     const vDestino = (await destino`select version from schema_migrations order by 1`).map((r) => r.version);
     const dif = vOrigem.filter((v) => !vDestino.includes(v));
-    if (dif.length) throw new Error('A origem tem migracoes que o destino nao tem: ' + dif.join(', '));
+    // Migracoes so da origem: normalmente de OUTRO app que divide o mesmo banco. Aviso (nao erro); se mexerem em tabela do Reversa, o COPY acusa.
+    if (dif.length) console.log('Aviso: migracoes registradas so na origem (provavel outro app no mesmo banco): ' + dif.join(', '));
+    if (semNoDestino.length) {
+      const refs = await origem`select c.conrelid::regclass::text as filha, c.confrelid::regclass::text as mae
+        from pg_constraint c join pg_namespace n on n.oid = c.connamespace where c.contype = 'f' and n.nspname = 'public'`;
+      const ref = refs.map((r) => ({ filha: r.filha.replace(/^"?public"?\./, '').replace(/^"(.*)"$/, '$1'), mae: r.mae.replace(/^"?public"?\./, '').replace(/^"(.*)"$/, '$1') }))
+        .filter((r) => semNoDestino.includes(r.filha) && tCopiar.includes(r.mae));
+      if (ref.length) console.log('ATENCAO: tabelas do outro app dependem de tabelas do Reversa: ' + ref.map((r) => `${r.filha} -> ${r.mae}`).join('; '));
+      else console.log('Tabelas do outro app nao tem chave estrangeira para tabelas do Reversa.');
+    }
 
     const deps = await destino`select c.conrelid::regclass::text as filha, c.confrelid::regclass::text as mae
       from pg_constraint c join pg_namespace n on n.oid = c.connamespace where c.contype = 'f' and n.nspname = 'public'`;
