@@ -42,8 +42,10 @@ async function main() {
   try {
     const tOrigem = await listarTabelas(origem);
     const tDestino = await listarTabelas(destino);
+    // Tabelas que existem so na origem NAO sao do Reversa (ex.: outro app no mesmo banco): ficam de fora, intactas na origem.
     const semNoDestino = tOrigem.filter((t) => !tDestino.includes(t));
-    if (semNoDestino.length) throw new Error('Tabelas da origem que nao existem no destino (rode as migracoes): ' + semNoDestino.join(', '));
+    if (semNoDestino.length) console.log('Aviso: tabelas so da origem, NAO serao copiadas (nao fazem parte do Reversa): ' + semNoDestino.join(', '));
+    const tCopiar = tOrigem.filter((t) => tDestino.includes(t));
     const extrasDestino = tDestino.filter((t) => !tOrigem.includes(t));
     if (extrasDestino.length) console.log('Aviso: tabelas so do destino (serao esvaziadas): ' + extrasDestino.join(', '));
     const vOrigem = (await origem`select version from schema_migrations order by 1`).map((r) => r.version);
@@ -54,7 +56,7 @@ async function main() {
     const deps = await destino`select c.conrelid::regclass::text as filha, c.confrelid::regclass::text as mae
       from pg_constraint c join pg_namespace n on n.oid = c.connamespace where c.contype = 'f' and n.nspname = 'public'`;
     const limpa = (s) => s.replace(/^"?public"?\./, '').replace(/^"(.*)"$/, '$1');
-    const ordem = ordenar(tOrigem, deps.map((d) => ({ filha: limpa(d.filha), mae: limpa(d.mae) })));
+    const ordem = ordenar(tCopiar, deps.map((d) => ({ filha: limpa(d.filha), mae: limpa(d.mae) })));
 
     if (!confirmar) {
       console.log('ENSAIO (nada foi alterado). Tabelas a copiar, em ordem:');
