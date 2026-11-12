@@ -1,0 +1,2171 @@
+{
+ "fonte": "NT 2026.001 v1.0 leiaute 021",
+ "observacoes": [
+  "descricao parafraseada/resumida pelo WebFetch, nao literal",
+  "ocorrencia V = varios (como no original); H020 veio como '1.N'",
+  "bloco C: obrig = Perfil A Entrada apenas (colunas por perfil fundidas na extracao); bloco D: obrig = seis colunas A-Ent/A-Sai/B-Ent/B-Sai/C-Ent/C-Sai",
+  "niveis/ocorrencias de C591..C897 inferidos de texto colado; D590 e D370 com leitura incerta"
+ ],
+ "registros": [
+  {
+   "bloco": "0",
+   "reg": "0000",
+   "descricao": "Abertura do arquivo e identificação da entidade",
+   "nivel": 0,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "0",
+   "reg": "0001",
+   "descricao": "Abertura do Bloco 0",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "0",
+   "reg": "0002",
+   "descricao": "Classificação de estabelecimento industrial ou equiparado",
+   "nivel": 2,
+   "ocorrencia": "1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0005",
+   "descricao": "Dados complementares da entidade",
+   "nivel": 2,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "0",
+   "reg": "0015",
+   "descricao": "Dados do contribuinte substituto ou responsável pelo ICMS destino",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0100",
+   "descricao": "Dados do contabilista",
+   "nivel": 2,
+   "ocorrencia": "1",
+   "obrig": "O (se perfil A ou B)"
+  },
+  {
+   "bloco": "0",
+   "reg": "0150",
+   "descricao": "Tabela de cadastro do participante",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0175",
+   "descricao": "Alteração da tabela de cadastro do participante",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0190",
+   "descricao": "Identificação das unidades de medida",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0200",
+   "descricao": "Tabela de identificação do item",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0205",
+   "descricao": "Alteração do item",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0206",
+   "descricao": "Código de produto conforme tabela ANP",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0210",
+   "descricao": "Consumo específico padronizado",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0220",
+   "descricao": "Fatores de conversão de unidades",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0221",
+   "descricao": "Correlação entre códigos de itens comercializados",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0300",
+   "descricao": "Cadastro de bens ou componentes do ativo imobilizado",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0305",
+   "descricao": "Informação sobre a utilização do bem",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0400",
+   "descricao": "Tabela de natureza da operação/prestação",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0450",
+   "descricao": "Tabela de informação complementar do documento fiscal",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0460",
+   "descricao": "Tabela de observações do lançamento fiscal",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "0",
+   "reg": "0500",
+   "descricao": "Plano de contas contábeis",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "O (se existir 0300)"
+  },
+  {
+   "bloco": "0",
+   "reg": "0600",
+   "descricao": "Centro de custos",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "O (se existir 0305)"
+  },
+  {
+   "bloco": "0",
+   "reg": "0990",
+   "descricao": "Encerramento do Bloco 0",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "B",
+   "reg": "B001",
+   "descricao": "Abertura do Bloco B",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "B",
+   "reg": "B020",
+   "descricao": "Documentos fiscais de diversos modelos",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B025",
+   "descricao": "Detalhamento por alíquota e item da lista de serviços (filho de B020)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B030",
+   "descricao": "Nota fiscal de serviços simplificada (3A)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B035",
+   "descricao": "Detalhamento por alíquota e item da lista de serviços (filho de B030)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B350",
+   "descricao": "Serviços prestados por instituições financeiras",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B420",
+   "descricao": "Totalização dos serviços prestados por alíquota e item da lista de serviços",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B440",
+   "descricao": "Totalização dos valores retidos",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B460",
+   "descricao": "Deduções do ISS",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B470",
+   "descricao": "Apuração do ISS",
+   "nivel": 2,
+   "ocorrencia": "1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B500",
+   "descricao": "Apuração do ISS de sociedade uniprofissional",
+   "nivel": 2,
+   "ocorrencia": "1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B510",
+   "descricao": "Uniprofissional: empregados e sócios",
+   "nivel": 3,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "B",
+   "reg": "B990",
+   "descricao": "Encerramento do Bloco B",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "C",
+   "reg": "C001",
+   "descricao": "Abertura do Bloco C",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "C",
+   "reg": "C100",
+   "descricao": "Documento (NF, NF avulsa, NF de produtor, NF-e, NFC-e)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C101",
+   "descricao": "Informação complementar, operações interestaduais a consumidor final",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C105",
+   "descricao": "Operações com ICMS-ST recolhido para UF diversa do destinatário",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C110",
+   "descricao": "Informação complementar da nota fiscal",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C111",
+   "descricao": "Processo referenciado",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C112",
+   "descricao": "Documento de arrecadação referenciado",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C113",
+   "descricao": "Documento fiscal referenciado",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C114",
+   "descricao": "Cupom fiscal referenciado",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C115",
+   "descricao": "Local de coleta e/ou entrega",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C116",
+   "descricao": "CF-e referenciado",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C120",
+   "descricao": "Operações de importação",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C130",
+   "descricao": "ISSQN, IRRF e Previdência Social",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C140",
+   "descricao": "Fatura",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C141",
+   "descricao": "Vencimento da fatura",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir C140)"
+  },
+  {
+   "bloco": "C",
+   "reg": "C160",
+   "descricao": "Volumes transportados",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C165",
+   "descricao": "Operações com combustíveis",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C170",
+   "descricao": "Itens do documento",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir C100)"
+  },
+  {
+   "bloco": "C",
+   "reg": "C171",
+   "descricao": "Armazenamento de combustíveis",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C172",
+   "descricao": "Operações com ISSQN",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C173",
+   "descricao": "Operações com medicamentos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C174",
+   "descricao": "Operações com armas de fogo",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C175",
+   "descricao": "Operações com veículos novos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C176",
+   "descricao": "Ressarcimento de ICMS e FCP em ST",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C177",
+   "descricao": "Outras informações do item",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C178",
+   "descricao": "Produtos sujeitos a IPI por unidade ou quantidade",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C179",
+   "descricao": "Informações complementares ST",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C180",
+   "descricao": "Entradas sujeitas a ST",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C181",
+   "descricao": "Devoluções de saídas sujeitas a ST",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C185",
+   "descricao": "Saídas sujeitas a ST",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C186",
+   "descricao": "Devoluções de entradas sujeitas a ST",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C190",
+   "descricao": "Registro analítico do documento",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir C100)"
+  },
+  {
+   "bloco": "C",
+   "reg": "C191",
+   "descricao": "Informações do FCP na NF-e",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C195",
+   "descricao": "Observações do lançamento fiscal",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C197",
+   "descricao": "Outras obrigações tributárias e ajustes",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C300",
+   "descricao": "Resumo diário de NF de venda a consumidor",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C310",
+   "descricao": "Documentos cancelados de NF de venda a consumidor",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C320",
+   "descricao": "Registro analítico de NF de venda a consumidor",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C321",
+   "descricao": "Itens dos resumos diários",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C330",
+   "descricao": "Informações complementares de ST (cód. 02)",
+   "nivel": 5,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C350",
+   "descricao": "NF de venda a consumidor",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C370",
+   "descricao": "Itens do documento (cód. 02)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C380",
+   "descricao": "Informações complementares de ST (cód. 02)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C390",
+   "descricao": "Registro analítico de NF de venda a consumidor",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C400",
+   "descricao": "Equipamento ECF",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C405",
+   "descricao": "Redução Z",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C410",
+   "descricao": "PIS e COFINS totalizados no dia",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C420",
+   "descricao": "Totalizadores parciais da Redução Z",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C425",
+   "descricao": "Resumo de itens do movimento diário",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C430",
+   "descricao": "Informações complementares de ST (ECF)",
+   "nivel": 6,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C460",
+   "descricao": "Documento fiscal emitido por ECF",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C465",
+   "descricao": "Complemento do CF-e-ECF",
+   "nivel": 5,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C470",
+   "descricao": "Itens do documento emitido por ECF",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C480",
+   "descricao": "Informações complementares de ST (ECF)",
+   "nivel": 6,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C490",
+   "descricao": "Registro analítico do movimento diário",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C495",
+   "descricao": "Resumo mensal de itens do ECF por estabelecimento",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C500",
+   "descricao": "NF/conta de energia elétrica, água, gás",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C510",
+   "descricao": "Itens do documento de energia, água ou gás",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C590",
+   "descricao": "Registro analítico (energia, água, gás)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir C500)"
+  },
+  {
+   "bloco": "C",
+   "reg": "C591",
+   "descricao": "Informações do FCP na NF3e",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C595",
+   "descricao": "Observações do lançamento fiscal",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C597",
+   "descricao": "Outras obrigações e ajustes",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "C",
+   "reg": "C600",
+   "descricao": "Consolidação diária de contas (empresas não obrigadas ao Conv. 115/03)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C601",
+   "descricao": "Documentos cancelados de consolidação diária",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C610",
+   "descricao": "Itens do documento consolidado",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir C600)"
+  },
+  {
+   "bloco": "C",
+   "reg": "C690",
+   "descricao": "Registro analítico dos documentos",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir C600)"
+  },
+  {
+   "bloco": "C",
+   "reg": "C700",
+   "descricao": "Consolidação de documentos emitidos em via única (Conv. 115/03)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C790",
+   "descricao": "Registro analítico dos documentos",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir C700)"
+  },
+  {
+   "bloco": "C",
+   "reg": "C791",
+   "descricao": "Informações de ICMS-ST por UF (códigos 06 e 66)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C800",
+   "descricao": "Registro CF-e-SAT",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C810",
+   "descricao": "Itens do documento CF-e-SAT",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C815",
+   "descricao": "Informações complementares de ST (CF-e-SAT)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C850",
+   "descricao": "Registro analítico do CF-e-SAT",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C855",
+   "descricao": "Observações do lançamento fiscal (cód. 59)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C857",
+   "descricao": "Outras obrigações e ajustes (cód. 59)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C860",
+   "descricao": "Identificação do equipamento SAT-CF-e",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C870",
+   "descricao": "Itens do documento CF-e-SAT",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C880",
+   "descricao": "Informações complementares de ST (CF-e-SAT)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C890",
+   "descricao": "Resumo diário de CF-e-SAT por equipamento",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C895",
+   "descricao": "Observações do lançamento fiscal (cód. 59)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C897",
+   "descricao": "Outras obrigações e ajustes (cód. 59)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N"
+  },
+  {
+   "bloco": "C",
+   "reg": "C990",
+   "descricao": "Encerramento do Bloco C",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "D",
+   "reg": "D001",
+   "descricao": "Abertura do Bloco D",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O / O / O / O / O / O"
+  },
+  {
+   "bloco": "D",
+   "reg": "D100",
+   "descricao": "Nota fiscal/conhecimento de transporte e serviços correlatos",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC / OC / OC / OC / OC / OC"
+  },
+  {
+   "bloco": "D",
+   "reg": "D101",
+   "descricao": "Informação complementar de prestações interestaduais a consumidor final",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "OC / OC / OC / OC / OC / OC"
+  },
+  {
+   "bloco": "D",
+   "reg": "D110",
+   "descricao": "Itens do documento - nota fiscal de serviço de transporte (07)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D100) / N / O (Se existir D100) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D120",
+   "descricao": "Complemento da nota fiscal de serviço de transporte (07)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D100) / N / O (Se existir D100) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D130",
+   "descricao": "Complemento do conhecimento rodoviário de cargas (08, 8B, 57)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D100) / N / O (Se existir D100) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D140",
+   "descricao": "Complemento do conhecimento aquaviário de cargas (09)",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "N / O (Se existir D100) / N / O (Se existir D100) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D150",
+   "descricao": "Complemento do conhecimento aéreo de cargas (10)",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "N / O (Se existir D100) / N / O (Se existir D100) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D160",
+   "descricao": "Carga transportada (08, 8B, 09, 10, 11, 26, 27)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (condicional) / N / O (condicional) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D161",
+   "descricao": "Local de coleta e entrega (08, 8B, 09, 10, 11, 26)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "N / OC / N / N / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D162",
+   "descricao": "Identificação dos documentos fiscais (08, 8B, 09, 10, 11, 26, 27)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N / OC / N / OC / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D170",
+   "descricao": "Complemento do conhecimento multimodal de cargas (26)",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "N / O (Se existir D100) / N / O (Se existir D100) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D180",
+   "descricao": "Modais (26)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / OC / N / OC / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D190",
+   "descricao": "Registro analítico dos documentos",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (Se existir D100) em todas as colunas"
+  },
+  {
+   "bloco": "D",
+   "reg": "D195",
+   "descricao": "Observações do lançamento fiscal",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC em todas as colunas"
+  },
+  {
+   "bloco": "D",
+   "reg": "D197",
+   "descricao": "Outras obrigações tributárias, ajustes e informações de valores",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC em todas as colunas"
+  },
+  {
+   "bloco": "D",
+   "reg": "D300",
+   "descricao": "Registro analítico dos bilhetes consolidados de passagem (13, 14, 15, 16)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N / OC / N / OC / N / OC"
+  },
+  {
+   "bloco": "D",
+   "reg": "D301",
+   "descricao": "Documentos cancelados dos bilhetes de passagem (13, 14, 15, 16)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / OC / N / OC / N / OC"
+  },
+  {
+   "bloco": "D",
+   "reg": "D310",
+   "descricao": "Complemento dos bilhetes (13, 14, 15, 16)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D300) / N / O (Se existir D300) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D350",
+   "descricao": "Equipamento ECF (2E, 13, 14, 15, 16)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N / OC / N / OC / N / OC"
+  },
+  {
+   "bloco": "D",
+   "reg": "D355",
+   "descricao": "Redução Z (2E, 13, 14, 15, 16)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D350) / N / O (Se existir D350) / N / O (Se existir D350)"
+  },
+  {
+   "bloco": "D",
+   "reg": "D360",
+   "descricao": "PIS e COFINS totalizados no dia (2E, 13, 14, 15, 16)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "N / OC / N / OC / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D365",
+   "descricao": "Totalizadores parciais da Redução Z (2E, 13, 14, 15, 16)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D350) / N / O (Se existir D350) / N / O (Se existir D350)"
+  },
+  {
+   "bloco": "D",
+   "reg": "D370",
+   "descricao": "Complemento dos documentos informados (13, 14, 15, 16, 2E)",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (condicional) / N / N / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D390",
+   "descricao": "Registro analítico do movimento diário (13, 14, 15, 16, 2E)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D350) / N / O (Se existir D350) / N / O (Se existir D350)"
+  },
+  {
+   "bloco": "D",
+   "reg": "D400",
+   "descricao": "Resumo do movimento diário (18)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N / OC / N / OC / N / OC"
+  },
+  {
+   "bloco": "D",
+   "reg": "D410",
+   "descricao": "Documentos informados (13, 14, 15, 16)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D400) / N / O (Se existir D400) / N / O (Se existir D400)"
+  },
+  {
+   "bloco": "D",
+   "reg": "D411",
+   "descricao": "Documentos cancelados dos documentos informados (13, 14, 15, 16)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N / OC / N / OC / N / OC"
+  },
+  {
+   "bloco": "D",
+   "reg": "D420",
+   "descricao": "Complemento dos documentos informados (13, 14, 15, 16)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D400) / N / O (Se existir D400) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D500",
+   "descricao": "Nota fiscal de serviço de comunicação (21) e telecomunicação (22)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC / OC / OC / N / OC / OC"
+  },
+  {
+   "bloco": "D",
+   "reg": "D510",
+   "descricao": "Itens do documento - comunicação/telecomunicação (21, 22)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D500) / N / N / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D530",
+   "descricao": "Terminal faturado",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / OC / N / N / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D590",
+   "descricao": "Registro analítico do documento (21, 22)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (Se existir D500), uma coluna não clara na fonte"
+  },
+  {
+   "bloco": "D",
+   "reg": "D600",
+   "descricao": "Consolidação da prestação de serviços de comunicação/telecomunicação",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N / N / N / OC / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D610",
+   "descricao": "Itens do documento consolidado (21, 22)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / N / N / O (Se existir D600) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D690",
+   "descricao": "Registro analítico dos documentos consolidados (21, 22)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / N / N / O (Se existir D600) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D695",
+   "descricao": "Consolidação da prestação de serviços (21, 22)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "N / OC / N / OC / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D696",
+   "descricao": "Registro analítico dos documentos (21, 22)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D695) / N / O (Se existir D695) / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D697",
+   "descricao": "Informações de outras UFs sobre serviços não medidos de TV por assinatura via satélite",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "N / OC / N / OC / N / N"
+  },
+  {
+   "bloco": "D",
+   "reg": "D700",
+   "descricao": "Nota Fiscal Fatura Eletrônica de Serviços de Comunicação (NFCom, 62)",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "obrig": "OC em todas as colunas"
+  },
+  {
+   "bloco": "D",
+   "reg": "D730",
+   "descricao": "Registro analítico da NFCom (62)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (Se existir D700) em todas as colunas"
+  },
+  {
+   "bloco": "D",
+   "reg": "D731",
+   "descricao": "Informação de FCP (62)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC em todas as colunas"
+  },
+  {
+   "bloco": "D",
+   "reg": "D735",
+   "descricao": "Observações do lançamento fiscal (62)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC em todas as colunas"
+  },
+  {
+   "bloco": "D",
+   "reg": "D737",
+   "descricao": "Outras obrigações tributárias, ajustes e informações de valores (62)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC em todas as colunas"
+  },
+  {
+   "bloco": "D",
+   "reg": "D750",
+   "descricao": "Escrituração consolidada da NFCom (62)",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "obrig": "N / OC / N / OC / N / OC"
+  },
+  {
+   "bloco": "D",
+   "reg": "D760",
+   "descricao": "Registro analítico da escrituração consolidada da NFCom (62)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "N / O (Se existir D750) / N / O (Se existir D750) / N / O (Se existir D750)"
+  },
+  {
+   "bloco": "D",
+   "reg": "D761",
+   "descricao": "Informações do FCP (62)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "N / O (Se existir D750) / N / O (Se existir D750) / N / O (Se existir D750)"
+  },
+  {
+   "bloco": "D",
+   "reg": "D990",
+   "descricao": "Encerramento do Bloco D",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O em todas as colunas"
+  },
+  {
+   "bloco": "E",
+   "reg": "E001",
+   "descricao": "Abertura do Bloco E",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "E",
+   "reg": "E100",
+   "descricao": "Período de apuração do ICMS",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "O"
+  },
+  {
+   "bloco": "E",
+   "reg": "E110",
+   "descricao": "Apuração do ICMS, operações próprias",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "E",
+   "reg": "E111",
+   "descricao": "Ajuste, benefício ou incentivo da apuração do ICMS",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E112",
+   "descricao": "Informações adicionais dos ajustes da apuração do ICMS",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E113",
+   "descricao": "Informações adicionais dos ajustes, identificação dos documentos fiscais",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "DISPENSADO"
+  },
+  {
+   "bloco": "E",
+   "reg": "E115",
+   "descricao": "Informações adicionais da apuração do ICMS, valores declaratórios",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "DISPENSADO"
+  },
+  {
+   "bloco": "E",
+   "reg": "E116",
+   "descricao": "Obrigações do ICMS a recolher, obrigações próprias",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E200",
+   "descricao": "Período de apuração do ICMS, substituição tributária",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E210",
+   "descricao": "Apuração do ICMS, substituição tributária",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "O (se existir E200)"
+  },
+  {
+   "bloco": "E",
+   "reg": "E220",
+   "descricao": "Ajuste, benefício ou incentivo da apuração do ICMS-ST",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E230",
+   "descricao": "Informações adicionais dos ajustes da apuração do ICMS-ST",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E240",
+   "descricao": "Informações adicionais dos ajustes do ICMS-ST, identificação dos documentos fiscais",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "DISPENSADO"
+  },
+  {
+   "bloco": "E",
+   "reg": "E250",
+   "descricao": "Obrigações do ICMS a recolher, substituição tributária",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E300",
+   "descricao": "Período de apuração do diferencial de alíquota (UF origem/destino, EC 87/15)",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E310",
+   "descricao": "Apuração do diferencial de alíquota (UF origem/destino)",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E311",
+   "descricao": "Ajuste, benefício ou incentivo do diferencial de alíquota",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E312",
+   "descricao": "Informações adicionais dos ajustes do diferencial de alíquota",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E313",
+   "descricao": "Informações adicionais do diferencial de alíquota, identificação dos documentos fiscais",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "DISPENSADO"
+  },
+  {
+   "bloco": "E",
+   "reg": "E316",
+   "descricao": "Obrigações do ICMS recolhido ou a recolher, diferencial de alíquota",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E500",
+   "descricao": "Período de apuração do IPI",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E510",
+   "descricao": "Consolidação dos valores de IPI",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E520",
+   "descricao": "Apuração do IPI",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "O (se existir E500)"
+  },
+  {
+   "bloco": "E",
+   "reg": "E530",
+   "descricao": "Ajustes da apuração do IPI",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E531",
+   "descricao": "Informações adicionais dos ajustes do IPI, identificação dos documentos fiscais (códigos 01 e 55)",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "E",
+   "reg": "E990",
+   "descricao": "Encerramento do Bloco E",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "G",
+   "reg": "G001",
+   "descricao": "Abertura do Bloco G",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "G",
+   "reg": "G110",
+   "descricao": "ICMS do ativo permanente (CIAP)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "G",
+   "reg": "G125",
+   "descricao": "Movimentação de bem do ativo imobilizado",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir G110)"
+  },
+  {
+   "bloco": "G",
+   "reg": "G126",
+   "descricao": "Outros créditos CIAP",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "G",
+   "reg": "G130",
+   "descricao": "Identificação do documento fiscal",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir G125)"
+  },
+  {
+   "bloco": "G",
+   "reg": "G140",
+   "descricao": "Identificação do item do documento fiscal",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir G130)"
+  },
+  {
+   "bloco": "G",
+   "reg": "G990",
+   "descricao": "Encerramento do Bloco G",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "H",
+   "reg": "H001",
+   "descricao": "Abertura do Bloco H",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "H",
+   "reg": "H005",
+   "descricao": "Totais do Inventário",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "H",
+   "reg": "H010",
+   "descricao": "Inventário",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "H",
+   "reg": "H020",
+   "descricao": "Informação complementar do Inventário",
+   "nivel": 4,
+   "ocorrencia": "1.N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "H",
+   "reg": "H030",
+   "descricao": "Informações complementares do inventário das mercadorias sujeitas ao regime de substituição tributária",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "H",
+   "reg": "H990",
+   "descricao": "Encerramento do Bloco H",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "K",
+   "reg": "K001",
+   "descricao": "Abertura do Bloco K",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "K",
+   "reg": "K010",
+   "descricao": "Informação sobre o tipo de leiaute (simplificado / completo)",
+   "nivel": 2,
+   "ocorrencia": "1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K100",
+   "descricao": "Período de Apuração do ICMS/IPI",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K200",
+   "descricao": "Estoque Escriturado",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K210",
+   "descricao": "Desmontagem de mercadorias - Item de Origem",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K215",
+   "descricao": "Desmontagem de mercadorias - Item de Destino",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K220",
+   "descricao": "Outras Movimentações Internas entre Mercadorias",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K230",
+   "descricao": "Itens Produzidos",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K235",
+   "descricao": "Insumos Consumidos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K250",
+   "descricao": "Industrialização Efetuada por Terceiros - Itens Produzidos",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K255",
+   "descricao": "Industrialização em Terceiros - Insumos Consumidos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K260",
+   "descricao": "Reprocessamento/Reparo de Produto/Insumo",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K265",
+   "descricao": "Reprocessamento/Reparo - Mercadorias Consumidas e/ou Retornadas",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K270",
+   "descricao": "Correção de Apontamento dos Registros K210, K220, K230, K250, K260, K291, K292, K301 e K302",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K275",
+   "descricao": "Correção de Apontamento e Retorno de Insumos dos Registros K215, K220, K235, K255 e K265",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K280",
+   "descricao": "Correção de Apontamento - Estoque Escriturado",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K290",
+   "descricao": "Produção Conjunta - Ordem de Produção",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K291",
+   "descricao": "Produção Conjunta - Itens Produzidos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K292",
+   "descricao": "Produção Conjunta - Insumos Consumidos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K300",
+   "descricao": "Produção Conjunta - Industrialização Efetuada por Terceiros",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K301",
+   "descricao": "Produção Conjunta - Industrialização Efetuada por Terceiros - Itens Produzidos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K302",
+   "descricao": "Produção Conjunta - Industrialização Efetuada por Terceiros - Insumos Consumidos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "K",
+   "reg": "K990",
+   "descricao": "Encerramento do Bloco K",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "1",
+   "reg": "1001",
+   "descricao": "Abertura do Bloco 1",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "1",
+   "reg": "1010",
+   "descricao": "Obrigatoriedade de registros do Bloco 1",
+   "nivel": 2,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "1",
+   "reg": "1100",
+   "descricao": "Informações sobre exportação",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1105",
+   "descricao": "Documentos fiscais de exportação",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1110",
+   "descricao": "Exportação indireta de mercadorias de terceiros",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1200",
+   "descricao": "Controle de créditos fiscais de ICMS",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1210",
+   "descricao": "Utilização de créditos fiscais de ICMS",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1250",
+   "descricao": "Saldos consolidados de restituição, ressarcimento e complementação do ICMS",
+   "nivel": 2,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1255",
+   "descricao": "Saldos consolidados de restituição, ressarcimento e complementação, por motivo",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1300",
+   "descricao": "Movimentação diária de combustíveis",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1310",
+   "descricao": "Movimentação diária de combustíveis por tanque",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir 1300)"
+  },
+  {
+   "bloco": "1",
+   "reg": "1320",
+   "descricao": "Volume de vendas",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1350",
+   "descricao": "Bombas",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "O (se existir 1300)"
+  },
+  {
+   "bloco": "1",
+   "reg": "1360",
+   "descricao": "Lacres das bombas",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir 1300)"
+  },
+  {
+   "bloco": "1",
+   "reg": "1370",
+   "descricao": "Bicos da bomba",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "O (se existir 1300)"
+  },
+  {
+   "bloco": "1",
+   "reg": "1390",
+   "descricao": "Controle de produção de usina",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1391",
+   "descricao": "Produção diária da usina",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1400",
+   "descricao": "Informação sobre valor agregado",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1500",
+   "descricao": "Nota fiscal/conta de energia elétrica (código 06), operações interestaduais",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1510",
+   "descricao": "Itens da nota fiscal/conta de energia elétrica (código 06)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1600",
+   "descricao": "Total das operações com cartão de crédito e/ou débito (válido até 31/12/2021)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1601",
+   "descricao": "Operações com instrumentos de pagamento eletrônico (válido a partir de 01/01/2022)",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1700",
+   "descricao": "Documentos fiscais utilizados",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1710",
+   "descricao": "Documentos fiscais cancelados/inutilizados",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1800",
+   "descricao": "DCTA (demonstrativo de crédito do ICMS sobre transporte aéreo)",
+   "nivel": 2,
+   "ocorrencia": "1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1900",
+   "descricao": "Indicador de sub-apuração do ICMS",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1910",
+   "descricao": "Período da sub-apuração do ICMS",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1920",
+   "descricao": "Sub-apuração do ICMS",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1921",
+   "descricao": "Ajuste/benefício/incentivo da sub-apuração",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1922",
+   "descricao": "Informações adicionais dos ajustes da sub-apuração",
+   "nivel": 6,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1923",
+   "descricao": "Informações adicionais dos ajustes da sub-apuração (identificação dos documentos)",
+   "nivel": 6,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1925",
+   "descricao": "Informações adicionais da sub-apuração (valores declaratórios)",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1926",
+   "descricao": "Obrigações do ICMS a recolher referentes à sub-apuração",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1960",
+   "descricao": "GIAF 1 (indústria, crédito presumido)",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1970",
+   "descricao": "GIAF 3 (importação, diferimento na entrada e crédito presumido na saída)",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1975",
+   "descricao": "GIAF 3 (importação, saídas internas por faixa de alíquota)",
+   "nivel": 3,
+   "ocorrencia": "1:4",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1980",
+   "descricao": "GIAF 4 (central de distribuição, entradas/saídas)",
+   "nivel": 2,
+   "ocorrencia": "1",
+   "obrig": "OC"
+  },
+  {
+   "bloco": "1",
+   "reg": "1990",
+   "descricao": "Encerramento do Bloco 1",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "9",
+   "reg": "9001",
+   "descricao": "Abertura do Bloco 9",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "9",
+   "reg": "9900",
+   "descricao": "Registros do arquivo",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "obrig": "O"
+  },
+  {
+   "bloco": "9",
+   "reg": "9990",
+   "descricao": "Encerramento do Bloco 9",
+   "nivel": 1,
+   "ocorrencia": "1",
+   "obrig": "O"
+  },
+  {
+   "bloco": "9",
+   "reg": "9999",
+   "descricao": "Encerramento do arquivo digital",
+   "nivel": 0,
+   "ocorrencia": "1",
+   "obrig": "O"
+  }
+ ]
+}
