@@ -44,9 +44,11 @@ LEGACY_AUTH_UNTIL=off
 APP_BASE_URL=http://reversa-teste.argusprime.com.br
 EOF
   chmod 600 "$ENVF"
+  umask 022
 fi
 
 echo "== 3/6 dependencias =="
+umask 022
 cd "$APP"
 npm ci --omit=dev --ignore-scripts 2>&1 | tail -3
 
