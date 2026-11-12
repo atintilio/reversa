@@ -1,0 +1,15 @@
+# Lido automaticamente pelo BuildKit junto com deploy/Dockerfile.
+# Impede que segredos e lixo local entrem na imagem.
+.git
+.github
+node_modules
+.env
+.env.*
+!.env.example
+deploy
+tests
+docs
+.vercel
+.vercelignore
+*.log
+.DS_Store

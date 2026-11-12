@@ -1,0 +1,51 @@
+# Caddy: HTTPS automatico (Let's Encrypt) e proxy reverso para o app.
+# Os DNS de reversa.argusprime.com.br e reversa-gov.argusprime.com.br precisam
+# apontar para o IP da VPS ANTES de subir, senao o certificado nao e emitido.
+#
+# SEGURANCA - leia:
+# 1) O app confia no cabecalho X-Forwarded-For para limitar tentativas de login.
+#    Por isso o Caddy SOBRESCREVE esse cabecalho com o IP real de quem conectou
+#    (header_up abaixo). Nunca remova essa linha.
+# 2) A porta 3000 do app NUNCA pode ficar exposta direto na internet: quem
+#    acessasse direto poderia forjar X-Forwarded-For e driblar o limite de
+#    tentativas de login. No docker-compose.yml o app nao publica porta; nao mude isso
+#    e mantenha o firewall liberando so 22, 80 e 443.
+# 3) Se o Cloudflare (proxy laranja) ficar NA FRENTE do Caddy, o IP que o Caddy
+#    ve passa a ser o do Cloudflare. Nesse caso e preciso configurar
+#    trusted_proxies com as faixas de IP do Cloudflare (publicadas em
+#    https://www.cloudflare.com/ips/) e usar o cabecalho CF-Connecting-IP / o
+#    X-Forwarded-For repassado, no bloco global:
+#      {
+#          servers {
+#              trusted_proxies static <faixas do Cloudflare>
+#          }
+#      }
+#    e trocar o header_up por: header_up X-Forwarded-For {client_ip}
+#    Sem isso, todos os usuarios pareceriam ter o mesmo IP (ou o IP poderia ser forjado).
+
+(reversa) {
+	encode zstd gzip
+
+	header {
+		X-Robots-Tag "noindex"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+
+	reverse_proxy app:3000 {
+		# Define (sobrescreve) o IP do cliente com o que o Caddy enxerga.
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+		health_uri /api/health
+		health_interval 30s
+	}
+}
+
+{$REVERSA_HOST:reversa.argusprime.com.br} {
+	import reversa
+}
+
+{$GOV_HOST:reversa-gov.argusprime.com.br} {
+	import reversa
+}
