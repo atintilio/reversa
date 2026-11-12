@@ -23,6 +23,8 @@
   var VERSAO = '0.1.0';
 
   // Leiaute por registro (índice 0 = campo 1 = REG). Fonte e dúvidas: ver DUVIDAS abaixo.
+  // Campos acrescentados em leiautes recentes (Guia 3.2.3+): ausentes em arquivos antigos, sem aviso.
+  var CAMPOS_NOVOS = { IND_BENEFICIO: true };
   var LEIAUTE = {
     '0000': ['REG', 'COD_VER', 'COD_FIN', 'DT_INI', 'DT_FIN', 'NOME', 'CNPJ', 'CPF', 'UF', 'IE', 'COD_MUN', 'IM', 'SUFRAMA', 'IND_PERFIL', 'IND_ATIV'],
     '0150': ['REG', 'COD_PART', 'NOME', 'COD_PAIS', 'CNPJ', 'CPF', 'IE', 'COD_MUN', 'SUFRAMA', 'END', 'NUM', 'COMPL', 'BAIRRO'],
@@ -30,10 +32,10 @@
     'C100': ['REG', 'IND_OPER', 'IND_EMIT', 'COD_PART', 'COD_MOD', 'COD_SIT', 'SER', 'NUM_DOC', 'CHV_NFE', 'DT_DOC', 'DT_E_S', 'VL_DOC', 'IND_PGTO', 'VL_DESC', 'VL_ABAT_NT', 'VL_MERC', 'IND_FRT', 'VL_FRT', 'VL_SEG', 'VL_OUT_DA', 'VL_BC_ICMS', 'VL_ICMS', 'VL_BC_ICMS_ST', 'VL_ICMS_ST', 'VL_IPI', 'VL_PIS', 'VL_COFINS', 'VL_PIS_ST', 'VL_COFINS_ST'],
     'C170': ['REG', 'NUM_ITEM', 'COD_ITEM', 'DESCR_COMPL', 'QTD', 'UNID', 'VL_ITEM', 'VL_DESC', 'IND_MOV', 'CST_ICMS', 'CFOP', 'COD_NAT', 'VL_BC_ICMS', 'ALIQ_ICMS', 'VL_ICMS', 'VL_BC_ICMS_ST', 'ALIQ_ST', 'VL_ICMS_ST', 'IND_APUR', 'CST_IPI', 'COD_ENQ', 'VL_BC_IPI', 'ALIQ_IPI', 'VL_IPI', 'CST_PIS', 'VL_BC_PIS', 'ALIQ_PIS_PERC', 'QUANT_BC_PIS', 'ALIQ_PIS_REAIS', 'VL_PIS', 'CST_COFINS', 'VL_BC_COFINS', 'ALIQ_COFINS_PERC', 'QUANT_BC_COFINS', 'ALIQ_COFINS_REAIS', 'VL_COFINS', 'COD_CTA', 'VL_ABAT_NT'],
     'C190': ['REG', 'CST_ICMS', 'CFOP', 'ALIQ_ICMS', 'VL_OPR', 'VL_BC_ICMS', 'VL_ICMS', 'VL_BC_ICMS_ST', 'VL_ICMS_ST', 'VL_RED_BC', 'VL_IPI', 'COD_OBS'],
-    'C197': ['REG', 'COD_AJ', 'DESCR_COMPL_AJ', 'COD_ITEM', 'VL_BC_ICMS', 'ALIQ_ICMS', 'VL_ICMS', 'VL_OUTROS'],
+    'C197': ['REG', 'COD_AJ', 'DESCR_COMPL_AJ', 'COD_ITEM', 'VL_BC_ICMS', 'ALIQ_ICMS', 'VL_ICMS', 'VL_OUTROS', 'IND_BENEFICIO'],
     'E100': ['REG', 'DT_INI', 'DT_FIN'],
     'E110': ['REG', 'VL_TOT_DEBITOS', 'VL_AJ_DEBITOS', 'VL_TOT_AJ_DEBITOS', 'VL_ESTORNOS_CRED', 'VL_TOT_CREDITOS', 'VL_AJ_CREDITOS', 'VL_TOT_AJ_CREDITOS', 'VL_ESTORNOS_DEB', 'VL_SLD_CREDOR_ANT', 'VL_SLD_APURADO', 'VL_TOT_DED', 'VL_ICMS_RECOLHER', 'VL_SLD_CREDOR_TRANSPORTAR', 'DEB_ESP'],
-    'E111': ['REG', 'COD_AJ_APUR', 'DESCR_COMPL_AJ', 'VL_AJ_APUR'],
+    'E111': ['REG', 'COD_AJ_APUR', 'DESCR_COMPL_AJ', 'VL_AJ_APUR', 'IND_BENEFICIO'],
     'E116': ['REG', 'COD_OR', 'VL_OR', 'DT_VCTO', 'COD_REC', 'NUM_PROC', 'IND_PROC', 'PROC', 'TXT_COMPL', 'MES_REF'],
     'H010': ['REG', 'COD_ITEM', 'UNID', 'QTD', 'VL_UNIT', 'VL_ITEM', 'IND_PROP', 'COD_PART', 'TXT_COMPL', 'COD_CTA', 'VL_ITEM_IR']
   };
@@ -48,6 +50,7 @@
   var SIT_SEM_VALORES = { '02': 1, '03': 1, '04': 1, '05': 1 }; // não deveriam trazer C170/C190
 
   var DUVIDAS = [
+    'IND_BENEFICIO (C197 campo 9, E111 campo 5, Guia Prático 3.2.3 em diante, LC 214/2025) é lido quando existe; arquivos de leiaute anterior, sem o campo, continuam válidos.',
     'Posições dos campos conferidas contra a implementação aberta python-sped (sped-br, registros.py do EFD ICMS/IPI) e contra a numeração de C170 (campos 13, 14, 16, 17) e C190 (campos 4, 6, 7, 8, 9) da Nota Orientativa EFD ICMS/IPI 2023.001. As tabelas de campos do Guia Prático oficial (v3.2.3, Ato COTEPE/ICMS 44/2018 e alterações) não puderam ser lidas diretamente (PDF espelhado só traz o índice e o histórico; sped.rfb.gov.br inacessível no ambiente). Confirmar no Guia vigente.',
     'Campos acrescentados em leiautes recentes (COD_VER 019, 020, 021) não foram verificados. Registro com mais campos que o leiaute usado aqui gera aviso, não erro.',
     'Tabela de COD_VER x vigência não foi confirmada; o código é apenas exibido (aviso se não tiver 3 dígitos).',
@@ -135,7 +138,9 @@
     }
     function campos(reg, p, n) {
       var nomes = LEIAUTE[reg], o = {};
-      if (p.length < nomes.length) ctx.avisar('curto|' + reg, 'Registro ' + reg + ' com menos campos que o mínimo do leiaute (' + p.length + ' de ' + nomes.length + '); campos ausentes lidos como vazios.', n);
+      // campos opcionais no fim (leiautes novos): arquivos anteriores, sem eles, não geram aviso
+      var minimo = nomes.length; while (minimo > 1 && CAMPOS_NOVOS[nomes[minimo - 1]]) minimo--;
+      if (p.length < minimo) ctx.avisar('curto|' + reg, 'Registro ' + reg + ' com menos campos que o mínimo do leiaute (' + p.length + ' de ' + minimo + '); campos ausentes lidos como vazios.', n);
       else if (p.length > nomes.length) ctx.avisar('longo|' + reg, 'Registro ' + reg + ' com mais campos que o leiaute usado (' + p.length + ' de ' + nomes.length + '); possível leiaute mais novo, campos extras ignorados.', n);
       nomes.forEach(function (c, i) { o[c] = p[i] === undefined ? '' : String(p[i]).trim(); });
       return o;
@@ -203,9 +208,9 @@
           var g = resumoMapa[k] || (resumoMapa[k] = { cstIcms: a.cstIcms, cfop: a.cfop, aliqIcms: a.aliqIcms, sentido: sentido, documentos: 0, vlOpr: 0, vlBcIcms: 0, vlIcms: 0, vlBcIcmsSt: 0, vlIcmsSt: 0, vlRedBc: 0, vlIpi: 0 });
           g.documentos++; ['vlOpr', 'vlBcIcms', 'vlIcms', 'vlBcIcmsSt', 'vlIcmsSt', 'vlRedBc', 'vlIpi'].forEach(function (f) { g[f] += a[f]; });
         } else {
-          var aj = { codAj: c.COD_AJ, descrComplAj: c.DESCR_COMPL_AJ, codItem: c.COD_ITEM, vlBcIcms: num(c, reg, 'VL_BC_ICMS', n), aliqIcms: num(c, reg, 'ALIQ_ICMS', n), vlIcms: num(c, reg, 'VL_ICMS', n), vlOutros: num(c, reg, 'VL_OUTROS', n) };
+          var aj = { codAj: c.COD_AJ, descrComplAj: c.DESCR_COMPL_AJ, codItem: c.COD_ITEM, vlBcIcms: num(c, reg, 'VL_BC_ICMS', n), aliqIcms: num(c, reg, 'ALIQ_ICMS', n), vlIcms: num(c, reg, 'VL_ICMS', n), vlOutros: num(c, reg, 'VL_OUTROS', n), indBeneficio: c.IND_BENEFICIO || '' };
           nota.ajustes.push(aj);
-          r.ajustesC197.push({ numDoc: nota.numDoc, ser: nota.ser, codMod: nota.codMod, codAj: aj.codAj, descrComplAj: aj.descrComplAj, codItem: aj.codItem, vlBcIcms: aj.vlBcIcms, aliqIcms: aj.aliqIcms, vlIcms: aj.vlIcms, vlOutros: aj.vlOutros });
+          r.ajustesC197.push({ numDoc: nota.numDoc, ser: nota.ser, codMod: nota.codMod, codAj: aj.codAj, descrComplAj: aj.descrComplAj, codItem: aj.codItem, vlBcIcms: aj.vlBcIcms, aliqIcms: aj.aliqIcms, vlIcms: aj.vlIcms, vlOutros: aj.vlOutros, indBeneficio: aj.indBeneficio });
         }
       } else if (reg === 'E100') {
         nota = null;
@@ -221,7 +226,7 @@
         r.apuracaoE110.push(e110);
       } else if (reg === 'E111') {
         if (!e110) ctx.avisar('e111orfao', 'E111 sem E110 anterior.', n);
-        var a2 = { codAjApur: c.COD_AJ_APUR, descrComplAj: c.DESCR_COMPL_AJ, vlAjApur: num(c, reg, 'VL_AJ_APUR', n), periodo: e110 ? e110.periodo : per };
+        var a2 = { codAjApur: c.COD_AJ_APUR, descrComplAj: c.DESCR_COMPL_AJ, vlAjApur: num(c, reg, 'VL_AJ_APUR', n), indBeneficio: c.IND_BENEFICIO || '', periodo: e110 ? e110.periodo : per };
         r.ajustesE111.push(a2); if (e110) e110.ajustes.push(a2);
       } else if (reg === 'E116') {
         r.obrigacoesE116.push({ codOr: c.COD_OR, vlOr: num(c, reg, 'VL_OR', n), dtVcto: dataCampo(c.DT_VCTO, reg, 'DT_VCTO', ctx, n), codRec: c.COD_REC, numProc: c.NUM_PROC, indProc: c.IND_PROC, proc: c.PROC, txtCompl: c.TXT_COMPL, mesRef: c.MES_REF, periodo: per });
