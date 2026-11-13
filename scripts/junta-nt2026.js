@@ -15,7 +15,7 @@ console.log('faltam campos para:',faltam.join(' '));console.log('fora da estrutu
 let problemas=[];for(const[k,v]of Object.entries(reg)){const c=v.campos||[];c.forEach((x,i)=>{if(x.pos!==i+1)problemas.push(`${k}: pos ${x.pos} no indice ${i+1}`)});if(c[0]&&c[0].nome!=='REG')problemas.push(`${k}: 1o campo ${c[0].nome}`)}
 console.log('inconsistencias de posicao:',problemas.length,problemas.slice(0,15));
 // confronto com motor-efd-icms
-const s=fs.readFileSync('motor-efd-icms.js','utf8');const m=/var LEIAUTE = \{/.exec(s);let i=m.index+m[0].length-1,d=0,j=i;for(;j<s.length;j++){if(s[j]=='{')d++;if(s[j]=='}'){d--;if(!d)break}}
+const s=fs.readFileSync('motor-efd-icms.js','utf8');const m=/var LEIAUTE_LEGADO = \{/.exec(s);let i=m.index+m[0].length-1,d=0,j=i;for(;j<s.length;j++){if(s[j]=='{')d++;if(s[j]=='}'){d--;if(!d)break}}
 const L=require('vm').runInNewContext('('+s.slice(i,j+1)+')');let ok=0,dif=[];
 for(const[k,arr]of Object.entries(L)){const c=reg[k];if(!c){dif.push(`${k}: sem dados na NT`);continue}const n=c.campos.map(x=>x.nome);if(n.length!==arr.length)dif.push(`${k}: Reversa ${arr.length} campos x NT ${n.length}`);arr.forEach((nm,x)=>{if(n[x]===nm)ok++;else dif.push(`${k}[${x+1}] Reversa=${nm} NT=${n[x]||'-'}`)})}
 console.log(`confronto motor-efd-icms: ${ok} campos batem, ${dif.length} divergencias`);dif.forEach(x=>console.log('  ',x));

@@ -15,7 +15,7 @@
 2. **Calcula** o crédito, o saldo apurável, o **tributo apurado** (M200/M600: o "Total dos Débitos
    deste Documento" da DCOMP) e o prazo, pela mesma fórmula do PER/DCOMP Web.
 3. **Decide a via** (PER, DCOMP ou as duas, nessa ordem) e **diz por quê**, com o trecho da regra.
-4. **Entrega a ficha** do pedido no formato das abas do roteiro oficial (CSV), para o contador
+4. **Entrega a ficha** do pedido no formato das abas do roteiro oficial (CSV), para o Aprovador
    conferir e transmitir no PER/DCOMP Web.
 
 ## As regras que o motor aplica (e de onde vêm)
@@ -35,12 +35,12 @@
 ## A regra de decisão, na prática
 
 - **PER (Pedido de Ressarcimento)** — o caminho do crédito apurado no regime não cumulativo. É o que
-  o contador transmite primeiro.
+  o Aprovador transmite primeiro.
 - **DCOMP (Declaração de Compensação)** — vem **depois** do PER, vinculada a ele, e **compensa débito
   próprio**. Se não há débito a compensar (e o cliente quer o caixa), a DCOMP não tem objeto: o caminho
   é só o PER.
 - **DARF pago a maior** — não é PER nem DCOMP: é pedido de restituição. O motor sinaliza quando há
-  DARF de PIS/Cofins na competência para o contador conferir se o valor pago foi maior que o devido.
+  DARF de PIS/Cofins na competência para o Aprovador conferir se o valor pago foi maior que o devido.
 - **Prescrito** (5 anos do encerramento do trimestre) — o motor não propõe e diz o limite.
 - **Crédito já objeto de PER** no mesmo período (campo 14 do 1100/1500) — não entra na lista de novo
   pedido.
@@ -55,7 +55,7 @@
 | Se há débito próprio a compensar | O motor usa os DARFs lidos; débitos futuros, parcelamentos e autações precisam ser conferidos no e-CAC |
 | Qual base legal se enquadra em 301/302/303/304/307 | A numeração é interna do PER/DCOMP Web e não está nas fontes públicas consultadas — o motor sinaliza a exceção, não a aplica |
 
-## Como o contador transmite
+## Como o Aprovador transmite
 
 1. Abre o **e-CAC** (https://www.gov.br/receitafederal/pt-br/canais_atendimento/atendimento-virtual/home-ecac)
    com gov.br (nível prata ou ouro) ou certificado digital.
@@ -63,7 +63,7 @@
 3. Tipo de crédito: *"PIS/PASEP Não-Cumulativo - Ressarcimento/Compensação - PA a partir de Janeiro de
    2014"* ou *"Cofins Não-Cumulativa - Ressarcimento/Compensação - PA a partir de Janeiro de 2014"*.
 4. Preenche com a **ficha** que o Reversa gera (CSV, aba por aba do roteiro oficial).
-5. A **transmissão** é feita pelo contador, no sistema, com o certificado do cliente: **o Reversa não
+5. A **transmissão** é feita pelo Aprovador, no sistema, com o certificado do cliente: **o Reversa não
    transmite** — não há API pública da Receita para isso, e o certificado é do cliente.
 
 ## Arquivos

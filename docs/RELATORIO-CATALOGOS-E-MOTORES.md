@@ -92,7 +92,7 @@ O que estava em aberto no handoff e o estado agora:
   **DCOMP** = Declaração de Compensação) e o valor já usado por cada via. Gera CSV com `;` e decimal
   com vírgula.
   **O que o pacote não faz:** não calcula tributo, não escolhe o tipo de pedido, não define o valor
-  pedido e não transmite nada. A escolha é do contador — está escrito na tela e no documento.
+  pedido e não transmite nada. A escolha é do Aprovador — está escrito na tela e no documento.
 - `index.html`: nova seção **“Pacote de créditos (PER / DCOMP)”** (saldo disponível por tributo,
   tabela de créditos por origem e tabela de pedidos em aberto) com botão **Exportar pacote (CSV)**; e
   a **memória técnica (PDF)** ganha duas seções: a posição de créditos e o material de PER/DCOMP.
@@ -116,11 +116,11 @@ O que estava em aberto no handoff e o estado agora:
   próprios a compensar).
 - **Ficha do pedido**: CSV no formato das abas do roteiro oficial (Identificar Documento → Identificação
   do Crédito → Valores Apurados → Saldo do Crédito → Demonstrativo) + botão **Abrir e-CAC** para o
-  contador transmitir. A memória técnica (PDF) traz a decisão com o fundamento.
+  Aprovador transmitir. A memória técnica (PDF) traz a decisão com o fundamento.
 - `motor-darf.js` passou a reconhecer **6912 (PIS/Pasep não cumulativo)** e **5856 (Cofins não cumulativa)**
   — é o DARF pago que diz se existe débito próprio a compensar.
 - Testes: `tests/motor-pedido.test.js` (10, incluindo o fluxo EFD → motor → pacote → decisão).
-- O que **não** é automático: a transmissão é feita pelo contador no PER/DCOMP Web (e-CAC, com
+- O que **não** é automático: a transmissão é feita pelo Aprovador no PER/DCOMP Web (e-CAC, com
   certificado digital do cliente). Não existe API pública da Receita para isso.
 - Detalhamento e fontes: `docs/DECISAO-PER-DCOMP.md`.
 
@@ -145,7 +145,7 @@ paridade não pegaria isso**. A ordem dos scripts foi corrigida em `index.html` 
    Manual de Orientação da ECF e nas tabelas dinâmicas oficiais), e os testes foram reescritos no
    leiaute oficial **mantendo os mesmos números esperados**. Ainda assim: o repositório não tem
    arquivo de ECF real (os fixtures são de EFD-Contribuições). Antes de mostrar número de IRPJ/CSLL
-   de cliente, o contador precisa conferir uma ECF real. O motor tem a rede de segurança: se a base
+   de cliente, o Aprovador precisa conferir uma ECF real. O motor tem a rede de segurança: se a base
    declarada (N500) não bater com a base recalculada, o trimestre vai para "revisão" e não entra no
    valor.
 2. **Leiaute 021 (2027)** da EFD ICMS/IPI (NT 2026.001): a extração existe

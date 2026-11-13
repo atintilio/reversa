@@ -368,9 +368,9 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     <div class="kpis" id="pacote-kpis"></div>
     <ul class="msgs" id="pacote-avisos"></ul>
     <div class="scroll"><table id="tab-pacote"></table></div>
-    <p class="note">Posição de créditos declarada pela empresa no Bloco 1 da EFD-Contribuições (registros 1100 e 1500), conciliada com o crédito apurado no período (M100/M500) e com o tributo apurado (M200/M600). O Reversa calcula o saldo apurável, o prazo e recomenda a via do pedido (PER, DCOMP ou as duas) com o fundamento; a revisão e a transmissão continuam com o contador.</p>
+    <p class="note">Posição de créditos declarada pela empresa no Bloco 1 da EFD-Contribuições (registros 1100 e 1500), conciliada com o crédito apurado no período (M100/M500) e com o tributo apurado (M200/M600). O Reversa calcula o saldo apurável, o prazo e recomenda a via do pedido (PER, DCOMP ou as duas) com o fundamento; a revisão e a transmissão continuam com o Aprovador.</p>
     <div class="scroll"><table id="tab-pacote-pedidos"></table></div>
-    <p class="note">Vias do pedido: PER (Pedido de Ressarcimento) e DCOMP (Declaração de Compensação). A recomendação do Reversa está na tabela abaixo, com o fundamento e as pendências; a decisão final e o valor pedido são do contador.</p>
+    <p class="note">Vias do pedido: PER (Pedido de Ressarcimento) e DCOMP (Declaração de Compensação). A recomendação do Reversa está na tabela abaixo, com o fundamento e as pendências; a decisão final e o valor pedido são do Aprovador.</p>
     <h3>Via do pedido &mdash; o que o Reversa recomenda e por qu&ecirc;e</h3>
     <div class="scroll"><table id="tab-pedido"></table></div>
     <div id="pedido-detalhe"></div>
@@ -380,7 +380,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       <button class="sec" type="button" id="btn-transmitir">Transmitir no PER/DCOMP Web</button>
       <a class="sec" href="https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/restituicao-ressarcimento-reembolso-e-compensacao/creditos/piscofins/como-solicitar-ou-compensar-o-credito" target="_blank" rel="noopener">Como pedir (Receita Federal)</a>
     </div>
-    <p class="note">A decis&atilde;o do Reversa segue o roteiro oficial da Receita (PER/DCOMP Web): em regra o pedido de ressarcimento vem primeiro e a declara&ccedil;&atilde;o de compensa&ccedil;&atilde;o depois, vinculada. A transmiss&atilde;o &eacute; feita pelo contador no PER/DCOMP Web (e-CAC), com certificado digital: o Reversa prepara os dados, n&atilde;o transmite.</p>
+    <p class="note">A decis&atilde;o do Reversa segue o roteiro oficial da Receita (PER/DCOMP Web): em regra o pedido de ressarcimento vem primeiro e a declara&ccedil;&atilde;o de compensa&ccedil;&atilde;o depois, vinculada. A transmiss&atilde;o &eacute; feita pelo Aprovador no PER/DCOMP Web (e-CAC), com certificado digital: o Reversa prepara os dados, n&atilde;o transmite.</p>
   </section>
 
   <section aria-labelledby="t-tec" id="sec-tec" hidden>
@@ -1250,13 +1250,13 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       });
     }
     // ------------------------------------------- pacote operacional de PIS/COFINS (creditos e PER/DCOMP)
-    // Material de apoio ao contador, montado a partir do Bloco 1 (1100 e 1500) da EFD-Contribuições.
+    // Material de apoio ao Aprovador, montado a partir do Bloco 1 (1100 e 1500) da EFD-Contribuições.
     // O Reversa não calcula tributo, não escolhe o tipo de pedido (PER ou DCOMP) e não define o valor pedido.
     var pkgPis = (root.PacotePis && res) ? root.PacotePis.monta(lidos, { competencia: comps.length ? comps[comps.length - 1] : '' }) : null;
     if (pkgPis && pkgPis.creditos.length) {
       doc.addPage(); y = M + 6;
       titulo(++sec, 'Pacote operacional de PIS/COFINS — posição de créditos e material de PER/DCOMP');
-      paragrafo('Posição de créditos declarada pela empresa no Bloco 1 da EFD-Contribuições (registros 1100 e 1500). Todos os valores foram lidos do arquivo; nada foi estimado. O Reversa não calcula tributo, não escolhe o tipo de pedido (PER ou DCOMP) e não define o valor pedido: a escolha é do contador.');
+      paragrafo('Posição de créditos declarada pela empresa no Bloco 1 da EFD-Contribuições (registros 1100 e 1500). Todos os valores foram lidos do arquivo; nada foi estimado. O Reversa calcula o saldo apurável, o prazo e recomenda a via do pedido (PER, DCOMP ou as duas) com o fundamento; a revisão e a transmissão continuam com o Aprovador.');
       tabela({
         head: [['Tributo', 'Competência', 'Origem', 'CNPJ cedente', 'Código', 'Descrição', 'Apurado', 'Disponível', 'PER', 'DCOMP', 'Saldo final']],
         body: pkgPis.creditos.map(function (c) { return [t(c.tributo.toUpperCase()), t(c.competenciaCredito), t(c.origemRotulo), t(c.cnpjSuc), t(c.codCredito), t(c.codCreditoRotulo), RP(c.apurado), RP(c.disponivel), RP(c.pedidoPer), RP(c.pedidoDcomp), RP(c.saldoFinal)]; }),
@@ -1275,7 +1275,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       }) : null;
       if (avalPis && avalPis.pedidos.length) {
         titulo(++sec, 'Via do pedido: ressarcimento (PER) ou compensação (DCOMP)');
-        paragrafo('Decisao do Reversa segundo o roteiro oficial da Receita (PER/DCOMP Web): em regra o pedido de ressarcimento vem primeiro e a declaracao de compensacao depois, vinculada a um PER ja transmitido. O valor final do pedido e o que o PER/DCOMP Web calcula; a transmissao e feita pelo contador, no e-CAC, com certificado digital.');
+        paragrafo('Decisao do Reversa segundo o roteiro oficial da Receita (PER/DCOMP Web): em regra o pedido de ressarcimento vem primeiro e a declaracao de compensacao depois, vinculada a um PER ja transmitido. O valor final do pedido e o que o PER/DCOMP Web calcula; a transmissao e feita pelo Aprovador, no e-CAC, com certificado digital.');
         tabela({
           head: [['Trimestre', 'Tributo', 'Codigo', 'Credito apurado', 'Saldo apuravel', 'Via', 'Prazo']],
           body: avalPis.pedidos.map(function (p) { return [t(p.trimestre), t(p.tributo.toUpperCase()), t(p.codCredito), RP(p.apurado), RP(p.saldo), t(p.viaRotulo), p.prazo.situacao === 'prescrito' ? 'Prescrito' : t(p.prazo.limite)]; }),
@@ -1290,7 +1290,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       }
       if (pkgPis.pedidos.length) {
         titulo(++sec, 'Créditos com saldo disponível para pedido (PER ou DCOMP)');
-        paragrafo('Material de apoio ao contador: valor disponível declarado e vias possíveis do pedido. O tipo (PER ou DCOMP) e o valor pedido não são definidos pelo Reversa.');
+        paragrafo('Material de apoio ao Aprovador: valor disponível declarado e vias possíveis do pedido. O tipo (PER ou DCOMP) e o valor pedido não são definidos pelo Reversa.');
         tabela({
           head: [['Tributo', 'Competência', 'Origem', 'CNPJ cedente', 'Código', 'Disponível', 'Vias']],
           body: pkgPis.pedidos.map(function (p) { return [t(p.tributo.toUpperCase()), t(p.competenciaCredito), t(p.origem), t(p.cnpjSuc), t(p.codCredito), RP(p.valorDisponivel), t(p.vias.join(' ou '))]; }),
@@ -1718,7 +1718,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   }
   function secaoDti(mostrar) { var e = $('t-pdf'); if (e) e.closest('section').hidden = !mostrar; }
   // ------------------------------------------- pacote operacional de PIS/COFINS (posicao de creditos e PER/DCOMP)
-  // Material de apoio ao contador: o que a empresa declarou no Bloco 1 da EFD-Contribuicoes.
+  // Material de apoio ao Aprovador: o que a empresa declarou no Bloco 1 da EFD-Contribuicoes.
   // O Reversa nao calcula tributo, nao escolhe o tipo de pedido (PER ou DCOMP) e nao define o valor pedido.
   function compCred(c) { var x = String(c || ''); return /^\d{6}$/.test(x) ? x.slice(0, 2) + '/' + x.slice(2) : x; }
   function renderPacote() {

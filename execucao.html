@@ -29,7 +29,7 @@
   <div class="cab">
     <div>
       <h1>Execução</h1>
-      <p class="sub">Começa somente com o contrato assinado. Retificação, pré-validação, aprovação, validação do contador, transmissão e PER/DCOMP. Exclusivo da equipe Argus Prime. Aprovar e transmitir: somente André ou Moisés.</p>
+      <p class="sub">Começa somente com o contrato assinado. Retificação, pré-validação, aprovação, validação do Aprovador, transmissão e PER/DCOMP. Exclusivo da equipe Argus Prime. Aprovar e transmitir: somente André ou Moisés.</p>
     </div>
   </div>
   <div class="msg bad" id="negado" hidden>A execução é exclusiva da equipe Argus Prime.</div>
@@ -48,7 +48,7 @@
 
       <h3>Resumo da retificação</h3>
       <textarea id="d-resumo" maxlength="20000" placeholder="O que será retificado, períodos, teses aprovadas pelo cliente e valores."></textarea>
-      <label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="d-contador-exige" style="width:auto"> Exige validação do contador (o ajuste altera a base do IRPJ/CSLL na ECF)</label>
+      <label style="display:flex;gap:8px;align-items:center;margin:8px 0"><input type="checkbox" id="d-contador-exige" style="width:auto"> Exige validação do Aprovador (o ajuste altera a base do IRPJ/CSLL na ECF)</label>
       <p class="acoes"><button type="button" class="sec" id="d-salvar">Salvar resumo</button><span class="aviso" id="d-trava"></span></p>
 
       <div id="d-ret" hidden>
@@ -82,8 +82,8 @@
       <div class="acoes" id="d-avancar"></div>
 
       <div id="d-cont" hidden>
-        <h3>Validação do contador</h3>
-        <div class="acoes"><label>E-mail do contador<input type="email" id="d-cont-email" maxlength="254" placeholder="contador@escritorio.com.br"></label>
+        <h3>Validação do Aprovador</h3>
+        <div class="acoes"><label>E-mail do Aprovador<input type="email" id="d-cont-email" maxlength="254" placeholder="aprovador@escritorio.com.br"></label>
           <button type="button" id="d-cont-enviar">Enviar para validação</button></div>
         <div id="d-cont-status" class="aviso"></div>
       </div>
@@ -128,7 +128,7 @@
       $('tab-cand').innerHTML = '<thead><tr><th>Cliente</th><th>Parceiro</th><th></th></tr></thead><tbody>' + r.candidatos.map(function (c) {
         return '<tr><td>' + esc(c.cliente.nome) + '<br><small>' + RV.cnpj(c.cliente.cnpj) + '</small></td><td>' + esc(c.parceiro) + '</td><td><button type="button" data-iniciar="' + c.caseId + '">Contrato assinado · iniciar</button></td></tr>';
       }).join('') + '</tbody>';
-      $('tab-exec').innerHTML = r.execucoes.length ? '<thead><tr><th>Cliente</th><th>Parceiro</th><th>Fase</th><th>Contador</th><th>Atualizado</th><th></th></tr></thead><tbody>' + r.execucoes.map(function (e) {
+      $('tab-exec').innerHTML = r.execucoes.length ? '<thead><tr><th>Cliente</th><th>Parceiro</th><th>Fase</th><th>Aprovador</th><th>Atualizado</th><th></th></tr></thead><tbody>' + r.execucoes.map(function (e) {
         return '<tr><td>' + esc(e.cliente.nome) + '<br><small>' + RV.cnpj(e.cliente.cnpj) + '</small></td><td>' + esc(e.parceiro) + '</td><td><span class="pill ' + (PILL[e.fase] || '') + '">' + esc(e.faseRotulo) + '</span></td>' +
           '<td>' + (e.exigeContador ? esc(e.contador.respostaRotulo || (e.contador.enviadoEm ? 'Aguardando' : 'A enviar')) : '<small>Não exige</small>') + '</td><td>' + RV.data(e.atualizadoEm, true) + '</td>' +
           '<td><button type="button" class="sec" data-abrir="' + e.id + '">Abrir</button></td></tr>';
@@ -160,12 +160,12 @@
       $('d-trava').textContent = travado ? 'Travado após a aprovação. Para alterar, volte a fase.' : '';
       // avançar
       var p = proxima(e), html = '';
-      if (e.fase === 'aprovado' && e.exigeContador) html = '<span class="aviso">Próximo passo: enviar ao contador para validação.</span>';
+      if (e.fase === 'aprovado' && e.exigeContador) html = '<span class="aviso">Próximo passo: enviar ao Aprovador para validação.</span>';
       else if (e.fase === 'validacao_contador') html = e.contador.resposta === 'validado_assinado'
-        ? botaoAvancar('transmitido', e) : '<span class="aviso">Aguardando o contador responder "Validado e assinado".</span>';
+        ? botaoAvancar('transmitido', e) : '<span class="aviso">Aguardando o Aprovador responder "Validado e assinado".</span>';
       else if (p && e.fase !== 'cancelado') html = botaoAvancar(p, e);
       $('d-avancar').innerHTML = html || '<span class="aviso">Execução encerrada.</span>';
-      // contador
+      // Aprovador
       $('d-cont').hidden = !e.exigeContador || POS_APROVACAO.indexOf(e.fase) < 0;
       $('d-cont-email').value = e.contador.email || '';
       $('d-cont-enviar').hidden = !e.podeAprovar || ['aprovado', 'validacao_contador'].indexOf(e.fase) < 0;
@@ -197,7 +197,7 @@
       $('d-voltar-fase').innerHTML = dados.fases.filter(function (x) { return f.indexOf(x.id) < i && x.id !== 'validacao_contador'; }).map(function (x) { return '<option value="' + x.id + '">' + esc(x.rotulo) + '</option>'; }).join('');
       $('d-cancelar').hidden = !e.podeAprovar || e.fase === 'cancelado' || e.fase === 'concluido';
       $('d-hist').innerHTML = e.eventos.slice().reverse().map(function (h) {
-        return '<li><b>' + esc(h.para || (h.tipo === 'contador_resposta' ? 'Resposta do contador' : 'Atualização')) + '</b>' + (h.nota ? ' · ' + esc(h.nota) : '') + '<br><small>' + esc(h.por || '') + ' · ' + RV.data(h.em, true) + '</small></li>';
+        return '<li><b>' + esc(h.para || (h.tipo === 'contador_resposta' ? 'Resposta do Aprovador' : 'Atualização')) + '</b>' + (h.nota ? ' · ' + esc(h.nota) : '') + '<br><small>' + esc(h.por || '') + ' · ' + RV.data(h.em, true) + '</small></li>';
       }).join('');
       $('det').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }).catch(function (err) { RV.toast(err.message); });
@@ -387,9 +387,9 @@
   });
   $('d-cont-enviar').addEventListener('click', function () {
     RV.api('POST', '/api/v1/execucoes/' + atual.id + '/contador', { email: $('d-cont-email').value }).then(function (r) {
-      RV.toast(r.email === 'enviado' ? 'Link enviado ao contador' : 'E-mail não enviado: copie o link no histórico');
+      RV.toast(r.email === 'enviado' ? 'Link enviado ao Aprovador' : 'E-mail não enviado: copie o link no histórico');
       return carregar().then(function () { return abrir(atual.id); }).then(function () {
-        if (r.email !== 'enviado') $('d-cont-status').innerHTML += '<p>Envie este link ao contador (válido por 2 dias; 12 horas para responder após abrir):</p><p class="link-conv">' + esc(r.url) + '</p>';
+        if (r.email !== 'enviado') $('d-cont-status').innerHTML += '<p>Envie este link ao Aprovador (válido por 2 dias; 12 horas para responder após abrir):</p><p class="link-conv">' + esc(r.url) + '</p>';
       });
     }).catch(function (e) { RV.toast(e.message); });
   });

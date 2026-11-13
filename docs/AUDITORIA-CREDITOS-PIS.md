@@ -23,12 +23,12 @@ existia só pela metade. Foi corrigida nesta rodada (seção 4).
 | Gerar a retificadora | `retificadora-efd.js` → `gerar` | **Funcional, com limites declarados** | `tests/retificadora.test.js` (RET-001 a RET-005) |
 | Pré-validar (estrutura, somas, totalizadores) | `validador-efd.js` → `validar` | **Funcional** (é "PVA simulado", não substitui o PVA) | `tests/retificadora.test.js` (RET-001) |
 | Liberar/baixar/registrar/aprovar | `execucao.html` + `lib/domain/execucao.js` | **Funcional, com trava nova** | `tests/retificadora-guard.test.js`, `tests/execucao.test.js` |
-| Validação do contador | `lib/domain/execucao.js` → `sendAccountant` | **Funcional** | `tests/execucao.test.js` (EXE-003) |
+| Validação do Aprovador | `lib/domain/execucao.js` → `sendAccountant` | **Funcional** | `tests/execucao.test.js` (EXE-003) |
 | Transmitir | fase `transmitido` | **Manual** — o operador registra o recibo | `tests/execucao.test.js` (EXE-003) |
 | Ler a posição de créditos por origem (Bloco 1) | `motor-creditos.js` → `creditosPosicao` | **Funcional** | `tests/pacote-pis.test.js` |
 | Montar o material de PER/DCOMP (posição + o que dá para pedir + CSV) | `pacote-pis.js` + `index.html` | **Funcional** — ligado à tela e à memória técnica | `tests/pacote-pis.test.js`, `tests/pacote-pis-ui.test.js` |
 | Decidir a via (PER × DCOMP), calcular o saldo e o prazo, gerar a ficha do pedido | `motor-pedido.js` + `index.html` | **Funcional** — pela regra oficial da Receita, com fundamento e pendências | `tests/motor-pedido.test.js` |
-| Transmitir o pedido no PER/DCOMP Web | e-CAC (certificado do cliente) | **Manual** — o contador transmite; o Reversa entrega a ficha | idem |
+| Transmitir o pedido no PER/DCOMP Web | e-CAC (certificado do cliente) | **Manual** — o Aprovador transmite; o Reversa entrega a ficha | idem |
 | PER/DCOMP | fase `perdcomp` | **Manual** — o operador registra o recibo | idem |
 
 ### O que a retificadora cobre (e o que não cobre)
@@ -45,7 +45,7 @@ Cobre, com geração automática:
 - **Alíquota por unidade de medida de produto** (COD_CONT 03/53): o gerador recusa com erro
   explícito, porque não sabe a que linha do M210 o item pertence.
 - **PER/DCOMP**: o produto entrega os *números* (base, valor apurado, código de receita por
-  competência) e o arquivo retificado. O pedido no PER Web é feito pelo contador/cliente.
+  competência) e o arquivo retificado. O pedido no PER Web é feito pelo Aprovador ou pelo cliente.
 
 ## 3. O que foi conferido contra a fonte oficial (e mudou de opinião)
 
@@ -99,7 +99,7 @@ Testes: `tests/retificadora-guard.test.js` (7 casos, regra pura) e `tests/execuc
    em período anterior e no período, o transferido e o saldo final. Sai em `creditosPosicao` e vira
    o **pacote operacional** (`pacote-pis.js`), que aparece na tela e na memória técnica.
    **O que continua manual:** o pedido no PER Web/DCTFWeb (transmissão, código de receita do DARF e a
-   escolha entre PER e DCOMP) — decisão do contador. **Prioridade:** baixa (decisão de produto).
+   escolha entre PER e DCOMP) — decisão do Aprovador. **Prioridade:** baixa (decisão de produto).
 2. **Monofásicos** continuam manuais (decisão de CST + código de receita por NCM). **Impacto:**
    casos de revenda de monofásicos não podem ser automatizados ainda. **Prioridade:** baixa — a
    base legal é consolidada, mas o cadastro da natureza da receita por NCM é trabalho de dados.
