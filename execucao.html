@@ -233,10 +233,10 @@
       return '<tr><td>' + esc(a.nome) + '</td><td>' + (m ? esc(m.competencia.split('-').reverse().join('/')) : '—') + '</td>' +
         '<td><input type="text" data-recibo="' + i + '" value="' + esc(a.recibo || '') + '" maxlength="60" placeholder="Nº do recibo" style="min-width:180px"></td>' +
         '<td class="num">' + (s ? RV.reais(s.g.reducao.pis) : '—') + '</td><td class="num">' + (s ? RV.reais(s.g.reducao.cofins) : '—') + '</td><td>' + st + '</td>' +
-        '<td>' + (s ? '<button type="button" class="sec" data-baixar="' + i + '">Baixar</button>' : '') + '</td></tr>';
+        '<td>' + (s && !s.erros.length && s.g.itensAlterados ? '<button type="button" class="sec" data-baixar="' + i + '">Baixar</button>' : '') + '</td></tr>';
     }).join('') + '</tbody>' : '';
     $('r-gerar').hidden = !ret.arqs.length;
-    $('r-zip').hidden = $('r-reg').hidden = !ret.saidas.filter(Boolean).length;
+    $('r-zip').hidden = $('r-reg').hidden = !ret.saidas.some(function (s) { return s && !s.erros.length && s.g.itensAlterados; });
   }
   $('r-arqs').addEventListener('change', function (ev) {
     var fs = Array.prototype.slice.call(ev.target.files || []);
@@ -276,15 +276,15 @@
     }).catch(function (e) { RV.toast(e.message); });
   });
   function nomeRet(a) { return a.nome.replace(/\.txt$/i, '') + '-RETIFICADORA.txt'; }
-  document.addEventListener('click', function (ev) { var i = ev.target.dataset && ev.target.dataset.baixar; if (i != null && ret.saidas[i]) baixar(nomeRet(ret.arqs[i]), ret.saidas[i].bytes); });
+  document.addEventListener('click', function (ev) { var i = ev.target.dataset && ev.target.dataset.baixar, s = ret.saidas[i]; if (i != null && s && !s.erros.length && s.g.itensAlterados) baixar(nomeRet(ret.arqs[i]), s.bytes); });
   $('r-zip').addEventListener('click', function () {
-    if (!window.JSZip) { ret.saidas.forEach(function (s, i) { if (s) baixar(nomeRet(ret.arqs[i]), s.bytes); }); return; }
-    var z = new JSZip(); ret.saidas.forEach(function (s, i) { if (s) z.file(nomeRet(ret.arqs[i]), s.bytes); });
+    if (!window.JSZip) { ret.saidas.forEach(function (s, i) { if (s && !s.erros.length && s.g.itensAlterados) baixar(nomeRet(ret.arqs[i]), s.bytes); }); return; }
+    var z = new JSZip(); ret.saidas.forEach(function (s, i) { if (s && !s.erros.length && s.g.itensAlterados) z.file(nomeRet(ret.arqs[i]), s.bytes); });
     z.generateAsync({ type: 'uint8array' }).then(function (b) { baixar('Retificadoras-' + (atual ? atual.cliente.cnpj : '') + '.zip', b); });
   });
   $('r-reg').addEventListener('click', function () {
     var arquivos = ret.saidas.map(function (s, i) {
-      if (!s || !s.g.itensAlterados) return null;
+      if (!s || s.erros.length || !s.g.itensAlterados) return null;
       var a = ret.arqs[i];
       return { nome: nomeRet(a), competencia: a.lido.meta.competencia, cnpj: a.lido.meta.cnpj, reciboOriginal: a.recibo || '', shaOriginal: s.shaOriginal, shaRetificada: s.shaRetificada,
         teses: ret.teses, itensAlterados: s.g.itensAlterados, apuracao: s.g.apuracao,
