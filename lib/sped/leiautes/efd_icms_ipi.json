@@ -4973,6 +4973,15 @@
      "obrig_bruto": "Não                O"
     },
     {
+     "pos": 2,
+     "nome": "VL_CONT_P",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O"
+    },
+    {
      "pos": 3,
      "nome": "VL_BC_ISS_P",
      "tipo": "N",
@@ -5018,10 +5027,8 @@
      "obrig_bruto": "O"
     }
    ],
-   "posicoes_faltantes": [
-    2
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "B350": {
    "titulo": "SERVIÇOS PRESTADOS POR INSTITUIÇÕES FINANCEIRAS",
@@ -6325,6 +6332,15 @@
      "obrig_bruto": ""
     },
     {
+     "pos": 5,
+     "nome": "CPF_COL",
+     "tipo": "N",
+     "tam": 11,
+     "tam_fixo": true,
+     "dec": null,
+     "obrig_bruto": "OC"
+    },
+    {
      "pos": 6,
      "nome": "COD_MUN_COL",
      "tipo": "N",
@@ -6370,10 +6386,8 @@
      "obrig_bruto": "OC"
     }
    ],
-   "posicoes_faltantes": [
-    5
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "C116": {
    "titulo": "CUPOM FISCAL ELETRÔNICO REFERENCIADO",
@@ -6772,6 +6786,15 @@
      "obrig_bruto": "Não               O"
     },
     {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "OC"
+    },
+    {
      "pos": 3,
      "nome": "VEIC_ID",
      "tipo": "C",
@@ -6826,6 +6849,24 @@
      "obrig_bruto": "O"
     },
     {
+     "pos": 9,
+     "nome": "PESO_BRT",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O"
+    },
+    {
+     "pos": 10,
+     "nome": "PESO_LIQ",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O"
+    },
+    {
      "pos": 11,
      "nome": "NOM_MOT",
      "tipo": "C",
@@ -6853,12 +6894,8 @@
      "obrig_bruto": "OC"
     }
    ],
-   "posicoes_faltantes": [
-    2,
-    9,
-    10
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "C170": {
    "titulo": "ITENS DO DOCUMENTO (CÓDIGO 01, 1B, 04 e 55).",
@@ -7308,6 +7345,15 @@
      "obrig_bruto": "O                    O"
     },
     {
+     "pos": 3,
+     "nome": "QTD_ITEM",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 3,
+     "obrig_bruto": "O O"
+    },
+    {
      "pos": 4,
      "nome": "DT_FAB",
      "tipo": "N",
@@ -7353,10 +7399,8 @@
      "obrig_bruto": "O                   O"
     }
    ],
-   "posicoes_faltantes": [
-    3
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "C174": {
    "titulo": "OPERAÇÕES COM ARMAS DE FOGO (CÓDIGO 01)",
@@ -7836,6 +7880,15 @@
    "titulo": "INFORMAÇÕES COMPLEMENTARES DAS OPERAÇÕES DE ENTRADA",
    "campos": [
     {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O Não apresentar"
+    },
+    {
      "pos": 2,
      "nome": "COD_RESP_RET",
      "tipo": "N",
@@ -7874,6 +7927,15 @@
     {
      "pos": 6,
      "nome": "VL_UNIT_ICMS_OP_CONV",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "O"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_UNIT_BC_ICMS_ST_CONV",
      "tipo": "N",
      "tam": null,
      "tam_fixo": false,
@@ -7926,11 +7988,8 @@
      "obrig_bruto": "OC"
     }
    ],
-   "posicoes_faltantes": [
-    1,
-    7
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "C181": {
    "titulo": "INFORMAÇÕES COMPLEMENTARES DAS OPERAÇÕES DE",
@@ -8045,7 +8104,7 @@
     },
     {
      "pos": 13,
-     "nome": "valor",
+     "nome": "VL_UNIT_ICMS_OP_ESTOQUE_CONV_SAIDA",
      "tipo": "N",
      "tam": null,
      "tam_fixo": false,
@@ -8054,7 +8113,7 @@
     },
     {
      "pos": 14,
-     "nome": "correspondente",
+     "nome": "VL_UNIT_ICMS_ST_ESTOQUE_CONV_SAIDA",
      "tipo": "N",
      "tam": null,
      "tam_fixo": false,
@@ -8063,7 +8122,43 @@
     },
     {
      "pos": 15,
-     "nome": "correspondente",
+     "nome": "VL_UNIT_FCP_ICMS_ST_ESTOQUE_CONV_SAIDA",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_UNIT_ICMS_NA_OPERACAO_CONV_SAIDA",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_UNIT_ICMS_OP_CONV_SAIDA",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_UNIT_ICMS_ST_CONV_REST",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 19,
+     "nome": "VL_UNIT_FCP_ST_CONV_REST",
      "tipo": "N",
      "tam": null,
      "tam_fixo": false,
@@ -8072,7 +8167,16 @@
     },
     {
      "pos": 20,
-     "nome": "ressarcimento",
+     "nome": "VL_UNIT_ICMS_ST_CONV_COMPL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 21,
+     "nome": "VL_UNIT_FCP_ST_CONV_COMPL",
      "tipo": "N",
      "tam": null,
      "tam_fixo": false,
@@ -8080,22 +8184,62 @@
      "obrig_bruto": "OC"
     }
    ],
-   "posicoes_faltantes": [
-    16,
-    17,
-    18,
-    19
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "C185": {
    "titulo": "INFORMAÇÕES COMPLEMENTARES DAS OPERAÇÕES DE SAÍDA DE",
    "campos": [
     {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não apresentar O"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ITEM",
+     "tipo": "N",
+     "tam": 3,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O"
+    },
+    {
+     "pos": 4,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "tam_fixo": true,
+     "dec": null,
+     "obrig_bruto": "O"
+    },
+    {
      "pos": 5,
      "nome": "CFOP",
      "tipo": "N",
      "tam": 4,
+     "tam_fixo": true,
+     "dec": null,
+     "obrig_bruto": "O"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_MOT_REST_COMPL",
+     "tipo": "C",
+     "tam": 5,
      "tam_fixo": true,
      "dec": null,
      "obrig_bruto": "O"
@@ -8108,16 +8252,109 @@
      "tam_fixo": false,
      "dec": 6,
      "obrig_bruto": "O"
+    },
+    {
+     "pos": 8,
+     "nome": "UNID",
+     "tipo": "C",
+     "tam": 6,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_UNIT_CONV",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "O"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_UNIT_ICMS_NA_OPERACAO_CONV",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_UNIT_ICMS_OP_CONV",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_UNIT_ICMS_OP_ESTOQUE_CONV",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_UNIT_ICMS_ST_ESTOQUE_CONV",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_UNIT_FCP_ICMS_ST_ESTOQUE_CONV",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_UNIT_ICMS_ST_CONV_REST",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_UNIT_FCP_ST_CONV_REST",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_UNIT_ICMS_ST_CONV_COMPL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_UNIT_FCP_ST_CONV_COMPL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
     }
    ],
-   "posicoes_faltantes": [
-    1,
-    2,
-    3,
-    4,
-    6
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "C186": {
    "titulo": "INFORMAÇÕES COMPLEMENTARES DAS OPERAÇÕES DE",
@@ -9084,6 +9321,15 @@
      "obrig_bruto": "OC"
     },
     {
+     "pos": 7,
+     "nome": "VL_MERC",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O"
+    },
+    {
      "pos": 8,
      "nome": "VL_DOC",
      "tipo": "N",
@@ -9120,10 +9366,8 @@
      "obrig_bruto": "OC"
     }
    ],
-   "posicoes_faltantes": [
-    7
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "C370": {
    "titulo": "ITENS DO DOCUMENTO (CÓDIGO 02)",
@@ -10720,39 +10964,57 @@
     },
     {
      "pos": 28,
-     "nome": "Eletrônica",
+     "nome": "CHV_DOCe",
      "tipo": "C",
      "tam": 44,
      "tam_fixo": true,
      "dec": null,
-     "obrig_bruto": "OC          OC"
+     "obrig_bruto": "OC OC"
     },
     {
      "pos": 29,
-     "nome": "eletrônico",
+     "nome": "FIN_DOCe",
      "tipo": "N",
      "tam": 1,
      "tam_fixo": true,
      "dec": null,
-     "obrig_bruto": "OC          OC"
+     "obrig_bruto": "OC OC"
+    },
+    {
+     "pos": 30,
+     "nome": "CHV_DOCe_REF",
+     "tipo": "C",
+     "tam": 44,
+     "tam_fixo": true,
+     "dec": null,
+     "obrig_bruto": "OC OC"
+    },
+    {
+     "pos": 31,
+     "nome": "IND_DEST",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": true,
+     "dec": null,
+     "obrig_bruto": "N O"
     },
     {
      "pos": 32,
-     "nome": "conforme",
+     "nome": "COD_MUN_DEST",
      "tipo": "N",
      "tam": 7,
      "tam_fixo": true,
      "dec": null,
-     "obrig_bruto": "N           O"
+     "obrig_bruto": "N O"
     },
     {
      "pos": 33,
-     "nome": "debitada",
+     "nome": "COD_CTA",
      "tipo": "C",
      "tam": null,
      "tam_fixo": false,
      "dec": null,
-     "obrig_bruto": "OC          OC"
+     "obrig_bruto": "OC OC"
     },
     {
      "pos": 34,
@@ -10818,11 +11080,8 @@
      "obrig_bruto": "OC          OC"
     }
    ],
-   "posicoes_faltantes": [
-    30,
-    31
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "C510": {
    "titulo": "ITENS DO DOCUMENTO NOTA FISCAL/CONTA ENERGIA ELÉTRICA",
@@ -14369,7 +14628,7 @@
      "tam": 4,
      "tam_fixo": true,
      "dec": null,
-     "obrig_bruto": ""
+     "obrig_bruto": "O O"
     },
     {
      "pos": 4,
@@ -14381,13 +14640,22 @@
      "obrig_bruto": "OC            OC"
     },
     {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O O"
+    },
+    {
      "pos": 6,
      "nome": "VL_BC_ICMS",
      "tipo": "N",
      "tam": null,
      "tam_fixo": false,
      "dec": 2,
-     "obrig_bruto": ""
+     "obrig_bruto": "O O"
     },
     {
      "pos": 7,
@@ -14396,7 +14664,7 @@
      "tam": null,
      "tam_fixo": false,
      "dec": 2,
-     "obrig_bruto": ""
+     "obrig_bruto": "O O"
     },
     {
      "pos": 8,
@@ -14417,10 +14685,8 @@
      "obrig_bruto": "OC            OC"
     }
    ],
-   "posicoes_faltantes": [
-    5
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "D195": {
    "titulo": "OBSERVAÇÕES DO LANÇAMENTO FISCAL (CÓDIGO 07, 08, 8B, 09, 10,",
@@ -16544,6 +16810,24 @@
      "obrig_bruto": "O"
     },
     {
+     "pos": 8,
+     "nome": "VL_BC_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O"
+    },
+    {
      "pos": 10,
      "nome": "VL_RED_BC",
      "tipo": "N",
@@ -16562,11 +16846,8 @@
      "obrig_bruto": "OC"
     }
    ],
-   "posicoes_faltantes": [
-    8,
-    9
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "D695": {
    "titulo": "CONSOLIDAÇÃO DA PRESTAÇÃO DE SERVIÇOS – NOTAS DE SERVIÇO",
@@ -16669,6 +16950,15 @@
      "obrig_bruto": "Não              O"
     },
     {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "tam_fixo": true,
+     "dec": null,
+     "obrig_bruto": "O"
+    },
+    {
      "pos": 3,
      "nome": "CFOP",
      "tipo": "N",
@@ -16688,12 +16978,12 @@
     },
     {
      "pos": 5,
-     "nome": "de",
+     "nome": "VL_OPR",
      "tipo": "N",
      "tam": null,
      "tam_fixo": false,
      "dec": 2,
-     "obrig_bruto": ""
+     "obrig_bruto": "O"
     },
     {
      "pos": 6,
@@ -16702,7 +16992,7 @@
      "tam": null,
      "tam_fixo": false,
      "dec": 2,
-     "obrig_bruto": ""
+     "obrig_bruto": "O"
     },
     {
      "pos": 7,
@@ -16711,7 +17001,7 @@
      "tam": null,
      "tam_fixo": false,
      "dec": 2,
-     "obrig_bruto": ""
+     "obrig_bruto": "O"
     },
     {
      "pos": 8,
@@ -16720,7 +17010,7 @@
      "tam": null,
      "tam_fixo": false,
      "dec": 2,
-     "obrig_bruto": ""
+     "obrig_bruto": "O"
     },
     {
      "pos": 9,
@@ -16729,7 +17019,7 @@
      "tam": null,
      "tam_fixo": false,
      "dec": 2,
-     "obrig_bruto": ""
+     "obrig_bruto": "O"
     },
     {
      "pos": 10,
@@ -16750,10 +17040,8 @@
      "obrig_bruto": "OC"
     }
    ],
-   "posicoes_faltantes": [
-    2
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "D697": {
    "titulo": "REGISTRO DE INFORMAÇÕES DE OUTRAS UFs, RELATIVAMENTE",
@@ -17404,6 +17692,15 @@
      "obrig_bruto": "-                   O"
     },
     {
+     "pos": 9,
+     "nome": "VL_SERV_NT",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "- O"
+    },
+    {
      "pos": 10,
      "nome": "VL_TERC",
      "tipo": "N",
@@ -17476,10 +17773,8 @@
      "obrig_bruto": "-                  OC"
     }
    ],
-   "posicoes_faltantes": [
-    9
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "D760": {
    "titulo": "REGISTRO ANALÍTICO DA ESCRITURAÇÃO CONSOLIDADA DA NOTA",
@@ -21099,8 +21394,17 @@
      "obrig_bruto": "O"
     },
     {
+     "pos": 3,
+     "nome": "QTD_COR_POS",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC"
+    },
+    {
      "pos": 4,
-     "nome": "Quantidade",
+     "nome": "QTD_COR_NEG",
      "tipo": "N",
      "tam": null,
      "tam_fixo": false,
@@ -21117,10 +21421,8 @@
      "obrig_bruto": "OC"
     }
    ],
-   "posicoes_faltantes": [
-    3
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "K280": {
    "titulo": "CORREÇÃO DE APONTAMENTO – ESTOQUE ESCRITURADO",
@@ -21135,6 +21437,15 @@
      "obrig_bruto": "O"
     },
     {
+     "pos": 2,
+     "nome": "DT_EST",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": true,
+     "dec": null,
+     "obrig_bruto": "O"
+    },
+    {
      "pos": 3,
      "nome": "COD_ITEM",
      "tipo": "C",
@@ -21142,12 +21453,46 @@
      "tam_fixo": false,
      "dec": null,
      "obrig_bruto": "O"
+    },
+    {
+     "pos": 4,
+     "nome": "QTD_COR_POS",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 3,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 5,
+     "nome": "QTD_COR_NEG",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 3,
+     "obrig_bruto": "OC"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_EST",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "OC"
     }
    ],
-   "posicoes_faltantes": [
-    2
-   ],
-   "completo": false
+   "posicoes_faltantes": [],
+   "completo": true
   },
   "K290": {
    "titulo": "PRODUÇÃO CONJUNTA – ORDEM DE PRODUÇÃO",
