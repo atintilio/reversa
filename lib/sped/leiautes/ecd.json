@@ -1,6 +1,6 @@
 {
  "leiaute": "ecf",
- "fonte": "Manual de Orientação do Leiaute 9 da ECD (Anexo ao ADE Cofis nº 1/2026, atualização janeiro/2026)",
+ "fonte": "Manual de Orientacao da ECD, leiaute 9 (jan/2026)",
  "sha256": "7ddf47755f616ecd76671b8be9c8b61e30adbb0e8408634e45af95f616119b2e",
  "nomes": "nomes de campo lidos do texto do PDF; quando o nome veio quebrado entre linhas (ex.: IND_ + REC_EXT), as partes foram juntadas",
  "validacao": "[VALIDAR] os registros com completo=false contra o PDF oficial",
@@ -2493,7 +2493,7 @@
    "campos": [
     {
      "pos": 1,
-     "nome": "REGRZ_CONT",
+     "nome": "REG",
      "tipo": "C",
      "tam": 4,
      "tam_fixo": false,
@@ -2506,6 +2506,7 @@
    "campo_parametrico": [
     "RZ_CONT"
    ],
+   "posicoes_variaveis": true,
    "observacao": "registro parametrizado: o manual nao fixa o numero de campos; a lista de campos vem do registro indicado em RZ_CONT."
   },
   "I555": {
@@ -2526,6 +2527,7 @@
    "campo_parametrico": [
     "RZ_CONT_TOT"
    ],
+   "posicoes_variaveis": true,
    "observacao": "registro parametrizado: o manual nao fixa o numero de campos; a lista de campos vem do registro indicado em RZ_CONT_TOT."
   },
   "I990": {

@@ -216,6 +216,7 @@ def extrai_registro(linhas):
                 if parametrizado:
                     campos_parametrizados.append(parametrizado)
                 nome = None
+                # a linha do campo parametrizado nao descreve o campo anterior
             elif RE_NUM.match(toks[0][0]) and abs(toks[0][1] - x_no) <= TOL_POS:
                 num = int(toks[0][0])
             nome = None
@@ -237,7 +238,8 @@ def extrai_registro(linhas):
                     # Sem esta guarda, "Campo(s) chave: ..." e o "Exemplo de Preenchimento"
                     # entram no catálogo como nome de campo.
                     continue
-                eventos.append((idx, ultimo_num[1], nome, col))
+                # o nome da linha parametrizada ("* RZ_CONT") nao pertence ao campo anterior
+                eventos.append((idx, ultimo_num[1], None if parametrizado else nome, col))
 
     if not eventos_num:
         return {}
@@ -324,6 +326,7 @@ def extrai(L):
         }
         if parametrico:
             registro['campo_parametrico'] = parametrico['nomes']
+            registro['posicoes_variaveis'] = True
             registro['observacao'] = ('registro parametrizado: o manual nao fixa o numero de campos; '
                                       'a lista de campos vem do registro indicado em ' + ', '.join(parametrico['nomes']) + '.')
         yield cod, registro

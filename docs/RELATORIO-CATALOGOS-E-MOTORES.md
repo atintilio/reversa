@@ -21,7 +21,7 @@ O que estava em aberto no handoff e o estado agora:
 | Catálogo da ECD e da ECF | Prontos (188/188 e 72 registros) — **ainda não ligados aos motores** |
 | Divergências reais da ECF (`motor-ecf.js` lê um leiaute que não existe) | **Ainda não corrigido** — ver "Pendências" |
 | Pacote operacional de PIS (créditos + PER/DCOMP) | **Ainda não começado** |
-| 15 registros incompletos do catálogo ICMS/IPI | **Ainda não fechados** |
+| 15 registros incompletos do catálogo ICMS/IPI | **Fechados** (B035, C115, C165, C173, C180, C181, C185, C350, C500, D190, D690, D696, D750, K275, K280) — falta só o C591, que só existe no leiaute 021/2027 |
 
 ## O que foi feito, arquivo por arquivo
 
@@ -36,6 +36,9 @@ O que estava em aberto no handoff e o estado agora:
   (`tests/retificadora.test.js`) — falham na versão antiga e passam na nova.
 
 ### 2. Catálogos oficiais
+> Esta frente teve duas sessões de agente: a do remoto (que fechou os 15 registros quebrados do
+> catálogo ICMS/IPI, com correções conferidas nas tabelas do Guia 3.2.4) e a desta (que fechou o
+> catálogo da EFD-Contribuições e ligou os motores). As duas foram mescladas nesta branch.
 - `lib/sped/leiautes/efd_contribuicoes.json` (novo, 203 registros): extraído do **Guia Prático da
   EFD Contribuições v1.35** por `scripts/extrai-guia-contrib.py` + `scripts/reconcilia-efd-contrib.js`.
   Relatório: `lib/sped/leiautes/_extraidos/relatorio-efd-contribuicoes.md`.
@@ -83,8 +86,8 @@ O que estava em aberto no handoff e o estado agora:
    **Não corrigi às cegas**: trocar a posição de um valor de IRPJ/CSLL sem uma ECF real para conferir
    pode trocar erro por erro em número de cliente. O que falta é uma ECF real de teste — a do
    repositório (`tests/fixtures/`) é de EFD-Contribuições, não de ECF.
-2. **15 registros incompletos do catálogo ICMS/IPI** (B035, C115, C165, C173, C180, C181, C185, C350,
-   C500, D190, D690, D696, D750, K275, K280) e o **leiaute 021 (2027)**, que ainda não foi tratado.
+2. **Leiaute 021 (2027)** da EFD ICMS/IPI (NT 2026.001): a extração existe
+   (`efd_icms_ipi.nt2026-001.json`) mas é por IA e não foi conferida; o C591 só existe nele.
 3. **`motor-ecd.js` e `motor-ecf.js` ainda não leem o catálogo** — só o ICMS/IPI e o Contribuições.
 4. **Pacote operacional de PIS** (créditos por origem + PER/DCOMP com competência, tipo de pedido,
    valor, código de receita, saldo e arquivo exportável para o contador): não começado.
