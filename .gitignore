@@ -5,3 +5,9 @@ node_modules/
 .vercel/
 *.log
 .DS_Store
+
+# scratch de desenvolvimento (não versionado)
+scratch/
+scratchpad-*/
+__pycache__/
+*.pyc
