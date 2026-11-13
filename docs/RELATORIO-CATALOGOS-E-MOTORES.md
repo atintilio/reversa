@@ -19,7 +19,7 @@ O que estava em aberto no handoff e o estado agora:
 | `motor-efd-icms.js` ligado ao catálogo | **Feito**, sem mudar o resultado |
 | `motor-creditos.js` (EFD-Contribuições) ligado ao catálogo | **Feito**, sem mudar o resultado |
 | Catálogo da ECD e da ECF | Prontos (188/188 e 72 registros) — **ainda não ligados aos motores** |
-| Divergências reais da ECF (`motor-ecf.js` lê um leiaute que não existe) | **Ainda não corrigido** — ver "Pendências" |
+| Divergências reais da ECF (`motor-ecf.js` lia um leiaute que não existe) | **Corrigido** — o motor agora lê o leiaute 12 (Manual de Orientação da ECF) |
 | Pacote operacional de PIS (créditos + PER/DCOMP) | **Ainda não começado** |
 | 15 registros incompletos do catálogo ICMS/IPI | **Fechados** (B035, C115, C165, C173, C180, C181, C185, C350, C500, D190, D690, D696, D750, K275, K280) — falta só o C591, que só existe no leiaute 021/2027 |
 
@@ -59,6 +59,16 @@ O que estava em aberto no handoff e o estado agora:
   apuração (M200/M600/M210/M610); confere que o arquivo gerado está em dia com o catálogo.
 - `index.html` e `execucao.html`: carregam o leiaute oficial antes do motor.
 
+### 3b. Correção da ECF (leiaute 12)
+- `motor-ecf.js`: o `0000` passa a ler o CNPJ no **campo 04** e `DT_INI`/`DT_FIN` nos **campos 10 e
+  11**; o `M030`/`N030` traz `DT_INI`, `DT_FIN` e `PER_APUR`; o `M300`/`M350` traz o **valor no campo
+  06** e o **TIPO_LANCAMENTO** (R = grupo/total, L = resultado, A = adição, E = exclusão); o
+  `N500`/`N630`/`N650`/`N670` traz o **valor no campo 04**, e o imposto a pagar vem do
+  "IMPOSTO DE RENDA A PAGAR" (N630, código 26 na tabela A) e do "CSLL A PAGAR" (N670, código 21).
+- `tests/motor-ecf.test.js`: fixtures reescritas no leiaute oficial **com os mesmos números
+  esperados** (R$ 34.000 de oportunidade, conferência da base, prazo, itens mantidos), mais 5
+  testes que travam cada posição do leiaute.
+
 ### 4. Auditoria do fluxo de PIS
 - `docs/AUDITORIA-CREDITOS-PIS.md`: o que o motor faz hoje, o que ainda é manual (transmissão,
   PER/DCOMP) e as lacunas (bloco 1 — 1100/1500 — não lido pelo motor; monofásicos manuais;
@@ -75,20 +85,17 @@ O que estava em aberto no handoff e o estado agora:
 
 ## Pendências (o que NÃO está pronto)
 
-1. **`motor-ecf.js` lê um leiaute que não existe.** Conferido contra o PDF oficial do Manual da ECF
-   (leiaute 12) e contra as tabelas dinâmicas:
-   - registro `0000`: o CNPJ está no **campo 04** (o motor lê o 06) e `DT_INI`/`DT_FIN` estão nos
-     **campos 10 e 11** (o motor lê um registro "M030" que não existe no leiaute);
-   - `M300`/`M350`: o **valor está no campo 06** (o motor lê o 04) e o tipo vem de
-     `TIPO_LANCAMENTO` (A/E/P/L/R);
-   - `N500` código '1' (base de IRPJ), `N650` código '1' (base de CSLL), `N630` código '26'
-     (IRPJ a pagar; '3' = 15%, '4' = adicional), `N670` código '21' (CSLL a pagar).
-   **Não corrigi às cegas**: trocar a posição de um valor de IRPJ/CSLL sem uma ECF real para conferir
-   pode trocar erro por erro em número de cliente. O que falta é uma ECF real de teste — a do
-   repositório (`tests/fixtures/`) é de EFD-Contribuições, não de ECF.
+1. **Uma ECF real para conferir.** O motor da ECF agora lê o leiaute 12 (posições conferidas no
+   Manual de Orientação da ECF e nas tabelas dinâmicas oficiais), e os testes foram reescritos no
+   leiaute oficial **mantendo os mesmos números esperados**. Ainda assim: o repositório não tem
+   arquivo de ECF real (os fixtures são de EFD-Contribuições). Antes de mostrar número de IRPJ/CSLL
+   de cliente, o contador precisa conferir uma ECF real. O motor tem a rede de segurança: se a base
+   declarada (N500) não bater com a base recalculada, o trimestre vai para "revisão" e não entra no
+   valor.
 2. **Leiaute 021 (2027)** da EFD ICMS/IPI (NT 2026.001): a extração existe
    (`efd_icms_ipi.nt2026-001.json`) mas é por IA e não foi conferida; o C591 só existe nele.
 3. **`motor-ecd.js` e `motor-ecf.js` ainda não leem o catálogo** — só o ICMS/IPI e o Contribuições.
+   (O `motor-ecd.js` confere com o leiaute 9 nas posições que usa.)
 4. **Pacote operacional de PIS** (créditos por origem + PER/DCOMP com competência, tipo de pedido,
    valor, código de receita, saldo e arquivo exportável para o contador): não começado.
 5. **Assinatura digital e eSocial**: não implementados (continua manual).
