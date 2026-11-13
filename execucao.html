@@ -104,8 +104,11 @@
   </div>
 </main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="/lib/sped/leiautes/leiaute-efd-contribuicoes.js"></script>
+<script src="/lib/sped/leiautes/leiaute-efd-icms-ipi.js"></script>
 <script src="/motor-creditos.js"></script>
 <script src="/retificadora-efd.js"></script>
+<script src="/retificadora-guard.js"></script>
 <script src="/validador-efd.js"></script>
 <script src="/motor-esocial-extra.js"></script>
 <script src="/motor-esocial.js"></script>
@@ -224,19 +227,27 @@
   function cp1252(s) { var b = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) { var c = s.charCodeAt(i); b[i] = c < 256 ? c : (CP1252[c] || 0x3F); } return b; }
   function sha(bytes) { return crypto.subtle.digest('SHA-256', bytes).then(function (h) { return Array.prototype.map.call(new Uint8Array(h), function (x) { return (x < 16 ? '0' : '') + x.toString(16); }).join(''); }); }
   function baixar(nome, bytes) { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([bytes], { type: 'text/plain' })); a.download = nome; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000); }
+  // Regra única de liberação (mesma do servidor): erro de pré-validação, nenhuma alteração
+  // efetiva ou arquivo idêntico ao original não entram no pacote de transmissão.
+  function veredito(s) {
+    if (!s) return { liberado: false, codigo: 'SEM_SAIDA', mensagem: 'Sem retificadora gerada para este arquivo.' };
+    return RetificadoraGuard.avaliar({ erros: (s.erros || []).length, avisos: (s.avisos || []).length,
+      itensAlterados: s.g ? s.g.itensAlterados : 0, shaOriginal: s.shaOriginal, shaRetificada: s.shaRetificada });
+  }
   function tabRet() {
     $('r-tab').innerHTML = ret.arqs.length ? '<thead><tr><th>Arquivo</th><th>Competência</th><th>Recibo da original</th><th class="num">Crédito PIS</th><th class="num">Crédito COFINS</th><th>Pré-validação</th><th></th></tr></thead><tbody>' + ret.arqs.map(function (a, i) {
-      var s = ret.saidas[i], m = a.lido.meta;
+      var s = ret.saidas[i], m = a.lido.meta, v = veredito(s);
       var st = !s ? (a.lido.erros.length ? '<span class="pill bad">' + esc(a.lido.erros[0]) + '</span>' : '—') :
         (s.erros.length ? '<details><summary><span class="pill bad">' + s.erros.length + ' erro(s)</span></summary><small>' + s.erros.map(esc).join('<br>') + '</small></details>' : '<span class="pill ok">Sem erros</span>') +
-        (s.avisos.length ? '<details><summary><small>' + s.avisos.length + ' aviso(s)</small></summary><small>' + s.avisos.map(esc).join('<br>') + '</small></details>' : '');
+        (s.avisos.length ? '<details><summary><small>' + s.avisos.length + ' aviso(s)</small></summary><small>' + s.avisos.map(esc).join('<br>') + '</small></details>' : '') +
+        (s && !v.liberado ? '<br><small class="pill bad">' + esc(v.mensagem) + '</small>' : '');
       return '<tr><td>' + esc(a.nome) + '</td><td>' + (m ? esc(m.competencia.split('-').reverse().join('/')) : '—') + '</td>' +
         '<td><input type="text" data-recibo="' + i + '" value="' + esc(a.recibo || '') + '" maxlength="60" placeholder="Nº do recibo" style="min-width:180px"></td>' +
         '<td class="num">' + (s ? RV.reais(s.g.reducao.pis) : '—') + '</td><td class="num">' + (s ? RV.reais(s.g.reducao.cofins) : '—') + '</td><td>' + st + '</td>' +
-        '<td>' + (s ? '<button type="button" class="sec" data-baixar="' + i + '">Baixar</button>' : '') + '</td></tr>';
+        '<td>' + (s && v.liberado ? '<button type="button" class="sec" data-baixar="' + i + '">Baixar</button>' : '') + '</td></tr>';
     }).join('') + '</tbody>' : '';
     $('r-gerar').hidden = !ret.arqs.length;
-    $('r-zip').hidden = $('r-reg').hidden = !ret.saidas.filter(Boolean).length;
+    $('r-zip').hidden = $('r-reg').hidden = !ret.saidas.filter(function (s) { return veredito(s).liberado; }).length;
   }
   $('r-arqs').addEventListener('change', function (ev) {
     var fs = Array.prototype.slice.call(ev.target.files || []);
@@ -270,27 +281,38 @@
       });
     })).then(function (saidas) {
       ret.saidas = saidas; tabRet();
+      var bloq = saidas.map(function (s, i) { return { i: i, v: veredito(s) }; }).filter(function (x) { return x.v && !x.v.liberado; });
       var semAjuste = saidas.filter(function (s) { return s && !s.g.itensAlterados; }).length;
-      $('r-msgs').innerHTML = semAjuste ? '<p class="aviso">' + semAjuste + ' arquivo(s) sem itens a retificar pelas teses selecionadas.</p>' : '';
-      RV.toast('Retificadoras geradas e pré-validadas');
+      $('r-msgs').innerHTML = (bloq.length ? '<div class="msg bad">' + bloq.map(function (x) {
+        return esc((ret.arqs[x.i] && ret.arqs[x.i].nome) || 'arquivo') + ': ' + esc(x.v.mensagem);
+      }).join('<br>') + '</div>' : '') + (semAjuste ? '<p class="aviso">' + semAjuste + ' arquivo(s) sem itens a retificar pelas teses selecionadas.</p>' : '');
+      RV.toast(bloq.length ? bloq.length + ' retificadora(s) não liberada(s)' : 'Retificadoras geradas e pré-validadas');
     }).catch(function (e) { RV.toast(e.message); });
   });
   function nomeRet(a) { return a.nome.replace(/\.txt$/i, '') + '-RETIFICADORA.txt'; }
-  document.addEventListener('click', function (ev) { var i = ev.target.dataset && ev.target.dataset.baixar; if (i != null && ret.saidas[i]) baixar(nomeRet(ret.arqs[i]), ret.saidas[i].bytes); });
+  document.addEventListener('click', function (ev) {
+    var i = ev.target.dataset && ev.target.dataset.baixar;
+    if (i == null || !ret.saidas[i]) return;
+    var v = veredito(ret.saidas[i]);
+    if (!v.liberado) { RV.toast(v.mensagem); return; }
+    baixar(nomeRet(ret.arqs[i]), ret.saidas[i].bytes);
+  });
   $('r-zip').addEventListener('click', function () {
-    if (!window.JSZip) { ret.saidas.forEach(function (s, i) { if (s) baixar(nomeRet(ret.arqs[i]), s.bytes); }); return; }
-    var z = new JSZip(); ret.saidas.forEach(function (s, i) { if (s) z.file(nomeRet(ret.arqs[i]), s.bytes); });
+    var bons = ret.saidas.map(function (s, i) { return { s: s, i: i }; }).filter(function (x) { return x.s && veredito(x.s).liberado; });
+    if (!bons.length) { RV.toast('Nenhuma retificadora liberada para baixar.'); return; }
+    if (!window.JSZip) { bons.forEach(function (x) { baixar(nomeRet(ret.arqs[x.i]), x.s.bytes); }); return; }
+    var z = new JSZip(); bons.forEach(function (x) { z.file(nomeRet(ret.arqs[x.i]), x.s.bytes); });
     z.generateAsync({ type: 'uint8array' }).then(function (b) { baixar('Retificadoras-' + (atual ? atual.cliente.cnpj : '') + '.zip', b); });
   });
   $('r-reg').addEventListener('click', function () {
     var arquivos = ret.saidas.map(function (s, i) {
-      if (!s || !s.g.itensAlterados) return null;
+      if (!s || !veredito(s).liberado) return null;
       var a = ret.arqs[i];
       return { nome: nomeRet(a), competencia: a.lido.meta.competencia, cnpj: a.lido.meta.cnpj, reciboOriginal: a.recibo || '', shaOriginal: s.shaOriginal, shaRetificada: s.shaRetificada,
         teses: ret.teses, itensAlterados: s.g.itensAlterados, apuracao: s.g.apuracao,
         validacao: { erros: s.erros.length, avisos: s.avisos.length, versao: ValidadorEfd.VERSAO, mensagens: s.erros.concat(s.avisos).slice(0, 30) } };
     }).filter(Boolean);
-    if (!arquivos.length) { RV.toast('Nada a registrar.'); return; }
+    if (!arquivos.length) { RV.toast('Nada a registrar: nenhuma retificadora liberada.'); return; }
     RV.api('POST', '/api/v1/execucoes/' + atual.id + '/arquivos', { arquivos: arquivos })
       .then(function (r) { RV.toast(r.comErro ? r.comErro + ' arquivo(s) com erro: corrija antes de seguir' : 'Arquivos registrados no caso'); return abrir(atual.id); }).catch(function (e) { RV.toast(e.message); });
   });
