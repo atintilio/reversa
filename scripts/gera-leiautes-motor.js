@@ -12,7 +12,7 @@ const DIR = path.join(__dirname, '..', 'lib', 'sped', 'leiautes');
 
 // Registros que cada motor usa (a lista vem do motor; se o motor ler outro registro, acrescentar aqui).
 const CONTRIB = ['0000', '0110', '0111', 'M105', 'M505', '0140', '0200', 'C010', 'C100', 'C170', 'C180', 'C181', 'C185',
-  'M100', 'M500', 'F010', 'F100', 'F120', 'F130', 'F150', 'M200', 'M210', 'M600', 'M610', '9999'];
+  'M100', 'M500', 'F010', 'F100', 'F120', 'F130', 'F150', 'M200', 'M210', 'M600', 'M610', '1100', '1500', '9999'];
 const ICMS = ['0000', '0150', '0200', 'C100', 'C170', 'C190', 'C197', 'E100', 'E110', 'E111', 'E116', 'H010'];
 
 // Tradução: nome interno usado pelo motor -> nome oficial do catálogo.
@@ -42,6 +42,20 @@ function interno(reg, oficial) {
   const t = TRADUCAO[reg] || {};
   for (const k of Object.keys(t)) if (t[k] === oficial) return k;
   return oficial;
+}
+
+function escreve2(nomeArquivo, nomeGlobal, dados, fonte) {
+  const conteudo = umd(nomeGlobal, JSON.stringify(dados, null, 1)).replace('${FONTE}', fonte);
+  const arquivo = path.join(DIR_TAB, nomeArquivo);
+  if (process.argv.includes('--check')) {
+    const atual = fs.existsSync(arquivo) ? fs.readFileSync(arquivo, 'utf8') : '';
+    if (atual !== conteudo) { console.log('DIVERGENTE: ' + nomeArquivo + ' (rode: node scripts/gera-leiautes-motor.js)'); return false; }
+    console.log('ok: ' + nomeArquivo);
+    return true;
+  }
+  fs.writeFileSync(arquivo, conteudo);
+  console.log('gerado: ' + nomeArquivo + ' (' + conteudo.length + ' bytes)');
+  return true;
 }
 
 function umd(nomeGlobal, corpo) {
@@ -111,6 +125,11 @@ function escreve(nomeArquivo, nomeGlobal, dados, fonte) {
   console.log('gerado: ' + nomeArquivo + ' (' + conteudo.length + ' bytes)');
   return true;
 }
+
+// tabelas do Guia (4.3.6 tipo de credito, 4.3.7 base de calculo, 4.3.8 ajustes)
+const DIR_TAB = path.join(__dirname, '..', 'lib', 'sped', 'tabelas');
+const tabCredito = JSON.parse(fs.readFileSync(path.join(DIR_TAB, 'codigos-credito.json'), 'utf8'));
+escreve2('codigos-credito.js', 'SPED_CODIGOS_CREDITO', tabCredito, 'codigos-credito');
 
 const catContrib = JSON.parse(fs.readFileSync(path.join(DIR, 'efd_contribuicoes.json'), 'utf8'));
 const catIcms = JSON.parse(fs.readFileSync(path.join(DIR, 'efd_icms_ipi.json'), 'utf8'));

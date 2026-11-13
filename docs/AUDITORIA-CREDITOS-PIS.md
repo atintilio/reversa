@@ -1,6 +1,6 @@
 # Auditoria do fluxo de créditos de PIS/COFINS — o que está funcional e o que não está
 
-> Revisado em 12/11/2026, na branch `feat/motores-sped`, a partir do código do repositório
+> Revisado em 13/11/2026, na branch `feat/motores-sped`, a partir do código do repositório
 > (`motor-creditos.js`, `retificadora-efd.js`, `validador-efd.js`, `retificadora-guard.js`,
 > `lib/domain/execucao.js`, `execucao.html`) e das fontes oficiais do Portal do SPED.
 > Cada afirmação aqui aponta um arquivo ou um teste — nada aqui é afirmação sem prova.
@@ -25,6 +25,8 @@ existia só pela metade. Foi corrigida nesta rodada (seção 4).
 | Liberar/baixar/registrar/aprovar | `execucao.html` + `lib/domain/execucao.js` | **Funcional, com trava nova** | `tests/retificadora-guard.test.js`, `tests/execucao.test.js` |
 | Validação do contador | `lib/domain/execucao.js` → `sendAccountant` | **Funcional** | `tests/execucao.test.js` (EXE-003) |
 | Transmitir | fase `transmitido` | **Manual** — o operador registra o recibo | `tests/execucao.test.js` (EXE-003) |
+| Ler a posição de créditos por origem (Bloco 1) | `motor-creditos.js` → `creditosPosicao` | **Funcional** | `tests/pacote-pis.test.js` |
+| Montar o material de PER/DCOMP (posição + o que dá para pedir + CSV) | `pacote-pis.js` + `index.html` | **Funcional** — ligado à tela e à memória técnica | `tests/pacote-pis.test.js`, `tests/pacote-pis-ui.test.js` |
 | PER/DCOMP | fase `perdcomp` | **Manual** — o operador registra o recibo | idem |
 
 ### O que a retificadora cobre (e o que não cobre)
@@ -90,18 +92,20 @@ Testes: `tests/retificadora-guard.test.js` (7 casos, regra pura) e `tests/execuc
 
 ## 5. Lacunas conhecidas, que continuam abertas (e por quê)
 
-1. **O motor não lê o bloco 1 (registros 1100 e 1500)** — controle de saldos de créditos por
-   origem e operações extemporâneas. Hoje o saldo credor vem dos M100/M500 (`SLD_CRED`). Sem o
-   bloco 1, não dá para dizer *de onde* veio cada crédito, que é justamente o que a Receita exige
-   no PER/DCOMP e o que a transição de 2027 vai exigir na virada. **Impacto:** a apuração do saldo
-   para a proposta de 2027 (registros 1100/1500, conforme a NT 13/2026) ainda não tem base no
-   motor. **Prioridade:** média — entra junto com a frente da reforma tributária.
+1. **O bloco 1 (registros 1100 e 1500) passou a ser lido** (nesta rodada): posição de créditos por
+   competência de origem, com o saldo disponível (`SD_CRED_DISP_EFD`), o usado por desconto/PER/DCOMP
+   em período anterior e no período, o transferido e o saldo final. Sai em `creditosPosicao` e vira
+   o **pacote operacional** (`pacote-pis.js`), que aparece na tela e na memória técnica.
+   **O que continua manual:** o pedido no PER Web/DCTFWeb (transmissão, código de receita do DARF e a
+   escolha entre PER e DCOMP) — decisão do contador. **Prioridade:** baixa (decisão de produto).
 2. **Monofásicos** continuam manuais (decisão de CST + código de receita por NCM). **Impacto:**
    casos de revenda de monofásicos não podem ser automatizados ainda. **Prioridade:** baixa — a
    base legal é consolidada, mas o cadastro da natureza da receita por NCM é trabalho de dados.
-3. **PER/DCOMP não é gerado**: o produto entrega base, valor e código de receita; o pedido no PER
-   Web é manual. Automatizar exigiria certificado e integração com o sistema da Receita — não é
-   escopo do Reversa. **Prioridade:** baixa (decisão de produto).
+3. **PER/DCOMP não é transmitido**: o produto entrega a base, o valor apurado e agora a **posição de
+   créditos por origem** com o saldo disponível e o material de apoio (PER e DCOMP, CSV para o
+   contador). O pedido no PER Web/DCTFWeb continua manual — automatizar exigiria certificado e
+   integração com o sistema da Receita, e a escolha do tipo e do valor pedido é do contador.
+   **Prioridade:** baixa (decisão de produto).
 4. **O pré-validador é um simulador**: não reproduz o PVA oficial (cruzamentos, tabelas
    dinâmicas, assinaturas). O arquivo final precisa passar no PVA da Receita e ser assinado com
    certificado. O código diz isso na tela; a retificadora gera XML de eSocial, mas **a assinatura

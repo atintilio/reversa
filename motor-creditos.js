@@ -125,6 +125,12 @@
               VL_TOT_CONT_CUM_PER: 8, VL_RET_CUM: 9, VL_OUT_DED_CUM: 10, VL_CONT_CUM_REC: 11, VL_TOT_CONT_REC: 12 },
     'M210': { COD_CONT: 1, VL_REC_BRT: 2, VL_BC_CONT: 3, VL_AJUS_ACRES_BC: 4, VL_AJUS_REDUC_BC: 5, VL_BC_CONT_AJUS: 6, ALIQ: 7, QUANT_BC: 8, ALIQ_QUANT: 9,
               VL_CONT_APUR: 10, VL_AJUS_ACRES: 11, VL_AJUS_REDUC: 12, VL_CONT_DIFER: 13, VL_CONT_DIFER_ANT: 14, VL_CONT_PER: 15 },
+    // Bloco 1: controle de creditos fiscais (Guia Pratico v1.35, registro 1100 e 1500).
+    // A chave do registro e PER_APU_CRED + ORIG_CRED + CNPJ_SUC + COD_CRED.
+    '1100': { PER_APU_CRED: 1, ORIG_CRED: 2, CNPJ_SUC: 3, COD_CRED: 4, VL_CRED_APU: 5, VL_CRED_EXT_APU: 6,
+              VL_TOT_CRED_APU: 7, VL_CRED_DESC_PA_ANT: 8, VL_CRED_PER_PA_ANT: 9, VL_CRED_DCOMP_PA_ANT: 10,
+              SD_CRED_DISP_EFD: 11, VL_CRED_DESC_EFD: 12, VL_CRED_PER_EFD: 13, VL_CRED_DCOMP_EFD: 14,
+              VL_CRED_TRANS: 15, VL_CRED_OUT: 16, SLD_CRED_FIM: 17 },
     '9999': { QTD_LIN: 1 }
   };
   L_LEGADO.M600 = L_LEGADO.M200; L_LEGADO.M610 = L_LEGADO.M210;
@@ -268,7 +274,9 @@
     var res = {
       arquivo: nomeArquivo || '(sem nome)',
       meta: null, itens: [], entradas: [], consolidados: [], saldoCredito: { pis: 0, cofins: 0, registros: 0 }, creditosApropriados: { pis: 0, cofins: 0, registros: 0 }, rateio: { apropriacao: '', rec: null, m105: [], m505: [] }, produtos: 0, avisos: [], erros: [],
-      estatisticas: { linhas: 0, registros: {}, c100Saida: 0, c100Entrada: 0, c100SaidaSemItens: 0, c100Ignorados: 0, consolidados: 0, itensSemNcm: 0 }
+      estatisticas: { linhas: 0, registros: {}, c100Saida: 0, c100Entrada: 0, c100SaidaSemItens: 0, c100Ignorados: 0, consolidados: 0, itensSemNcm: 0 },
+      // Bloco 1: posicao de creditos por competencia de origem (registros 1100 e 1500).
+      creditosPosicao: []
     };
     var linhas = texto.split(/\r?\n/);
     var estab = null, estab0140 = null, doc = null, docTemItem = false, qtd9999 = null, c180 = null;
@@ -444,6 +452,30 @@
           ['VL_REC_BRT', 'VL_BC_CONT', 'VL_AJUS_ACRES_BC', 'VL_AJUS_REDUC_BC', 'VL_BC_CONT_AJUS', 'VL_CONT_APUR', 'VL_AJUS_ACRES', 'VL_AJUS_REDUC', 'VL_CONT_DIFER', 'VL_CONT_DIFER_ANT', 'VL_CONT_PER']
             .forEach(function (n) { o5[n] = cv(f[a5[n]]); });
           M[reg === 'M210' ? 'm210' : 'm610'].push(o5);
+        } else if (reg === '1100' || reg === '1500') {
+          // Bloco 1 (Guia Pratico v1.35): controle de creditos fiscais.
+          // Chave: PER_APU_CRED + ORIG_CRED + CNPJ_SUC + COD_CRED.
+          var q1 = L[reg];
+          res.creditosPosicao.push({
+            tributo: reg === '1100' ? 'pis' : 'cofins',
+            competenciaCredito: f[q1.PER_APU_CRED] || '',
+            origem: f[q1.ORIG_CRED] || '',
+            cnpjSuc: f[q1.CNPJ_SUC] || '',
+            codCredito: f[q1.COD_CRED] || '',
+            creditoApurado: cv(f[q1.VL_CRED_APU]),
+            creditoExtemporaneo: cv(f[q1.VL_CRED_EXT_APU]),
+            creditoTotal: cv(f[q1.VL_TOT_CRED_APU]),
+            usadoDescontoAnterior: cv(f[q1.VL_CRED_DESC_PA_ANT]),
+            usadoPerAnterior: cv(f[q1.VL_CRED_PER_PA_ANT]),
+            usadoDcompAnterior: cv(f[q1.VL_CRED_DCOMP_PA_ANT]),
+            saldoDisponivel: cv(f[q1.SD_CRED_DISP_EFD]),
+            usadoDesconto: cv(f[q1.VL_CRED_DESC_EFD]),
+            pedidoPer: cv(f[q1.VL_CRED_PER_EFD]),
+            pedidoDcomp: cv(f[q1.VL_CRED_DCOMP_EFD]),
+            transferido: cv(f[q1.VL_CRED_TRANS]),
+            usadoOutros: cv(f[q1.VL_CRED_OUT]),
+            saldoFinal: cv(f[q1.SLD_CRED_FIM])
+          });
         } else if (reg === '9999') {
           qtd9999 = parseInt(f[L['9999'].QTD_LIN], 10);
         }

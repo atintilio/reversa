@@ -360,6 +360,19 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     <p class="note">Calculada: o motor apurou valor com os arquivos enviados. A apurar: a tese se aplica ao perfil, mas depende de outro documento (indicado) ou de análise da equipe técnica. Não se aplica: o regime do cliente a exclui.</p>
   </section>
 
+  <section aria-labelledby="t-pacote" id="sec-pacote" hidden>
+    <div class="sec-head">
+      <h2 id="t-pacote">Pacote de <em>créditos</em> (PER / DCOMP)</h2>
+      <div class="btns"><button class="sec" type="button" id="btn-pacote-csv">Exportar pacote (CSV)</button></div>
+    </div>
+    <div class="kpis" id="pacote-kpis"></div>
+    <ul class="msgs" id="pacote-avisos"></ul>
+    <div class="scroll"><table id="tab-pacote"></table></div>
+    <p class="note">Posição de créditos declarada pela empresa no Bloco 1 da EFD-Contribuições (registros 1100 e 1500). O Reversa não calcula tributo, não escolhe o tipo de pedido (PER ou DCOMP) e não define o valor pedido: a escolha é do contador.</p>
+    <div class="scroll"><table id="tab-pacote-pedidos"></table></div>
+    <p class="note">Vias do pedido: PER (Pedido de Ressarcimento) e DCOMP (Declaração de Compensação). O tipo e o valor pedido são escolha do contador.</p>
+  </section>
+
   <section aria-labelledby="t-tec" id="sec-tec" hidden>
     <div class="sec-head"><h2 id="t-tec">Leitura <em>técnica</em> (uso interno)</h2></div>
     <div id="tec-corpo"></div>
@@ -423,14 +436,16 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="/lib/sped/leiautes/leiaute-efd-contribuicoes.js"></script>
+<script src="/lib/sped/leiautes/leiaute-efd-icms-ipi.js"></script>
+<script src="/lib/sped/tabelas/codigos-credito.js"></script>
+<script src="/pacote-pis.js"></script>
 <script src="/motor-creditos.js"></script>
 <script src="/motor-esocial-extra.js"></script>
 <script src="/motor-esocial.js"></script>
 <script src="/motor-ecf.js"></script>
 <script src="/motor-irpj-veiculos.js"></script>
 <script src="/motor-ecd.js"></script>
-<script src="/lib/sped/leiautes/leiaute-efd-contribuicoes.js"></script>
-<script src="/lib/sped/leiautes/leiaute-efd-icms-ipi.js"></script>
 <script src="/motor-efd-icms.js"></script>
 <script src="/motor-darf.js"></script>
 <script src="/selic.js"></script>
@@ -1223,6 +1238,29 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         columnStyles: { 2: { halign: 'right' }, 3: { halign: 'right' } }
       });
     }
+    // ------------------------------------------- pacote operacional de PIS/COFINS (creditos e PER/DCOMP)
+    // Material de apoio ao contador, montado a partir do Bloco 1 (1100 e 1500) da EFD-Contribuições.
+    // O Reversa não calcula tributo, não escolhe o tipo de pedido (PER ou DCOMP) e não define o valor pedido.
+    var pkgPis = (root.PacotePis && res) ? root.PacotePis.monta(lidos, { competencia: comps.length ? comps[comps.length - 1] : '' }) : null;
+    if (pkgPis && pkgPis.creditos.length) {
+      doc.addPage(); y = M + 6;
+      titulo(++sec, 'Pacote operacional de PIS/COFINS — posição de créditos e material de PER/DCOMP');
+      paragrafo('Posição de créditos declarada pela empresa no Bloco 1 da EFD-Contribuições (registros 1100 e 1500). Todos os valores foram lidos do arquivo; nada foi estimado. O Reversa não calcula tributo, não escolhe o tipo de pedido (PER ou DCOMP) e não define o valor pedido: a escolha é do contador.');
+      tabela({
+        head: [['Tributo', 'Competência', 'Origem', 'CNPJ cedente', 'Código', 'Descrição', 'Apurado', 'Disponível', 'PER', 'DCOMP', 'Saldo final']],
+        body: pkgPis.creditos.map(function (c) { return [t(c.tributo.toUpperCase()), t(c.competenciaCredito), t(c.origemRotulo), t(c.cnpjSuc), t(c.codCredito), t(c.codCreditoRotulo), RP(c.apurado), RP(c.disponivel), RP(c.pedidoPer), RP(c.pedidoDcomp), RP(c.saldoFinal)]; }),
+        columnStyles: { 6: { halign: 'right' }, 7: { halign: 'right' }, 8: { halign: 'right' }, 9: { halign: 'right' }, 10: { halign: 'right' } }
+      });
+      if (pkgPis.pedidos.length) {
+        titulo(++sec, 'Créditos com saldo disponível para pedido (PER ou DCOMP)');
+        paragrafo('Material de apoio ao contador: valor disponível declarado e vias possíveis do pedido. O tipo (PER ou DCOMP) e o valor pedido não são definidos pelo Reversa.');
+        tabela({
+          head: [['Tributo', 'Competência', 'Origem', 'CNPJ cedente', 'Código', 'Disponível', 'Vias']],
+          body: pkgPis.pedidos.map(function (p) { return [t(p.tributo.toUpperCase()), t(p.competenciaCredito), t(p.origem), t(p.cnpjSuc), t(p.codCredito), RP(p.valorDisponivel), t(p.vias.join(' ou '))]; }),
+          columnStyles: { 5: { halign: 'right' } }
+        });
+      }
+    }
     if (prev && prev.inssSegurado) {
       doc.addPage(); y = M + 6;
       titulo(++sec, 'INSS do segurado: devido x retido por competência (T074)');
@@ -1639,9 +1677,49 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   }
   // Seções exclusivas de PIS/COFINS (EFD-Contribuições). A seção do DTI (#t-pdf) tem controle próprio: não depende da EFD.
   function secoesResultado(mostrar) {
-    ['resumo', 't-teses', 't-arquivos', 't-det'].forEach(function (id) { var e = $(id); if (e) e.closest('section').hidden = !mostrar; });
+    ['resumo', 't-teses', 't-pacote', 't-arquivos', 't-det'].forEach(function (id) { var e = $(id); if (e) e.closest('section').hidden = !mostrar; });
   }
   function secaoDti(mostrar) { var e = $('t-pdf'); if (e) e.closest('section').hidden = !mostrar; }
+  // ------------------------------------------- pacote operacional de PIS/COFINS (posicao de creditos e PER/DCOMP)
+  // Material de apoio ao contador: o que a empresa declarou no Bloco 1 da EFD-Contribuicoes.
+  // O Reversa nao calcula tributo, nao escolhe o tipo de pedido (PER ou DCOMP) e nao define o valor pedido.
+  function compCred(c) { var x = String(c || ''); return /^\d{6}$/.test(x) ? x.slice(0, 2) + '/' + x.slice(2) : x; }
+  function renderPacote() {
+    var PP = window.PacotePis, sec = $('sec-pacote');
+    if (!sec) return;
+    if (!PP || !estado.lidos || !estado.lidos.length) { sec.hidden = true; return; }
+    var comp = estado.res && estado.res.competencias && estado.res.competencias.length ? estado.res.competencias[0].competencia : '';
+    var pkg = PP.monta(estado.lidos, { competencia: comp });
+    estado.pacote = pkg;
+    sec.hidden = false;
+    var rl = function (v) { return M.formatarReais(Math.round(Number(v || 0) * 100)); };
+    $('pacote-kpis').innerHTML =
+      kpi('main', 'Saldo disponível para pedido \u2014 PIS', rl(pkg.resumo.pis.disponivel), pkg.resumo.pis.creditos + ' crédito(s) no Bloco 1') +
+      kpi('', 'Saldo disponível para pedido \u2014 COFINS', rl(pkg.resumo.cofins.disponivel), pkg.resumo.cofins.creditos + ' crédito(s) no Bloco 1');
+    $('pacote-avisos').innerHTML = pkg.avisos.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('');
+    var cabC = ['Tributo', 'Competência do crédito', 'Origem', 'CNPJ cedente', 'Código', 'Descrição', 'Crédito apurado', 'Saldo disponível', 'PER no período', 'DCOMP no período', 'Saldo final'];
+    var corpoC = pkg.creditos.map(function (c) {
+      return '<tr><td>' + esc(c.tributo.toUpperCase()) + '</td><td>' + esc(compCred(c.competenciaCredito)) + '</td><td>' + esc(c.origemRotulo) + '</td><td>' + esc(cnpjFmt(c.cnpjSuc)) + '</td>' +
+        '<td>' + esc(c.codCredito) + '</td><td>' + esc(c.codCreditoRotulo) + '</td><td class="r">' + rl(c.apurado) + '</td>' +
+        '<td class="r"><strong>' + rl(c.disponivel) + '</strong></td><td class="r">' + rl(c.pedidoPer) + '</td><td class="r">' + rl(c.pedidoDcomp) + '</td><td class="r">' + rl(c.saldoFinal) + '</td></tr>';
+    }).join('');
+    $('tab-pacote').innerHTML = '<thead><tr>' + cabC.map(function (h, i) { return '<th' + (i >= 6 ? ' class="r"' : '') + '>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      (corpoC || '<tr><td colspan="11">Nenhum registro de crédito (1100/1500) nos arquivos lidos.</td></tr>') + '</tbody>';
+    var cabP = ['Tributo', 'Competência do crédito', 'Origem', 'CNPJ cedente', 'Código', 'Valor disponível', 'Vias possíveis'];
+    var corpoP = pkg.pedidos.map(function (p) {
+      return '<tr><td>' + esc(p.tributo.toUpperCase()) + '</td><td>' + esc(compCred(p.competenciaCredito)) + '</td><td>' + esc(p.origem) + '</td><td>' + esc(cnpjFmt(p.cnpjSuc)) + '</td>' +
+        '<td>' + esc(p.codCredito) + '</td><td class="r"><strong>' + rl(p.valorDisponivel) + '</strong></td><td>' + esc(p.vias.join(' ou ')) + '</td></tr>';
+    }).join('');
+    $('tab-pacote-pedidos').innerHTML = '<thead><tr>' + cabP.map(function (h, i) { return '<th' + (i === 5 ? ' class="r"' : '') + '>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      (corpoP || '<tr><td colspan="7">Nenhum crédito com saldo disponível para pedido.</td></tr>') + '</tbody>';
+  }
+  $('btn-pacote-csv').addEventListener('click', function () {
+    var PP = window.PacotePis;
+    if (!PP || !estado.pacote || !estado.pacote.creditos.length) { toast('Não há pacote de créditos para exportar.'); return; }
+    var comp = estado.pacote.competencia ? '-' + estado.pacote.competencia : '';
+    salvar('pacote-creditos-pis-cofins' + comp + '.csv', new Blob(['\ufeff' + PP.csv(estado.pacote)], { type: 'text/csv;charset=utf-8' }));
+  });
+
   function render() {
     secoesResultado(true); secaoDti(true);
     var res = estado.res, z = res.resumo;
@@ -1675,6 +1753,8 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     Array.prototype.forEach.call(document.querySelectorAll('#tab-teses tr.clic'), function (tr) {
       tr.addEventListener('click', function () { estado.tese = tr.getAttribute('data-tese'); renderTese(); $('t-det').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
     });
+
+    renderPacote();
 
     // arquivos
     var html = '';

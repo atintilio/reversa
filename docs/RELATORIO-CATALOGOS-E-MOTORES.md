@@ -20,7 +20,7 @@ O que estava em aberto no handoff e o estado agora:
 | `motor-creditos.js` (EFD-Contribuições) ligado ao catálogo | **Feito**, sem mudar o resultado |
 | Catálogo da ECD e da ECF | Prontos (188/188 e 72 registros) — **ainda não ligados aos motores** |
 | Divergências reais da ECF (`motor-ecf.js` lia um leiaute que não existe) | **Corrigido** — o motor agora lê o leiaute 12 (Manual de Orientação da ECF) |
-| Pacote operacional de PIS (créditos + PER/DCOMP) | **Ainda não começado** |
+| Pacote operacional de PIS (créditos + PER/DCOMP) | **Feito e ligado à tela** — o Bloco 1 (1100/1500) é lido pelo motor, a posição de créditos e o material de PER/DCOMP entram na memória técnica e no CSV |
 | 15 registros incompletos do catálogo ICMS/IPI | **Fechados** (B035, C115, C165, C173, C180, C181, C185, C350, C500, D190, D690, D696, D750, K275, K280) — falta só o C591, que só existe no leiaute 021/2027 |
 
 ## O que foi feito, arquivo por arquivo
@@ -74,6 +74,37 @@ O que estava em aberto no handoff e o estado agora:
   PER/DCOMP) e as lacunas (bloco 1 — 1100/1500 — não lido pelo motor; monofásicos manuais;
   assinatura digital e eSocial não implementadas).
 
+### 5. Pacote operacional de PIS/COFINS (posição de créditos e material de PER/DCOMP)
+- `motor-creditos.js` passa a ler o **Bloco 1** da EFD-Contribuições (registros `1100` = PIS e
+  `1500` = Cofins) nas posições do **Guia Prático v1.35**: a chave do registro é
+  `PER_APU_CRED + ORIG_CRED + CNPJ_SUC + COD_CRED`, e o saldo disponível vem do campo 12
+  (`SD_CRED_DISP_EFD`). O que é lido: crédito apurado, extemporâneo e total, o que foi usado por
+  **desconto/PER/DCOMP em período anterior**, o **saldo disponível**, o usado no período, o
+  transferido e o saldo final. Cada crédito lido sai em `creditosPosicao`.
+- `lib/sped/tabelas/codigos-credito.json` (novo) + `codigos-credito.js` (gerado): as tabelas oficiais
+  de código de crédito, base de cálculo e ajustes do mesmo Guia (4.3.6, 4.3.7 e 4.3.8) — 28 tipos de
+  crédito, 18 bases e 9 ajustes — extraídas por `scripts/extrai-tabelas-credito.py`. É daí que vem o
+  rótulo que aparece na tela (ex.: *Crédito vinculado à receita tributada no mercado interno –
+  Alíquota Básica*).
+- `pacote-pis.js` (novo): monta o **pacote operacional** — a posição de créditos por origem e a lista
+  do que há saldo para pedir, com as duas vias possíveis (**PER** = Pedido de Ressarcimento;
+  **DCOMP** = Declaração de Compensação) e o valor já usado por cada via. Gera CSV com `;` e decimal
+  com vírgula.
+  **O que o pacote não faz:** não calcula tributo, não escolhe o tipo de pedido, não define o valor
+  pedido e não transmite nada. A escolha é do contador — está escrito na tela e no documento.
+- `index.html`: nova seção **“Pacote de créditos (PER / DCOMP)”** (saldo disponível por tributo,
+  tabela de créditos por origem e tabela de pedidos em aberto) com botão **Exportar pacote (CSV)**; e
+  a **memória técnica (PDF)** ganha duas seções: a posição de créditos e o material de PER/DCOMP.
+- Testes: `tests/pacote-pis.test.js` (7) e `tests/pacote-pis-ui.test.js` (4). A tela foi conferida no
+  navegador com um EFD sintético: a seção aparece, os valores batem com o arquivo e o CSV baixa
+  (`pacote-creditos-pis-cofins-2024-01.csv`).
+
+### 6. Defeito encontrado e corrigido ao ligar a tela
+No navegador os leiautes eram carregados **depois** dos motores: o motor capturava a tabela legada e o
+registro `1100`/`1500` não era lido (o arquivo aparecia como “ERRO — ... reading 'PER_APU_CRED'”).
+No Node o mesmo motor funcionava, porque o `require` acontece na hora da leitura — **o teste de
+paridade não pegaria isso**. A ordem dos scripts foi corrigida em `index.html` e travada por teste.
+
 ## Divergências reais que a reconciliação encontrou (o PDF manda)
 
 - **C100** (Contribuições): a base do python-sped tinha `COD_SIT;` e `CHV_NFE` duplicado, deslocando
@@ -96,6 +127,9 @@ O que estava em aberto no handoff e o estado agora:
    (`efd_icms_ipi.nt2026-001.json`) mas é por IA e não foi conferida; o C591 só existe nele.
 3. **`motor-ecd.js` e `motor-ecf.js` ainda não leem o catálogo** — só o ICMS/IPI e o Contribuições.
    (O `motor-ecd.js` confere com o leiaute 9 nas posições que usa.)
-4. **Pacote operacional de PIS** (créditos por origem + PER/DCOMP com competência, tipo de pedido,
-   valor, código de receita, saldo e arquivo exportável para o contador): não começado.
+4. **Pacote operacional de PIS**: a posição de créditos e o material de PER/DCOMP estão prontos e
+   ligados (tela, memória técnica e CSV). Falta o que **depende de decisão do contador e da Receita**:
+   o **código de receita do DARF** do pedido (não está no Guia; não foi inventado), o **envio** dos
+   pedidos (PER e DCOMP continuam sendo transmitidos no portal, fora do Reversa) e a **escolha** entre
+   PER e DCOMP, que o Reversa mostra mas não decide.
 5. **Assinatura digital e eSocial**: não implementados (continua manual).

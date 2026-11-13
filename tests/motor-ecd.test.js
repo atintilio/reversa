@@ -3,7 +3,11 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const M = require('../motor-ecd');
 
-const FIXTURE = '/tmp/claude-0/teste03/ECD_2025_teste.txt';
+// Fixture real de ECD usado na validação original: fica fora do repositório.
+// Quando ele não está no ambiente, os testes que dependem dele são pulados com aviso
+// (não são falha de regressão) — o resto da suíte do motor continua valendo.
+const FIXTURE = process.env.ECD_FIXTURE || '/tmp/claude-0/teste03/ECD_2025_teste.txt';
+const SEM_FIXTURE = fs.existsSync(FIXTURE) ? false : 'fixture real de ECD ausente neste ambiente (defina ECD_FIXTURE)';
 const CONTAS_DESPESA = ['5.2.01', '5.3.01', '5.3.02', '5.3.03', '5.3.04', '5.3.05'];
 
 const MINI = [
@@ -32,7 +36,7 @@ test('lê um trecho inline: empresa, período, plano, referencial, saldos e part
   assert.equal(M.partidasPorConta(r, '5.3.01').debitos, 100);
 });
 
-test('fixture real: lê sem erro, acha as 6 contas de despesa e fecha partidas dobradas', () => {
+test('fixture real: lê sem erro, acha as 6 contas de despesa e fecha partidas dobradas', { skip: SEM_FIXTURE }, () => {
   const r = M.lerEcd(fs.readFileSync(FIXTURE, 'latin1'), 'ECD_2025_teste.txt');
   assert.equal(r.avisos.length, 0, r.avisos.join('\n'));
   assert.equal(r.cnpj, '99303403000177'); assert.equal(r.empresa, 'Cobalto Sistemas Corporativos S.A.');
@@ -43,7 +47,7 @@ test('fixture real: lê sem erro, acha as 6 contas de despesa e fecha partidas d
   assert.equal(s.partidasDobradasOk, true); assert.equal(s.totalDebitos, s.totalCreditos);
 });
 
-test('fixture real: R$ 420.000 a débito nas contas 5.2.01, 5.3.04 e 5.3.05; 6 contas somam R$ 900.000', () => {
+test('fixture real: R$ 420.000 a débito nas contas 5.2.01, 5.3.04 e 5.3.05; 6 contas somam R$ 900.000', { skip: SEM_FIXTURE }, () => {
   const r = M.lerEcd(fs.readFileSync(FIXTURE, 'latin1'));
   const deb = c => M.partidasPorConta(r, c).debitos;
   assert.equal(deb('5.2.01') + deb('5.3.04') + deb('5.3.05'), 420000);
