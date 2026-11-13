@@ -1,0 +1,4024 @@
+{
+ "leiaute": "ecd",
+ "versao": "9",
+ "fonte": "Manual da ECD, leiaute 9, atualização janeiro/2026",
+ "validacao": "campos extraídos geometricamente das tabelas do manual oficial",
+ "registros": {
+  "9001": {
+   "titulo": "Abertura do Bloco 9",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "9900": {
+   "titulo": "Registros do Arquivo",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "REG_BLC",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "QTD_REG_BLC",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "9990": {
+   "titulo": "Encerramento do Bloco 9",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_9",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "9999": {
+   "titulo": "Encerramento do Arquivo Digital ............................................................................................. 232  Capítulo 4 – Regras de Validação",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "0000": {
+   "titulo": "Abertura do Arquivo Digital e Identificação do Empresário ou da Sociedade Empresária",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "LECD",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "NOME",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "CNPJ",
+     "tipo": "C",
+     "tam": 14,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "UF",
+     "tipo": "C",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 8,
+     "nome": "IE",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_MUN",
+     "tipo": "N",
+     "tam": 7,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 10,
+     "nome": "IM",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_SIT_ESP",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 12,
+     "nome": "IND_SIT_INI_PER",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 13,
+     "nome": "IND_NIRE",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 14,
+     "nome": "IND_FIN_ESC",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 15,
+     "nome": "COD_HASH_SUB",
+     "tipo": "C",
+     "tam": 40,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 16,
+     "nome": "IND_GRANDE_PORTE",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 17,
+     "nome": "TIP_ECD",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 18,
+     "nome": "COD_SCP",
+     "tipo": "C",
+     "tam": 14,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 19,
+     "nome": "IDENT_MF",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 20,
+     "nome": "IND_ESC_CONS",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 21,
+     "nome": "IND_CENTRALIZADA",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 22,
+     "nome": "IND_MUDANC_PC",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 23,
+     "nome": "COD_PLAN_REF",
+     "tipo": "C",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "0001": {
+   "titulo": "Abertura do Bloco 0",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "0007": {
+   "titulo": "Outras Inscrições Cadastrais da Pessoa Jurídica",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ENT_REF",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_INSCR",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "0020": {
+   "titulo": "Escrituração Contábil Descentralizada",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DEC",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "CNPJ",
+     "tipo": "C",
+     "tam": 14,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "UF",
+     "tipo": "C",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "IE",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_MUN",
+     "tipo": "N",
+     "tam": 7,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 7,
+     "nome": "IM",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 8,
+     "nome": "NIRE",
+     "tipo": "N",
+     "tam": 11,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "0035": {
+   "titulo": "Identificação das SCP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_SCP",
+     "tipo": "C",
+     "tam": 14,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "NOME_SCP",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "0150": {
+   "titulo": "Tabela de Cadastro do Participante",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "NOME",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PAIS",
+     "tipo": "N",
+     "tam": 5,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "CNPJ",
+     "tipo": "C",
+     "tam": 14,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 6,
+     "nome": "CPF",
+     "tipo": "N",
+     "tam": 11,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 7,
+     "nome": "NIT",
+     "tipo": "N",
+     "tam": 11,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 8,
+     "nome": "UF",
+     "tipo": "C",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 9,
+     "nome": "IE",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 10,
+     "nome": "IE_ST",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 11,
+     "nome": "COD_MUN",
+     "tipo": "N",
+     "tam": 7,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 12,
+     "nome": "IM",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 13,
+     "nome": "SUFRAMA",
+     "tipo": "C",
+     "tam": 9,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "0180": {
+   "titulo": "Identificação do Relacionamento com o Participante",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_REL",
+     "tipo": "N",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI_REL",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIN_REL",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "0990": {
+   "titulo": "Encerramento do Bloco 0",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_0",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "C001": {
+   "titulo": "Abertura do Bloco C",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "C040": {
+   "titulo": "Identificação da ECD Recuperada",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "HASH_ECD_REC",
+     "tipo": "C",
+     "tam": 40,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI_ECD_REC",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIN_ECD_REC",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "CNPJ_ECD_REC",
+     "tipo": "C",
+     "tam": 14,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_ESC",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_VER_LC",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 8,
+     "nome": "NUM_ORD",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 9,
+     "nome": "NAT_LIVR",
+     "tipo": "C",
+     "tam": 80,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 10,
+     "nome": "IND_SIT_ESP_ECD_REC",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_NIRE_ECD_REC",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 12,
+     "nome": "IND_FIN_ESC_ECD_REC",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 13,
+     "nome": "TIP_ECD_REC",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "-"
+    },
+    {
+     "pos": 14,
+     "nome": "COD_SCP_ECD_REC",
+     "tipo": "C",
+     "tam": 14,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 15,
+     "nome": "IDENT_MF_ECD_REC",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 16,
+     "nome": "IND_ESC_CONS_ECD_REC",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 17,
+     "nome": "IND_CENTRALIZADA_ECD_REC",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 18,
+     "nome": "IND_MUDANCA_PC_ECD_REC",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 19,
+     "nome": "IND_PLANO_REF_ECD_REC",
+     "tipo": "N",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "C050": {
+   "titulo": "Plano de Contas Recuperado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_NAT",
+     "tipo": "C",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_CTA",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 8,
+     "nome": "CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "C051": {
+   "titulo": "Plano de Contas Referencial Recuperado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CTA_REF",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "C052": {
+   "titulo": "Indicação dos Códigos de Aglutinação Recuperados",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_AGL",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "C150": {
+   "titulo": "Saldos Periódicos Recuperados – Identificação do Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "C155": {
+   "titulo": "Detalhe dos Saldos Periódicos Recuperados",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_REC",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS_REC",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SLD_INI_REC",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_DC_INI_REC",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DEB_REC",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CRED_REC",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_SLD_FIN_REC",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_DC_FIN_REC",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "C600": {
+   "titulo": "Demonstrações Contábeis Recuperadas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "ID_DEM",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "CAB_DEM",
+     "tipo": "C",
+     "tam": 65535,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "C650": {
+   "titulo": "Demonstração do Resultado do Exercício Recuperada",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AGL",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "NIVEL_AGL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "DESCR_COD_AGL",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CTA_FIN",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_DC_CTA_FIN",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "C990": {
+   "titulo": "Encerramento do Bloco C",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_0",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I001": {
+   "titulo": "Abertura do Bloco I",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I010": {
+   "titulo": "Identificação da Escrituração Contábil",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_ESC",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_VER_LC",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I012": {
+   "titulo": "Livros Auxiliares ao Diário ou Livro Principal",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ORD",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "NAT_LIVR",
+     "tipo": "C",
+     "tam": 80,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_HASH_AUX",
+     "tipo": "C",
+     "tam": 40,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I015": {
+   "titulo": "Identificação das Contas da Escrituração Resumida a que se Refere a Escrituração Auxiliar",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_RES",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I020": {
+   "titulo": "Campos Adicionais",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "REG_COD",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_AD",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "CAMPO",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "DESCRIÇÃO",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 6,
+     "nome": "TIPO",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I030": {
+   "titulo": "Termo de Abertura do Livro",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DNRC_ABERT",
+     "tipo": "C",
+     "tam": 17,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_ORD",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_LIVR",
+     "tipo": "C",
+     "tam": 80,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "QTD_LIN",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "NOME",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "NIRE",
+     "tipo": "N",
+     "tam": 11,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 8,
+     "nome": "CNPJ",
+     "tipo": "C",
+     "tam": 14,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 9,
+     "nome": "DT_ARQ",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 10,
+     "nome": "DT_ARQ_CONV",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 11,
+     "nome": "DESC_MUN",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 12,
+     "nome": "DT_EX_SOCIAL",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I050": {
+   "titulo": "Plano de Contas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_NAT",
+     "tipo": "C",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_CTA",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 8,
+     "nome": "CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I051": {
+   "titulo": "Plano de Contas Referencial",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim (*)"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CTA_REF",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I052": {
+   "titulo": "Indicação dos Códigos de Aglutinação",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_AGL",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I053": {
+   "titulo": "Subcontas Correlatas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_IDT",
+     "tipo": "C",
+     "tam": 6,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CNT_CORR",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_SUB_CNT",
+     "tipo": "C",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I075": {
+   "titulo": "Tabela de Histórico Padronizado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_HIST",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_HIST",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I100": {
+   "titulo": "Centro de Custos",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I150": {
+   "titulo": "Saldos Periódicos – Identificação do Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I155": {
+   "titulo": "Detalhe dos Saldos Periódicos",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SLD_INI",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_DC_INI",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DEB",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CRED",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_SLD_FIN",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_DC_FIN",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I157": {
+   "titulo": "Transferência de Saldos de Plano de Contas Anterior",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SLD_INI",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_DC_INI",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I200": {
+   "titulo": "Lançamento Contábil",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_LCTO",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_LCTO",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_LCTO",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_LCTO",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "DT_LCTO_EXT",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I250": {
+   "titulo": "Partidas do Lançamento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DC",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_DC",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_ARQ",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_HIST_PAD",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 8,
+     "nome": "HIST",
+     "tipo": "C",
+     "tam": 65535,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I300": {
+   "titulo": "Balancetes Diários – Identificação da Data",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_BCTE",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I310": {
+   "titulo": "Detalhes do Balancete Diário",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 4,
+     "nome": "VAL_DEBD",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "VAL_CREDD",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I350": {
+   "titulo": "Saldo das Contas de Resultado Antes do Encerramento – Identificação da Data",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_RES",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I355": {
+   "titulo": "Detalhes dos Saldos das Contas de Resultado Antes do Encerramento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CTA",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_DC",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I500": {
+   "titulo": "Parâmetros de Impressão e Visualização do Razão Auxiliar com Leiaute Parametrizável",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "TAM_FONTE",
+     "tipo": "N",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I510": {
+   "titulo": "Definição de Campos do Livro Razão Auxiliar com Leiaute Parametrizável",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "NM_CAMPO",
+     "tipo": "C",
+     "tam": 16,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DESC_CAMPO",
+     "tipo": "C",
+     "tam": 50,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO_CAMPO",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "TAM_CAMPO",
+     "tipo": "N",
+     "tam": 3,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "DEC_CAMPO",
+     "tipo": "N",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 7,
+     "nome": "COL_CAMPO",
+     "tipo": "N",
+     "tam": 3,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "I550": {
+   "titulo": "Detalhes do Livro Razão Auxiliar com Leiaute Parametrizável",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": "*",
+     "nome": "RZ_CONT",
+     "tipo": "-",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true,
+   "posicoes_variaveis": true
+  },
+  "I555": {
+   "titulo": "Totais no Livro Razão Auxiliar com Leiaute Parametrizável",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": "*",
+     "nome": "RZ_CONT_TOT",
+     "tipo": "-",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true,
+   "posicoes_variaveis": true
+  },
+  "I990": {
+   "titulo": "Encerramento do Bloco I",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_I",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J001": {
+   "titulo": "Abertura do Bloco J",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J005": {
+   "titulo": "Demonstrações Contábeis",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "ID_DEM",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "CAB_DEM",
+     "tipo": "C",
+     "tam": 65535,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J100": {
+   "titulo": "Balanço Patrimonial",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AGL",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_COD_AGL",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "NIVEL_AGL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_AGL_SUP",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_GRP_BAL",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "DESCR_COD_AGL",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CTA_INI",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_DC_CTA_INI",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_CTA_FIN",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_DC_CTA_FIN",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 12,
+     "nome": "NOTA_EXP_REF",
+     "tipo": "C",
+     "tam": 12,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J150": {
+   "titulo": "Demonstração do Resultado do Exercício (DRE)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "NU_ORDEM",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_AGL",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_COD_AGL",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL_AGL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_AGL_SUP",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 7,
+     "nome": "DESCR_COD_AGL",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CTA_INI_",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_DC_CTA_INI",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_CTA_FIN",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_DC_CTA_FIN",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 12,
+     "nome": "IND_GRP_DRE",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 13,
+     "nome": "NOTA_EXP_REF",
+     "tipo": "C",
+     "tam": 12,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J210": {
+   "titulo": "DLPA – Demonstração de Lucros ou Prejuízos Acumulados/DMPL – Demonstração de  Mutações do Patrimônio Líquido",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_TIP",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": 0,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_AGL",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "DESCR_COD_AGL",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CTA_INI",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_DC_CTA_INI",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CTA_FIN",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 8,
+     "nome": "IND_DC_CTA_FIN",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 9,
+     "nome": "NOTAS_EXP_REF",
+     "tipo": "C",
+     "tam": 12,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J215": {
+   "titulo": "Fato Contábil que Altera a Conta Lucros Acumulados ou a Conta Prejuízos Acumulados ou  Todo o Patrimônio Líquido",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_HIST_FAT",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DESC_FAT",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_FAT_CONT",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_DC_FAT",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J800": {
+   "titulo": "Outras Informações",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "TIPO_DOC",
+     "tipo": "C",
+     "tam": 3,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DESC_RTF",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 4,
+     "nome": "HASH_RTF",
+     "tipo": "C",
+     "tam": 41,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 5,
+     "nome": "ARQ_RTF",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_FIM_RTF",
+     "tipo": "C",
+     "tam": 7,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J801": {
+   "titulo": "Termo de Verificação para Fins de Substituição da ECD",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "TIPO_DOC",
+     "tipo": "C",
+     "tam": 3,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DESC_RTF",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_MOT_SUBS",
+     "tipo": "C",
+     "tam": 10,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "HASH_RTF",
+     "tipo": "C",
+     "tam": 41,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 6,
+     "nome": "ARQ_RTF",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "IND_FIM_RTF",
+     "tipo": "C",
+     "tam": 7,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J900": {
+   "titulo": "Termo de Encerramento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DNRC_ENCER",
+     "tipo": "C",
+     "tam": 21,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_ORD",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_LIVRO",
+     "tipo": "C",
+     "tam": 80,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "NOME",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "QTD_LIN",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_INI_ESCR",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_FIN_ESCR",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J930": {
+   "titulo": "Signatários da Escrituração",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IDENT_NOM",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "IDENT_CPF_CNPJ",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "IDENT_QUALIF",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ASSIN",
+     "tipo": "C",
+     "tam": 3,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_CRC",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 7,
+     "nome": "EMAIL",
+     "tipo": "C",
+     "tam": 60,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 8,
+     "nome": "FONE",
+     "tipo": "C",
+     "tam": 14,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 9,
+     "nome": "UF_CRC",
+     "tipo": "C",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 10,
+     "nome": "NUM_SEQ_CRC",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 11,
+     "nome": "DT_CRC",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 12,
+     "nome": "IND_RESP_LEGAL",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J932": {
+   "titulo": "Signatários do Termo de Verificação para Fins de Substituição da ECD",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IDENT_NOM_T",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "IDENT_CPF_CNPJ_T",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "IDENT_QUALIF_T",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ASSIN_T",
+     "tipo": "C",
+     "tam": 3,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_CRC_T",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 7,
+     "nome": "EMAIL_T",
+     "tipo": "C",
+     "tam": 60,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 8,
+     "nome": "FONE_T",
+     "tipo": "C",
+     "tam": 14,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 9,
+     "nome": "UF_CRC_T",
+     "tipo": "C",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 10,
+     "nome": "NUM_SEQ_CRC_T",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 11,
+     "nome": "DT_CRC_T",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J935": {
+   "titulo": "Identificação dos Auditores Independentes",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "NI_CPF_CNPJ",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "NOME_AUDITOR_FIRMA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CVM_AUDITOR",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "J990": {
+   "titulo": "Encerramento do Bloco J",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_J",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K001": {
+   "titulo": "Abertura do Bloco K",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K030": {
+   "titulo": "Período da Escrituração Contábil Consolidada",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K100": {
+   "titulo": "Relação das Empresas Consolidadas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PAIS",
+     "tipo": "N",
+     "tam": 5,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "EMP_COD",
+     "tipo": "N",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "CNPJ",
+     "tipo": "C",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 5,
+     "nome": "NOME",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "PER_PART",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": 4,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "EVENTO",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 8,
+     "nome": "PER_CONS",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": 4,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 9,
+     "nome": "DATA_INI_EMP",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 10,
+     "nome": "DATA_FIN_EMP",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K110": {
+   "titulo": "Relação dos Eventos Societários",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "EVENTO",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_EVENTO",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K115": {
+   "titulo": "Empresas Participantes do Evento Societário",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "EMP_COD_PART",
+     "tipo": "N",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COND_PART",
+     "tipo": "N",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "PER_EVT",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": false,
+     "dec": 4,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K200": {
+   "titulo": "Plano de Contas Consolidado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_NAT",
+     "tipo": "C",
+     "tam": 2,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_CTA",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "NIVEL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Não"
+    },
+    {
+     "pos": 7,
+     "nome": "CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K210": {
+   "titulo": "Mapeamento para Planos de Contas das Empresas Consolidadas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_EMP",
+     "tipo": "N",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CTA_EMP",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K300": {
+   "titulo": "Saldos das Contas Consolidadas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "VAL_AG",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_VAL_AG",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "VAL_EL",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_VAL_EL",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 7,
+     "nome": "VAL_CS",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 8,
+     "nome": "IND_VAL_CS",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K310": {
+   "titulo": "Empresas Detentoras das Parcelas do Valor Eliminado Total",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "EMP_COD_PARTE",
+     "tipo": "N",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "VALOR",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_VALOR",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K315": {
+   "titulo": "Empresas Contrapartes das Parcelas do Valor Eliminado Total",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "EMP_COD_CONTRA",
+     "tipo": "N",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CONTRA",
+     "tipo": "C",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 4,
+     "nome": "VALOR",
+     "tipo": "N",
+     "tam": 19,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VALOR",
+     "tipo": "C",
+     "tam": 1,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  },
+  "K990": {
+   "titulo": "Encerramento do Bloco K",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_K",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "Sim"
+    }
+   ],
+   "posicoes_faltantes": [],
+   "completo": true
+  }
+ }
+}
