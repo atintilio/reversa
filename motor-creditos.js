@@ -108,8 +108,8 @@
     'C180': { COD_MOD: 1, DT_DOC_INI: 2, DT_DOC_FIN: 3, COD_ITEM: 4, COD_NCM: 5, EX_IPI: 6, VL_TOT_ITEM: 7 },
     'C181': { CST: 1, CFOP: 2, VL_ITEM: 3, VL_DESC: 4, VL_BC: 5, ALIQ: 6, VL_TRIB: 9 },
     'C185': { CST: 1, CFOP: 2, VL_ITEM: 3, VL_DESC: 4, VL_BC: 5, ALIQ: 6, VL_TRIB: 9 },
-    'M100': { COD_CRED: 1, VL_CRED: 7, VL_CRED_DISP: 11, SLD_CRED: 14 },
-    'M500': { COD_CRED: 1, VL_CRED: 7, VL_CRED_DISP: 11, SLD_CRED: 14 },
+    'M100': { COD_CRED: 1, IND_CRED_ORI: 2, VL_CRED: 7, VL_CRED_DISP: 11, IND_DESC_CRED: 12, VL_CRED_DESC: 13, SLD_CRED: 14 },
+    'M500': { COD_CRED: 1, IND_CRED_ORI: 2, VL_CRED: 7, VL_CRED_DISP: 11, IND_DESC_CRED: 12, VL_CRED_DESC: 13, SLD_CRED: 14 },
     // ---- Bloco F e apuração M (Guia Prático da EFD-Contribuições; REG = índice 0). Ver nota de fontes abaixo.
     'F010': { CNPJ: 1 },
     'F100': { IND_OPER: 1, COD_PART: 2, COD_ITEM: 3, DT_OPER: 4, VL_OPER: 5, CST_PIS: 6, VL_BC_PIS: 7, ALIQ_PIS: 8, VL_PIS: 9,
@@ -276,7 +276,10 @@
       meta: null, itens: [], entradas: [], consolidados: [], saldoCredito: { pis: 0, cofins: 0, registros: 0 }, creditosApropriados: { pis: 0, cofins: 0, registros: 0 }, rateio: { apropriacao: '', rec: null, m105: [], m505: [] }, produtos: 0, avisos: [], erros: [],
       estatisticas: { linhas: 0, registros: {}, c100Saida: 0, c100Entrada: 0, c100SaidaSemItens: 0, c100Ignorados: 0, consolidados: 0, itensSemNcm: 0 },
       // Bloco 1: posicao de creditos por competencia de origem (registros 1100 e 1500).
-      creditosPosicao: []
+      creditosPosicao: [],
+      // Credito apurado no periodo (M100 = PIS, M500 = Cofins): e o valor que o PER/DCOMP Web
+      // pede na aba "Valores Apurados", por mes de apuracao e codigo de credito.
+      creditosApurados: []
     };
     var linhas = texto.split(/\r?\n/);
     var estab = null, estab0140 = null, doc = null, docTemItem = false, qtd9999 = null, c180 = null;
@@ -383,6 +386,18 @@
           var qm = L[reg], sld = cv(f[qm.SLD_CRED]);
           res.saldoCredito[reg === 'M100' ? 'pis' : 'cofins'] += sld; res.saldoCredito.registros++;
           res.creditosApropriados[reg === 'M100' ? 'pis' : 'cofins'] += cv(f[qm.VL_CRED]); res.creditosApropriados.registros++; // créditos da própria escrituração (informativo)
+          // crédito apurado no período (Guia v1.35): é o valor que o PER/DCOMP Web pede na aba
+          // "Valores Apurados", por mês de apuração e código de crédito.
+          res.creditosApurados.push({
+            tributo: reg === 'M100' ? 'pis' : 'cofins',
+            codCredito: f[qm.COD_CRED] || '',
+            indCredOri: f[qm.IND_CRED_ORI] || '',
+            vlCred: cv(f[qm.VL_CRED]),
+            vlCredDisp: cv(f[qm.VL_CRED_DISP]),
+            indDescCred: f[qm.IND_DESC_CRED] || '',
+            vlCredDesc: cv(f[qm.VL_CRED_DESC]),
+            sldCred: sld
+          });
         } else if (reg === 'C100') {
           fecharDoc();
           var c = L.C100;

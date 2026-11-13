@@ -27,6 +27,8 @@ existia só pela metade. Foi corrigida nesta rodada (seção 4).
 | Transmitir | fase `transmitido` | **Manual** — o operador registra o recibo | `tests/execucao.test.js` (EXE-003) |
 | Ler a posição de créditos por origem (Bloco 1) | `motor-creditos.js` → `creditosPosicao` | **Funcional** | `tests/pacote-pis.test.js` |
 | Montar o material de PER/DCOMP (posição + o que dá para pedir + CSV) | `pacote-pis.js` + `index.html` | **Funcional** — ligado à tela e à memória técnica | `tests/pacote-pis.test.js`, `tests/pacote-pis-ui.test.js` |
+| Decidir a via (PER × DCOMP), calcular o saldo e o prazo, gerar a ficha do pedido | `motor-pedido.js` + `index.html` | **Funcional** — pela regra oficial da Receita, com fundamento e pendências | `tests/motor-pedido.test.js` |
+| Transmitir o pedido no PER/DCOMP Web | e-CAC (certificado do cliente) | **Manual** — o contador transmite; o Reversa entrega a ficha | idem |
 | PER/DCOMP | fase `perdcomp` | **Manual** — o operador registra o recibo | idem |
 
 ### O que a retificadora cobre (e o que não cobre)
@@ -101,11 +103,12 @@ Testes: `tests/retificadora-guard.test.js` (7 casos, regra pura) e `tests/execuc
 2. **Monofásicos** continuam manuais (decisão de CST + código de receita por NCM). **Impacto:**
    casos de revenda de monofásicos não podem ser automatizados ainda. **Prioridade:** baixa — a
    base legal é consolidada, mas o cadastro da natureza da receita por NCM é trabalho de dados.
-3. **PER/DCOMP não é transmitido**: o produto entrega a base, o valor apurado e agora a **posição de
-   créditos por origem** com o saldo disponível e o material de apoio (PER e DCOMP, CSV para o
-   contador). O pedido no PER Web/DCTFWeb continua manual — automatizar exigiria certificado e
-   integração com o sistema da Receita, e a escolha do tipo e do valor pedido é do contador.
-   **Prioridade:** baixa (decisão de produto).
+3. **PER/DCOMP não é transmitido**: o produto entrega a base, o valor apurado, a **posição de créditos
+   por origem** e agora a **decisão da via** (PER × DCOMP) com o fundamento, o prazo e a **ficha do
+   pedido** no formato do roteiro oficial da Receita (`motor-pedido.js`; detalhes em
+   `docs/DECISAO-PER-DCOMP.md`). A transmissão no PER/DCOMP Web continua manual — exige o certificado
+   digital do cliente e não há API pública da Receita para isso. **Prioridade:** baixa (decisão de
+   produto).
 4. **O pré-validador é um simulador**: não reproduz o PVA oficial (cruzamentos, tabelas
    dinâmicas, assinaturas). O arquivo final precisa passar no PVA da Receita e ser assinado com
    certificado. O código diz isso na tela; a retificadora gera XML de eSocial, mas **a assinatura

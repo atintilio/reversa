@@ -21,6 +21,7 @@ O que estava em aberto no handoff e o estado agora:
 | Catálogo da ECD e da ECF | Prontos (188/188 e 72 registros) — **ainda não ligados aos motores** |
 | Divergências reais da ECF (`motor-ecf.js` lia um leiaute que não existe) | **Corrigido** — o motor agora lê o leiaute 12 (Manual de Orientação da ECF) |
 | Pacote operacional de PIS (créditos + PER/DCOMP) | **Feito e ligado à tela** — o Bloco 1 (1100/1500) é lido pelo motor, a posição de créditos e o material de PER/DCOMP entram na memória técnica e no CSV |
+| Decidir a via (PER × DCOMP) e gerar o pedido | **Feito** — `motor-pedido.js` decide pela regra oficial da Receita, com fundamento e pendências, e gera a ficha do pedido (CSV) |
 | 15 registros incompletos do catálogo ICMS/IPI | **Fechados** (B035, C115, C165, C173, C180, C181, C185, C350, C500, D190, D690, D696, D750, K275, K280) — falta só o C591, que só existe no leiaute 021/2027 |
 
 ## O que foi feito, arquivo por arquivo
@@ -99,7 +100,31 @@ O que estava em aberto no handoff e o estado agora:
   navegador com um EFD sintético: a seção aparece, os valores batem com o arquivo e o CSV baixa
   (`pacote-creditos-pis-cofins-2024-01.csv`).
 
-### 6. Defeito encontrado e corrigido ao ligar a tela
+### 6. Decisão do pedido: ressarcimento (PER) ou compensação (DCOMP)
+- `motor-pedido.js` (novo): decide a via do pedido com base no **roteiro oficial da Receita** ("PER/DCOMP
+  Web: Ressarcimento de PIS/Pasep e Cofins Não Cumulativos", PDF baixado em `/workspace/fontes/`):
+  **PER primeiro** (ressarcimento) e **DCOMP depois**, vinculada — porque "uma declaração de compensação
+  só pode ser elaborada se tiver sido transmitido um pedido de ressarcimento antes"; se não há débito
+  próprio a compensar, a DCOMP não tem objeto e o caminho é só o PER. Aplica também o **prazo de 5
+  anos** do encerramento do trimestre do crédito (CTN art. 168, I) e avisa quando o crédito **já foi
+  objeto de PER** (campo 14 do 1100/1500).
+- **Cálculo**: o saldo apurável sai pela fórmula do próprio PER/DCOMP Web (valores apurados − deduções e
+  descontos − utilização em DCOMP anterior) e é confrontado com o **M100/M500** (crédito apurado no
+  período) — a divergência entre o apurado e o declarado vira pendência, não passa batido.
+- **Fundamento e pendências**: cada decisão sai com o trecho da regra e a lista do que falta (passibilidade
+  do crédito no sistema, litígio, inconstitucionalidade, evento de sucessão, PER já transmitido, débitos
+  próprios a compensar).
+- **Ficha do pedido**: CSV no formato das abas do roteiro oficial (Identificar Documento → Identificação
+  do Crédito → Valores Apurados → Saldo do Crédito → Demonstrativo) + botão **Abrir e-CAC** para o
+  contador transmitir. A memória técnica (PDF) traz a decisão com o fundamento.
+- `motor-darf.js` passou a reconhecer **6912 (PIS/Pasep não cumulativo)** e **5856 (Cofins não cumulativa)**
+  — é o DARF pago que diz se existe débito próprio a compensar.
+- Testes: `tests/motor-pedido.test.js` (10, incluindo o fluxo EFD → motor → pacote → decisão).
+- O que **não** é automático: a transmissão é feita pelo contador no PER/DCOMP Web (e-CAC, com
+  certificado digital do cliente). Não existe API pública da Receita para isso.
+- Detalhamento e fontes: `docs/DECISAO-PER-DCOMP.md`.
+
+### 7. Defeito encontrado e corrigido ao ligar a tela
 No navegador os leiautes eram carregados **depois** dos motores: o motor capturava a tabela legada e o
 registro `1100`/`1500` não era lido (o arquivo aparecia como “ERRO — ... reading 'PER_APU_CRED'”).
 No Node o mesmo motor funcionava, porque o `require` acontece na hora da leitura — **o teste de
@@ -127,9 +152,8 @@ paridade não pegaria isso**. A ordem dos scripts foi corrigida em `index.html` 
    (`efd_icms_ipi.nt2026-001.json`) mas é por IA e não foi conferida; o C591 só existe nele.
 3. **`motor-ecd.js` e `motor-ecf.js` ainda não leem o catálogo** — só o ICMS/IPI e o Contribuições.
    (O `motor-ecd.js` confere com o leiaute 9 nas posições que usa.)
-4. **Pacote operacional de PIS**: a posição de créditos e o material de PER/DCOMP estão prontos e
-   ligados (tela, memória técnica e CSV). Falta o que **depende de decisão do contador e da Receita**:
-   o **código de receita do DARF** do pedido (não está no Guia; não foi inventado), o **envio** dos
-   pedidos (PER e DCOMP continuam sendo transmitidos no portal, fora do Reversa) e a **escolha** entre
-   PER e DCOMP, que o Reversa mostra mas não decide.
+4. **Transmissão do PER/DCOMP**: a decisão da via, o valor apurável, o prazo, o fundamento e a ficha
+   do pedido já estão prontos (`motor-pedido.js`). Falta o que **depende do certificado do cliente e do
+   sistema da Receita**: o **envio** no PER/DCOMP Web (e-CAC) e a conferência do **código de receita do
+   DARF** (o Guia não traz o código do pedido; não foi inventado).
 5. **Assinatura digital e eSocial**: não implementados (continua manual).

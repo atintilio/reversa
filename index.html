@@ -371,6 +371,16 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     <p class="note">Posição de créditos declarada pela empresa no Bloco 1 da EFD-Contribuições (registros 1100 e 1500). O Reversa não calcula tributo, não escolhe o tipo de pedido (PER ou DCOMP) e não define o valor pedido: a escolha é do contador.</p>
     <div class="scroll"><table id="tab-pacote-pedidos"></table></div>
     <p class="note">Vias do pedido: PER (Pedido de Ressarcimento) e DCOMP (Declaração de Compensação). O tipo e o valor pedido são escolha do contador.</p>
+    <h3>Via do pedido &mdash; o que o Reversa recomenda e por qu&ecirc;e</h3>
+    <div class="scroll"><table id="tab-pedido"></table></div>
+    <div id="pedido-detalhe"></div>
+    <ul class="msgs" id="pedido-avisos"></ul>
+    <div class="btns">
+      <button class="sec" type="button" id="btn-pedido-csv">Preparar transmiss&atilde;o (ficha CSV)</button>
+      <button class="sec" type="button" id="btn-transmitir">Transmitir no PER/DCOMP Web</button>
+      <a class="sec" href="https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/restituicao-ressarcimento-reembolso-e-compensacao/creditos/piscofins/como-solicitar-ou-compensar-o-credito" target="_blank" rel="noopener">Como pedir (Receita Federal)</a>
+    </div>
+    <p class="note">A decis&atilde;o do Reversa segue o roteiro oficial da Receita (PER/DCOMP Web): em regra o pedido de ressarcimento vem primeiro e a declara&ccedil;&atilde;o de compensa&ccedil;&atilde;o depois, vinculada. A transmiss&atilde;o &eacute; feita pelo contador no PER/DCOMP Web (e-CAC), com certificado digital: o Reversa prepara os dados, n&atilde;o transmite.</p>
   </section>
 
   <section aria-labelledby="t-tec" id="sec-tec" hidden>
@@ -440,6 +450,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
 <script src="/lib/sped/leiautes/leiaute-efd-icms-ipi.js"></script>
 <script src="/lib/sped/tabelas/codigos-credito.js"></script>
 <script src="/pacote-pis.js"></script>
+<script src="/motor-pedido.js"></script>
 <script src="/motor-creditos.js"></script>
 <script src="/motor-esocial-extra.js"></script>
 <script src="/motor-esocial.js"></script>
@@ -1251,6 +1262,26 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         body: pkgPis.creditos.map(function (c) { return [t(c.tributo.toUpperCase()), t(c.competenciaCredito), t(c.origemRotulo), t(c.cnpjSuc), t(c.codCredito), t(c.codCreditoRotulo), RP(c.apurado), RP(c.disponivel), RP(c.pedidoPer), RP(c.pedidoDcomp), RP(c.saldoFinal)]; }),
         columnStyles: { 6: { halign: 'right' }, 7: { halign: 'right' }, 8: { halign: 'right' }, 9: { halign: 'right' }, 10: { halign: 'right' } }
       });
+      // via do pedido (PER ou DCOMP) com o fundamento e as pendências
+      var avalPis = (root.MotorPedido && pkgPis) ? root.MotorPedido.avaliar({
+        creditos: pkgPis.creditos, competenciaRef: comps.length ? comps[comps.length - 1] : '',
+        competenciaEscrituracao: comps.length ? comps[comps.length - 1] : ''
+      }) : null;
+      if (avalPis && avalPis.pedidos.length) {
+        titulo(++sec, 'Via do pedido: ressarcimento (PER) ou compensação (DCOMP)');
+        paragrafo('Decisao do Reversa segundo o roteiro oficial da Receita (PER/DCOMP Web): em regra o pedido de ressarcimento vem primeiro e a declaracao de compensacao depois, vinculada a um PER ja transmitido. O valor final do pedido e o que o PER/DCOMP Web calcula; a transmissao e feita pelo contador, no e-CAC, com certificado digital.');
+        tabela({
+          head: [['Trimestre', 'Tributo', 'Codigo', 'Credito apurado', 'Saldo apuravel', 'Via', 'Prazo']],
+          body: avalPis.pedidos.map(function (p) { return [t(p.trimestre), t(p.tributo.toUpperCase()), t(p.codCredito), RP(p.apurado), RP(p.saldo), t(p.viaRotulo), p.prazo.situacao === 'prescrito' ? 'Prescrito' : t(p.prazo.limite)]; }),
+          columnStyles: { 3: { halign: 'right' }, 4: { halign: 'right' } }
+        });
+        avalPis.pedidos.forEach(function (p) {
+          espaco(24);
+          fonte('helvetica', 'bold', 9.5); cor(COR.tinta); doc.text(t(p.tributo.toUpperCase() + ' ' + p.trimestre + ' — ' + p.viaRotulo), M, y); y += 4;
+          paragrafo('Fundamento: ' + p.fundamento.join(' '), W - 2 * M - 4);
+          lista('Pendencias', p.pendencias.map(t));
+        });
+      }
       if (pkgPis.pedidos.length) {
         titulo(++sec, 'Créditos com saldo disponível para pedido (PER ou DCOMP)');
         paragrafo('Material de apoio ao contador: valor disponível declarado e vias possíveis do pedido. O tipo (PER ou DCOMP) e o valor pedido não são definidos pelo Reversa.');
@@ -1713,6 +1744,67 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     $('tab-pacote-pedidos').innerHTML = '<thead><tr>' + cabP.map(function (h, i) { return '<th' + (i === 5 ? ' class="r"' : '') + '>' + esc(h) + '</th>'; }).join('') + '</tr></thead><tbody>' +
       (corpoP || '<tr><td colspan="7">Nenhum crédito com saldo disponível para pedido.</td></tr>') + '</tbody>';
   }
+  // ------------------------------------------- decisao do pedido: PER ou DCOMP (motor-pedido.js)
+  function renderPedido() {
+    var MP = window.MotorPedido, PP = window.PacotePis;
+    var alvo = $('tab-pedido');
+    if (!alvo) return;
+    if (!MP || !PP || !estado.pacote || !estado.pacote.creditos.length) {
+      alvo.innerHTML = '<tbody><tr><td>Nenhum crédito com saldo disponível para decidir a via do pedido.</td></tr></tbody>';
+      $('pedido-detalhe').innerHTML = ''; $('pedido-avisos').innerHTML = '';
+      estado.avaliacaoPedido = null;
+      return;
+    }
+    var agora = new Date(), compRef = agora.getFullYear() + '-' + (agora.getMonth() + 1 < 10 ? '0' : '') + (agora.getMonth() + 1);
+    var apurados = [];
+    (estado.lidos || []).forEach(function (l) {
+      (l.creditosApurados || []).forEach(function (a) {
+        apurados.push({ tributo: a.tributo, competencia: l.meta && l.meta.competencia, codCredito: a.codCredito, vlCred: a.vlCred, vlCredDisp: a.vlCredDisp, sldCred: a.sldCred, vlCredDesc: a.vlCredDesc });
+      });
+    });
+    var compEsc = (estado.lidos || []).map(function (l) { return l.meta && l.meta.competencia; }).filter(Boolean).sort().pop() || '';
+    var avaliacao = MP.avaliar({ creditos: estado.pacote.creditos, creditosApurados: apurados, darfs: estado.darfs || [], competenciaRef: compRef, competenciaEscrituracao: compEsc });
+    estado.avaliacaoPedido = avaliacao;
+    var rl = function (v) { return M.formatarReais(Math.round(Number(v || 0) * 100)); };
+    var cab = ['Trimestre', 'Tributo', 'C&oacute;digo', 'Cr&eacute;dito apurado', 'Saldo apur&aacute;vel', 'Via do pedido', 'Prazo'];
+    var corpo = avaliacao.pedidos.map(function (p) {
+      return '<tr><td>' + esc(p.trimestre) + '</td><td>' + esc(p.tributo.toUpperCase()) + '</td><td>' + esc(p.codCredito) + '</td>' +
+        '<td class="r">' + rl(p.apurado) + '</td><td class="r"><strong>' + rl(p.saldo) + '</strong></td>' +
+        '<td>' + esc(p.viaRotulo) + '</td><td>' + (p.prazo.situacao === 'prescrito' ? '<strong>Prescrito</strong>' : esc(p.prazo.limite)) + '</td></tr>';
+    }).join('');
+    alvo.innerHTML = '<thead><tr>' + cab.map(function (h, i) { return '<th' + (i === 3 || i === 4 ? ' class="r"' : '') + '>' + h + '</th>'; }).join('') + '</tr></thead><tbody>' +
+      (corpo || '<tr><td colspan="7">Nenhum pedido a preparar.</td></tr>') + '</tbody>';
+    $('pedido-detalhe').innerHTML = avaliacao.pedidos.map(function (p) {
+      return '<details class="rub"><summary>' + esc(p.tributo.toUpperCase() + ' ' + p.trimestre + ' — ' + p.viaRotulo) + '</summary>' +
+        '<p class="note"><strong>Fundamento:</strong> ' + p.fundamento.map(esc).join(' ') + '</p>' +
+        '<ul class="msgs">' + p.pendencias.map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('') + '</ul>' +
+        '<p class="note">Fonte: ' + esc(p.fonte) + '</p></details>';
+    }).join('');
+    $('pedido-avisos').innerHTML = avaliacao.avisos.map(function (m) { return '<li>' + esc(m) + '</li>'; }).join('');
+  }
+  $('btn-pedido-csv').addEventListener('click', function () {
+    var MP = window.MotorPedido;
+    if (!MP || !estado.avaliacaoPedido || !estado.avaliacaoPedido.pedidos.length) { toast('Não há pedido para gerar.'); return; }
+    salvar('pedido-per-dcomp-pis-cofins.csv', new Blob(['\ufeff' + MP.csv(estado.avaliacaoPedido)], { type: 'text/csv;charset=utf-8' }));
+  });
+  $('btn-transmitir').addEventListener('click', function () {
+    var MP = window.MotorPedido, av = estado.avaliacaoPedido;
+    if (!MP || !av || !av.pedidos.length) { toast('Não há pedido preparado para transmitir.'); return; }
+    var bloq = [], unicos = {};
+    av.pedidos.forEach(function (p) {
+      if (p.via === 'NENHUMA') bloq.push(p.tributo.toUpperCase() + ' ' + p.trimestre + ': ' + p.viaRotulo);
+      p.pendencias.forEach(function (t) { unicos[t] = (unicos[t] || 0) + 1; });
+    });
+    bloq = bloq.concat(Object.keys(unicos).map(function (t) { return t; }));
+    var nome = 'pedido-per-dcomp-pis-cofins.csv';
+    salvar(nome, new Blob(['\ufeff' + MP.csv(av)], { type: 'text/csv;charset=utf-8' }));
+    if (bloq.length) {
+      toast('Ficha gerada. Antes de transmitir, confira ' + bloq.length + ' ponto(s) de atenção (estão na tela).');
+    } else {
+      toast('Ficha gerada. O pedido é transmitido no e-CAC, com o certificado do cliente.');
+    }
+    window.open('https://www.gov.br/receitafederal/pt-br/canais_atendimento/atendimento-virtual/home-ecac', '_blank', 'noopener');
+  });
   $('btn-pacote-csv').addEventListener('click', function () {
     var PP = window.PacotePis;
     if (!PP || !estado.pacote || !estado.pacote.creditos.length) { toast('Não há pacote de créditos para exportar.'); return; }
@@ -1755,6 +1847,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     });
 
     renderPacote();
+    renderPedido();
 
     // arquivos
     var html = '';
