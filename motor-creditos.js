@@ -89,7 +89,11 @@
 
   // ---------------------------------------------------------- layout (campos)
   // Índices 0-based conforme o Guia Prático da EFD-Contribuições.
-  var L = {
+  // Esta tabela é a RESERVA (usada só se o catálogo oficial não estiver carregado) e a referência
+  // do teste de paridade. O leiaute que o motor usa vem do catálogo oficial:
+  // lib/sped/leiautes/leiaute-efd-contribuicoes.js, gerado do catálogo oficial (Guia Prático v1.35)
+  // por scripts/gera-leiautes-motor.js. Mesmo índice, nome oficial do catálogo.
+  var L_LEGADO = {
     '0000': { COD_VER: 1, TIPO_ESCRIT: 2, IND_SIT_ESP: 3, NUM_REC_ANT: 4, DT_INI: 5, DT_FIN: 6, NOME: 7, CNPJ: 8, UF: 9, COD_MUN: 10 },
     '0110': { COD_INC_TRIB: 1, IND_APRO_CRED: 2, COD_TIPO_CONT: 3, IND_REG_CUM: 4 },
     '0111': { REC_BRU_NCUM_TRIB_MI: 1, REC_BRU_NCUM_NT_MI: 2, REC_BRU_NCUM_EXP: 3, REC_BRU_CUM: 4, REC_BRU_TOTAL: 5 },
@@ -123,7 +127,11 @@
               VL_CONT_APUR: 10, VL_AJUS_ACRES: 11, VL_AJUS_REDUC: 12, VL_CONT_DIFER: 13, VL_CONT_DIFER_ANT: 14, VL_CONT_PER: 15 },
     '9999': { QTD_LIN: 1 }
   };
-  L.M600 = L.M200; L.M610 = L.M210;
+  L_LEGADO.M600 = L_LEGADO.M200; L_LEGADO.M610 = L_LEGADO.M210;
+  var LEIAUTE_CATALOGO = (typeof module !== 'undefined' && module.exports)
+    ? require('./lib/sped/leiautes/leiaute-efd-contribuicoes.js')
+    : (root.SPED_LEIAUTE_EFD_CONTRIBUICOES || null);
+  var LEIAUTE_PADRAO = LEIAUTE_CATALOGO || L_LEGADO;
   // FONTES (confirmadas nesta sessão): nomes e ordem dos campos de F100, F120, F130, F150, M200, M210, M600 e M610 conferidos na
   // reprodução do leiaute do Guia Prático (documentacao.senior.com.br, "Leiaute - SPED Contribuições", bloco F e bloco M) e no índice
   // do Guia Prático v1.34 (registros e páginas). O PDF oficial da RFB não pôde ser baixado do ambiente (proxy bloqueou); as posições
@@ -250,7 +258,13 @@
    *   itens    = itens C170 de notas de SAÍDA válidas
    *   entradas = itens C170 de notas de ENTRADA válidas
    */
-  function lerEfdContribuicoes(texto, nomeArquivo) {
+  /**
+   * Lê um arquivo EFD-Contribuições.
+   * opcoes.leiaute: mapa de leiaute alternativo (o teste de paridade usa a tabela antiga
+   * para provar que o catálogo oficial não muda o resultado).
+   */
+  function lerEfdContribuicoes(texto, nomeArquivo, opcoes) {
+    var L = (opcoes && opcoes.leiaute) || LEIAUTE_PADRAO;
     var res = {
       arquivo: nomeArquivo || '(sem nome)',
       meta: null, itens: [], entradas: [], consolidados: [], saldoCredito: { pis: 0, cofins: 0, registros: 0 }, creditosApropriados: { pis: 0, cofins: 0, registros: 0 }, rateio: { apropriacao: '', rec: null, m105: [], m505: [] }, produtos: 0, avisos: [], erros: [],
@@ -1095,6 +1109,7 @@
     apurar: apurar,
     resumirBlocoF: resumirBlocoF, resumirApuracaoM: resumirApuracaoM,
     CATALOGO: CATALOGO, MONOFASICOS: MONOFASICOS,
+    LEIAUTE: LEIAUTE_PADRAO, LEIAUTE_LEGADO: L_LEGADO, LEIAUTE_CATALOGO: LEIAUTE_CATALOGO,
     centavos: centavos, aliquota: aliquota, quantidade: quantidade, formatarReais: formatarReais
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

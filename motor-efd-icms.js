@@ -25,7 +25,11 @@
   // Leiaute por registro (índice 0 = campo 1 = REG). Fonte e dúvidas: ver DUVIDAS abaixo.
   // Campos acrescentados em leiautes recentes (Guia 3.2.3+): ausentes em arquivos antigos, sem aviso.
   var CAMPOS_NOVOS = { IND_BENEFICIO: true };
-  var LEIAUTE = {
+  // Tabela de reserva (usada só se o catálogo oficial não estiver carregado) e referência do
+  // teste de paridade. O leiaute que o motor usa vem do catálogo oficial:
+  // lib/sped/leiautes/leiaute-efd-icms-ipi.js, gerado do catálogo oficial (Guia Prático v3.2.4)
+  // por scripts/gera-leiautes-motor.js. Mesma posição, nome oficial do catálogo.
+  var LEIAUTE_LEGADO = {
     '0000': ['REG', 'COD_VER', 'COD_FIN', 'DT_INI', 'DT_FIN', 'NOME', 'CNPJ', 'CPF', 'UF', 'IE', 'COD_MUN', 'IM', 'SUFRAMA', 'IND_PERFIL', 'IND_ATIV'],
     '0150': ['REG', 'COD_PART', 'NOME', 'COD_PAIS', 'CNPJ', 'CPF', 'IE', 'COD_MUN', 'SUFRAMA', 'END', 'NUM', 'COMPL', 'BAIRRO'],
     '0200': ['REG', 'COD_ITEM', 'DESCR_ITEM', 'COD_BARRA', 'COD_ANT_ITEM', 'UNID_INV', 'TIPO_ITEM', 'COD_NCM', 'EX_IPI', 'COD_GEN', 'COD_LST', 'ALIQ_ICMS', 'CEST'],
@@ -39,6 +43,11 @@
     'E116': ['REG', 'COD_OR', 'VL_OR', 'DT_VCTO', 'COD_REC', 'NUM_PROC', 'IND_PROC', 'PROC', 'TXT_COMPL', 'MES_REF'],
     'H010': ['REG', 'COD_ITEM', 'UNID', 'QTD', 'VL_UNIT', 'VL_ITEM', 'IND_PROP', 'COD_PART', 'TXT_COMPL', 'COD_CTA', 'VL_ITEM_IR']
   };
+
+  var LEIAUTE_CATALOGO = (typeof module !== 'undefined' && module.exports)
+    ? require('./lib/sped/leiautes/leiaute-efd-icms-ipi.js')
+    : (root.SPED_LEIAUTE_EFD_ICMS_IPI || null);
+  var LEIAUTE_PADRAO = LEIAUTE_CATALOGO || LEIAUTE_LEGADO;
 
   // COD_SIT do documento (C100): 00 regular, 01 extemporâneo, 02 cancelado, 03 cancelado extemporâneo,
   // 04 denegado, 05 numeração inutilizada, 06 complementar, 07 complementar extemporâneo, 08 regime especial/norma específica.
@@ -115,8 +124,13 @@
   }
 
   // ------------------------------------------------------------------ leitor
-  /** Lê um arquivo da EFD ICMS/IPI (texto já decodificado) e devolve os dados organizados. */
-  function lerEfdIcms(texto, nome) {
+  /**
+   * Lê um arquivo da EFD ICMS/IPI (texto já decodificado) e devolve os dados organizados.
+   * opcoes.leiaute: leiaute alternativo (o teste de paridade usa a tabela antiga para provar
+   * que o catálogo oficial não muda o resultado).
+   */
+  function lerEfdIcms(texto, nome, opcoes) {
+    var LEIAUTE = (opcoes && opcoes.leiaute) || LEIAUTE_PADRAO;
     var ctx = novoContexto();
     var r = {
       arquivo: nome || 'efd-icms-ipi.txt', versaoLeitor: VERSAO,
@@ -301,6 +315,10 @@
     };
   }
 
-  var api = { VERSAO: VERSAO, lerEfdIcms: lerEfdIcms, resumo: resumo, LEIAUTE: LEIAUTE, COD_SIT: COD_SIT, DUVIDAS: DUVIDAS };
+  var api = {
+    VERSAO: VERSAO, lerEfdIcms: lerEfdIcms, resumo: resumo,
+    LEIAUTE: LEIAUTE_PADRAO, LEIAUTE_LEGADO: LEIAUTE_LEGADO, LEIAUTE_CATALOGO: LEIAUTE_CATALOGO,
+    COD_SIT: COD_SIT, DUVIDAS: DUVIDAS
+  };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MotorEfdIcms = api;
 })(typeof self !== 'undefined' ? self : this);
