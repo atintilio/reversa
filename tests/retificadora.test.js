@@ -77,3 +77,24 @@ test('RET-003: créditos descontados maiores que a nova contribuição bloqueiam
   const g = R.gerar(texto, ajustes, { recibo: '12.34.56.78.90-12' });
   assert.ok(g.erros.some((x) => /créditos descontados/.test(x)));
 });
+
+test('RET-004: a redução vai para o M210 com o COD_CONT e a alíquota do item', () => {
+  // Mesmo COD_CONT (01) em duas linhas, com alíquotas diferentes: a chave do registro é COD_CONT + ALIQ.
+  // A linha com alíquota 2,1% vem antes no arquivo e não pode ser a escolhida.
+  const texto = arquivo().replace('|M210|01|15000,00|', '|M210|01|5000,00|5000,00|0,00|0,00|5000,00|2,1000|||105,00|0,00|0,00|0,00|0,00|105,00|\r\n|M210|01|15000,00|');
+  const res = M.apurar([M.lerEfdContribuicoes(texto, 'orig.txt')], { hoje: new Date('2026-10-14') });
+  const ajustes = {}; res.teses.find((t) => t.id === 'tema69').detalhes.forEach((d) => { ajustes[d.linha] = d; });
+  const g = R.gerar(texto, ajustes, { recibo: '12.34.56.78.90-12' });
+  assert.deepEqual(g.erros, []);
+  assert.match(g.texto, /\|M210\|01\|15000,00\|12300,00\|0,00\|0,00\|12300,00\|1,6500\|\|\|202,95\|/, 'reduz a linha de alíquota 1,65');
+  assert.match(g.texto, /\|M210\|01\|5000,00\|5000,00\|0,00\|0,00\|5000,00\|2,1000\|\|\|105,00\|/, 'a linha de alíquota 2,1% fica intacta');
+});
+
+test('RET-005: duas linhas de M210 com o mesmo COD_CONT e a mesma alíquota bloqueiam a geração', () => {
+  const texto = arquivo().replace('|M210|01|15000,00|', '|M210|01|15000,00|15000,00|0,00|0,00|15000,00|1,6500|||247,50|0,00|0,00|0,00|0,00|247,50|\r\n|M210|01|15000,00|');
+  const res = M.apurar([M.lerEfdContribuicoes(texto, 'orig.txt')], { hoje: new Date('2026-10-14') });
+  const ajustes = {}; res.teses.find((t) => t.id === 'tema69').detalhes.forEach((d) => { ajustes[d.linha] = d; });
+  const g = R.gerar(texto, ajustes, { recibo: '12.34.56.78.90-12' });
+  assert.ok(g.erros.some((x) => /aparece em 2 linhas/.test(x)), 'a ambiguidade é erro, não escolha automática');
+  assert.match(g.texto, /\|M210\|01\|15000,00\|15000,00\|0,00\|0,00\|15000,00\|1,6500\|\|\|247,50\|/, 'nenhuma linha é alterada por adivinhação');
+});

@@ -22,11 +22,11 @@
   var VERSAO = '0.1.0';
 
   // Índices no split('|') da linha: [0] = '', [1] = REG, [2] = campo 02, ... (campo n = índice n).
-  var C170 = { CST_PIS: 25, VL_BC_PIS: 26, ALIQ_PIS: 27, VL_PIS: 30, CST_COFINS: 31, VL_BC_COFINS: 32, ALIQ_COFINS: 33, VL_COFINS: 36 };
+  var C170 = { CST_PIS: 25, VL_BC_PIS: 26, ALIQ_PIS: 27, ALIQ_PIS_QUANT: 28, VL_PIS: 30, CST_COFINS: 31, VL_BC_COFINS: 32, ALIQ_COFINS: 33, ALIQ_COFINS_QUANT: 34, VL_COFINS: 36 };
   var C100 = { VL_PIS: 26, VL_COFINS: 27 };
   // M210/M610: leiaute a partir de 2019 (16 campos) e anterior (13 campos).
-  var M210_NOVO = { COD_CONT: 2, VL_REC_BRT: 3, VL_BC_CONT: 4, VL_BC_CONT_AJUS: 7, ALIQ: 8, VL_CONT_APUR: 11, VL_AJUS_ACRES: 12, VL_AJUS_REDUC: 13, VL_CONT_DIFER: 14, VL_CONT_DIFER_ANT: 15, VL_CONT_PER: 16 };
-  var M210_ANTIGO = { COD_CONT: 2, VL_REC_BRT: 3, VL_BC_CONT: 4, ALIQ: 5, VL_CONT_APUR: 8, VL_AJUS_ACRES: 9, VL_AJUS_REDUC: 10, VL_CONT_DIFER: 11, VL_CONT_DIFER_ANT: 12, VL_CONT_PER: 13 };
+  var M210_NOVO = { COD_CONT: 2, VL_REC_BRT: 3, VL_BC_CONT: 4, VL_BC_CONT_AJUS: 7, ALIQ: 8, ALIQ_QUANT: 10, VL_CONT_APUR: 11, VL_AJUS_ACRES: 12, VL_AJUS_REDUC: 13, VL_CONT_DIFER: 14, VL_CONT_DIFER_ANT: 15, VL_CONT_PER: 16 };
+  var M210_ANTIGO = { COD_CONT: 2, VL_REC_BRT: 3, VL_BC_CONT: 4, ALIQ: 5, ALIQ_QUANT: 7, VL_CONT_APUR: 8, VL_AJUS_ACRES: 9, VL_AJUS_REDUC: 10, VL_CONT_DIFER: 11, VL_CONT_DIFER_ANT: 12, VL_CONT_PER: 13 };
   // M200/M600
   var M200 = { NC_PER: 2, CRED_DESC: 3, CRED_DESC_ANT: 4, NC_DEV: 5, RET_NC: 6, OUT_DED_NC: 7, NC_REC: 8, CUM_PER: 9, RET_CUM: 10, OUT_DED_CUM: 11, CUM_REC: 12, TOT_REC: 13 };
   var M205 = { NUM_CAMPO: 2, COD_REC: 3, VL_DEBITO: 4 };
@@ -41,6 +41,8 @@
   }
   function fmt(c) { var neg = c < 0; c = Math.abs(c); var r = String(c % 100); return (neg ? '-' : '') + Math.floor(c / 100) + ',' + (r.length < 2 ? '0' + r : r); }
   function aliq(s) { return Number(String(s || '0').replace(',', '.')) || 0; }
+  /** Chave de alíquota normalizada (4 casas): 1,65 e 1.6500 são a mesma alíquota. */
+  function chaveAliq(a) { return String(Number(a || 0).toFixed(4)); }
 
   // COD_CONT do M210/M610 conforme CST e alíquota do item (alíquota básica ou diferenciada; não cumulativo ou cumulativo).
   function codCont(cst, aliquota, tributo) {
@@ -90,7 +92,9 @@
           var nbc = bc - x.exc, nvl = vl - x.cred;
           if (Math.abs(Math.round(nbc * al / 100) - nvl) > 1) avisos.push('Linha ' + (i + 1) + ': ' + t.toUpperCase() + ' do item (' + fmt(nvl) + ') difere da base × alíquota (' + fmt(Math.round(nbc * al / 100)) + ').');
           f[x.bc] = fmt(nbc); f[x.vl] = fmt(nvl);
-          var d = delta[t][cc] = delta[t][cc] || { base: 0, cont: 0 };
+          // A chave do M210 é COD_CONT + ALIQ_PIS + ALIQ_PIS_QUANT: a redução fica presa à alíquota do item.
+          var chave = cc + '|' + chaveAliq(al);
+          var d = delta[t][chave] = delta[t][chave] || { base: 0, cont: 0, cc: cc, aliq: chaveAliq(al) };
           d.base += x.exc; d.cont += x.cred;
           docAtual[t] += x.cred;
         });
@@ -111,24 +115,39 @@
     [['pis', 'M200', 'M205', 'M210'], ['cofins', 'M600', 'M605', 'M610']].forEach(function (cfg) {
       var t = cfg[0], dt = delta[t], usados = {}, dNc = 0, dCum = 0;
       if (!Object.keys(dt).length) return;
+      // 1) Linhas do M210/M610 agrupadas por COD_CONT + alíquota (a chave do registro).
+      var porChave = {};
       for (var j = 0; j < linhas.length; j++) {
         var g = linhas[j].split('|');
         if (g[1] !== cfg[3]) continue;
         var L = g.length >= 18 ? M210_NOVO : g.length >= 15 ? M210_ANTIGO : null;
         if (!L) { erros.push('Linha ' + (j + 1) + ': ' + cfg[3] + ' com leiaute não reconhecido.'); continue; }
-        var cc = g[L.COD_CONT], d = dt[cc];
-        if (!d || usados[cc]) continue;
-        usados[cc] = true;
+        var k = g[L.COD_CONT] + '|' + chaveAliq(aliq(g[L.ALIQ]));
+        (porChave[k] = porChave[k] || []).push({ j: j, L: L, g: g });
+      }
+      // 2) Cada redução vai para a linha com o mesmo COD_CONT e a mesma alíquota do item.
+      Object.keys(dt).forEach(function (k) {
+        var d = dt[k], cc = d.cc, cands = porChave[k] || [];
+        if (!cands.length) {
+          erros.push(cfg[3] + ' do COD_CONT ' + cc + ' (alíquota ' + d.aliq + '%) não encontrado: a redução de ' + t.toUpperCase() + ' não tem onde ser lançada.');
+          return;
+        }
+        if (cands.length > 1) {
+          erros.push(cfg[3] + ' do COD_CONT ' + cc + ' (alíquota ' + d.aliq + '%) aparece em ' + cands.length +
+            ' linhas: a redução de ' + t.toUpperCase() + ' não tem onde ser lançada com segurança. Revise o arquivo manualmente.');
+          return;
+        }
+        var c = cands[0], g = c.g, L = c.L, j = c.j;
         var bc = cent(g[L.VL_BC_CONT]) - d.base, apur = cent(g[L.VL_CONT_APUR]) - d.cont, per = cent(g[L.VL_CONT_PER]) - d.cont;
-        if (bc < 0 || apur < 0 || per < 0) { erros.push('Linha ' + (j + 1) + ': ' + cfg[3] + ' ficaria negativo para o COD_CONT ' + cc + '. Revise os ajustes.'); continue; }
+        if (bc < 0 || apur < 0 || per < 0) { erros.push('Linha ' + (j + 1) + ': ' + cfg[3] + ' ficaria negativo para o COD_CONT ' + cc + '. Revise os ajustes.'); return; }
         g[L.VL_BC_CONT] = fmt(bc);
         if (L === M210_NOVO) { var ba = cent(g[L.VL_BC_CONT_AJUS]) - d.base; g[L.VL_BC_CONT_AJUS] = fmt(ba); bc = ba; }
         g[L.VL_CONT_APUR] = fmt(apur); g[L.VL_CONT_PER] = fmt(per);
         if (Math.abs(Math.round(bc * aliq(g[L.ALIQ]) / 100) - apur) > 2) avisos.push('Linha ' + (j + 1) + ': ' + cfg[3] + ' contribuição apurada difere da base × alíquota; confira arredondamentos do original.');
         linhas[j] = g.join('|');
+        usados[k] = true;
         if (NAO_CUMULATIVOS[cc]) dNc += d.cont; else dCum += d.cont;
-      }
-      Object.keys(dt).forEach(function (cc) { if (!usados[cc]) erros.push(cfg[3] + ' do COD_CONT ' + cc + ' não encontrado: a redução de ' + t.toUpperCase() + ' não tem onde ser lançada.'); });
+      });
       // M200/M600
       var iTot = -1;
       for (j = 0; j < linhas.length; j++) if (linhas[j].split('|')[1] === cfg[1]) { iTot = j; break; }
