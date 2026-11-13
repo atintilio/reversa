@@ -1263,8 +1263,14 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         columnStyles: { 6: { halign: 'right' }, 7: { halign: 'right' }, 8: { halign: 'right' }, 9: { halign: 'right' }, 10: { halign: 'right' } }
       });
       // via do pedido (PER ou DCOMP) com o fundamento e as pendências
-      var avalPis = (root.MotorPedido && pkgPis) ? root.MotorPedido.avaliar({
-        creditos: pkgPis.creditos, competenciaRef: comps.length ? comps[comps.length - 1] : '',
+      var debitosPis = [];
+    lidos.forEach(function (l) {
+      var am = l.apuracaoM;
+      if (!am || !l.meta || !l.meta.competencia) return;
+      debitosPis.push({ competencia: l.meta.competencia, pis: (am.pis && am.pis.devido) || 0, cofins: (am.cofins && am.cofins.devido) || 0 });
+    });
+    var avalPis = (root.MotorPedido && pkgPis) ? root.MotorPedido.avaliar({
+        creditos: pkgPis.creditos, debitos: debitosPis, competenciaRef: comps.length ? comps[comps.length - 1] : '',
         competenciaEscrituracao: comps.length ? comps[comps.length - 1] : ''
       }) : null;
       if (avalPis && avalPis.pedidos.length) {
@@ -1763,7 +1769,13 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       });
     });
     var compEsc = (estado.lidos || []).map(function (l) { return l.meta && l.meta.competencia; }).filter(Boolean).sort().pop() || '';
-    var avaliacao = MP.avaliar({ creditos: estado.pacote.creditos, creditosApurados: apurados, darfs: estado.darfs || [], competenciaRef: compRef, competenciaEscrituracao: compEsc });
+    var debitos = [];
+    (estado.lidos || []).forEach(function (l) {
+      var am = l.apuracaoM;
+      if (!am || !l.meta || !l.meta.competencia) return;
+      debitos.push({ competencia: l.meta.competencia, pis: (am.pis && am.pis.devido) || 0, cofins: (am.cofins && am.cofins.devido) || 0 });
+    });
+    var avaliacao = MP.avaliar({ creditos: estado.pacote.creditos, creditosApurados: apurados, debitos: debitos, darfs: estado.darfs || [], competenciaRef: compRef, competenciaEscrituracao: compEsc });
     estado.avaliacaoPedido = avaliacao;
     var rl = function (v) { return M.formatarReais(Math.round(Number(v || 0) * 100)); };
     var cab = ['Trimestre', 'Tributo', 'C&oacute;digo', 'Cr&eacute;dito apurado', 'Saldo apur&aacute;vel', 'Via do pedido', 'Prazo'];

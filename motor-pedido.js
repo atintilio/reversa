@@ -103,7 +103,8 @@
    *                      usadoDescontoAnterior, usadoPerAnterior, usadoDcompAnterior,
    *                      disponivel, usadoDesconto, pedidoPer, pedidoDcomp, saldoFinal }]  (em reais)
    *   creditosApurados [{ tributo, competencia, codCredito, vlCred, vlCredDisp, sldCred, vlCredDesc }] (M100/M500, em centavos)
-   *   darfs           [{ codigoReceita, principal, periodo:{competencia} }] (em centavos)
+   *   darfs           [{ codigoReceita, principal, periodo:{competencia} }] (em reais)
+   *   debitos         [{ competencia, pis, cofins }] — tributo apurado no M200/M600 (em centavos)
    *   competenciaRef  'AAAA-MM' — mês de referência (normalmente o da escrituração)
    *   dataPer         opcional 'AAAA-MM' — mês de transmissão do PER original (para a atualização da Selic)
    * @returns {Object} avaliação
@@ -113,6 +114,7 @@
     var creditos = o.creditos || [];
     var apurados = o.creditosApurados || [];
     var darfs = o.darfs || [];
+    var debitos = o.debitos || [];
     var ref = o.competenciaRef || '';
     var refP = periodo(ref);
     var avisos = [];
@@ -206,10 +208,20 @@
       }
 
       // 4. via: PER (ressarcimento) e, depois, DCOMP (compensação) vinculada
-      var debitoFuturo = 0;
-      Object.keys(pagos).forEach(function (c) {
-        if (c > p.chave) debitoFuturo += pagos[c].total;
+      // Débito próprio para compensar: o que a empresa apurou depois da competência do crédito
+      // (M200/M600 — "Total dos Débitos deste Documento" na DCOMP) e o que pagou em DARF.
+      var debitoFuturo = 0, debitoApurado = 0;
+      debitos.forEach(function (d) {
+        if (!d || !/^\d{4}-\d{2}$/.test(String(d.competencia || ''))) return;
+        if (d.competencia <= p.chave) return;
+        debitoApurado += Number(d.pis || 0) + Number(d.cofins || 0);
       });
+      var pagoFuturo = 0;
+      Object.keys(pagos).forEach(function (c) {
+        if (c > p.chave) pagoFuturo += pagos[c].total;
+      });
+      var debitoApuradoReais = reais(debitoApurado);      // M200/M600 vem em centavos
+      debitoFuturo = r2(debitoApuradoReais + pagoFuturo);  // DARF vem em reais
       var temDebito = debitoFuturo > 0;
       var via = 'PER';
       var viaRotulo = 'Pedido de Ressarcimento (PER)';
@@ -217,9 +229,9 @@
       if (temDebito) {
         via = 'PER_E_DCOMP';
         viaRotulo = 'PER e depois DCOMP (o crédito compensa débito próprio de R$ ' + reaisTexto(r2(debitoFuturo)) + ')';
-        fund.push('Há tributos próprios recolhidos (DARF de PIS/Cofins/IRPJ/CSLL) em períodos posteriores à competência do crédito: existe débito a compensar, então a sequência é PER (pedido) e DCOMP (compensação) contra esse débito.');
+        fund.push('Há tributo próprio em períodos posteriores à competência do crédito (apurado no M200/M600 e/ou recolhido em DARF): existe débito a compensar, então a sequência é PER (pedido) e DCOMP (compensação) contra esse débito.');
       } else {
-        fund.push('Não há DARF de PIS/Cofins/IRPJ/CSLL nos arquivos lidos em período posterior à competência do crédito: se realmente não houver débito próprio a compensar, a DCOMP não tem objeto — o caminho é o PER (o valor entra como restituição).');
+        fund.push('Não há tributo próprio apurado (M200/M600) nem DARF de PIS/Cofins/IRPJ/CSLL nos arquivos lidos em período posterior à competência do crédito: se realmente não houver débito a compensar, a DCOMP não tem objeto — o caminho é o PER (o valor entra como restituição).');
         pend.push('Conferir no PER/DCOMP Web se há débito próprio a compensar (debitos futuros, parcelamentos ou autações): se houver, a DCOMP depois do PER é o caminho.');
       }
       if (g.jaPedidoPer > 0) {
@@ -262,6 +274,7 @@
         conciliacao: conc,                     // confronto com o M100/M500 da competência da escrituração
         via: via,
         viaRotulo: viaRotulo,
+        debitoACompensar: r2(debitoFuturo),   // teto de crédito para a DCOMP ("Total dos Débitos")
         valorPedido: via === 'NENHUMA' ? 0 : saldo,
         valorCompensavel: via === 'PER_E_DCOMP' ? compensavel : 0,
         prazo: { trimestre: g.trimestre, limite: limite, situacao: prescrito ? 'prescrito' : 'no_prazo' },
@@ -311,6 +324,7 @@
       add('Valores Apurados', 'Crédito apurado no trimestre ' + p.trimestre + ' (competências ' + p.competencias.join(', ') + ')', reaisTexto(p.apurado));
       add('Saldo do Crédito', 'Saldo (apurado − deduções − utilizações em DCOMP anterior)', reaisTexto(p.saldo));
       add('Demonstrativo do Crédito', 'Crédito passível de ressarcimento / valor pedido', reaisTexto(p.valorPedido));
+      if (p.debitoACompensar) add('Informar e Ordenar Débitos', 'Total dos débitos a compensar (DCOMP)', reaisTexto(p.debitoACompensar));
       add('Prazo', 'Limite (5 anos do encerramento do trimestre)', p.prazo.limite + ' — ' + (p.prazo.situacao === 'prescrito' ? 'PRESCRITO' : 'no prazo'));
       p.pendencias.forEach(function (t) { add('Pendências', 'A verificar', t); });
     });

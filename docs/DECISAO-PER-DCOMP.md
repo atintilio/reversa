@@ -12,7 +12,8 @@
 
 1. **Lê** a posição de créditos por origem do Bloco 1 (`motor-creditos.js` → `creditosPosicao`) e o
    crédito apurado no período (`M100`/`M500` → `creditosApurados`).
-2. **Calcula** o crédito, o saldo apurável e o prazo, pela mesma fórmula do PER/DCOMP Web.
+2. **Calcula** o crédito, o saldo apurável, o **tributo apurado** (M200/M600: o "Total dos Débitos
+   deste Documento" da DCOMP) e o prazo, pela mesma fórmula do PER/DCOMP Web.
 3. **Decide a via** (PER, DCOMP ou as duas, nessa ordem) e **diz por quê**, com o trecho da regra.
 4. **Entrega a ficha** do pedido no formato das abas do roteiro oficial (CSV), para o contador
    conferir e transmitir no PER/DCOMP Web.
@@ -73,5 +74,6 @@
 | `lib/sped/tabelas/codigos-credito.json` | Códigos de crédito (tabela 4.3.7/4.3.6 do Guia), com o rótulo oficial |
 | `motor-creditos.js` | Lê o Bloco 1 (`creditosPosicao`) e o crédito apurado (`creditosApurados`) |
 | `motor-darf.js` | Lê DARF; agora reconhece 6912 (PIS) e 5856 (Cofins) além de 0220/6012 |
+| `motor-creditos.js` → `apuracaoM` | Tributo apurado no período (M200/M600): é o teto de crédito que a DCOMP pode usar |
 | `index.html` | Tela "Via do pedido" + botão de gerar a ficha + link do e-CAC; a memória técnica (PDF) traz a decisão |
 | `tests/motor-pedido.test.js` | 10 testes: cada regra da tabela acima |

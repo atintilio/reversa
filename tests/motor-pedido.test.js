@@ -116,6 +116,18 @@ test('fluxo completo: a EFD-Contribuições vira decisão de via com o fundament
   assert.ok(r.pedidos[0].fundamento.length > 0 && r.pedidos[0].pendencias.length > 0);
 });
 
+test('o tributo apurado no M200/M600 diz quanto há a compensar na DCOMP', () => {
+  const r = Pedido.avaliar({
+    creditos: [credito()],
+    debitos: [{ competencia: '2024-06', pis: 300000, cofins: 900000 }], // R$ 3.000 + R$ 9.000 apurados
+    competenciaRef: '2024-07'
+  });
+  const p = r.pedidos[0];
+  assert.equal(p.via, 'PER_E_DCOMP');
+  assert.equal(p.debitoACompensar, 12000);
+  assert.ok(p.fundamento.some(f => /apurado no M200\/M600/.test(f)));
+});
+
 test('a conciliação com o M100/M500 acusa divergência entre apurado e declarado', () => {
   const r = Pedido.avaliar({
     creditos: [credito({ apurado: 10000, disponivel: 10000 })],
