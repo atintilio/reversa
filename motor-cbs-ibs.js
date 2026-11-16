@@ -8,7 +8,7 @@
  *     Bens e Serviços), substituindo progressivamente PIS, COFINS, IPI, ICMS e ISS.
  *   - Regime de transição: 2026-2032 (arts. 348–421 da LC 214/2025).
  *   - PIS e COFINS extintos a partir de 01/01/2027 (art. 353, LC 214/2025).
- *   - Alíquota de referência CBS: 9,21% (projeção CGIBS 2026/08; [VALIDAR] quando RFB
+ *   - Alíquota de referência CBS: 11,3% (estimativa TCU 2026; [VALIDAR] quando CGIBS
  *     publicar resolução definitiva conforme art. 9º da LC 214/2025).
  *   - Alíquota IBS: em definição pelo Senado; estimativa combinada (estados+municípios)
  *     de 18,7% na alíquota de referência plena (arts. 12–17 da LC 214/2025). [VALIDAR]
@@ -52,13 +52,13 @@
    */
   var TABELA_TRANSICAO = {
     2026: { cbsPct: 0.90,  ibsPct: 0.10,  pisCofinsPct: 9.25, descricao: 'Fase-teste CBS/IBS; PIS+COFINS mantidos com compensação' },
-    2027: { cbsPct: 9.11,  ibsPct: 0.10,  pisCofinsPct: 0.00, descricao: 'CBS definitiva; PIS/COFINS extintos; IBC ainda mínimo' },   // [VALIDAR] -0,1 p.p. da referência
-    2028: { cbsPct: 9.11,  ibsPct: 0.10,  pisCofinsPct: 0.00, descricao: 'Mantém patamares de 2027' },
-    2029: { cbsPct: 9.21,  ibsPct: 1.87,  pisCofinsPct: 0.00, descricao: 'CBS ref. plena; IBS 10% da ref.; ICMS/ISS a 90%' },         // 10% × 18,7 = 1,87
-    2030: { cbsPct: 9.21,  ibsPct: 3.74,  pisCofinsPct: 0.00, descricao: 'IBS 20% da ref.; ICMS/ISS a 80%' },
-    2031: { cbsPct: 9.21,  ibsPct: 5.61,  pisCofinsPct: 0.00, descricao: 'IBS 30% da ref.; ICMS/ISS a 70%' },
-    2032: { cbsPct: 9.21,  ibsPct: 7.48,  pisCofinsPct: 0.00, descricao: 'IBS 40% da ref.; ICMS/ISS a 60%' },
-    2033: { cbsPct: 9.21,  ibsPct: 18.70, pisCofinsPct: 0.00, descricao: 'Sistema pleno; ICMS e ISS extintos' },                       // [VALIDAR] alíquota IBS plena definida pelo Senado
+    2027: { cbsPct: 11.30, ibsPct: 0.10,  pisCofinsPct: 0.00, descricao: 'CBS definitiva (TCU); PIS/COFINS extintos; IBS ainda mínimo' }, // TCU 2026
+    2028: { cbsPct: 11.30, ibsPct: 0.10,  pisCofinsPct: 0.00, descricao: 'Mantém patamares de 2027' },
+    2029: { cbsPct: 11.30, ibsPct: 1.52,  pisCofinsPct: 0.00, descricao: 'CBS ref. plena (TCU); IBS 10% da ref.; ICMS/ISS a 90%' },      // 10% × 15,2 = 1,52
+    2030: { cbsPct: 11.30, ibsPct: 3.04,  pisCofinsPct: 0.00, descricao: 'IBS 20% da ref.; ICMS/ISS a 80%' },
+    2031: { cbsPct: 11.30, ibsPct: 4.56,  pisCofinsPct: 0.00, descricao: 'IBS 30% da ref.; ICMS/ISS a 70%' },
+    2032: { cbsPct: 11.30, ibsPct: 6.08,  pisCofinsPct: 0.00, descricao: 'IBS 40% da ref.; ICMS/ISS a 60%' },
+    2033: { cbsPct: 11.30, ibsPct: 15.20, pisCofinsPct: 0.00, descricao: 'Sistema pleno; ICMS e ISS extintos' },                         // teto 26,5% − CBS 11,3% = IBS 15,2% [VALIDAR Senado]
   };
 
   /**
@@ -69,14 +69,15 @@
   var ALIQUOTAS_PIS_COFINS = { pis: 1.65, cofins: 7.60, total: 9.25 };
 
   /**
-   * Alíquota de referência CBS plena (estimativa CGIBS ago/2026). [VALIDAR]
+   * Alíquota de referência CBS plena — estimativa TCU 2026. [VALIDAR resolução CGIBS definitiva]
+   * Fonte: Relatório TCU sobre Reforma Tributária (2026).
    */
-  var CBS_REFERENCIA_PCT = 9.21;
+  var CBS_REFERENCIA_PCT = 11.30;
 
   /**
-   * Alíquota de referência IBS plena estimada (soma estados+municípios). [VALIDAR resolução Senado]
+   * Alíquota de referência IBS plena — teto EC 132/2023 (26,5%) − CBS 11,3% = 15,2%. [VALIDAR Senado]
    */
-  var IBS_REFERENCIA_PCT = 18.70;
+  var IBS_REFERENCIA_PCT = 15.20;
 
   // ------------------------------------------------------------------ utilitários internos
 

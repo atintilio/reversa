@@ -51,17 +51,17 @@ test('CBS-IBS-001 retorna estrutura completa para competência 2027', () => {
 
 // ------------------------------------------------------------------ CBS-IBS-002
 
-test('CBS-IBS-002 cálculo CBS correto em 2027 (alíquota 9,11%)', () => {
+test('CBS-IBS-002 cálculo CBS correto em 2027 (alíquota 11,30% — referência TCU)', () => {
   const r = M.projetarCbsIbs(EFD_BASE, 2027);
 
-  // Débito CBS = 100.000.000 × 9,11% = 9.110.000 centavos (R$ 91.100,00)
-  assert.equal(r.cbs.debito, 9_110_000, 'débito CBS');
+  // Débito CBS = 100.000.000 × 11,30% = 11.300.000 centavos (R$ 113.000,00)
+  assert.equal(r.cbs.debito, 11_300_000, 'débito CBS');
 
-  // Crédito CBS = 50.000.000 × 9,11% = 4.555.000 centavos (R$ 45.550,00)
-  assert.equal(r.cbs.credito, 4_555_000, 'crédito CBS');
+  // Crédito CBS = 50.000.000 × 11,30% = 5.650.000 centavos (R$ 56.500,00)
+  assert.equal(r.cbs.credito, 5_650_000, 'crédito CBS');
 
-  // CBS apurada = 9.110.000 - 4.555.000 = 4.555.000
-  assert.equal(r.cbs.apurado, 4_555_000, 'CBS apurada');
+  // CBS apurada = 11.300.000 - 5.650.000 = 5.650.000
+  assert.equal(r.cbs.apurado, 5_650_000, 'CBS apurada');
 });
 
 // ------------------------------------------------------------------ CBS-IBS-003
@@ -81,13 +81,13 @@ test('CBS-IBS-004 comparação indica carga maior com CBS/IBS em 2027', () => {
 
   // CBS + IBS em 2027 = CBS apurada + IBS apurado
   // IBS 2027 = 0,10% → débito 100.000, crédito 50.000, apurado 50.000
-  // Total CBS+IBS = 4.555.000 + 50.000 = 4.605.000
+  // Total CBS+IBS = 5.650.000 + 50.000 = 5.700.000
   // PIS+COFINS atual = 4.625.000
   assert.equal(r.ibs.apurado, 50_000, 'IBS apurado em 2027 (alíquota 0,10%)');
-  assert.equal(r.comparacao.cargaProjetadaCbsIbs, 4_605_000, 'carga CBS+IBS projetada');
+  assert.equal(r.comparacao.cargaProjetadaCbsIbs, 5_700_000, 'carga CBS+IBS projetada');
   assert.equal(r.comparacao.cargaAtualPisCofins,  4_625_000, 'carga PIS+COFINS referência');
-  // Em 2027 a carga CBS+IBS é levemente menor que PIS+COFINS
-  assert.equal(r.comparacao.maiorCarga, false, 'CBS+IBS 2027 ainda menor que PIS+COFINS');
+  // Com CBS 11,30% (TCU), a carga CBS+IBS é maior que PIS+COFINS já em 2027
+  assert.equal(r.comparacao.maiorCarga, true, 'CBS+IBS 2027 maior que PIS+COFINS com alíquota TCU');
 });
 
 // ------------------------------------------------------------------ CBS-IBS-005
@@ -104,17 +104,17 @@ test('CBS-IBS-005 regime 2026 tem PIS/COFINS vigentes e CBS/IBS de teste', () =>
 
 // ------------------------------------------------------------------ CBS-IBS-006
 
-test('CBS-IBS-006 regime 2033 tem alíquotas plenas CBS 9,21% e IBS 18,70%', () => {
+test('CBS-IBS-006 regime 2033 tem alíquotas plenas CBS 11,30% (TCU) e IBS 15,20%', () => {
   const r = M.projetarCbsIbs(EFD_BASE, 2033);
 
-  assert.equal(r.regime.cbsPct,  9.21,  'CBS plena em 2033');
-  assert.equal(r.regime.ibsPct,  18.70, 'IBS pleno em 2033');
+  assert.equal(r.regime.cbsPct,  11.30, 'CBS plena em 2033 (referência TCU)');
+  assert.equal(r.regime.ibsPct,  15.20, 'IBS pleno em 2033 (teto 26,5% − CBS 11,3%)');
   assert.equal(r.regime.pisCofinsPct, 0, 'PIS+COFINS extintos em 2033');
-  // IBS débito = 100.000.000 × 18,70% = 18.700.000
-  assert.equal(r.ibs.debito, 18_700_000);
-  // IBS crédito = 50.000.000 × 18,70% = 9.350.000
-  assert.equal(r.ibs.credito, 9_350_000);
-  assert.equal(r.ibs.apurado, 9_350_000);
+  // IBS débito = 100.000.000 × 15,20% = 15.200.000
+  assert.equal(r.ibs.debito, 15_200_000);
+  // IBS crédito = 50.000.000 × 15,20% = 7.600.000
+  assert.equal(r.ibs.credito, 7_600_000);
+  assert.equal(r.ibs.apurado, 7_600_000);
 });
 
 // ------------------------------------------------------------------ CBS-IBS-007
@@ -136,7 +136,8 @@ test('CBS-IBS-008 aceita dadosEfd com dados em resumo (fallback)', () => {
 
   assert.equal(r.basesCalculo.receitaBruta,    100_000_000);
   assert.equal(r.basesCalculo.entradasTributadas, 50_000_000);
-  assert.equal(r.cbs.debito, 9_110_000);
+  // Débito CBS = 100.000.000 × 11,30% = 11.300.000 (alíquota TCU)
+  assert.equal(r.cbs.debito, 11_300_000);
 });
 
 // ------------------------------------------------------------------ CBS-IBS-009
@@ -157,8 +158,8 @@ test('CBS-IBS-010 projetarCbsIbsMultiAnos retorna array com resultado por ano', 
   assert.equal(resultados.length, 4, 'deve retornar 4 anos (2026-2029)');
   assert.equal(resultados[0].ano, 2026);
   assert.equal(resultados[3].ano, 2029);
-  // Em 2029, IBS começa a subir: 10% da referência plena de 18,70% = 1,87%
-  assert.equal(resultados[3].regime.ibsPct, 1.87, 'IBS 2029 = 10% × referência');
+  // Em 2029, IBS começa a subir: 10% da referência plena de 15,20% (TCU) = 1,52%
+  assert.equal(resultados[3].regime.ibsPct, 1.52, 'IBS 2029 = 10% × referência TCU');
 });
 
 // ------------------------------------------------------------------ CBS-IBS-011
