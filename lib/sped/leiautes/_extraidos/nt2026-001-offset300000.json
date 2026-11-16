@@ -1,0 +1,3644 @@
+{
+ "fonte": "NT 2026.001 v1.0 leiaute 021",
+ "offset": 300000,
+ "registros": {
+  "K275": {
+   "titulo": "Correção de apontamento e retorno de insumos dos Registros K215, K220, K235, K255 e K265",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"K275\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código da mercadoria (campo 02 do 0200)"
+    },
+    {
+     "n": 3,
+     "campo": "QTD_COR_POS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 6,
+     "obrigatoriedade": null,
+     "descricao": "Correção positiva de período anterior"
+    },
+    {
+     "n": 4,
+     "campo": "QTD_COR_NEG",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 6,
+     "obrigatoriedade": null,
+     "descricao": "Correção negativa de período anterior"
+    },
+    {
+     "n": 5,
+     "campo": "COD_INS_SUBST",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Insumo substituído, quando houver substituição (K235/K255)"
+    }
+   ]
+  },
+  "K280": {
+   "titulo": "Correção de apontamento - estoque escriturado",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"K280\""
+    },
+    {
+     "n": 2,
+     "campo": "DT_EST",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data do estoque final escriturado que está sendo corrigido",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do item (campo 02 do 0200)"
+    },
+    {
+     "n": 4,
+     "campo": "QTD_COR_POS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Correção positiva de período anterior"
+    },
+    {
+     "n": 5,
+     "campo": "QTD_COR_NEG",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Correção negativa de período anterior"
+    },
+    {
+     "n": 6,
+     "campo": "IND_EST",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Tipo de estoque: 0 próprio em seu poder; 1 próprio em posse de terceiros; 2 de terceiros em posse do informante"
+    },
+    {
+     "n": 7,
+     "campo": "COD_PART",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do participante (campo 02 do 0150), quando proprietário/possuidor não for o informante"
+    }
+   ]
+  },
+  "K290": {
+   "titulo": "Produção conjunta - ordem de produção",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"K290\""
+    },
+    {
+     "n": 2,
+     "campo": "DT_INI_OP",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data de início da ordem de produção"
+    },
+    {
+     "n": 3,
+     "campo": "DT_FIN_OP",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data de conclusão da ordem de produção"
+    },
+    {
+     "n": 4,
+     "campo": "COD_DOC_OP",
+     "tipo": "C",
+     "tamanho": 30,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código de identificação da ordem de produção"
+    }
+   ]
+  },
+  "K291": {
+   "titulo": "Produção conjunta - itens produzidos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"K291\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do item produzido (campo 02 do 0200)"
+    },
+    {
+     "n": 3,
+     "campo": "QTD",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 6,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade de produção acabada"
+    }
+   ]
+  },
+  "K292": {
+   "titulo": "Produção conjunta - insumos consumidos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"K292\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do insumo/componente consumido (campo 02 do 0200)"
+    },
+    {
+     "n": 3,
+     "campo": "QTD",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 6,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade consumida"
+    }
+   ]
+  },
+  "K300": {
+   "titulo": "Produção conjunta - industrialização por terceiros",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"K300\""
+    },
+    {
+     "n": 2,
+     "campo": "DT_PROD",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data do reconhecimento da produção ocorrida no terceiro"
+    }
+   ]
+  },
+  "K301": {
+   "titulo": "Industrialização por terceiros - itens produzidos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"K301\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do item produzido (campo 02 do 0200)"
+    },
+    {
+     "n": 3,
+     "campo": "QTD",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 6,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade produzida"
+    }
+   ]
+  },
+  "K302": {
+   "titulo": "Industrialização por terceiros - insumos consumidos",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"K302\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do insumo (campo 02 do 0200)"
+    },
+    {
+     "n": 3,
+     "campo": "QTD",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 6,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade consumida"
+    }
+   ]
+  },
+  "K990": {
+   "titulo": "Encerramento do Bloco K",
+   "nivel": 1,
+   "ocorrencia": "1 por arquivo",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"K990\""
+    },
+    {
+     "n": 2,
+     "campo": "QTD_LIN_K",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Total de linhas do Bloco K"
+    }
+   ]
+  },
+  "1001": {
+   "titulo": "Abertura do Bloco 1",
+   "nivel": 1,
+   "ocorrencia": "1 por arquivo",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1001\""
+    },
+    {
+     "n": 2,
+     "campo": "IND_MOV",
+     "tipo": "N",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Indicador de movimento: 0 bloco com dados; 1 bloco sem dados",
+     "tamanho_fixo": true
+    }
+   ]
+  },
+  "1010": {
+   "titulo": "Obrigatoriedade de registros do Bloco 1",
+   "nivel": 2,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1010\"",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 2,
+     "campo": "IND_EXP",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1100: houve averbação de exportação no período (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "IND_CCRF",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1200: há informações de créditos de ICMS a controlar, definidos pela Sefaz (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 4,
+     "campo": "IND_COMB",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1300: comércio varejista de combustíveis com movimentação e/ou estoque (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 5,
+     "campo": "IND_USINA",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1390: usina de açúcar e/ou álcool com movimentação e/ou estoque (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 6,
+     "campo": "IND_VA",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1400: há informações a prestar, se obrigatório na UF (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 7,
+     "campo": "IND_EE",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1500: distribuidora de energia com fornecimento a consumidores de outra UF (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 8,
+     "campo": "IND_CART",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1601: vendas com instrumentos eletrônicos de pagamento (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 9,
+     "campo": "IND_FORM",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1700: documentos fiscais em papel emitidos em UF que exige controle (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 10,
+     "campo": "IND_AER",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1800: prestação de serviços de transporte aéreo de cargas e passageiros (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 11,
+     "campo": "IND_GIAF1",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1960: possui informações GIAF1 (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 12,
+     "campo": "IND_GIAF3",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1970: possui informações GIAF3 (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 13,
+     "campo": "IND_GIAF4",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1980: possui informações GIAF4 (S/N)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 14,
+     "campo": "IND_REST_RESSARC_COMPL_ICMS",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Reg. 1250: possui saldos consolidados de restituição, ressarcimento e complementação do ICMS (S/N)",
+     "tamanho_fixo": true
+    }
+   ]
+  },
+  "1100": {
+   "titulo": "Informações sobre exportação",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1100\""
+    },
+    {
+     "n": 2,
+     "campo": "IND_DOC",
+     "tipo": "N",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Tipo de documento: 0 Declaração de Exportação; 1 Declaração Simplificada; 2 Declaração Única",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "NRO_DE",
+     "tipo": "C",
+     "tamanho": 14,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número da declaração"
+    },
+    {
+     "n": 4,
+     "campo": "DT_DE",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data da declaração (DDMMAAAA)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 5,
+     "campo": "NAT_EXP",
+     "tipo": "N",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Natureza: 0 exportação direta; 1 exportação indireta",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 6,
+     "campo": "NRO_RE",
+     "tipo": "N",
+     "tamanho": 12,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do registro de exportação"
+    },
+    {
+     "n": 7,
+     "campo": "DT_RE",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data do registro de exportação (DDMMAAAA)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 8,
+     "campo": "CHC_EMB",
+     "tipo": "C",
+     "tamanho": 18,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do conhecimento de embarque"
+    },
+    {
+     "n": 9,
+     "campo": "DT_CHC",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data do conhecimento de embarque (DDMMAAAA)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 10,
+     "campo": "DT_AVB",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data da averbação da declaração de exportação (ddmmaaaa)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 11,
+     "campo": "TP_CHC",
+     "tipo": "N",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Tipo de conhecimento de embarque: 01 AWB; 02 MAWB; 03 HAWB; 04 COMAT; 06 R. EXPRESSAS; 07 ETIQ. REXPRESSAS; 08 HR. EXPRESSAS; 09 AV7; 10 BL; 11 MBL; 12 HBL; 13 CRT; 14 DSIC; 16 COMAT BL; 17 RWB; 18 HRWB; 19 TIF/DTA; 20 CP2; 91 NÂO IATA; 92 MNAO IATA; 93 HNAO IATA; 99 OUTROS",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 12,
+     "campo": "PAIS",
+     "tipo": "N",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do país de destino (tabela do SISCOMEX)"
+    }
+   ]
+  },
+  "1105": {
+   "titulo": "Documentos fiscais de exportação",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1105\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_MOD",
+     "tipo": "C",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do modelo da NF (tabela 4.1.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "SERIE",
+     "tipo": "C",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Série da nota fiscal"
+    },
+    {
+     "n": 4,
+     "campo": "NUM_DOC",
+     "tipo": "N",
+     "tamanho": 9,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número da NF de exportação emitida pelo exportador"
+    },
+    {
+     "n": 5,
+     "campo": "CHV_NFE",
+     "tipo": "C",
+     "tamanho": 44,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Chave da NF-e",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 6,
+     "campo": "DT_DOC",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data de emissão da NF de exportação",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 7,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do item (campo 02 do Reg. 0200)"
+    }
+   ]
+  },
+  "1110": {
+   "titulo": "Operações de exportação indireta - mercadorias de terceiros",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1110\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_PART",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do participante fornecedor da mercadoria (campo 02 do Reg. 0150)"
+    },
+    {
+     "n": 3,
+     "campo": "COD_MOD",
+     "tipo": "C",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do documento fiscal (tabela 4.1.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 4,
+     "campo": "SER",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Série do documento fiscal recebido para exportação"
+    },
+    {
+     "n": 5,
+     "campo": "NUM_DOC",
+     "tipo": "N",
+     "tamanho": 9,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do documento fiscal recebido para exportação"
+    },
+    {
+     "n": 6,
+     "campo": "DT_DOC",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data de emissão do documento recebido para exportação",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 7,
+     "campo": "CHV_NFE",
+     "tipo": "C",
+     "tamanho": 44,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Chave da NF-e",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 8,
+     "campo": "NR_MEMO",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do Memorando de Exportação"
+    },
+    {
+     "n": 9,
+     "campo": "QTD",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade efetivamente exportada"
+    },
+    {
+     "n": 10,
+     "campo": "UNID",
+     "tipo": "C",
+     "tamanho": 6,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Unidade do item (campo 02 do Reg. 0190)"
+    }
+   ]
+  },
+  "1200": {
+   "titulo": "Controle de créditos fiscais - ICMS",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1200\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_AJ_APUR",
+     "tipo": "C",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código de ajuste (tabela do item 5.1.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "SLD_CRED",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saldo de créditos fiscais de períodos anteriores"
+    },
+    {
+     "n": 4,
+     "campo": "CRED_APR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de crédito apropriado no mês"
+    },
+    {
+     "n": 5,
+     "campo": "CRED_RECEB",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de créditos recebidos por transferência"
+    },
+    {
+     "n": 6,
+     "campo": "CRED_UTIL",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de créditos utilizados no período"
+    },
+    {
+     "n": 7,
+     "campo": "SLD_CRED_FIM",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saldo de crédito acumulado a transportar para o período seguinte"
+    }
+   ],
+   "obs": "nome do campo 04 aparece como 'CRÉD_APR' (com acento) no texto da fonte; normalizado aqui para CRED_APR - conferir"
+  },
+  "1210": {
+   "titulo": "Utilização de créditos fiscais - ICMS",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1210\""
+    },
+    {
+     "n": 2,
+     "campo": "TIPO_UTIL",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Tipo de utilização do crédito (tabela do item 5.5)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "NR_DOC",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do documento usado na baixa de créditos"
+    },
+    {
+     "n": 4,
+     "campo": "VL_CRED_UTIL",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de crédito utilizado"
+    },
+    {
+     "n": 5,
+     "campo": "CHV_DOCe",
+     "tipo": "C",
+     "tamanho": 44,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Chave do documento eletrônico",
+     "tamanho_fixo": true
+    }
+   ]
+  },
+  "1300": {
+   "titulo": "Movimentação diária de combustíveis",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1300\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do produto, constante do registro 0200"
+    },
+    {
+     "n": 3,
+     "campo": "DT_FECH",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data do fechamento da movimentação",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 4,
+     "campo": "ESTQ_ABERT",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Estoque no início do dia (litros)"
+    },
+    {
+     "n": 5,
+     "campo": "VOL_ENTR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Volume recebido no dia (litros)"
+    },
+    {
+     "n": 6,
+     "campo": "VOL_DISP",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Volume disponível (04 + 05), em litros"
+    },
+    {
+     "n": 7,
+     "campo": "VOL_SAIDAS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Volume total das saídas (litros)"
+    },
+    {
+     "n": 8,
+     "campo": "ESTQ_ESCR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Estoque escritural (06 - 07), litros"
+    },
+    {
+     "n": 9,
+     "campo": "VAL_AJ_PERDA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Valor da perda (litros)"
+    },
+    {
+     "n": 10,
+     "campo": "VAL_AJ_GANHO",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Valor do ganho (litros)"
+    },
+    {
+     "n": 11,
+     "campo": "FECH_FISICO",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Estoque de fechamento (litros)"
+    }
+   ]
+  },
+  "1310": {
+   "titulo": "Movimentação diária de combustíveis por tanque",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1310\""
+    },
+    {
+     "n": 2,
+     "campo": "NUM_TANQUE",
+     "tipo": "C",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Tanque que armazena o combustível"
+    },
+    {
+     "n": 3,
+     "campo": "ESTQ_ABERT",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Estoque no início do dia (litros)"
+    },
+    {
+     "n": 4,
+     "campo": "VOL_ENTR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Volume recebido no dia (litros)"
+    },
+    {
+     "n": 5,
+     "campo": "VOL_DISP",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Volume disponível (03 + 04), em litros"
+    },
+    {
+     "n": 6,
+     "campo": "VOL_SAIDAS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Volume total das saídas (litros)"
+    },
+    {
+     "n": 7,
+     "campo": "ESTQ_ESCR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Estoque escritural (05 - 06), litros"
+    },
+    {
+     "n": 8,
+     "campo": "VAL_AJ_PERDA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Valor da perda (litros)"
+    },
+    {
+     "n": 9,
+     "campo": "VAL_AJ_GANHO",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Valor do ganho (litros)"
+    },
+    {
+     "n": 10,
+     "campo": "FECH_FISICO",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Volume aferido no tanque (litros); estoque de fechamento físico do tanque"
+    },
+    {
+     "n": 11,
+     "campo": "CAP_TANQUE",
+     "tipo": "N",
+     "tamanho": 6,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Capacidade de armazenagem (litros)"
+    }
+   ]
+  },
+  "1320": {
+   "titulo": "Volume de vendas",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1320\""
+    },
+    {
+     "n": 2,
+     "campo": "NUM_BICO",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Bico ligado à bomba"
+    },
+    {
+     "n": 3,
+     "campo": "NR_INTERV",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número da intervenção"
+    },
+    {
+     "n": 4,
+     "campo": "MOT_INTERV",
+     "tipo": "C",
+     "tamanho": 50,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Motivo da intervenção"
+    },
+    {
+     "n": 5,
+     "campo": "NOM_INTERV",
+     "tipo": "C",
+     "tamanho": 30,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Nome do interventor"
+    },
+    {
+     "n": 6,
+     "campo": "CNPJ_INTERV",
+     "tipo": "C",
+     "tamanho": 14,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "CNPJ da empresa responsável pela intervenção",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 7,
+     "campo": "CPF_INTERV",
+     "tipo": "N",
+     "tamanho": 11,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "CPF do técnico responsável pela intervenção",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 8,
+     "campo": "VAL_FECHA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Leitura final do contador no fechamento do bico"
+    },
+    {
+     "n": 9,
+     "campo": "VAL_ABERT",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Leitura inicial do contador na abertura do bico"
+    },
+    {
+     "n": 10,
+     "campo": "VOL_AFERI",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Aferições da bomba (litros)"
+    },
+    {
+     "n": 11,
+     "campo": "VOL_VENDAS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Vendas do bico (08 - 09 - 10), em litros"
+    }
+   ]
+  },
+  "1350": {
+   "titulo": "Bombas",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1350\""
+    },
+    {
+     "n": 2,
+     "campo": "SERIE",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número de série da bomba"
+    },
+    {
+     "n": 3,
+     "campo": "FABRICANTE",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Nome do fabricante da bomba"
+    },
+    {
+     "n": 4,
+     "campo": "MODELO",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Modelo da bomba"
+    },
+    {
+     "n": 5,
+     "campo": "TIPO_MEDICAO",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Identificador de medição: 0 analógico; 1 digital"
+    }
+   ]
+  },
+  "1360": {
+   "titulo": "Lacres da bomba",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1360\""
+    },
+    {
+     "n": 2,
+     "campo": "NUM_LACRE",
+     "tipo": "C",
+     "tamanho": 20,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do lacre associado na bomba"
+    },
+    {
+     "n": 3,
+     "campo": "DT_APLICACAO",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data de aplicação do lacre",
+     "tamanho_fixo": true
+    }
+   ]
+  },
+  "1370": {
+   "titulo": "Bicos da bomba",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1370\""
+    },
+    {
+     "n": 2,
+     "campo": "NUM_BICO",
+     "tipo": "N",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número sequencial do bico ligado à bomba"
+    },
+    {
+     "n": 3,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do produto, constante do registro 0200"
+    },
+    {
+     "n": 4,
+     "campo": "NUM_TANQUE",
+     "tipo": "C",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Tanque que armazena o combustível"
+    }
+   ]
+  },
+  "1390": {
+   "titulo": "Controle de produção de usina",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1390\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_PROD",
+     "tipo": "N",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do produto conforme tabela 5.8",
+     "tamanho_fixo": true
+    }
+   ]
+  },
+  "1391": {
+   "titulo": "Produção diária da usina",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1391\""
+    },
+    {
+     "n": 2,
+     "campo": "DT_REGISTRO",
+     "tipo": "C",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data de produção (DDMMAAAA)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "QTD_MOID",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade de insumo esmagado (toneladas)"
+    },
+    {
+     "n": 4,
+     "campo": "ESTQ_INI",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Estoque inicial (litros / kg)"
+    },
+    {
+     "n": 5,
+     "campo": "QTD_PRODUZ",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade produzida (litros / kg)"
+    },
+    {
+     "n": 6,
+     "campo": "ENT_ANID_HID",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Entrada de álcool anidro decorrente da transformação do hidratado, ou entrada de hidratado decorrente do anidro (litros)"
+    },
+    {
+     "n": 7,
+     "campo": "OUTR_ENTR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Outras entradas (litros / kg)"
+    },
+    {
+     "n": 8,
+     "campo": "PERDA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Evaporação (litros) ou quebra de peso (kg)"
+    },
+    {
+     "n": 9,
+     "campo": "CONS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Consumo (litros)"
+    },
+    {
+     "n": 10,
+     "campo": "SAI_ANI_HID",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saída para transformação (litros)"
+    },
+    {
+     "n": 11,
+     "campo": "SAIDAS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Saídas (litros / kg)"
+    },
+    {
+     "n": 12,
+     "campo": "ESTQ_FIN",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Estoque final (litros / kg)"
+    },
+    {
+     "n": 13,
+     "campo": "ESTQ_INI_MEL",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Estoque inicial de mel residual (kg)"
+    },
+    {
+     "n": 14,
+     "campo": "PROD_DIA_MEL",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Produção de mel residual e entradas de mel (kg)"
+    },
+    {
+     "n": 15,
+     "campo": "UTIL_MEL",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Mel residual utilizado e saídas de mel (kg)"
+    },
+    {
+     "n": 16,
+     "campo": "PROD_ALC_MEL",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Produção de álcool (litros) ou açúcar (kg) proveniente do mel residual"
+    },
+    {
+     "n": 17,
+     "campo": "OBS",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Observações"
+    },
+    {
+     "n": 18,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Insumo conforme código do item (campo 02 do registro 0200)"
+    },
+    {
+     "n": 19,
+     "campo": "TP_RESIDUO",
+     "tipo": "N",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Tipo de resíduo produzido: 01 bagaço de cana; 02 DDG; 03 WDG; 04 DDG + WDG",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 20,
+     "campo": "QTD_RESIDUO",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade de resíduo produzido (toneladas)"
+    },
+    {
+     "n": 21,
+     "campo": "QTD_RESIDUO_DDG",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade de resíduo de DDG (toneladas)"
+    },
+    {
+     "n": 22,
+     "campo": "QTD_RESIDUO_WDG",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade de resíduo de WDG (toneladas)"
+    },
+    {
+     "n": 23,
+     "campo": "QTD_RESIDUO_CANA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade de resíduo de bagaço de cana (toneladas)"
+    }
+   ],
+   "obs": "campo 11 (SAIDAS): tipo, tamanho e decimais não confirmados pela leitura (tipo N assumido NAO confirmado) - conferir no PDF"
+  },
+  "1400": {
+   "titulo": "Informação sobre valores agregados",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1400\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_ITEM_IPM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do item (tabela própria da UF ou campo 02 do registro 0200)"
+    },
+    {
+     "n": 3,
+     "campo": "MUN",
+     "tipo": "N",
+     "tamanho": 7,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do município de origem/destino",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 4,
+     "campo": "VALOR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor mensal correspondente ao município"
+    }
+   ],
+   "obs": "nome do campo 02 aparece como 'COD_ITEM - IPM' na fonte"
+  },
+  "1500": {
+   "titulo": "Nota fiscal/conta de energia elétrica (código 06) - operações interestaduais",
+   "nivel": 2,
+   "ocorrencia": "1:N (conforme leitura 'vários por arquivo')",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1500\""
+    },
+    {
+     "n": 2,
+     "campo": "IND_OPER",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Tipo de operação (1 = Saída)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "IND_EMIT",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Emitente (0 = Emissão própria)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 4,
+     "campo": "COD_PART",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Participante (campo 02 do 0150), adquirente nas saídas"
+    },
+    {
+     "n": 5,
+     "campo": "COD_MOD",
+     "tipo": "C",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Modelo do documento fiscal (tabela 4.1.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 6,
+     "campo": "COD_SIT",
+     "tipo": "N",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Situação do documento (tabela 4.1.2)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 7,
+     "campo": "SER",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Série do documento"
+    },
+    {
+     "n": 8,
+     "campo": "SUB",
+     "tipo": "N",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Subsérie do documento"
+    },
+    {
+     "n": 9,
+     "campo": "COD_CONS",
+     "tipo": "C",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Classe de consumo (01 a 08: Comercial a Serviço Público)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 10,
+     "campo": "NUM_DOC",
+     "tipo": "N",
+     "tamanho": 9,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do documento fiscal"
+    },
+    {
+     "n": 11,
+     "campo": "DT_DOC",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data de emissão",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 12,
+     "campo": "DT_E_S",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data de entrada ou saída",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 13,
+     "campo": "VL_DOC",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor total do documento"
+    },
+    {
+     "n": 14,
+     "campo": "VL_DESC",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor total do desconto"
+    },
+    {
+     "n": 15,
+     "campo": "VL_FORN",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor total fornecido/consumido"
+    },
+    {
+     "n": 16,
+     "campo": "VL_SERV_NT",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Serviços não tributados pelo ICMS"
+    },
+    {
+     "n": 17,
+     "campo": "VL_TERC",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor cobrado em nome de terceiros"
+    },
+    {
+     "n": 18,
+     "campo": "VL_DA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Despesas acessórias"
+    },
+    {
+     "n": 19,
+     "campo": "VL_BC_ICMS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Base de cálculo do ICMS (acumulada)"
+    },
+    {
+     "n": 20,
+     "campo": "VL_ICMS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "ICMS (acumulado)"
+    },
+    {
+     "n": 21,
+     "campo": "VL_BC_ICMS_ST",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Base de cálculo da ST (acumulada)"
+    },
+    {
+     "n": 22,
+     "campo": "VL_ICMS_ST",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "ICMS retido por substituição tributária"
+    },
+    {
+     "n": 23,
+     "campo": "COD_INF",
+     "tipo": "C",
+     "tamanho": 6,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código de informação complementar (campo 02 do 0450)"
+    },
+    {
+     "n": 24,
+     "campo": "VL_PIS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor do PIS"
+    },
+    {
+     "n": 25,
+     "campo": "VL_COFINS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor da COFINS"
+    },
+    {
+     "n": 26,
+     "campo": "TP_LIGACAO",
+     "tipo": "N",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Tipo de ligação: 1 Monofásico, 2 Bifásico, 3 Trifásico",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 27,
+     "campo": "COD_GRUPO_TENSAO",
+     "tipo": "C",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Grupo de tensão: 01 (A1) a 14 (B4b)",
+     "tamanho_fixo": true
+    }
+   ],
+   "obs": "listas completas COD_CONS e COD_GRUPO_TENSAO apareceram resumidas na leitura; IND_OPER/IND_EMIT só com o valor de saída/própria - conferir no PDF"
+  },
+  "1510": {
+   "titulo": "Itens do documento NF/conta de energia elétrica (código 06)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1510\""
+    },
+    {
+     "n": 2,
+     "campo": "NUM_ITEM",
+     "tipo": "N",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número sequencial do item"
+    },
+    {
+     "n": 3,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do item (campo 02 do 0200)"
+    },
+    {
+     "n": 4,
+     "campo": "COD_CLASS",
+     "tipo": "N",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Classificação do item de energia (tabela 4.4.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 5,
+     "campo": "QTD",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 3,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade do item"
+    },
+    {
+     "n": 6,
+     "campo": "UNID",
+     "tipo": "C",
+     "tamanho": 6,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Unidade do item (campo 02 do 0190)"
+    },
+    {
+     "n": 7,
+     "campo": "VL_ITEM",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor do item"
+    },
+    {
+     "n": 8,
+     "campo": "VL_DESC",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor total do desconto"
+    },
+    {
+     "n": 9,
+     "campo": "CST_ICMS",
+     "tipo": "N",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Situação tributária (tabela 4.3.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 10,
+     "campo": "CFOP",
+     "tipo": "N",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código Fiscal de Operação e Prestação",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 11,
+     "campo": "VL_BC_ICMS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Base de cálculo do ICMS"
+    },
+    {
+     "n": 12,
+     "campo": "ALIQ_ICMS",
+     "tipo": "N",
+     "tamanho": 6,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Alíquota do ICMS"
+    },
+    {
+     "n": 13,
+     "campo": "VL_ICMS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor do ICMS creditado/debitado"
+    },
+    {
+     "n": 14,
+     "campo": "VL_BC_ICMS_ST",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Base de cálculo da ST"
+    },
+    {
+     "n": 15,
+     "campo": "ALIQ_ST",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Alíquota da ST na UF de destino"
+    },
+    {
+     "n": 16,
+     "campo": "VL_ICMS_ST",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor do ICMS da ST"
+    },
+    {
+     "n": 17,
+     "campo": "IND_REC",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Tipo de receita: 0 Própria, 1 Terceiros",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 18,
+     "campo": "COD_PART",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Participante receptor da receita (campo 02 do 0150)"
+    },
+    {
+     "n": 19,
+     "campo": "VL_PIS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor do PIS"
+    },
+    {
+     "n": 20,
+     "campo": "VL_COFINS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor da COFINS"
+    },
+    {
+     "n": 21,
+     "campo": "COD_CTA",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Conta analítica contábil debitada/creditada"
+    }
+   ]
+  },
+  "1601": {
+   "titulo": "Operações com instrumentos de pagamentos eletrônicos (a partir de 01/01/2022)",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1601\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_PART_IP",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Participante (0150) da instituição que efetuou o pagamento"
+    },
+    {
+     "n": 3,
+     "campo": "COD_PART_IT",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Participante (0150) do intermediador da transação"
+    },
+    {
+     "n": 4,
+     "campo": "TOT_VS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor total bruto de vendas/prestações no campo de incidência do ICMS"
+    },
+    {
+     "n": 5,
+     "campo": "TOT_ISS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor total bruto das prestações no campo de incidência do ISS"
+    },
+    {
+     "n": 6,
+     "campo": "TOT_OUTROS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor total de operações deduzido de TOT_VS e TOT_ISS"
+    }
+   ]
+  },
+  "1700": {
+   "titulo": "Documentos fiscais utilizados",
+   "nivel": 2,
+   "ocorrencia": null,
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1700\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_DISP",
+     "tipo": "C",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do dispositivo autorizado: 00 a 05 (formulário de segurança, FS-DA, NF-e, contínuo, blocos, jogos soltos)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "COD_MOD",
+     "tipo": "C",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Modelo do dispositivo (tabela 4.1.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 4,
+     "campo": "SER",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Série do dispositivo"
+    },
+    {
+     "n": 5,
+     "campo": "SUB",
+     "tipo": "C",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Subsérie do dispositivo"
+    },
+    {
+     "n": 6,
+     "campo": "NUM_DOC_INI",
+     "tipo": "N",
+     "tamanho": 12,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número inicial do dispositivo"
+    },
+    {
+     "n": 7,
+     "campo": "NUM_DOC_FIN",
+     "tipo": "N",
+     "tamanho": 12,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número final do dispositivo"
+    },
+    {
+     "n": 8,
+     "campo": "NUM_AUT",
+     "tipo": "N",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número da autorização"
+    }
+   ],
+   "obs": "ocorrência não confirmada (leitura retornou 'V'); lista COD_DISP resumida - conferir no PDF"
+  },
+  "1710": {
+   "titulo": "Documentos fiscais cancelados/inutilizados",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1710\""
+    },
+    {
+     "n": 2,
+     "campo": "NUM_DOC_INI",
+     "tipo": "N",
+     "tamanho": 12,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número inicial do dispositivo"
+    },
+    {
+     "n": 3,
+     "campo": "NUM_DOC_FIN",
+     "tipo": "N",
+     "tamanho": 12,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número final do dispositivo"
+    }
+   ]
+  },
+  "1800": {
+   "titulo": "DCTA - demonstrativo de crédito do ICMS sobre transporte aéreo",
+   "nivel": 2,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1800\"",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 2,
+     "campo": "VL_CARGA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Prestações de cargas (tributado)"
+    },
+    {
+     "n": 3,
+     "campo": "VL_PASS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Prestações de passageiros/cargas (não tributado)"
+    },
+    {
+     "n": 4,
+     "campo": "VL_FAT",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor total do faturamento (2+3)"
+    },
+    {
+     "n": 5,
+     "campo": "IND_RAT",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": 6,
+     "obrigatoriedade": null,
+     "descricao": "Índice para rateio (2/4)"
+    },
+    {
+     "n": 6,
+     "campo": "VL_ICMS_ANT",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor total dos créditos de ICMS"
+    },
+    {
+     "n": 7,
+     "campo": "VL_BC_ICMS",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Base de cálculo do ICMS"
+    },
+    {
+     "n": 8,
+     "campo": "VL_ICMS_APUR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "ICMS apurado (5 x 6)"
+    },
+    {
+     "n": 9,
+     "campo": "VL_BC_ICMS_APUR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Base de cálculo apurada (5 x 7)"
+    },
+    {
+     "n": 10,
+     "campo": "VL_DIF",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Diferença a ser estornada na apuração (6 - 8)"
+    }
+   ]
+  },
+  "1900": {
+   "titulo": "Indicador de sub-apuração do ICMS",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1900\""
+    },
+    {
+     "n": 2,
+     "campo": "IND_APUR_ICMS",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Indicador de outra apuração do ICMS: 3 (Apuração 1) a 8 (Apuração 6)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "DESCR_COMPL_OUT_APUR",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Descrição complementar de outra apuração do ICMS"
+    }
+   ]
+  },
+  "1910": {
+   "titulo": "Período da sub-apuração do ICMS",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1910\""
+    },
+    {
+     "n": 2,
+     "campo": "DT_INI",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data inicial da sub-apuração",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "DT_FIN",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data final da sub-apuração",
+     "tamanho_fixo": true
+    }
+   ]
+  },
+  "1920": {
+   "titulo": "Sub-apuração do ICMS",
+   "nivel": 4,
+   "ocorrencia": "1 por período",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1920\""
+    },
+    {
+     "n": 2,
+     "campo": "VL_TOT_TRANSF_DEBITOS_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total dos débitos por saídas e prestações com débito do imposto"
+    },
+    {
+     "n": 3,
+     "campo": "VL_TOT_AJ_DEBITOS_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de ajustes a débito"
+    },
+    {
+     "n": 4,
+     "campo": "VL_ESTORNOS_CRED_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de ajustes 'estornos de créditos'"
+    },
+    {
+     "n": 5,
+     "campo": "VL_TOT_TRANSF_CREDITOS_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total dos créditos por entradas e aquisições com crédito do imposto"
+    },
+    {
+     "n": 6,
+     "campo": "VL_TOT_AJ_CREDITOS_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de ajustes a crédito"
+    },
+    {
+     "n": 7,
+     "campo": "VL_ESTORNOS_DEB_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de ajustes 'estornos de débitos'"
+    },
+    {
+     "n": 8,
+     "campo": "VL_SLD_CREDOR_ANT_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de 'saldo credor do período anterior'"
+    },
+    {
+     "n": 9,
+     "campo": "VL_SLD_APURADO_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor do saldo devedor apurado"
+    },
+    {
+     "n": 10,
+     "campo": "VL_TOT_DED",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de 'deduções'"
+    },
+    {
+     "n": 11,
+     "campo": "VL_ICMS_RECOLHER_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de 'ICMS a recolher (09-10)'"
+    },
+    {
+     "n": 12,
+     "campo": "VL_SLD_CREDOR_TRANSP_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Total de saldo credor a transportar para o período seguinte"
+    },
+    {
+     "n": 13,
+     "campo": "DEB_ESP_OA",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valores recolhidos ou a recolher, extra-apuração"
+    }
+   ]
+  },
+  "1921": {
+   "titulo": "Ajuste/benefício/incentivo da sub-apuração do ICMS",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1921\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_AJ_APUR",
+     "tipo": "C",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do ajuste da sub-apuração e dedução, conforme tabela 5.1.1",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "DESCR_COMPL_AJ",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Descrição complementar do ajuste da apuração"
+    },
+    {
+     "n": 4,
+     "campo": "VL_AJ_APUR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor do ajuste da apuração"
+    },
+    {
+     "n": 5,
+     "campo": "IND_BENEFICIO",
+     "tipo": "N",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Indicador de compõe o cálculo da repercussão econômica (LC 214/2025): 0 não compõe; 1, 2 ou 3 (alíneas a, b ou c do inciso V do art. 385); 9 outras hipóteses"
+    }
+   ],
+   "obs": "descrição de IND_BENEFICIO resumida na leitura - conferir texto exato no PDF"
+  },
+  "1922": {
+   "titulo": "Informações adicionais dos ajustes da sub-apuração do ICMS",
+   "nivel": 6,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1922\""
+    },
+    {
+     "n": 2,
+     "campo": "NUM_DA",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do documento de arrecadação estadual, se houver"
+    },
+    {
+     "n": 3,
+     "campo": "NUM_PROC",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do processo vinculado ao ajuste, se houver"
+    },
+    {
+     "n": 4,
+     "campo": "IND_PROC",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Origem do processo: 0 SEFAZ; 1 Justiça Federal; 2 Justiça Estadual; 9 Outros",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 5,
+     "campo": "PROC",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Descrição resumida do processo que embasou o lançamento"
+    },
+    {
+     "n": 6,
+     "campo": "TXT_COMPL",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Descrição complementar"
+    }
+   ]
+  },
+  "1923": {
+   "titulo": "Informações adicionais dos ajustes da sub-apuração do ICMS - identificação dos documentos fiscais",
+   "nivel": 6,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1923\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_PART",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do participante (campo 02 do Registro 0150): emitente/remetente em entradas; adquirente em saídas"
+    },
+    {
+     "n": 3,
+     "campo": "COD_MOD",
+     "tipo": "C",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do modelo do documento fiscal (tabela 4.1.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 4,
+     "campo": "SER",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Série do documento fiscal"
+    },
+    {
+     "n": 5,
+     "campo": "SUB",
+     "tipo": "N",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Subsérie do documento fiscal"
+    },
+    {
+     "n": 6,
+     "campo": "NUM_DOC",
+     "tipo": "N",
+     "tamanho": 9,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do documento fiscal"
+    },
+    {
+     "n": 7,
+     "campo": "DT_DOC",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data da emissão do documento fiscal",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 8,
+     "campo": "COD_ITEM",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código do item (campo 02 do Registro 0200)"
+    },
+    {
+     "n": 9,
+     "campo": "VL_AJ_ITEM",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor do ajuste para a operação/item"
+    },
+    {
+     "n": 10,
+     "campo": "CHV_DOCe",
+     "tipo": "C",
+     "tamanho": 44,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Chave do Documento Eletrônico",
+     "tamanho_fixo": true
+    }
+   ]
+  },
+  "1925": {
+   "titulo": "Informações adicionais da sub-apuração - valores declaratórios",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1925\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_INF_ADIC",
+     "tipo": "C",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código da informação adicional, conforme tabela definida pelas SEFAZ (item 5.2)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "VL_INF_ADIC",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor referente à informação adicional"
+    },
+    {
+     "n": 4,
+     "campo": "DESCR_COMPL_AJ",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Descrição complementar do ajuste"
+    }
+   ]
+  },
+  "1926": {
+   "titulo": "Obrigações do ICMS a recolher - operações referentes à sub-apuração",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1926\""
+    },
+    {
+     "n": 2,
+     "campo": "COD_OR",
+     "tipo": "C",
+     "tamanho": 3,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código da obrigação a recolher, conforme tabela 5.4",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "VL_OR",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Valor da obrigação a recolher"
+    },
+    {
+     "n": 4,
+     "campo": "DT_VCTO",
+     "tipo": "N",
+     "tamanho": 8,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Data de vencimento",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 5,
+     "campo": "COD_REC",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Código de receita próprio da UF, conforme legislação estadual"
+    },
+    {
+     "n": 6,
+     "campo": "NUM_PROC",
+     "tipo": "C",
+     "tamanho": 60,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Número do processo ou auto de infração vinculado, se houver"
+    },
+    {
+     "n": 7,
+     "campo": "IND_PROC",
+     "tipo": "C",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Origem do processo: 0, 1, 2 ou 9 (mesmos valores do 1922)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 8,
+     "campo": "PROC",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Descrição resumida do processo que embasou o lançamento"
+    },
+    {
+     "n": 9,
+     "campo": "TXT_COMPL",
+     "tipo": "C",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Descrição complementar das obrigações a recolher"
+    },
+    {
+     "n": 10,
+     "campo": "MES_REF",
+     "tipo": "N",
+     "tamanho": 6,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Mês de referência no formato \"mmaaaa\"",
+     "tamanho_fixo": true
+    }
+   ]
+  },
+  "1960": {
+   "titulo": "GIAF 1 - Indústria (crédito presumido)",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1960\""
+    },
+    {
+     "n": 2,
+     "campo": "IND_AP",
+     "tipo": "N",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Indicador da sub-apuração por tipo de benefício (tabela 4.7.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "G1_01",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Percentual de crédito presumido"
+    },
+    {
+     "n": 4,
+     "campo": "G1_02",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saídas não incentivadas de PI"
+    },
+    {
+     "n": 5,
+     "campo": "G1_03",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saídas incentivadas de PI"
+    },
+    {
+     "n": 6,
+     "campo": "G1_04",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saídas incentivadas de PI para fora do Nordeste"
+    },
+    {
+     "n": 7,
+     "campo": "G1_05",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saldo devedor do ICMS antes das deduções do incentivo"
+    },
+    {
+     "n": 8,
+     "campo": "G1_06",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saldo devedor do ICMS relativo à faixa incentivada de PI"
+    },
+    {
+     "n": 9,
+     "campo": "G1_07",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Crédito presumido nas saídas incentivadas de PI para fora do Nordeste"
+    },
+    {
+     "n": 10,
+     "campo": "G1_08",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saldo devedor relativo à faixa incentivada de PI após o crédito presumido nas saídas para fora do Nordeste"
+    },
+    {
+     "n": 11,
+     "campo": "G1_09",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Crédito presumido"
+    },
+    {
+     "n": 12,
+     "campo": "G1_10",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Dedução de incentivo da Indústria (crédito presumido)"
+    },
+    {
+     "n": 13,
+     "campo": "G1_11",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saldo devedor do ICMS após deduções"
+    }
+   ]
+  },
+  "1970": {
+   "titulo": "GIAF 3 - Importação (diferimento na entrada e crédito presumido na saída subsequente)",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1970\""
+    },
+    {
+     "n": 2,
+     "campo": "IND_AP",
+     "tipo": "N",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Indicador da sub-apuração por tipo de benefício (tabela 4.7.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "G3_01",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Importações com ICMS diferido"
+    },
+    {
+     "n": 4,
+     "campo": "G3_02",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "ICMS diferido nas importações"
+    },
+    {
+     "n": 5,
+     "campo": "G3_03",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saídas não incentivadas de PI"
+    },
+    {
+     "n": 6,
+     "campo": "G3_04",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Percentual de incentivo nas saídas para fora do Estado"
+    },
+    {
+     "n": 7,
+     "campo": "G3_05",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saídas incentivadas de PI para fora do Estado"
+    },
+    {
+     "n": 8,
+     "campo": "G3_06",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "ICMS das saídas incentivadas de PI para fora do Estado"
+    },
+    {
+     "n": 9,
+     "campo": "G3_07",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Crédito presumido nas saídas para fora do Estado"
+    },
+    {
+     "n": 10,
+     "campo": "G3_T",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Dedução de incentivo da Importação (crédito presumido)"
+    },
+    {
+     "n": 11,
+     "campo": "G3_08",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saldo devedor do ICMS antes das deduções do incentivo"
+    },
+    {
+     "n": 12,
+     "campo": "G3_09",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saldo devedor do ICMS após deduções do incentivo"
+    }
+   ]
+  },
+  "1975": {
+   "titulo": "GIAF 3 - Importação (saídas internas por faixa de alíquota)",
+   "nivel": 3,
+   "ocorrencia": "1:4",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1975\""
+    },
+    {
+     "n": 2,
+     "campo": "ALIQ_IMP_BASE",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Alíquota incidente sobre as importações-base"
+    },
+    {
+     "n": 3,
+     "campo": "G3_10",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saídas incentivadas de PI"
+    },
+    {
+     "n": 4,
+     "campo": "G3_11",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Importações-base para o crédito presumido"
+    },
+    {
+     "n": 5,
+     "campo": "G3_12",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Crédito presumido nas saídas internas"
+    }
+   ]
+  },
+  "1980": {
+   "titulo": "GIAF 4 - Central de distribuição (entradas/saídas)",
+   "nivel": 2,
+   "ocorrencia": "1",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1980\""
+    },
+    {
+     "n": 2,
+     "campo": "IND_AP",
+     "tipo": "N",
+     "tamanho": 2,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Indicador da sub-apuração por tipo de benefício (tabela 4.7.1)",
+     "tamanho_fixo": true
+    },
+    {
+     "n": 3,
+     "campo": "G4_01",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Entradas (percentual de incentivo)"
+    },
+    {
+     "n": 4,
+     "campo": "G4_02",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Entradas não incentivadas de PI"
+    },
+    {
+     "n": 5,
+     "campo": "G4_03",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Entradas incentivadas de PI"
+    },
+    {
+     "n": 6,
+     "campo": "G4_04",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saídas (percentual de incentivo)"
+    },
+    {
+     "n": 7,
+     "campo": "G4_05",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saídas não incentivadas de PI"
+    },
+    {
+     "n": 8,
+     "campo": "G4_06",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saídas incentivadas de PI"
+    },
+    {
+     "n": 9,
+     "campo": "G4_07",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saldo devedor do ICMS antes das deduções do incentivo (PI e itens não incentivados)"
+    },
+    {
+     "n": 10,
+     "campo": "G4_08",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Crédito presumido nas entradas incentivadas de PI"
+    },
+    {
+     "n": 11,
+     "campo": "G4_09",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Crédito presumido nas saídas incentivadas de PI"
+    },
+    {
+     "n": 12,
+     "campo": "G4_10",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Dedução de incentivo da Central de Distribuição (entradas/saídas)"
+    },
+    {
+     "n": 13,
+     "campo": "G4_11",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Saldo devedor do ICMS após deduções do incentivo"
+    },
+    {
+     "n": 14,
+     "campo": "G4_12",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": 2,
+     "obrigatoriedade": null,
+     "descricao": "Índice de recolhimento da central de distribuição"
+    }
+   ]
+  },
+  "1990": {
+   "titulo": "Encerramento do Bloco 1",
+   "nivel": 1,
+   "ocorrencia": "1 por arquivo",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"1990\""
+    },
+    {
+     "n": 2,
+     "campo": "QTD_LIN_1",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade total de linhas do Bloco 1"
+    }
+   ]
+  },
+  "9001": {
+   "titulo": "Abertura do Bloco 9",
+   "nivel": 1,
+   "ocorrencia": "1 por arquivo",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"9001\""
+    },
+    {
+     "n": 2,
+     "campo": "IND_MOV",
+     "tipo": "N",
+     "tamanho": 1,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Indicador de movimento: 0 bloco com dados informados; 1 bloco sem dados informados",
+     "tamanho_fixo": true
+    }
+   ]
+  },
+  "9900": {
+   "titulo": "Registros do arquivo",
+   "nivel": 2,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"9900\""
+    },
+    {
+     "n": 2,
+     "campo": "REG_BLC",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Registro que será totalizado no próximo campo"
+    },
+    {
+     "n": 3,
+     "campo": "QTD_REG_BLC",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Total de registros do tipo informado no campo anterior"
+    }
+   ]
+  },
+  "9990": {
+   "titulo": "Encerramento do Bloco 9",
+   "nivel": 1,
+   "ocorrencia": "1 por arquivo",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"9990\""
+    },
+    {
+     "n": 2,
+     "campo": "QTD_LIN_9",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade total de linhas do Bloco 9"
+    }
+   ]
+  },
+  "9999": {
+   "titulo": "Encerramento do arquivo digital",
+   "nivel": 0,
+   "ocorrencia": "1 por arquivo",
+   "campos": [
+    {
+     "n": 1,
+     "campo": "REG",
+     "tipo": "C",
+     "tamanho": 4,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Texto fixo \"9999\""
+    },
+    {
+     "n": 2,
+     "campo": "QTD_LIN",
+     "tipo": "N",
+     "tamanho": null,
+     "decimais": null,
+     "obrigatoriedade": null,
+     "descricao": "Quantidade total de linhas do arquivo digital"
+    }
+   ]
+  }
+ },
+ "tabelas": {
+  "K270.ORIGEM": {
+   "1": "correção de produção e/ou consumo dos Registros K230/K235",
+   "2": "correção de produção e/ou consumo dos Registros K250/K255",
+   "3": "correção de desmontagem e/ou consumo dos Registros K210/K215",
+   "4": "correção de reprocessamento/reparo e/ou consumo dos Registros K260/K265",
+   "5": "correção de movimentação interna do Registro K220",
+   "6": "correção de produção do Registro K291",
+   "7": "correção de consumo do Registro K292",
+   "8": "correção de produção do Registro K301",
+   "9": "correção de consumo do Registro K302"
+  },
+  "K280.IND_EST": {
+   "0": "próprio em seu poder",
+   "1": "próprio em posse de terceiros",
+   "2": "de terceiros em posse do informante"
+  },
+  "1100.IND_DOC": {
+   "0": "Declaração de Exportação",
+   "1": "Declaração Simplificada",
+   "2": "Declaração Única"
+  },
+  "1100.NAT_EXP": {
+   "0": "exportação direta",
+   "1": "exportação indireta"
+  },
+  "1100.TP_CHC": {
+   "01": "AWB",
+   "02": "MAWB",
+   "03": "HAWB",
+   "04": "COMAT",
+   "06": "R. EXPRESSAS",
+   "07": "ETIQ. REXPRESSAS",
+   "08": "HR. EXPRESSAS",
+   "09": "AV7",
+   "10": "BL",
+   "11": "MBL",
+   "12": "HBL",
+   "13": "CRT",
+   "14": "DSIC",
+   "16": "COMAT BL",
+   "17": "RWB",
+   "18": "HRWB",
+   "19": "TIF/DTA",
+   "20": "CP2",
+   "91": "NÂO IATA",
+   "92": "MNAO IATA",
+   "93": "HNAO IATA",
+   "99": "OUTROS"
+  },
+  "1350.TIPO_MEDICAO": {
+   "0": "analógico",
+   "1": "digital"
+  },
+  "1391.TP_RESIDUO": {
+   "01": "bagaço de cana",
+   "02": "DDG",
+   "03": "WDG",
+   "04": "DDG + WDG"
+  },
+  "1500.TP_LIGACAO": {
+   "1": "Monofásico",
+   "2": "Bifásico",
+   "3": "Trifásico"
+  },
+  "1510.IND_REC": {
+   "0": "Própria",
+   "1": "Terceiros"
+  },
+  "1900.IND_APUR_ICMS": {
+   "3": "Apuração 1",
+   "8": "Apuração 6",
+   "_obs": "leitura trouxe apenas os extremos (3 a 8); intermediários 4-7 não confirmados"
+  },
+  "1921.IND_BENEFICIO": {
+   "0": "não compõe",
+   "1": "alínea a do inciso V do art. 385 (LC 214/2025)",
+   "2": "alínea b",
+   "3": "alínea c",
+   "9": "outras hipóteses"
+  },
+  "1922.IND_PROC": {
+   "0": "SEFAZ",
+   "1": "Justiça Federal",
+   "2": "Justiça Estadual",
+   "9": "Outros"
+  },
+  "1001.IND_MOV": {
+   "0": "bloco com dados",
+   "1": "bloco sem dados"
+  },
+  "9001.IND_MOV": {
+   "0": "bloco com dados informados",
+   "1": "bloco sem dados informados"
+  }
+ },
+ "incompletos": [
+  "K270: trecho começa no meio do registro (cabeçalho e campos 01-03 e parte do 04 cortados); só campos 05 COD_ITEM(C,060), 06 QTD_COR_POS(N,dec 6), 07 QTD_COR_NEG(N,dec 6), 08 ORIGEM(C,001) vistos - registro não gravado em 'registros'",
+  "Anexo I (tabela de alterações): registros 0000, 0100, 0150, C115, C175, B020, C100, C113, C116, C176, C181, C186, C197, C465, C500, C597, C800, C180, D100, D197, D700, D737, E111, E113, E220, E240, E313, E531, G130, 1105, 1110, 1210, 1320, 1921, 1923 só aparecem como linhas de alteração, sem estrutura completa - não transcritos"
+ ]
+}

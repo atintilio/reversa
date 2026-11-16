@@ -1,0 +1,89 @@
+divergencias de nome (PDF x motor/base):
+0120.2: PDF=MES_REFER | motor/base=MES_DISPENSA
+C100.13: PDF=IND_PGTO | motor/base=VL_DOC
+C870.2: PDF=COD_ITEM | motor/base=CFOP
+C870.5: PDF=VL_DESC | motor/base=CST_PIS
+C880.5: PDF=VL_DESC | motor/base=CST_PIS
+M210.5: PDF=VL_AJUS_ACRES_BC_PIS | motor/base=ALIQ_PIS
+M210.6: PDF=VL_AJUS_REDUC_BC_PIS | motor/base=QUANT_BC_PIS
+M210.7: PDF=VL_BC_CONT_AJUS | motor/base=ALIQ_PIS_QUANT
+M210.8: PDF=ALIQ_PIS | motor/base=VL_CONT_APUR
+M210.9: PDF=QUANT_BC_PIS | motor/base=VL_AJUS_ACRES
+M210.10: PDF=ALIQ_PIS_QUANT | motor/base=VL_AJUS_REDUC
+M210.11: PDF=VL_CONT_APUR | motor/base=VL_CONT_DIFER
+M210.12: PDF=VL_AJUS_ACRES | motor/base=VL_CONT_DIFER_ANT
+M210.13: PDF=VL_AJUS_REDUC | motor/base=VL_CONT_PER
+M610.5: PDF=VL_AJUS_ACRES_BC_COFINS | motor/base=ALIQ_COFINS
+M610.6: PDF=VL_AJUS_REDUC_BC_COFINS | motor/base=QUANT_BC_COFINS
+M610.7: PDF=VL_BC_CONT_AJUS | motor/base=ALIQ_COFINS_QUANT
+M610.8: PDF=ALIQ_COFINS | motor/base=VL_CONT_APUR
+M610.9: PDF=QUANT_BC_COFINS | motor/base=VL_AJUS_ACRES
+M610.10: PDF=ALIQ_COFINS_QUANT | motor/base=VL_AJUS_REDUC
+M610.11: PDF=VL_CONT_APUR | motor/base=VL_CONT_DIFER
+M610.12: PDF=VL_AJUS_ACRES | motor/base=VL_CONT_DIFER_ANT
+M610.13: PDF=VL_AJUS_REDUC | motor/base=VL_CONT_PER
+
+base python-sped desatualizada (leiaute diferente do PDF oficial):
+C100.10: PDF=DT_DOC | base=CHV_NFE (base desatualizada: leiaute diferente)
+C100.11: PDF=DT_E_S | base=DT_DOC (base desatualizada: leiaute diferente)
+C100.12: PDF=VL_DOC | base=DT_E_S (base desatualizada: leiaute diferente)
+C870.3: PDF=CFOP | base=VL_ITEM (base desatualizada: leiaute diferente)
+C870.4: PDF=VL_ITEM | base=COD_ITEM (base desatualizada: leiaute diferente)
+C870.6: PDF=CST_PIS | base=VL_BC_PIS (base desatualizada: leiaute diferente)
+C870.7: PDF=VL_BC_PIS | base=ALIQ_PIS (base desatualizada: leiaute diferente)
+C870.8: PDF=ALIQ_PIS | base=VL_PIS (base desatualizada: leiaute diferente)
+C870.9: PDF=VL_PIS | base=CST_COFINS (base desatualizada: leiaute diferente)
+C870.10: PDF=CST_COFINS | base=VL_BC_COFINS (base desatualizada: leiaute diferente)
+C870.11: PDF=VL_BC_COFINS | base=ALIQ_COFINS (base desatualizada: leiaute diferente)
+C870.12: PDF=ALIQ_COFINS | base=VL_COFINS (base desatualizada: leiaute diferente)
+C870.13: PDF=VL_COFINS | base=COD_CTA (base desatualizada: leiaute diferente)
+C880.6: PDF=CST_PIS | base=QUANT_BC_PIS (base desatualizada: leiaute diferente)
+C880.7: PDF=QUANT_BC_PIS | base=ALIQ_PIS_QUANT (base desatualizada: leiaute diferente)
+C880.8: PDF=ALIQ_PIS_QUANT | base=VL_PIS (base desatualizada: leiaute diferente)
+C880.9: PDF=VL_PIS | base=CST_COFINS (base desatualizada: leiaute diferente)
+C880.10: PDF=CST_COFINS | base=QUANT_BC_COFINS (base desatualizada: leiaute diferente)
+C880.11: PDF=QUANT_BC_COFINS | base=ALIQ_COFINS_QUANT (base desatualizada: leiaute diferente)
+C880.12: PDF=ALIQ_COFINS_QUANT | base=VL_COFINS (base desatualizada: leiaute diferente)
+C880.13: PDF=VL_COFINS | base=COD_CTA (base desatualizada: leiaute diferente)
+
+posicoes vindas da base python-sped:
+1100: posicoes 16,18 vindas da base python-sped (tipo/tam/dec ausentes)
+1220: posicoes 5 vindas da base python-sped (tipo/tam/dec ausentes)
+1300: posicoes 2,8 vindas da base python-sped (tipo/tam/dec ausentes)
+1500: posicoes 16,18 vindas da base python-sped (tipo/tam/dec ausentes)
+1620: posicoes 5 vindas da base python-sped (tipo/tam/dec ausentes)
+1700: posicoes 8 vindas da base python-sped (tipo/tam/dec ausentes)
+0150: posicoes 4 vindas da base python-sped (tipo/tam/dec ausentes)
+0200: posicoes 11 vindas da base python-sped (tipo/tam/dec ausentes)
+C810: posicoes 10 vindas da base python-sped (tipo/tam/dec ausentes)
+C820: posicoes 10 vindas da base python-sped (tipo/tam/dec ausentes)
+D605: posicoes 7 vindas da base python-sped (tipo/tam/dec ausentes)
+F130: posicoes 6 vindas da base python-sped (tipo/tam/dec ausentes)
+F150: posicoes 3,4,5 vindas da base python-sped (tipo/tam/dec ausentes)
+F500: posicoes 9 vindas da base python-sped (tipo/tam/dec ausentes)
+F550: posicoes 3,9,13,15 vindas da base python-sped (tipo/tam/dec ausentes)
+F560: posicoes 1,3,8,13,14 vindas da base python-sped (tipo/tam/dec ausentes)
+M110: posicoes 4 vindas da base python-sped (tipo/tam/dec ausentes)
+M220: posicoes 4 vindas da base python-sped (tipo/tam/dec ausentes)
+M510: posicoes 4 vindas da base python-sped (tipo/tam/dec ausentes)
+M620: posicoes 4 vindas da base python-sped (tipo/tam/dec ausentes)
+P100: posicoes 12 vindas da base python-sped (tipo/tam/dec ausentes)
+P210: posicoes 4 vindas da base python-sped (tipo/tam/dec ausentes)
+
+nomes reparados:
+1100 -> 1100.11 = VL_CRED_DCOMP_PA_ANT; 1100.12 = SD_CRED_DISP_EFD; 1100.13 = VL_CRED_DESC_EFD
+1500 -> 1500.11 = VL_CRED_DCOMP_PA_ANT; 1500.12 (vazio no PDF) = SD_CRED_DISP_EFD; 1500.13 (vazio no PDF) = VL_CRED_DESC_EFD
+1700 -> 1700.7 (vazio no PDF) = VL_RET_DCOMP
+0111 -> 0111.2 = REC_BRU_NCUM_TRIB_MI; 0111.3 (vazio no PDF) = REC_BRU_NCUM_NT_MI; 0111.4 (vazio no PDF) = REC_BRU_NCUM_EXP
+0205 -> 0205.2 = DESCR_ANT_ITEM
+0500 -> 0500.5 (vazio no PDF) = NÍVEL
+C100 -> C100.6 (vazio no PDF) = COD_SIT;
+D100 -> D100.13 (vazio no PDF) = TP_CT-e
+F120 -> F120.5 = IND_UTIL_BEM_IMOB; F120.7 = PARC_OPER_NAO_BC_CRED
+F200 -> F200.16 (vazio no PDF) = CST_COFINS
+F510 -> F510.2 (artefato) = VL_REC_CAIXA; F510.5 (vazio no PDF) = QUANT_BC_PIS; F510.6 (vazio no PDF) = ALIQ_PIS_QUANT
+F560 -> F560.2 (artefato) = VL_REC_COMP
+F800 -> F800.2 = IND_NAT_EVEN; F800.5 = PA_CONT_CRED; F800.8 = VL_CRED_COFINS
+M505 -> M505.4 = VL_BC_COFINS_TOT; M505.5 = VL_BC_COFINS_CUM; M505.6 = VL_BC_COFINS_NC
+P001 -> P001.2 = IND_MOV
+P110 -> P110.2 = NUM_CAMPO

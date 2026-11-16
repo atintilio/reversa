@@ -1,0 +1,8438 @@
+{
+ "fonte": "NT 2026.001 v1.0 leiaute 021",
+ "offset": 200000,
+ "registros": {
+  "C690": {
+   "titulo": null,
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_RED_BC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_BC_ICMS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_ICMS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "C700": {
+   "titulo": "CONSOLIDAÇÃO DOS DOCUMENTOS NF/CONTA (CÓDIGOS 06, 28 E 66)",
+   "nivel": 2,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "NRO_ORD_INI",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "NRO_ORD_FIN",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "DT_DOC_INI",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "DT_DOC_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "NOM_MEST",
+     "tipo": "C",
+     "tam": 33,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "CHV_COD_DIG",
+     "tipo": "C",
+     "tam": 32,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "C790": {
+   "titulo": "REGISTRO ANALÍTICO DOS DOCUMENTOS (CÓDIGOS 06, 28 E 66)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_BC_ICMS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_ICMS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_RED_BC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "C791": {
+   "titulo": "REGISTRO DE INFORMAÇÕES DE ICMS ST POR UF (CÓDIGOS 06 E 66)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "UF",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_BC_ICMS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ICMS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "C800": {
+   "titulo": "CUPOM FISCAL ELETRÔNICO - SAT (CF-e-SAT) (CÓDIGO 59)",
+   "nivel": 2,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_SIT",
+     "tipo": "N",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "NUM_CFE",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CFE",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_PIS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_COFINS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "CNPJ_CPF",
+     "tipo": "N",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "NR_SAT",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "CHV_CFE",
+     "tipo": "C",
+     "tam": 44,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_MERC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_OUT_DA",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "VL_PIS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "VL_COFINS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "C810": {
+   "titulo": "ITENS DO DOCUMENTO DO CUPOM FISCAL ELETRÔNICO – SAT (CÓDIGO 59)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ITEM",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "QTD",
+     "tipo": "N",
+     "tam": null,
+     "dec": 5,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "UNID",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_ITEM",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "C815": {
+   "titulo": "INFORMAÇÕES COMPLEMENTARES DAS OPERAÇÕES DE SAÍDA SUJEITAS À ST (CF-E-SAT) (CÓDIGO 59)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOT_REST_COMPL",
+     "tipo": "C",
+     "tam": 5,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "QUANT_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "UNID",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_UNIT_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_UNIT_ICMS_NA_OPERACAO_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_UNIT_ICMS_OP_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_UNIT_ICMS_OP_ESTOQUE_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_UNIT_ICMS_ST_ESTOQUE_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_UNIT_FCP_ICMS_ST_ESTOQUE_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_UNIT_ICMS_ST_CONV_REST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_UNIT_FCP_ST_CONV_REST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_UNIT_ICMS_ST_CONV_COMPL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_UNIT_FCP_ST_CONV_COMPL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    }
+   ]
+  },
+  "C850": {
+   "titulo": "REGISTRO ANALÍTICO DO CF-e-SAT (CODIGO 59)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "C855": {
+   "titulo": "OBSERVAÇÕES DO LANÇAMENTO FISCAL (CÓDIGO 59)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "C857": {
+   "titulo": "OUTRAS OBRIGAÇÕES TRIBUTÁRIAS, AJUSTES E INFORMAÇÕES DE VALORES PROVENIENTES DE DOCUMENTO FISCAL",
+   "nivel": 4,
+   "ocorrencia": null,
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AJ",
+     "tipo": "C",
+     "tam": 10,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_COMPL_AJ",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_OUTROS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "C860": {
+   "titulo": "IDENTIFICAÇÃO DO EQUIPAMENTO SAT-CF-E",
+   "nivel": 2,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "NR_SAT",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "DOC_INI",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "DOC_FIM",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "C870": {
+   "titulo": "ITENS DO RESUMO DIÁRIO DOS DOCUMENTOS (CF-E-SAT) (CÓDIGO 59)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "QTD",
+     "tipo": "N",
+     "tam": null,
+     "dec": 5,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "UNID",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "C880": {
+   "titulo": "INFORMAÇÕES COMPLEMENTARES DAS OPERAÇÕES DE SAÍDA DE MERCADORIAS SUJEITAS À SUBSTITUIÇÃO TRIBUTÁRIA (CF-E-SAT) (CÓDIGO 59)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOT_REST_COMPL",
+     "tipo": "C",
+     "tam": 5,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "QUANT_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "UNID",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_UNIT_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_UNIT_ICMS_NA_OPERACAO_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_UNIT_ICMS_OP_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_UNIT_BC_ICMS_ST_ESTOQUE_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_UNIT_ICMS_ST_ESTOQUE_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_UNIT_FCP_ICMS_ST_ESTOQUE_CONV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_UNIT_ICMS_ST_CONV_REST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_UNIT_FCP_ST_CONV_REST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_UNIT_ICMS_ST_CONV_COMPL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_UNIT_FCP_ST_CONV_COMPL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    }
+   ]
+  },
+  "C890": {
+   "titulo": "RESUMO DIÁRIO DO CF-e-SAT (CÓDIGO 59) POR EQUIPAMENTO SAT-CF-e",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "C895": {
+   "titulo": "OBSERVAÇÕES DO LANÇAMENTO FISCAL (CÓDIGO 59)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "C897": {
+   "titulo": "OUTRAS OBRIGAÇÕES TRIBUTÁRIAS, AJUSTES E INFORMAÇÕES DE VALORES PROVENIENTES DE DOCUMENTO FISCAL",
+   "nivel": 4,
+   "ocorrencia": null,
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AJ",
+     "tipo": "C",
+     "tam": 10,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_COMPL_AJ",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_OUTROS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "C990": {
+   "titulo": "ENCERRAMENTO DO BLOCO C",
+   "nivel": 1,
+   "ocorrencia": "um (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_C",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D001": {
+   "titulo": "ABERTURA DO BLOCO D",
+   "nivel": 1,
+   "ocorrencia": "um (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D100": {
+   "titulo": "Documentos de transporte (CT-e e similares)",
+   "nivel": 2,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_OPER",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "IND_EMIT",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "COD_SIT",
+     "tipo": "N",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "SUB",
+     "tipo": "C",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "CHV_CTE",
+     "tipo": "C",
+     "tam": 44,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "DT_A_P",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "TP_CT-e",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "CHV_CTE_REF",
+     "tipo": "C",
+     "tam": 44,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_DOC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "IND_FRT",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 18,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 19,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 20,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 21,
+     "nome": "VL_NT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 22,
+     "nome": "COD_INF",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 23,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 24,
+     "nome": "COD_MUN_ORIG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 25,
+     "nome": "COD_MUN_DEST",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D101": {
+   "titulo": "Informação complementar de prestações interestaduais a consumidor final não contribuinte",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "VL_FCP_UF_DEST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ICMS_UF_DEST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ICMS_UF_REM",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D110": {
+   "titulo": "Itens do documento de serviços de transporte (código 07)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ITEM",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OUT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D120": {
+   "titulo": "Complemento da nota fiscal de serviços de transporte (código 07)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MUN_ORIG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MUN_DEST",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VEIC_ID",
+     "tipo": "C",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "UF_ID",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D130": {
+   "titulo": "Complemento do conhecimento rodoviário de cargas (códigos 08, 8B e 57)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART_CONSG",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_PART_RED",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "IND_FRT_RED",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_MUN_ORIG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "COD_MUN_DEST",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VEIC_ID",
+     "tipo": "C",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_LIQ_FRT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_SEC_CAT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DESP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_PEDG",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_OUT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_FRT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "UF_ID",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D140": {
+   "titulo": "Complemento do conhecimento aquaviário de cargas (código 09)",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART_CONSG",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MUN_ORIG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_MUN_DEST",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "IND_VEIC",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VEIC_ID",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "IND_NAV",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VIAGEM",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_FRT_LIQ",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DESP_PORT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_DESP_CAR_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_OUT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_FRT_BRT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_FRT_MM",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D150": {
+   "titulo": "Complemento do conhecimento aéreo (código 10)",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MUN_ORIG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MUN_DEST",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VEIC_ID",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VIAGEM",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "IND_TFA",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_PESO_TX",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_TX_TERR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_TX_RED",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_OUT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_TX_ADV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D160": {
+   "titulo": "Carga transportada",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DESPACHO",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CNPJ_CPF_REM",
+     "tipo": "N",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "IE_REM",
+     "tipo": "C",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_MUN_ORI",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "CNPJ_CPF_DEST",
+     "tipo": "N",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "IE_DEST",
+     "tipo": "C",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "COD_MUN_DEST",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D161": {
+   "titulo": "Local da coleta e entrega",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_CARGA",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CNPJ_CPF_COL",
+     "tipo": "C",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "IE_COL",
+     "tipo": "C",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_MUN_COL",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "CNPJ_CPF_ENTG",
+     "tipo": "C",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "IE_ENTG",
+     "tipo": "C",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "COD_MUN_ENTG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D162": {
+   "titulo": "Identificação dos documentos fiscais",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DOC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_MERC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "QTD_VOL",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "PESO_BRT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "PESO_LIQ",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D170": {
+   "titulo": "Complemento do conhecimento multimodal de cargas (código 26)",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART_CONSG",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_PART_RED",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_MUN_ORIG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_MUN_DEST",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "OTM",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "IND_NAT_FRT",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_LIQ_FRT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_GRIS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_PDG",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_OUT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_FRT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VEIC_ID",
+     "tipo": "C",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "UF_ID",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D180": {
+   "titulo": "Modais (código 26)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_SEQ",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "IND_EMIT",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "CNPJ_CPF_EMIT",
+     "tipo": "N",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "UF_EMIT",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "IE_EMIT",
+     "tipo": "C",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "COD_MUN_ORIG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "CNPJ_CPF_TOM",
+     "tipo": "N",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "UF_TOM",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "IE_TOM",
+     "tipo": "C",
+     "tam": 14,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "COD_MUN_DEST",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "SUB",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "VL_DOC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D190": {
+   "titulo": "Registro analítico dos documentos",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_RED_BC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D195": {
+   "titulo": "Observações do lançamento fiscal",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D197": {
+   "titulo": "Outras obrigações tributárias, ajustes e informações de valores",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AJ",
+     "tipo": "C",
+     "tam": 10,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_COMPL_AJ",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_OUTROS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "IND_BENEFICIO",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D300": {
+   "titulo": "REGISTRO ANALÍTICO DOS BILHETES CONSOLIDADOS DE PASSAGEM RODOVIÁRIO (CÓDIGO 13), DE PASSAGEM AQUAVIÁRIO (CÓDIGO 14)…",
+   "nivel": 2,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "SUB",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_DOC_INI",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC_FIN",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_SEG",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_OUT DESP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 18,
+     "nome": "VL_RED_BC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 19,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 20,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D301": {
+   "titulo": "DOCUMENTOS CANCELADOS DOS BILHETES DE PASSAGEM RODOVIÁRIO (CÓDIGO 13), DE PASSAGEM AQUAVIÁRIO (CÓDIGO 14)…",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_DOC_CANC",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D310": {
+   "titulo": "COMPLEMENTO DOS BILHETES (CÓDIGO 13, 14, 15 E 16)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MUN_ORIG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D350": {
+   "titulo": "EQUIPAMENTO ECF (CÓDIGOS 2E, 13, 14, 15 e 16)",
+   "nivel": 2,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "ECF_MOD",
+     "tipo": "C",
+     "tam": 20,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ECF_FAB",
+     "tipo": "C",
+     "tam": 21,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "ECF_CX",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D355": {
+   "titulo": "REDUÇÃO Z (CÓDIGOS 2E, 13, 14, 15 e 16)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CRO",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "CRZ",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_COO_FIN",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "GT_FIN",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_BRT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D360": {
+   "titulo": "PIS E COFINS TOTALIZADOS NO DIA (CÓDIGOS 2E, 13, 14, 15 e 16)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "VL_PIS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_COFINS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D365": {
+   "titulo": "REGISTRO DOS TOTALIZADORES PARCIAIS DA REDUÇÃO Z (CÓDIGOS 2E, 13, 14, 15 e 16)",
+   "nivel": 4,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_TOT_PAR",
+     "tipo": "C",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VLR_ACUM_TOT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "NR_TOT",
+     "tipo": "N",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "DESCR_NR_TOT",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D370": {
+   "titulo": "COMPLEMENTO DOS DOCUMENTOS INFORMADOS (CÓDIGO 13, 14, 15, 16 E 2E)",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MUN_ORIG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "QTD_BILH",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D390": {
+   "titulo": "REGISTRO ANALÍTICO DO MOVIMENTO DIÁRIO (CÓDIGOS 13, 14, 15, 16 E 2E)",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ISSQN",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_ISSQN",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_ISSQN",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D400": {
+   "titulo": "RESUMO DE MOVIMENTO DIÁRIO (CÓDIGO 18)",
+   "nivel": 2,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_SIT",
+     "tipo": "N",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "SUB",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_DOC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_PIS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_COFINS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D410": {
+   "titulo": "DOCUMENTOS INFORMADOS (CÓDIGOS 13, 14, 15 E 16)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "SUB",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_DOC_INI",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC_FIN",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D411": {
+   "titulo": "DOCUMENTOS CANCELADOS DOS DOCUMENTOS INFORMADOS (CÓDIGOS 13, 14, 15 E 16)",
+   "nivel": 4,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_DOC_CANC",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D420": {
+   "titulo": "COMPLEMENTO DOS DOCUMENTOS INFORMADOS (CÓDIGOS 13, 14, 15 E 16)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MUN_ORIG",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D500": {
+   "titulo": "NOTA FISCAL DE SERVIÇO DE COMUNICAÇÃO (CÓDIGO 21) E NOTA FISCAL DE SERVIÇO DE TELECOMUNICAÇÃO (CÓDIGO 22)",
+   "nivel": 2,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_OPER",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "IND_EMIT",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "COD_SIT",
+     "tipo": "N",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "SUB",
+     "tipo": "C",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "DT_A_P",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_DOC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_SERV_NT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "VL_TERC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "VL_DA",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 18,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 19,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 20,
+     "nome": "COD_INF",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 21,
+     "nome": "VL_PIS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 22,
+     "nome": "VL_COFINS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 23,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 24,
+     "nome": "TP_ASSINANTE",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D510": {
+   "titulo": "ITENS DO DOCUMENTO - NOTA FISCAL DE SERVIÇO DE COMUNICAÇÃO (CÓDIGO 21) E SERVIÇO DE TELECOMUNICAÇÃO (CÓDIGO 22)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ITEM",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CLASS",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "QTD",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "UNID",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ITEM",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_BC_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "IND_REC",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 18,
+     "nome": "VL_PIS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 19,
+     "nome": "VL_COFINS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 20,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D530": {
+   "titulo": "TERMINAL FATURADO",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_SERV",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI_SERV",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIN_SERV",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "PER_FISCAL",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "COD_AREA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "TERMINAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D590": {
+   "titulo": "REGISTRO ANALÍTICO DO DOCUMENTO (CÓDIGO 21 E 22)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_BC_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_RED_BC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D600": {
+   "titulo": "CONSOLIDAÇÃO DA PRESTAÇÃO DE SERVIÇOS - NOTAS DE SERVIÇO DE COMUNICAÇÃO (CÓDIGO 21)…",
+   "nivel": 2,
+   "ocorrencia": "vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MUN",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "SUB",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CONS",
+     "tipo": "N",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "QTD_CONS",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_DOC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_SERV_NT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_TERC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_DA",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "VL_PIS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 18,
+     "nome": "VL_COFINS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D610": {
+   "titulo": "ITENS DO DOCUMENTO CONSOLIDADO (CÓDIGO 21 E 22)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CLASS",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "QTD",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "UNID",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_ITEM",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_BC_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_RED_BC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "VL_PIS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "VL_COFINS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 18,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D690": {
+   "titulo": "REGISTRO ANALÍTICO DOS DOCUMENTOS (CÓDIGOS 21 e 22)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_BC_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_RED_BC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D695": {
+   "titulo": "CONSOLIDAÇÃO DA PRESTAÇÃO DE SERVIÇOS - NOTAS DE SERVIÇO DE COMUNICAÇÃO (CÓDIGO 21)…",
+   "nivel": 2,
+   "ocorrencia": "Vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "NRO_ORD_INI",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "NRO_ORD_FIN",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "DT_DOC_INI",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "DT_DOC_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "NOM_MEST",
+     "tipo": "C",
+     "tam": 33,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "CHV_COD_DIG",
+     "tipo": "C",
+     "tam": 32,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D696": {
+   "titulo": "REGISTRO ANALÍTICO DOS DOCUMENTOS (CÓDIGO 21 E 22)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_BC_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_ICMS_UF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_RED_BC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D697": {
+   "titulo": "REGISTRO DE INFORMAÇÕES DE OUTRAS UFs, RELATIVAMENTE AOS SERVIÇOS “NÃO-MEDIDOS”…",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "UF",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D700": {
+   "titulo": "NOTA FISCAL FATURA ELETRÔNICA DE SERVIÇOS DE COMUNICAÇÃO – NFCom (CÓDIGO 62).",
+   "nivel": 2,
+   "ocorrencia": "V",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_OPER",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "IND_EMIT",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "COD_SIT",
+     "tipo": "N",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "SER",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "DT_E_S",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_DOC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_SERV_NT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_TERC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "VL_DA",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 18,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 19,
+     "nome": "COD_INF",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 20,
+     "nome": "VL_PIS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 21,
+     "nome": "VL_COFINS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 22,
+     "nome": "CHV_DOCe",
+     "tipo": "C",
+     "tam": 44,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 23,
+     "nome": "FIN_DOCe",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 24,
+     "nome": "TIP_FAT",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 25,
+     "nome": "COD_MOD_DOC_REF",
+     "tipo": "N",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 26,
+     "nome": "CHV_DOCe_REF",
+     "tipo": "C",
+     "tam": 44,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 27,
+     "nome": "HASH_DOC_REF",
+     "tipo": "C",
+     "tam": 32,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 28,
+     "nome": "SER_DOC_REF",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 29,
+     "nome": "NUM_DOC_REF",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 30,
+     "nome": "MES_DOC_REF",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 31,
+     "nome": "COD_MUN_DEST",
+     "tipo": "N",
+     "tam": 7,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 32,
+     "nome": "DED",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D730": {
+   "titulo": "REGISTRO ANALÍTICO NOTA FISCAL FATURA ELETRÔNICA DE SERVIÇOS DE COMUNICAÇÃO – NFCom (CÓDIGO 62).",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_RED_BC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D731": {
+   "titulo": "INFORMAÇÕES DO FUNDO DE COMBATE À POBREZA – FCP – (CÓDIGO 62)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "VL_FCP_OP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D735": {
+   "titulo": "OBSERVAÇÕES DO LANÇAMENTO FISCAL (CÓDIGO 62)",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D737": {
+   "titulo": "OUTRAS OBRIGAÇÕES TRIBUTÁRIAS, AJUSTES E INFORMAÇÕES DE VALORES PROVENIENTES DE DOCUMENTO FISCAL",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AJ",
+     "tipo": "C",
+     "tam": 10,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_COMPL_AJ",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_OUTROS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "IND_BENEFICIO",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D750": {
+   "titulo": "ESCRITURAÇÃO CONSOLIDADA DA NOTA FISCAL FATURA ELETRÔNICA DE SERVIÇOS DE COMUNICAÇÃO - NFCom (CÓDIGO 62)",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "QTD_CONS",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "IND_PREPAGO",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_DOC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_SERV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_SERV_NT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_TERC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_DESC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_DA",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_PIS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "VL_COFINS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "DED",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "D760": {
+   "titulo": "REGISTRO ANALÍTICO DA ESCRITURAÇÃO CONSOLIDADA DA NOTA FISCAL FATURA ELETRÔNICA DE SERVIÇOS DE COMUNICAÇÃO…",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N",
+     "tam": 6,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OPR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_RED_BC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "COD_OBS",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "D761": {
+   "titulo": "INFORMAÇÕES DO FUNDO DE COMBATE À POBREZA – FCP – (CÓDIGO 62)",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "VL_FCP_OP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "E001": {
+   "titulo": "ABERTURA DO BLOCO E",
+   "nivel": 1,
+   "ocorrencia": "um (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E100": {
+   "titulo": "PERÍODO DA APURAÇÃO DO ICMS",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E110": {
+   "titulo": "APURAÇÃO DO ICMS - OPERAÇÕES PRÓPRIAS",
+   "nivel": 3,
+   "ocorrencia": "um (por período)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "VL_TOT_DEBITOS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_AJ_DEBITOS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_TOT_AJ_DEBITOS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ESTORNOS_CRED",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_TOT_CREDITOS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_AJ_CREDITOS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_TOT_AJ_CREDITOS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_ESTORNOS_DEB",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_SLD_CREDOR_ANT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_SLD_APURADO",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_TOT_DED",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_ICMS_RECOLHER",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_SLD_CREDOR_TRANSPORTAR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "DEB_ESP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "E111": {
+   "titulo": "AJUSTE/BENEFÍCIO/INCENTIVO DA APURAÇÃO DO ICMS",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AJ_APUR",
+     "tipo": "C",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_COMPL_AJ",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_AJ_APUR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "IND_BENEFICIO",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E112": {
+   "titulo": "INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO ICMS",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_DA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_PROC",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "IND_PROC",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "PROC",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E113": {
+   "titulo": "INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO ICMS - IDENTIFICAÇÃO DOS DOCUMENTOS FISCAIS",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "SUB",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_AJ_ITEM",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "CHV_DOCe",
+     "tipo": "C",
+     "tam": 44,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E115": {
+   "titulo": "INFORMAÇÕES ADICIONAIS DA APURAÇÃO - VALORES DECLARATÓRIOS",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_INF_ADIC",
+     "tipo": "C",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_INF_ADIC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DESCR_COMPL_AJ",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E116": {
+   "titulo": "OBRIGAÇÕES DO ICMS RECOLHIDO OU A RECOLHER - OPERAÇÕES PRÓPRIAS",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_OR",
+     "tipo": "C",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_OR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DT_VCTO",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_REC",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_PROC",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "IND_PROC",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "PROC",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "MES_REF",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E200": {
+   "titulo": "PERÍODO DA APURAÇÃO DO ICMS - SUBSTITUIÇÃO TRIBUTÁRIA",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "UF",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E210": {
+   "titulo": "APURAÇÃO DO ICMS - SUBSTITUIÇÃO TRIBUTÁRIA",
+   "nivel": 3,
+   "ocorrencia": "um (por período)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV_ST",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_SLD_CRED_ANT_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DEVOL_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_RESSARC_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_OUT_CRED_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_AJ_CREDITOS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_RETENÇAO_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_OUT_DEB_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_AJ_DEBITOS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_SLD_DEV_ANT_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "VL_DEDUÇÕES_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_ICMS_RECOL_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_SLD_CRED_ST_TRANSPORTAR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "DEB_ESP_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "E220": {
+   "titulo": "AJUSTE/BENEFÍCIO/INCENTIVO DA APURAÇÃO DO ICMS SUBSTITUIÇÃO TRIBUTÁRIA",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AJ_APUR",
+     "tipo": "C",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_COMPL_AJ",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_AJ_APUR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "IND_BENEFICIO",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E230": {
+   "titulo": "INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO ICMS SUBSTITUIÇÃO TRIBUTÁRIA",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_DA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_PROC",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "IND_PROC",
+     "tipo": "N",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "PROC",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E240": {
+   "titulo": "INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO ICMS SUBSTITUIÇÃO TRIBUTÁRIA - IDENTIFICAÇÃO DOS DOCUMENTOS FISCAIS",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "SUB",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_AJ_ITEM",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "CHV_DOCe",
+     "tipo": "C",
+     "tam": 44,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E250": {
+   "titulo": "OBRIGAÇÕES DO ICMS RECOLHIDO OU A RECOLHER - SUBSTITUIÇÃO TRIBUTÁRIA",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_OR",
+     "tipo": "C",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_OR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DT_VCTO",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_REC",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_PROC",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "IND_PROC",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "PROC",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "MES_REF",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E300": {
+   "titulo": "PERÍODO DE APURAÇÃO DO FUNDO DE COMBATE À POBREZA E DO ICMS DIFERENCIAL DE ALÍQUOTAS - UF ORIGEM/DESTINO EC 87/15",
+   "nivel": 2,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "UF",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E310": {
+   "titulo": "APURAÇÃO DO FUNDO DE COMBATE À POBREZA E DO ICMS DIFERENCIAL DE ALÍQUOTAS – UF ORIGEM/DESTINO EC 87/15",
+   "nivel": 3,
+   "ocorrencia": "um (por período)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV_FCP_DIFAL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_SLD_CRED_ANT_DIFAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_TOT_DEBITOS_DIFAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OUT_DEB_DIFAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_TOT_CREDITOS_DIFAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_OUT_CRED_DIFAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_SLD_DEV_ANT_DIFAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_DEDUÇÕES_DIFAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_RECOL_DIFAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_SLD_CRED_TRANSPORTAR_DIFAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 12,
+     "nome": "DEB_ESP_DIFAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 13,
+     "nome": "VL_SLD_CRED_ANT_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 14,
+     "nome": "VL_TOT_DEB_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 15,
+     "nome": "VL_OUT_DEB_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "VL_TOT_CRED_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 17,
+     "nome": "VL_OUT_CRED_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 18,
+     "nome": "VL_SLD_DEV_ANT_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 19,
+     "nome": "VL_DEDUÇÕES_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 20,
+     "nome": "VL_RECOL_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 21,
+     "nome": "VL_SLD_CRED_TRANSPORTAR_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 22,
+     "nome": "DEB_ESP_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E311": {
+   "titulo": "AJUSTE/BENEFÍCIO/INCENTIVO DA APURAÇÃO DO FUNDO DE COMBATE À POBREZA E DO ICMS DIFERENCIAL DE ALÍQUOTAS UF ORIGEM/DESTINO EC 87/15",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AJ_APUR",
+     "tipo": "C",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_COMPL_AJ",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_AJ_APUR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "E312": {
+   "titulo": "INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO FUNDO DE COMBATE À POBREZA E DO ICMS DIFERENCIAL DE ALÍQUOTAS UF ORIGEM/DESTINO EC 87/15",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_DA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_PROC",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "IND_PROC",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "PROC",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E313": {
+   "titulo": "INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO FUNDO DE COMBATE À POBREZA E DO ICMS DIFERENCIAL DE ALÍQUOTAS UF ORIGEM/DESTINO EC 87/15 - IDENTIFICAÇÃO DOS DOCUMENTOS FISCAIS",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "SUB",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "CHV_DOCe",
+     "tipo": "C",
+     "tam": 44,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_AJ_ITEM",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "E316": {
+   "titulo": "OBRIGAÇÕES RECOLHIDAS OU A RECOLHER – FUNDO DE COMBATE À POBREZA E ICMS DIFERENCIAL DE ALÍQUOTAS UF ORIGEM/DESTINO EC 87/15",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_OR",
+     "tipo": "C",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_OR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DT_VCTO",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_REC",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_PROC",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "IND_PROC",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "PROC",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "MES_REF",
+     "tipo": "N",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E500": {
+   "titulo": "PERÍODO DE APURAÇÃO DO IPI",
+   "nivel": 2,
+   "ocorrencia": "um ou vários (por período)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_APUR",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E510": {
+   "titulo": "CONSOLIDAÇÃO DOS VALORES DO IPI",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CFOP",
+     "tipo": "N",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "CST_IPI",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CONT_IPI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_IPI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_IPI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "E520": {
+   "titulo": "APURAÇÃO DO IPI",
+   "nivel": 3,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "VL_SD_ANT_IPI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_DEB_IPI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CRED_IPI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_OD_IPI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_OC_IPI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_SC_IPI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_SD_IPI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "E530": {
+   "titulo": "AJUSTES DA APURAÇÃO DO IPI",
+   "nivel": 4,
+   "ocorrencia": "1:N (por período)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_AJ",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_AJ",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_AJ",
+     "tipo": "C",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "IND_DOC",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "DESCR_AJ",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E531": {
+   "titulo": "INFORMAÇÕES ADICIONAIS DOS AJUSTES DA APURAÇÃO DO IPI – IDENTIFICAÇÃO DOS DOCUMENTOS FISCAIS (01 e 55)",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "SER",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "SUB",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_AJ_ITEM",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "CHV_NFE",
+     "tipo": "C",
+     "tam": 44,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "E990": {
+   "titulo": "ENCERRAMENTO DO BLOCO E",
+   "nivel": 1,
+   "ocorrencia": "um (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_E",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "G001": {
+   "titulo": "ABERTURA DO BLOCO G",
+   "nivel": 1,
+   "ocorrencia": "um (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "G110": {
+   "titulo": "ICMS - ATIVO PERMANENTE – CIAP",
+   "nivel": 2,
+   "ocorrencia": "um (por período de apuração)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "SALDO_IN_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "SOM_PARC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_TRIB_EXP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_TOTAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "IND_PER_SAI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 8,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "ICMS_APROP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "SOM_ICMS_OC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "G125": {
+   "titulo": "MOVIMENTAÇÃO DE BEM OU COMPONENTE DO ATIVO IMOBILIZADO",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_IND_BEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_MOV",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO_MOV",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_IMOB_ICMS_OP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_IMOB_ICMS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_IMOB_ICMS_FRT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_IMOB_ICMS_DIF",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "NUM_PARC",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "VL_PARC_PASS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "G126": {
+   "titulo": "OUTROS CRÉDITOS CIAP",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIM",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "NUM_PARC",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_PARC_PASS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_TRIB_OC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_TOTAL",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "IND_PER_SAI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 8,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_PARC_APROP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "G130": {
+   "titulo": "IDENTIFICAÇÃO DO DOCUMENTO FISCAL",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_EMIT",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_MOD",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "SERIE",
+     "tipo": "C",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC",
+     "tipo": "N",
+     "tam": 9,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "CHV_NFE_CTE",
+     "tipo": "C",
+     "tam": 44,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "DT_DOC",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "NUM_DA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "G140": {
+   "titulo": "IDENTIFICAÇÃO DO ITEM DO DOCUMENTO FISCAL",
+   "nivel": 5,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ITEM",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "QTDE",
+     "tipo": "N",
+     "tam": null,
+     "dec": 5,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "UNID",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_ICMS_OP_APLICADO",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ICMS_ST_APLICADO",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "VL_ICMS_FRT_APLICADO",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "VL_ICMS_DIF_APLICADO",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "G990": {
+   "titulo": "ENCERRAMENTO DO BLOCO G",
+   "nivel": 1,
+   "ocorrencia": "um (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_G",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "H001": {
+   "titulo": "ABERTURA DO BLOCO H",
+   "nivel": 1,
+   "ocorrencia": "um (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "H005": {
+   "titulo": "TOTAIS DO INVENTÁRIO",
+   "nivel": 2,
+   "ocorrencia": "um (por data e por motivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INV",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_INV",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "MOT_INV",
+     "tipo": "C",
+     "tam": 2,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "H010": {
+   "titulo": "INVENTÁRIO",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "UNID",
+     "tipo": "C",
+     "tam": 6,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "QTD",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_UNIT",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_ITEM",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "IND_PROP",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 8,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 9,
+     "nome": "TXT_COMPL",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 10,
+     "nome": "COD_CTA",
+     "tipo": "C",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 11,
+     "nome": "VL_ITEM_IR",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "H020": {
+   "titulo": "INFORMAÇÃO COMPLEMENTAR DO INVENTÁRIO",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "CST_ICMS",
+     "tipo": "N",
+     "tam": 3,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "BC_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ICMS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null
+    }
+   ]
+  },
+  "H030": {
+   "titulo": "INFORMAÇÕES COMPLEMENTARES DO INVENTÁRIO DAS MERCADORIAS SUJEITAS AO REGIME DE SUBSTITUIÇÃO TRIBUTÁRIA",
+   "nivel": 4,
+   "ocorrencia": "1:1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "VL_ICMS_OP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_BC_ICMS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ICMS_ST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_FCP",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    }
+   ]
+  },
+  "H990": {
+   "titulo": "ENCERRAMENTO DO BLOCO H",
+   "nivel": 1,
+   "ocorrencia": "um (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_H",
+     "tipo": "N",
+     "tam": null,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "K001": {
+   "titulo": "ABERTURA DO BLOCO K",
+   "nivel": 1,
+   "ocorrencia": "um por Arquivo",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "K010": {
+   "titulo": "INFORMAÇÃO SOBRE O TIPO DE LEIAUTE (SIMPLIFICADO / COMPLETO)",
+   "nivel": 2,
+   "ocorrencia": "um por Arquivo",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "IND_TP_LEIAUTE",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "K100": {
+   "titulo": "PERÍODO DE APURAÇÃO DO ICMS/IPI",
+   "nivel": 2,
+   "ocorrencia": "Vários (por arquivo)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "K200": {
+   "titulo": "ESTOQUE ESCRITURADO",
+   "nivel": 3,
+   "ocorrencia": "Vários",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_EST",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "QTD",
+     "tipo": "N",
+     "tam": null,
+     "dec": 3,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "IND_EST",
+     "tipo": "C",
+     "tam": 1,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "K210": {
+   "titulo": "DESMONTAGEM DE MERCADORIAS – ITEM DE ORIGEM",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI_OS",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN_OS",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_DOC_OS",
+     "tipo": "C",
+     "tam": 30,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ITEM_ORI",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "QTD_ORI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    }
+   ]
+  },
+  "K215": {
+   "titulo": "DESMONTAGEM DE MERCADORIAS – ITENS DE DESTINO",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ITEM_DES",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "QTD_DES",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    }
+   ]
+  },
+  "K220": {
+   "titulo": "OUTRAS MOVIMENTAÇÕES INTERNAS ENTRE MERCADORIAS",
+   "nivel": 3,
+   "ocorrencia": "Vários",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_MOV",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM_ORI",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_ITEM_DEST",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "QTD_ORI",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "QTD_DEST",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    }
+   ]
+  },
+  "K230": {
+   "titulo": "ITENS PRODUZIDOS",
+   "nivel": 3,
+   "ocorrencia": "Vários",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI_OP",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN_OP",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_DOC_OP",
+     "tipo": "C",
+     "tam": 30,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "QTD_ENC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    }
+   ]
+  },
+  "K235": {
+   "titulo": "INSUMOS CONSUMIDOS",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_SAÍDA",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "QTD",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_INS_SUBST",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "K250": {
+   "titulo": "INDUSTRIALIZAÇÃO EFETUADA POR TERCEIROS – ITENS PRODUZIDOS",
+   "nivel": 3,
+   "ocorrencia": "Vários",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_PROD",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "QTD",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    }
+   ]
+  },
+  "K255": {
+   "titulo": "INDUSTRIALIZAÇÃO EM TERCEIROS – INSUMOS CONSUMIDOS",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "DT_CONS",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "QTD",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_INS_SUBST",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "K260": {
+   "titulo": "REPROCESSAMENTO/REPARO DE PRODUTO/INSUMO",
+   "nivel": 3,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_OP_OS",
+     "tipo": "C",
+     "tam": 30,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "DT_SAÍDA",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "QTD_SAÍDA",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "DT_RET",
+     "tipo": "N",
+     "tam": 8,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "QTD_RET",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    }
+   ]
+  },
+  "K265": {
+   "titulo": "REPROCESSAMENTO/REPARO – MERCADORIAS CONSUMIDAS E/OU RETORNADAS",
+   "nivel": 4,
+   "ocorrencia": "1:N",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "dec": null,
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "QTD_CONS",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "QTD_RET",
+     "tipo": "N",
+     "tam": null,
+     "dec": 6,
+     "obrig": null
+    }
+   ]
+  }
+ },
+ "incompletos": [
+  "K270: texto corta no campo 04 (COD_OP_OS), sem tipo/tam/dec nem campos seguintes; nivel e ocorrencia nao constam no trecho",
+  "C690: tabela de campos completa e gravada, mas titulo cortado na borda inicial (titulo=null)"
+ ]
+}

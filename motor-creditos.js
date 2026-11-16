@@ -89,7 +89,11 @@
 
   // ---------------------------------------------------------- layout (campos)
   // Índices 0-based conforme o Guia Prático da EFD-Contribuições.
-  var L = {
+  // Esta tabela é a RESERVA (usada só se o catálogo oficial não estiver carregado) e a referência
+  // do teste de paridade. O leiaute que o motor usa vem do catálogo oficial:
+  // lib/sped/leiautes/leiaute-efd-contribuicoes.js, gerado do catálogo oficial (Guia Prático v1.35)
+  // por scripts/gera-leiautes-motor.js. Mesmo índice, nome oficial do catálogo.
+  var L_LEGADO = {
     '0000': { COD_VER: 1, TIPO_ESCRIT: 2, IND_SIT_ESP: 3, NUM_REC_ANT: 4, DT_INI: 5, DT_FIN: 6, NOME: 7, CNPJ: 8, UF: 9, COD_MUN: 10 },
     '0110': { COD_INC_TRIB: 1, IND_APRO_CRED: 2, COD_TIPO_CONT: 3, IND_REG_CUM: 4 },
     '0111': { REC_BRU_NCUM_TRIB_MI: 1, REC_BRU_NCUM_NT_MI: 2, REC_BRU_NCUM_EXP: 3, REC_BRU_CUM: 4, REC_BRU_TOTAL: 5 },
@@ -104,8 +108,8 @@
     'C180': { COD_MOD: 1, DT_DOC_INI: 2, DT_DOC_FIN: 3, COD_ITEM: 4, COD_NCM: 5, EX_IPI: 6, VL_TOT_ITEM: 7 },
     'C181': { CST: 1, CFOP: 2, VL_ITEM: 3, VL_DESC: 4, VL_BC: 5, ALIQ: 6, VL_TRIB: 9 },
     'C185': { CST: 1, CFOP: 2, VL_ITEM: 3, VL_DESC: 4, VL_BC: 5, ALIQ: 6, VL_TRIB: 9 },
-    'M100': { COD_CRED: 1, VL_CRED: 7, VL_CRED_DISP: 11, SLD_CRED: 14 },
-    'M500': { COD_CRED: 1, VL_CRED: 7, VL_CRED_DISP: 11, SLD_CRED: 14 },
+    'M100': { COD_CRED: 1, IND_CRED_ORI: 2, VL_CRED: 7, VL_CRED_DISP: 11, IND_DESC_CRED: 12, VL_CRED_DESC: 13, SLD_CRED: 14 },
+    'M500': { COD_CRED: 1, IND_CRED_ORI: 2, VL_CRED: 7, VL_CRED_DISP: 11, IND_DESC_CRED: 12, VL_CRED_DESC: 13, SLD_CRED: 14 },
     // ---- Bloco F e apuração M (Guia Prático da EFD-Contribuições; REG = índice 0). Ver nota de fontes abaixo.
     'F010': { CNPJ: 1 },
     'F100': { IND_OPER: 1, COD_PART: 2, COD_ITEM: 3, DT_OPER: 4, VL_OPER: 5, CST_PIS: 6, VL_BC_PIS: 7, ALIQ_PIS: 8, VL_PIS: 9,
@@ -121,9 +125,19 @@
               VL_TOT_CONT_CUM_PER: 8, VL_RET_CUM: 9, VL_OUT_DED_CUM: 10, VL_CONT_CUM_REC: 11, VL_TOT_CONT_REC: 12 },
     'M210': { COD_CONT: 1, VL_REC_BRT: 2, VL_BC_CONT: 3, VL_AJUS_ACRES_BC: 4, VL_AJUS_REDUC_BC: 5, VL_BC_CONT_AJUS: 6, ALIQ: 7, QUANT_BC: 8, ALIQ_QUANT: 9,
               VL_CONT_APUR: 10, VL_AJUS_ACRES: 11, VL_AJUS_REDUC: 12, VL_CONT_DIFER: 13, VL_CONT_DIFER_ANT: 14, VL_CONT_PER: 15 },
+    // Bloco 1: controle de creditos fiscais (Guia Pratico v1.35, registro 1100 e 1500).
+    // A chave do registro e PER_APU_CRED + ORIG_CRED + CNPJ_SUC + COD_CRED.
+    '1100': { PER_APU_CRED: 1, ORIG_CRED: 2, CNPJ_SUC: 3, COD_CRED: 4, VL_CRED_APU: 5, VL_CRED_EXT_APU: 6,
+              VL_TOT_CRED_APU: 7, VL_CRED_DESC_PA_ANT: 8, VL_CRED_PER_PA_ANT: 9, VL_CRED_DCOMP_PA_ANT: 10,
+              SD_CRED_DISP_EFD: 11, VL_CRED_DESC_EFD: 12, VL_CRED_PER_EFD: 13, VL_CRED_DCOMP_EFD: 14,
+              VL_CRED_TRANS: 15, VL_CRED_OUT: 16, SLD_CRED_FIM: 17 },
     '9999': { QTD_LIN: 1 }
   };
-  L.M600 = L.M200; L.M610 = L.M210;
+  L_LEGADO.M600 = L_LEGADO.M200; L_LEGADO.M610 = L_LEGADO.M210;
+  var LEIAUTE_CATALOGO = (typeof module !== 'undefined' && module.exports)
+    ? require('./lib/sped/leiautes/leiaute-efd-contribuicoes.js')
+    : (root.SPED_LEIAUTE_EFD_CONTRIBUICOES || null);
+  var LEIAUTE_PADRAO = LEIAUTE_CATALOGO || L_LEGADO;
   // FONTES (confirmadas nesta sessão): nomes e ordem dos campos de F100, F120, F130, F150, M200, M210, M600 e M610 conferidos na
   // reprodução do leiaute do Guia Prático (documentacao.senior.com.br, "Leiaute - SPED Contribuições", bloco F e bloco M) e no índice
   // do Guia Prático v1.34 (registros e páginas). O PDF oficial da RFB não pôde ser baixado do ambiente (proxy bloqueou); as posições
@@ -250,11 +264,22 @@
    *   itens    = itens C170 de notas de SAÍDA válidas
    *   entradas = itens C170 de notas de ENTRADA válidas
    */
-  function lerEfdContribuicoes(texto, nomeArquivo) {
+  /**
+   * Lê um arquivo EFD-Contribuições.
+   * opcoes.leiaute: mapa de leiaute alternativo (o teste de paridade usa a tabela antiga
+   * para provar que o catálogo oficial não muda o resultado).
+   */
+  function lerEfdContribuicoes(texto, nomeArquivo, opcoes) {
+    var L = (opcoes && opcoes.leiaute) || LEIAUTE_PADRAO;
     var res = {
       arquivo: nomeArquivo || '(sem nome)',
       meta: null, itens: [], entradas: [], consolidados: [], saldoCredito: { pis: 0, cofins: 0, registros: 0 }, creditosApropriados: { pis: 0, cofins: 0, registros: 0 }, rateio: { apropriacao: '', rec: null, m105: [], m505: [] }, produtos: 0, avisos: [], erros: [],
-      estatisticas: { linhas: 0, registros: {}, c100Saida: 0, c100Entrada: 0, c100SaidaSemItens: 0, c100Ignorados: 0, consolidados: 0, itensSemNcm: 0 }
+      estatisticas: { linhas: 0, registros: {}, c100Saida: 0, c100Entrada: 0, c100SaidaSemItens: 0, c100Ignorados: 0, consolidados: 0, itensSemNcm: 0 },
+      // Bloco 1: posicao de creditos por competencia de origem (registros 1100 e 1500).
+      creditosPosicao: [],
+      // Credito apurado no periodo (M100 = PIS, M500 = Cofins): e o valor que o PER/DCOMP Web
+      // pede na aba "Valores Apurados", por mes de apuracao e codigo de credito.
+      creditosApurados: []
     };
     var linhas = texto.split(/\r?\n/);
     var estab = null, estab0140 = null, doc = null, docTemItem = false, qtd9999 = null, c180 = null;
@@ -361,6 +386,18 @@
           var qm = L[reg], sld = cv(f[qm.SLD_CRED]);
           res.saldoCredito[reg === 'M100' ? 'pis' : 'cofins'] += sld; res.saldoCredito.registros++;
           res.creditosApropriados[reg === 'M100' ? 'pis' : 'cofins'] += cv(f[qm.VL_CRED]); res.creditosApropriados.registros++; // créditos da própria escrituração (informativo)
+          // crédito apurado no período (Guia v1.35): é o valor que o PER/DCOMP Web pede na aba
+          // "Valores Apurados", por mês de apuração e código de crédito.
+          res.creditosApurados.push({
+            tributo: reg === 'M100' ? 'pis' : 'cofins',
+            codCredito: f[qm.COD_CRED] || '',
+            indCredOri: f[qm.IND_CRED_ORI] || '',
+            vlCred: cv(f[qm.VL_CRED]),
+            vlCredDisp: cv(f[qm.VL_CRED_DISP]),
+            indDescCred: f[qm.IND_DESC_CRED] || '',
+            vlCredDesc: cv(f[qm.VL_CRED_DESC]),
+            sldCred: sld
+          });
         } else if (reg === 'C100') {
           fecharDoc();
           var c = L.C100;
@@ -430,6 +467,30 @@
           ['VL_REC_BRT', 'VL_BC_CONT', 'VL_AJUS_ACRES_BC', 'VL_AJUS_REDUC_BC', 'VL_BC_CONT_AJUS', 'VL_CONT_APUR', 'VL_AJUS_ACRES', 'VL_AJUS_REDUC', 'VL_CONT_DIFER', 'VL_CONT_DIFER_ANT', 'VL_CONT_PER']
             .forEach(function (n) { o5[n] = cv(f[a5[n]]); });
           M[reg === 'M210' ? 'm210' : 'm610'].push(o5);
+        } else if (reg === '1100' || reg === '1500') {
+          // Bloco 1 (Guia Pratico v1.35): controle de creditos fiscais.
+          // Chave: PER_APU_CRED + ORIG_CRED + CNPJ_SUC + COD_CRED.
+          var q1 = L[reg];
+          res.creditosPosicao.push({
+            tributo: reg === '1100' ? 'pis' : 'cofins',
+            competenciaCredito: f[q1.PER_APU_CRED] || '',
+            origem: f[q1.ORIG_CRED] || '',
+            cnpjSuc: f[q1.CNPJ_SUC] || '',
+            codCredito: f[q1.COD_CRED] || '',
+            creditoApurado: cv(f[q1.VL_CRED_APU]),
+            creditoExtemporaneo: cv(f[q1.VL_CRED_EXT_APU]),
+            creditoTotal: cv(f[q1.VL_TOT_CRED_APU]),
+            usadoDescontoAnterior: cv(f[q1.VL_CRED_DESC_PA_ANT]),
+            usadoPerAnterior: cv(f[q1.VL_CRED_PER_PA_ANT]),
+            usadoDcompAnterior: cv(f[q1.VL_CRED_DCOMP_PA_ANT]),
+            saldoDisponivel: cv(f[q1.SD_CRED_DISP_EFD]),
+            usadoDesconto: cv(f[q1.VL_CRED_DESC_EFD]),
+            pedidoPer: cv(f[q1.VL_CRED_PER_EFD]),
+            pedidoDcomp: cv(f[q1.VL_CRED_DCOMP_EFD]),
+            transferido: cv(f[q1.VL_CRED_TRANS]),
+            usadoOutros: cv(f[q1.VL_CRED_OUT]),
+            saldoFinal: cv(f[q1.SLD_CRED_FIM])
+          });
         } else if (reg === '9999') {
           qtd9999 = parseInt(f[L['9999'].QTD_LIN], 10);
         }
@@ -1095,6 +1156,7 @@
     apurar: apurar,
     resumirBlocoF: resumirBlocoF, resumirApuracaoM: resumirApuracaoM,
     CATALOGO: CATALOGO, MONOFASICOS: MONOFASICOS,
+    LEIAUTE: LEIAUTE_PADRAO, LEIAUTE_LEGADO: L_LEGADO, LEIAUTE_CATALOGO: LEIAUTE_CATALOGO,
     centavos: centavos, aliquota: aliquota, quantidade: quantidade, formatarReais: formatarReais
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

@@ -52,7 +52,7 @@ async function route(req, res) {
     }
     return method(res, ['GET', 'POST']);
   }
-  // Página do contador: mesma lógica do link do cliente, com credencial própria.
+  // Página do Aprovador: mesma lógica do link do cliente, com credencial própria.
   if (resource === 'accountant-review' && !id) {
     if (m === 'GET') return json(res, 200, await execucao.readAccountant(req));
     if (m === 'POST') return json(res, 200, await execucao.respondAccountant(req, body));

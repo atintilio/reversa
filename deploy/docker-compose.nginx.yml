@@ -1,0 +1,9 @@
+# Uso em VPS que JA tem nginx nas portas 80/443 (caso da VPS da Argus Prime).
+# Desliga o Caddy e publica o app so em 127.0.0.1:3300 (acessivel apenas por dentro da maquina).
+# Subir:  docker compose -f docker-compose.yml -f docker-compose.nginx.yml up -d --build
+services:
+  app:
+    ports:
+      - "127.0.0.1:${APP_PORT:-3300}:3000"
+  caddy:
+    profiles: ["desligado"]

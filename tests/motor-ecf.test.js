@@ -4,11 +4,26 @@ const M = require('../motor-ecf');
 
 const LINHAS_ADICAO = [['MULTAS PUNITIVAS FISCAIS E DE TRÂNSITO', 50], ['DOAÇÕES SEM AMPARO LEGAL', 40], ['DESPESAS PARTICULARES DE SÓCIOS', 30],
   ['PROVISÃO DE FÉRIAS E 13º SALÁRIO', 60], ['PERDAS NO RECEBIMENTO DE CRÉDITOS', 25], ['MULTAS CONTRATUAIS COMPENSATÓRIAS', 15]];
-function ecf(detalhe) {
-  const L = ['|0000|LECF|01012025|31122025|Teste S.A.|99303403000177|0|', '|M030|001|01012025|31032025|'];
-  L.push('|M300|1|RESULTADO|2050000,00|', '|M300|2|ADIÇÕES|220000,00|');
-  if (detalhe) LINHAS_ADICAO.forEach(([d, v], i) => L.push(`|M300|2.${i + 1}|${d}|${v}000,00|`));
-  L.push('|M300|3|EXCLUSÕES|120000,00|', '|N500|BASE IRPJ 1T|2150000,00|', '|N630|IRPJ A PAGAR 1T|531500,00|', '|N670|CSLL A PAGAR 1T|193500,00|');
+// ECF no leiaute 12 (Manual de Orientacao da ECF):
+//   0000       : 4 CNPJ | 5 NOME | 10 DT_INI | 11 DT_FIN
+//   M030 / N030: 2 DT_INI | 3 DT_FIN | 4 PER_APUR
+//   M300 / M350: 2 CODIGO | 3 DESCRICAO | 4 TIPO_LANCAMENTO (R/L/A/E) | 5 IND_RELACAO | 6 VALOR
+//   N500/N630/N650/N670: 2 CODIGO | 3 DESCRICAO | 4 VALOR
+function ecf(detalhe, comM350) {
+  const L = [
+    '|0000|LECF|0011|99303403000177|Teste S.A.|0|0|||01012025|31122025|N||0||',
+    '|M030|01012025|31032025|T01|',
+    '|M300|1|ATIVIDADE GERAL|R|||',
+    '|M300|2|Lucro Liquido Antes do IRPJ|L||2050000,00||',
+    '|M300|5|ADIÇÕES|R||220000,00||'
+  ];
+  if (detalhe) LINHAS_ADICAO.forEach(([d, v], i) => L.push(`|M300|6.${i + 1}|${d}|A|3|${v}000,00|LANCAMENTO DE ADICAO|`));
+  L.push('|M300|94|EXCLUSÕES|R||120000,00||');
+  if (comM350) L.push('|M350|2|Lucro Antes da CSLL|L||2050000,00||', '|M350|5|ADIÇÕES|R||220000,00||');
+  L.push('|N030|01012025|31032025|T01|',
+    '|N500|1|Valor da base de cálculo do IRPJ|2150000,00|',
+    '|N630|26|IMPOSTO DE RENDA A PAGAR|531500,00|',
+    '|N670|21|CSLL A PAGAR|193500,00|');
   return L.join('\r\n');
 }
 test('recalcula IRPJ e CSLL do trimestre e confere com o declarado', () => {
@@ -38,7 +53,7 @@ test('fora do prazo de 5 anos não conta no valor no prazo', () => {
 });
 
 // ---- correções da revisão independente
-const comItem = (desc, v) => ecf(true).replace('MULTAS CONTRATUAIS COMPENSATÓRIAS|15000,00', desc + '|' + v);
+const comItem = (desc, v) => ecf(true).replace('MULTAS CONTRATUAIS COMPENSATÓRIAS|A|3|15000,00|LANCAMENTO DE ADICAO|', desc + '|A|3|' + v + '|LANCAMENTO DE ADICAO|');
 test('contingência trabalhista, PDD e reversão não viram oportunidade', () => {
   for (const d of ['PROVISÃO PARA CONTINGÊNCIA CÍVEL PROC 13ª VARA', 'PROVISÃO PARA PERDAS NO RECEBIMENTO DE CRÉDITOS', 'REVERSÃO DE PROVISÃO DE FÉRIAS E 13º SALÁRIO', 'MULTA PUNITIVA CONTRATUAL']) {
     const r = M.apurar([M.lerEcf(comItem(d, '15000,00'), 'x')], { hoje: '2026-10-19' });
@@ -50,12 +65,12 @@ test('valor com ponto decimal é lido como decimal e avisa', () => {
   assert.equal(l.trimestres[0].adicoes[5].valor, 15000); assert.match(l.avisos.join(), /ponto decimal/);
 });
 test('período não trimestral (ECF anual) não é calculado', () => {
-  const t = ecf(true).replace('|M030|001|', '|M030|A00|');
+  const t = ecf(true).replace('|M030|01012025|31032025|T01|', '|M030|01012025|31122025|A00|');
   const r = M.apurar([M.lerEcf(t, 'anual')], { hoje: '2026-10-19' });
   assert.equal(r.total.valor, 0); assert.match(r.avisos.join(), /não é trimestral/);
 });
 test('sem pagamento declarado o trimestre vai para revisão e não soma', () => {
-  const t = ecf(true).replace('|N630|IRPJ A PAGAR 1T|531500,00|', '');
+  const t = ecf(true).replace('|N630|26|IMPOSTO DE RENDA A PAGAR|531500,00|', '');
   const r = M.apurar([M.lerEcf(t, 'sempago')], { hoje: '2026-10-19' });
   assert.equal(r.total.valor, 0); assert.equal(r.revisao.length, 1);
 });
@@ -69,4 +84,45 @@ test('último dia do prazo ainda conta e sem 0000 não quebra', () => {
 });
 test('adições indedutíveis aparecem na lista de mantidas', () => {
   assert.equal(M.apurar([M.lerEcf(ecf(true), 'a')], { hoje: '2026-10-19' }).adicoesMantidas.length, 3);
+});
+
+// ---- leiaute oficial 12 (Manual de Orientacao da ECF): as posicoes conferem com o manual
+test('le o 0000 no leiaute oficial: CNPJ no campo 04 e o periodo nos campos 10 e 11', () => {
+  const l = M.lerEcf(ecf(true), 'a.txt');
+  assert.equal(l.cnpj, '99303403000177', 'CNPJ vem do campo 04 do 0000');
+  assert.equal(l.empresa, 'Teste S.A.', 'nome vem do campo 05 do 0000');
+  assert.equal(l.ano, 2025, 'ano vem do fim do periodo (campo 11 do 0000)');
+  assert.equal(l.dtIni, '01012025');
+  assert.equal(l.dtFin, '31122025');
+});
+test('le o M030 no leiaute oficial: DT_INI, DT_FIN e PER_APUR', () => {
+  const l = M.lerEcf(ecf(true), 'a.txt');
+  assert.deepEqual(l.periodos.map((p) => ({ cod: p.cod, ini: p.ini, fin: p.fin })),
+    [{ cod: 'T01', ini: '01012025', fin: '31032025' }]);
+});
+test('le o M300 no leiaute oficial: valor no campo 06 e tipo pelo TIPO_LANCAMENTO', () => {
+  const l = M.lerEcf(ecf(true), 'a.txt');
+  assert.equal(l.trimestres.length, 1, 'a linha ATIVIDADE GERAL abre um trimestre so');
+  const t = l.trimestres[0];
+  assert.equal(t.resultado, 2050000, 'valor do campo 06 da linha de resultado');
+  assert.equal(t.adicoesIrpjTotal, 220000, 'total de ADICOES (tipo R)');
+  assert.equal(t.adicoes.length, 6, 'as seis adicoes detalhadas (tipo A)');
+  assert.equal(t.adicoes[0].descricao, 'MULTAS PUNITIVAS FISCAIS E DE TRÂNSITO');
+  assert.equal(t.exclusoes, 120000, 'total de EXCLUSOES (tipo R)');
+});
+test('le o N500/N630/N670 no leiaute oficial: valor no campo 04 e "a pagar" pelo codigo', () => {
+  const l = M.lerEcf(ecf(true), 'a.txt');
+  const t = l.trimestres[0];
+  assert.equal(t.baseIrpj, 2150000, 'N500 codigo 1 = base do IRPJ');
+  assert.equal(t.pagoIrpj, 531500, 'N630 "IMPOSTO DE RENDA A PAGAR" (codigo 26)');
+  assert.equal(t.pagoCsll, 193500, 'N670 "CSLL A PAGAR" (codigo 21)');
+});
+test('com M350 no leiaute oficial, a base da CSLL vem do M350', () => {
+  const l = M.lerEcf(ecf(true, true), 'a.txt');
+  const t = l.trimestres[0];
+  assert.equal(t.resultadoCsll, 2050000, 'M350 "Lucro Antes da CSLL" (tipo L)');
+  assert.equal(t.adicoesCsllTotal, 220000, 'M350 ADICOES (tipo R)');
+  const r = M.apurar([l], { hoje: '2026-10-19' });
+  assert.equal(r.conferencia[0].confere, true, 'base da CSLL confere com a declarada');
+  assert.equal(r.total.valor, 34000);
 });

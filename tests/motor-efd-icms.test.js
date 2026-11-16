@@ -151,3 +151,16 @@ test('texto vazio ou lixo não quebra e a lista de dúvidas é devolvida', () =>
   const t = M.resumo(r);
   assert.equal(t.icms.debito, 0);
 });
+
+test('lê IND_BENEFICIO no C197 e no E111 (Guia 3.2.3+) e aceita arquivo sem o campo', () => {
+  const c197b = L('C197', 'SC10000001', 'AJUSTE TESTE', '', '600,00', '17,00', '102,00', '0,00', '1');
+  const e111b = L('E111', 'SC020001', 'AJUSTE DE APURACAO', '5,00', '2');
+  const novo = base.map((l) => (l === c197e ? c197b : l === e111 ? e111b : l));
+  const r = M.lerEfdIcms(arquivo(novo));
+  assert.equal(r.ajustesC197[0].indBeneficio, '1');
+  assert.equal(r.ajustesE111[0].indBeneficio, '2');
+  const antigo = M.lerEfdIcms(arquivo(base));
+  assert.equal(antigo.ajustesC197[0].indBeneficio, '');
+  assert.equal(antigo.ajustesE111[0].indBeneficio, '');
+  assert.equal(antigo.avisos.length, r.avisos.length);
+});

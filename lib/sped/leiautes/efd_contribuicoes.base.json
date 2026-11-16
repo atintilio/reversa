@@ -1,0 +1,9310 @@
+{
+ "leiaute": "efd_contribuicoes",
+ "origem": "python-sped (MIT, SPED-BR) - base portada por AST; sem tamanhos",
+ "validacao": "[VALIDAR] contra Guia Pratico oficial vigente",
+ "registros": {
+  "0000": {
+   "descricao": "Abertura do Arquivo Digital e Identificação da Pessoa Jurídica\n\n>>> line = '|0000|002|0|||01042011|30042011|EMPRESA YYY|77777777000191|MG|3106200||00|0|'\n>>> r = Registro0000(line)\n>>> r.REG\n'0000'\n>>> r.COD_VER\n'002'\n>>> r.TIPO_ESCRIT\n'0'",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0000"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_VER",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "TIPO_ESCRIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_SIT_ESP",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_REC_ANTERIOR",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 8,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "UF",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "COD_MUN",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "SUFRAMA",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "IND_NAT_PJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "IND_ATIV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0001": {
+   "descricao": "Abertura do Bloco 0",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0035": {
+   "descricao": "Identificação da Sociedade em Conta de Participação - SCP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0035"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_SCP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESC_SCP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "INF_COMP",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0100": {
+   "descricao": "Dados do Contabilista",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0100"
+    },
+    {
+     "pos": 2,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CPF",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CRC",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "CEP",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "END",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "NUM",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "COMPL",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "BAIRRO",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "FONE",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "FAX",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "EMAIL",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "COD_MUN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0110": {
+   "descricao": "Regimes de Apuração da Contribuição Social e de Apropriação de Crédito",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0110"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_INC_TRIB",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_APRO_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_TIPO_CONT",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_REG_CUM",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0111": {
+   "descricao": "Tabela de Receita Bruta Mensal para Fins de Rateio de Créditos Comuns",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0111"
+    },
+    {
+     "pos": 2,
+     "nome": "REC_BRU_NCUM_TRIB_MI",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "REC_BRU_NCUM_NT_MI",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "REC_BRU_NCUM_EXP",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "REC_BRU_CUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "REC_BRU_TOTAL",
+     "tipo": "N"
+    }
+   ]
+  },
+  "0120": {
+   "descricao": "Identificação de Períodos Dispensados da Escrituração Digital",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0120"
+    },
+    {
+     "pos": 2,
+     "nome": "MES_DISPENSA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "INF_COMP",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0140": {
+   "descricao": "Tabela de Cadastro de Estabelecimento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0140"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_EST",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "UF",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "IE",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_MUN",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "IM",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "SUFRAMA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0145": {
+   "descricao": "Regime de Apuração da Contribuição Previdenciária sobre a Receita Bruta",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0145"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_INC_TRIB",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_REC_TOT",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_REC_ATIV",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_REC_DEMAIS_ATIV",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0150": {
+   "descricao": "Tabela de Cadastro do Participante",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0150"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PAIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "CPF",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "IE",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_MUN",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "SUFRAMA",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "END",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "NUM",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "COMPL",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "BAIRRO",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0190": {
+   "descricao": "Identificação das Unidades de Medida",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0190"
+    },
+    {
+     "pos": 2,
+     "nome": "UNID",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0200": {
+   "descricao": "Tabela de Identificação do Item (Produtos e Serviços)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0200"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_BARRA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ANT_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "UNID_INV",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "TIPO_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_NCM",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "EX_IPI",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "COD_GEN",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "COD_LST",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N"
+    }
+   ]
+  },
+  "0205": {
+   "descricao": "Alteração do Item",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0205"
+    },
+    {
+     "pos": 2,
+     "nome": "DESCR_ANT_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIM",
+     "tipo": "D"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ANT_ITEM",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0206": {
+   "descricao": "Código de Produto conforme Tabela ANP (Combustíveis)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0206"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_COMB",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0208": {
+   "descricao": "Código de Grupos por Marca Comercial – REFRI (Bebidas Frias)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0208"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_TAB",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_GRU",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "MARCA_COM",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0400": {
+   "descricao": "Tabela de Natureza da Operação/ Prestação",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0400"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_NAT",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0450": {
+   "descricao": "Tabela de Informação Complementar do Documento Fiscal",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0450"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_INF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "TXT",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0500": {
+   "descricao": "Plano de Contas Contábeis – Contas Informadas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0500"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_NAT_CC",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NÍVEL",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "NOME_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_CTA_REF",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "CNPJ_EST",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0600": {
+   "descricao": "Centro de Custos",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0600"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CCUS",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0990": {
+   "descricao": "Encerramento do Bloco 0",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_0",
+     "tipo": "N"
+    }
+   ]
+  },
+  "A001": {
+   "descricao": "Abertura do Bloco A",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "A001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "A010": {
+   "descricao": "Identificação do Estabelecimento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "A010"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    }
+   ]
+  },
+  "A100": {
+   "descricao": "Documento – Nota Fiscal de Serviço",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "A100"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_OPER",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_EMIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_SIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "SUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "CHV_NFSE",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 11,
+     "nome": "DT_EXE_SERV",
+     "tipo": "D"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "IND_PGTO",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "VL_PIS_RET",
+     "tipo": "N"
+    },
+    {
+     "pos": 20,
+     "nome": "VL_COFINS_RET",
+     "tipo": "N"
+    },
+    {
+     "pos": 21,
+     "nome": "VL_ISS",
+     "tipo": "N"
+    }
+   ]
+  },
+  "A110": {
+   "descricao": "Complemento de Documento – Informação Complementar da NF",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "A110"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_INF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "TXT_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "A111": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "A111"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "A120": {
+   "descricao": "Informação Complementar – Operações de Importação",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "A120"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_TOT_SERV",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_PIS_IMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "DT_PAG_PIS",
+     "tipo": "D"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_COFINS_IMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_PAG_COFINS",
+     "tipo": "D"
+    },
+    {
+     "pos": 9,
+     "nome": "LOC_EXE_SERV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "A170": {
+   "descricao": "Complemento de Documento – Itens do Documento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "A170"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DESCR_COMPL",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "IND_ORIG_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 18,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    }
+   ]
+  },
+  "A990": {
+   "descricao": "Encerramento do Bloco A",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "A990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_A",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C001": {
+   "descricao": "Abertura do Bloco C",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C010": {
+   "descricao": "Identificação do Estabelecimento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C010"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_ESCRI",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C100": {
+   "descricao": "Documento - Nota Fiscal (código 01), Nota Fiscal Avulsa (código 1B), Nota Fiscal de Produtor (código 04) e\nNF-e (código 55)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C100"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_OPER",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_EMIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_SIT;",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "CHV_NFE",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "CHV_NFE",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 12,
+     "nome": "DT_E_S",
+     "tipo": "D"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_ABAT_NT",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_MERC",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "IND_FRT",
+     "tipo": "C"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_FRT",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "VL_SEG",
+     "tipo": "N"
+    },
+    {
+     "pos": 20,
+     "nome": "VL_OUT_DA",
+     "tipo": "N"
+    },
+    {
+     "pos": 21,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 22,
+     "nome": "VL_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 23,
+     "nome": "VL_BC_ICMS_ST",
+     "tipo": "N"
+    },
+    {
+     "pos": 24,
+     "nome": "VL_ICMS_ST",
+     "tipo": "N"
+    },
+    {
+     "pos": 25,
+     "nome": "VL_IPI",
+     "tipo": "N"
+    },
+    {
+     "pos": 26,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 27,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 28,
+     "nome": "VL_PIS_ST",
+     "tipo": "N"
+    },
+    {
+     "pos": 29,
+     "nome": "VL_COFINS_ST",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C110": {
+   "descricao": "Complemento de Documento – Informação Complementar da Nota Fiscal (códigos 01, 1B, 04 e 55)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C110"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_INF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "TXT_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C111": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C111"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C120": {
+   "descricao": "Complemento de Documento – Operações de Importação (código 01)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C120"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_DOC_IMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_DOC_IMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_PIS_IMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_COFINS_IMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_ACDRAW",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C170": {
+   "descricao": "Complemento de Documento – Itens do Documento (códigos 01, 1B, 04 e 55)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C170"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DESCR_COMPL",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "QTD",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "UNID",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "CST_ICMS",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "ALIQ_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_BC_ICMS_ST",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "ALIQ_ST",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_ICMS_ST",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "IND_APUR",
+     "tipo": "C"
+    },
+    {
+     "pos": 20,
+     "nome": "CST_IPI",
+     "tipo": "C"
+    },
+    {
+     "pos": 21,
+     "nome": "COD_ENQ",
+     "tipo": "C"
+    },
+    {
+     "pos": 22,
+     "nome": "VL_BC_IPI",
+     "tipo": "N"
+    },
+    {
+     "pos": 23,
+     "nome": "ALIQ_IPI",
+     "tipo": "N"
+    },
+    {
+     "pos": 24,
+     "nome": "VL_IPI",
+     "tipo": "N"
+    },
+    {
+     "pos": 25,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 26,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 27,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 28,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 29,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 30,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 31,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 32,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 33,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 34,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 35,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 36,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 37,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C175": {
+   "descricao": "Registro Analítico do Documento (código 65)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C175"
+    },
+    {
+     "pos": 2,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_OPR",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 18,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C180": {
+   "descricao": "Consolidação de Notas Fiscais Eletrônicas Emitidas pela Pessoa Jurídica (Código 55) – Operações de Vendas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C180"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_DOC_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_DOC_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_NCM",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "EX_IPI",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_TOT_ITEM",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C181": {
+   "descricao": "Detalhamento da Consolidação - Operações de Vendas - PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C181"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C185": {
+   "descricao": "Detalhamento da Consolidação - Operações de Vendas – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C185"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C188": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C188"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C190": {
+   "descricao": "Consolidação de Notas Fiscais Eletrônicas (Código 55) – Operações de Aquisição com Direito a Crédito, e Operações de\nDevolução de Compras e Vendas.",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C190"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_REF_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_REF_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_NCM",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "EX_IPI",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_TOT_ITEM",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C191": {
+   "descricao": "Detalhamento da Consolidação – Operações de Aquisição com Direito a Crédito, e Operações de Devolução de Compras e\nVendas – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C191"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ_CPF_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C195": {
+   "descricao": "Detalhamento da Consolidação - Operações de Aquisição com Direito a Crédito, e Operações de Devolução de Compras e\nVendas – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C195"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ_CPF_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C198": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C198"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C199": {
+   "descricao": "Complemento de Documento – Operações de Importação (código 55)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C199"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_DOC_IMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_DOC__IMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_PIS_IMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_COFINS_IMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_ACDRAW",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C380": {
+   "descricao": "Nota Fiscal de Venda a Consumidor (Código 02) - Consolidação de Documentos Emitidos",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C380"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_DOC_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_DOC_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_DOC_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC_FIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_DOC_CANC",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C381": {
+   "descricao": "Detalhamento da Consolidação – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C381"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C385": {
+   "descricao": "Detalhamento da Consolidação – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C385"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C395": {
+   "descricao": "Notas Fiscais de Venda a Consumidor (Códigos 02, 2D, 2E e 59) – Aquisições/Entradas com Crédito",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C395"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "SUB_SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C396": {
+   "descricao": "Itens do Documento (Códigos 02, 2D, 2E e 59) – Aquisições/Entradas com Crédito",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C396"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C400": {
+   "descricao": "Equipamento ECF (códigos 02 e 2D)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C400"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "ECF_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "ECF_FAB",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "ECF_CX",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C405": {
+   "descricao": "Redução Z (códigos 02 e 2D)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C405"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "CRO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CRZ",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_COO_FIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "GT_FIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_BRT",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C481": {
+   "descricao": "Resumo Diário de Documentos Emitidos por ECF – PIS/PASEP (Códigos 02 e 2D)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C481"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C485": {
+   "descricao": "Resumo Diário de Documentos Emitidos por ECF – COFINS (Códigos 02 e 2D)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C485"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C489": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C489"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C490": {
+   "descricao": "Consolidação de Documentos Emitidos por ECF (Códigos 02, 2D, 59 e 60)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C490"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_DOC_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_DOC_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C491": {
+   "descricao": "Detalhamento da Consolidação de Documentos Emitidos por ECF (Códigos 02, 2D, 59 e 60) – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C491"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C495": {
+   "descricao": "Detalhamento da Consolidação de Documentos Emitidos por ECF (Códigos 02, 2D, 59 e 60) – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C495"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C499": {
+   "descricao": "Processo Referenciado - Documentos Emitidos Por ECF",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C499"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C500": {
+   "descricao": "Nota Fiscal/Conta de Energia Elétrica (Código 06), Nota Fiscal/Conta de fornecimento D’água Canalizada (Código 29) e\nNota Fiscal/Consumo Fornecimento de Gás (Código 28) – Documentos de Entrada / Aquisição com Crédito",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C500"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_SIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "SUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 9,
+     "nome": "DT_ENT",
+     "tipo": "D"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "COD_INF",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C501": {
+   "descricao": "Complemento da operação (Códigos 06, 28 e 29) – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C501"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C505": {
+   "descricao": "Complemento da operação (Códigos 06, 28 e 29) – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C505"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C509": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C509"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C600": {
+   "descricao": "Consolidação Diária de Notas Fiscais/Contas de Energia Elétrica (Código 06), Nota Fiscal/Conta de Fornecimento\nd´água (Código 29) e Nota Fiscal/Conta de Fornecimento de Gás (Código 28) (Empresas Obrigadas ou Não Obrigadas Ao\nConvenio ICMS 115/03) - Documentos de Saídas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C600"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MUN",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "SUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CONS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "QTD_CONS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "QTD_CANC",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "CONS",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_FORN",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_SERV_NT",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_TERC",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_DA",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "VL_BC_ICMS_ST",
+     "tipo": "N"
+    },
+    {
+     "pos": 20,
+     "nome": "VL_ICMS_ST",
+     "tipo": "N"
+    },
+    {
+     "pos": 21,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 22,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C601": {
+   "descricao": "Complemento da Consolidação Diária (Códigos 06, 29 e 28) – Documentos de Saidas - PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C601"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C605": {
+   "descricao": "Complemento da Consolidação Diária (Códigos 06, 29 e 28) – Documentos de Saidas – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C605"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C609": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C609"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C800": {
+   "descricao": "Cupom Fiscal Eletrônico – CF-e (Código 59)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C800"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_SIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "NUM_CFE",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CFE",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "CNPJ_CPF",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "NR_SAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "CHV_CFE",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_MERC",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_OUT_DA",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_PIS_ST",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_COFINS_ST",
+     "tipo": "N"
+    }
+   ]
+  },
+  "C810": {
+   "descricao": "Detalhamento do Cupom Fiscal Eletrônico – CF-e (Código 59) – PIS/PASEP e COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C810"
+    },
+    {
+     "pos": 2,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C820": {
+   "descricao": "Detalhamento do Cupom Fiscal Eletrônico – CF-e  (código 59) – PIS/PASEP e COFINS Apurado por Unidade de Medida de\nProduto",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C820"
+    },
+    {
+     "pos": 2,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C830": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C830"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C860": {
+   "descricao": "Identificação do Equipamento SAT-CF-e",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C860"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NR_SAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 5,
+     "nome": "DOC_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DOC_FIM",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C870": {
+   "descricao": "Detalhamento do Cupom Fiscal Eletrônico (Código 59) – PIS/PASEP e COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C870"
+    },
+    {
+     "pos": 2,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C880": {
+   "descricao": "Detalhamento do Cupom Fiscal Eletrônico (Código 59) – PIS/PASEP e COFINS Apurado por Unidade de Medida de Produto",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C880"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C890": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C890"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "C990": {
+   "descricao": "Encerramento do Bloco C",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "C990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_C",
+     "tipo": "N"
+    }
+   ]
+  },
+  "D001": {
+   "descricao": "Abertura do Bloco D",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D010": {
+   "descricao": "Identificação do Estabelecimento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D010"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D100": {
+   "descricao": "Aquisição de Serviços de Transportes (Códigos 07, 08, 8B, 09, 10, 11, 26, 27 e 57).",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D100"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_OPER",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_EMIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_SIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "SUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "CHV_CTE",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 12,
+     "nome": "DT_A_P",
+     "tipo": "D"
+    },
+    {
+     "pos": 13,
+     "nome": "TP_CT-e",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "CHV_CTE_REF",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "IND_FRT",
+     "tipo": "C"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_SERV",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 20,
+     "nome": "VL_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 21,
+     "nome": "VL_NT",
+     "tipo": "N"
+    },
+    {
+     "pos": 22,
+     "nome": "COD_INF",
+     "tipo": "C"
+    },
+    {
+     "pos": 23,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D101": {
+   "descricao": "Complemento do Documento de Transporte – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D101"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_NAT_FRT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D105": {
+   "descricao": "Complemento do Documento de Transporte – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D105"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_NAT_FRT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D111": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D111"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D200": {
+   "descricao": "Resumo da Escrituração Diária – Prestação de Serviços de Transportes (Códigos 07, 08, 8B, 09, 10, 11, 26, 27 e 57).",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D200"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_SIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "SUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "NUM_DOC_FIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "DT_REF",
+     "tipo": "D"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    }
+   ]
+  },
+  "D201": {
+   "descricao": "Totalização do Resumo Diário – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D201"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D205": {
+   "descricao": "Totalização do Resumo Diário – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D205"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D209": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D209"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D300": {
+   "descricao": "Resumo da Escrituração Diária (Códigos 13, 14, 15, 16 e 18).",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D300"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "SUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_DOC_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_DOC_FIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_REF",
+     "tipo": "D"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D309": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D309"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D350": {
+   "descricao": "Resumo Diário de Cupom Fiscal Emitido por ECF (Códigos 2E, 13, 14, 15 e 16)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D350"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "ECF_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "ECF_FAB",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 6,
+     "nome": "CRO",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "CRZ",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "NUM_COO_FIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "GT_FIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_BRT",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 20,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 21,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 22,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 23,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D359": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D359"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D500": {
+   "descricao": "Nota Fiscal de Serviço de Comunicação (Código 21) e Serviço de Telecomunicação (Código 22) - Operação de Aquisição\ncom Direito a Crédito",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D500"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_OPER",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_EMIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_SIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "SUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "DT_DOC",
+     "tipo": "D"
+    },
+    {
+     "pos": 11,
+     "nome": "DT_A_P",
+     "tipo": "D"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_SERV",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_SERV_NT",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_TERC",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_DA",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "VL_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 20,
+     "nome": "COD_INF",
+     "tipo": "C"
+    },
+    {
+     "pos": 21,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 22,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    }
+   ]
+  },
+  "D501": {
+   "descricao": "Complemento da Operação (Código 21 e 22) – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D501"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D505": {
+   "descricao": "Complemento da Operação (Código 21 e 22) – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D505"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D509": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D509"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D600": {
+   "descricao": "Consolidação da Prestação de Serviços – Notas de Serviço de Comunicação (Código 21) e de Serviço de Telecomunicação\n(Código 22)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D600"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MUN",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "SUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "QTD_CONS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_DOC_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 9,
+     "nome": "DT_DOC_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_DOC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_SERV",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_SERV_NT",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_TERC",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_DA",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_BC_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_ICMS",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    }
+   ]
+  },
+  "D601": {
+   "descricao": "Complemento da Consolidação da Prestação de Serviços (Código 21 e 22) – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D601"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CLASS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D605": {
+   "descricao": "Complemento da Consolidação da Prestação de Serviços (Código 21 e 22) – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D605"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CLASS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ITEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D609": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D609"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "D990": {
+   "descricao": "Encerramento do Bloco D",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "D990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_D",
+     "tipo": "N"
+    }
+   ]
+  },
+  "F001": {
+   "descricao": "Abertura do Bloco F",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F010": {
+   "descricao": "Identificação do Estabelecimento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F010"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F100": {
+   "descricao": "Demais Documentos e Operações Geradoras de Contribuição e Créditos",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F100"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_OPER",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DT_OPER",
+     "tipo": "D"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 16,
+     "nome": "IND_ORIG_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 17,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 18,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 19,
+     "nome": "DESC_DOC_OPER",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F111": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F111"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F120": {
+   "descricao": "Bens Incorporados ao Ativo Imobilizado – Operações Geradoras de Créditos com base nos Encargos de\nDepreciação/Amortização",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F120"
+    },
+    {
+     "pos": 2,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IDENT_BEM_IMOB",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_ORIG_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_UTIL_BEM_IMOB",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_OPER_DEP",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "PARC_OPER_NAO_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 17,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 18,
+     "nome": "DESC_BEM_IMOB",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F129": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F129"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F130": {
+   "descricao": "Bens Incorporados ao Ativo Imobilizado – Operações Geradoras de Créditos com base no Valor de Aquisição",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F130"
+    },
+    {
+     "pos": 2,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IDENT_BEM_IMOB",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_ORIG_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_UTIL_BEM_IMOB",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "MES_OPER_AQUIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_OPER_AQUIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "PARC_OPER_NAO_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_BC_CRED",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "IND_NR_PARC",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 20,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 21,
+     "nome": "DESC_BEM_IMOB",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F139": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F139"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F150": {
+   "descricao": "Crédito Presumido sobre Estoque de Abertura",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F150"
+    },
+    {
+     "pos": 2,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_TOT_EST",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "EST_IMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_EST",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_MEN_EST",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_CRED_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_CRED_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "DESC_EST",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F200": {
+   "descricao": "Operações da Atividade Imobiliária – Unidade Imobiliária Vendida",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F200"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_OPER",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "UNID_IMOB",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IDENT_EMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DESC_UNID_IMOB",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_CONT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "CPF_CNPJ_ADQU",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_OPER",
+     "tipo": "D"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_TOT_VEND",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_REC_ACUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_TOT_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 19,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 20,
+     "nome": "PERC_REC_RECEB",
+     "tipo": "C"
+    },
+    {
+     "pos": 21,
+     "nome": "IND_NAT_EMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 22,
+     "nome": "INF_COMP",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F205": {
+   "descricao": "Operações da Atividade Imobiliária – Custo Incorrido da Unidade Imobiliária",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F205"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_CUS_INC_ACUM_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_CUS_INC_PER_ESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CUS_INC_ACUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_EXC_BC_CUS_INC_ACUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_CUS_INC",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_CRED_PIS_ACUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_CRED_PIS_DESC_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_CRED_PIS_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_CRED_PIS_DESC_FUT",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_CRED_COFINS_ACUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_CRED_COFINS_DESC_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_CRED_COFINS_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "VL_CRED_COFINS_DESC_FUT",
+     "tipo": "N"
+    }
+   ]
+  },
+  "F210": {
+   "descricao": "Operações da Atividade Imobiliária – Custo Orçado da Unidade Imobiliária Vendida",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F210"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_CUS_ORC",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_EXC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CUS_ORC_AJU",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_CRED",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CRED_PIS_UTIL",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_CRED_COFINS_UTIL",
+     "tipo": "N"
+    }
+   ]
+  },
+  "F211": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F211"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F500": {
+   "descricao": "Consolidação das Operações da Pessoa Jurídica Submetida ao Regime de Tributação com Base no Lucro Presumido –\nIncidência do PIS/Pasep e da Cofins pelo Regime de Caixa",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F500"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_REC_CAIXA",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DESC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_DESC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 16,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F509": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F509"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F510": {
+   "descricao": "Consolidação das Operações da Pessoa Jurídica Submetida ao Regime de Tributação com Base no Lucro Presumido  –\nIncidência do PIS/Pasep e da Cofins pelo Regime de Caixa (Apuração da Contribuição por Unidade de Medida de Produto)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F510"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_REC_CAIXA",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DESC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_DESC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 16,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F519": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F519"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F525": {
+   "descricao": "Composição da Receita Escriturada no Período – Detalhamento da Receita Recebida pelo Regime de Caixa",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F525"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CNPJ_CPF",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_REC_DET",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F550": {
+   "descricao": "Consolidação das Operações da Pessoa Jurídica Submetida ao Regime de Tributação com Base no Lucro Presumido –\nIncidência do PIS/Pasep e da Cofins pelo Regime de Competência",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F550"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_REC_COMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DESC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_DESC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 16,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F559": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F559"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F560": {
+   "descricao": "Consolidação das Operações da Pessoa Jurídica Submetida ao Regime de Tributação com Base no Lucro Presumido –\nIncidência do PIS/Pasep e da Cofins pelo Regime de Competência (Apuração da Contribuição por Unidade de Medida de\nProduto)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F560"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_REC_COMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DESC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_DESC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 16,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F569": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F569"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F600": {
+   "descricao": "Contribuição Retida na Fonte",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F600"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_NAT_RET",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_RET",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_RET",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_RET",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "IND_NAT_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_RET_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_RET_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_DEC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F700": {
+   "descricao": "Deduções Diversas",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F700"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_ORI_DED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_NAT_DED",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DED_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_DED_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "INF_COMP",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F800": {
+   "descricao": "Créditos Decorrentes de Eventos de Incorporação, Fusão e Cisão",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F800"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_NAT_EVEN",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_EVEN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "CNPJ_SUCED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "PA_CONT_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CRED_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CRED_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "PER_CRED_CIS",
+     "tipo": "C"
+    }
+   ]
+  },
+  "F990": {
+   "descricao": "Encerramento do Bloco F",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "F990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_F",
+     "tipo": "N"
+    }
+   ]
+  },
+  "I001": {
+   "descricao": "Abertura do Bloco I",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I010": {
+   "descricao": "Identificação da Pessoa Jurídica",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I010"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_ATIV",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I100": {
+   "descricao": "Consolidação das Operações do Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I100"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_TOT_DED_GER",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_TOT_DED_ESP",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I199": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I199"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I200": {
+   "descricao": "Composição das Receitas, Deduções e/ou Exclusões do Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I200"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_DET",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DET_VALOR",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I299": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I299"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I300": {
+   "descricao": "Complemento das Operações – Detalhamento das Receitas, Deduções e/ou Exclusões do Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I300"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_COMP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DET_VALOR",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I399": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I399"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I990": {
+   "descricao": "Encerramento do Bloco I",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_I",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M001": {
+   "descricao": "Abertura do Bloco M",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M100": {
+   "descricao": "Crédito de PIS/PASEP Relativo ao Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M100"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_CRED_ORI",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CRED",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_AJUS_ACRES",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_AJUS_REDUC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_CRED_DIF",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_CRED_DISP",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "IND_DESC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_CRED_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "SLD_CRED",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M105": {
+   "descricao": "Detalhamento da Base de Cálculo do Crédito Apurado no Período – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M105"
+    },
+    {
+     "pos": 2,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_PIS_TOT",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_PIS_CUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_PIS_NC",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "QUANT_BC_PIS_TOT",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "DESC_CRED",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M110": {
+   "descricao": "Ajustes do Crédito de PIS/PASEP Apurado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M110"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_AJ",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DESCR_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_REF",
+     "tipo": "D"
+    }
+   ]
+  },
+  "M115": {
+   "descricao": "Detalhamento dos Ajustes do Crédito de Pis/Pasep Apurado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M115"
+    },
+    {
+     "pos": 2,
+     "nome": "DET_VALOR_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DET_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DET_ALIQ",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DT_OPER_AJ",
+     "tipo": "D"
+    },
+    {
+     "pos": 7,
+     "nome": "DESC_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M200": {
+   "descricao": "Consolidação da Contribuição para o PIS/PASEP do Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M200"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_TOT_CONT_NC_PER",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_TOT_CRED_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_TOT_CRED_DESC_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_TOT_CONT_NC_DEV",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_RET_NC",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_OUT_DED_NC",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CONT_NC_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_TOT_CONT_CUM_PER",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_RET_CUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_OUT_DED_CUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_CONT_CUM_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_TOT_CONT_REC",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M205": {
+   "descricao": "Contribuição para o PIS/Pasep a Recolher – Detalhamento por Código de Receita (Visão Débito DCTF)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M205"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DEBITO",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M210": {
+   "descricao": "Detalhamento da Contribuição para o PIS/PASEP do Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M210"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CONT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_REC_BRT",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_CONT",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "QUANT_BC_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_PIS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CONT_APUR",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_AJUS_ACRES",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_AJUS_REDUC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_CONT_DIFER",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_CONT_DIFER_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_CONT_PER",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M211": {
+   "descricao": "Sociedades Cooperativas – Composição da Base de Cálculo – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M211"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_TIP_COOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_BC_CONT_ANT_EXC_COOP",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_EXC_COOP_GER",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_EXC_ESP_COOP",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_CONT",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M220": {
+   "descricao": "Ajustes da Contribuição para o PIS/PASEP Apurada",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M220"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_AJ",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DESCR_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_REF",
+     "tipo": "D"
+    }
+   ]
+  },
+  "M225": {
+   "descricao": "Detalhamento dos Ajustes da Contribuição para o Pis/Pasep Apurada",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M225"
+    },
+    {
+     "pos": 2,
+     "nome": "DET_VALOR_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DET_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DET_ALIQ",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DT_OPER_AJ",
+     "tipo": "D"
+    },
+    {
+     "pos": 7,
+     "nome": "DESC_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M230": {
+   "descricao": "Informações Adicionais de Diferimento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M230"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_VEND",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_NAO_RECEB",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CONT_DIF",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CRED_DIF",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CRED",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M300": {
+   "descricao": "Contribuição de PIS/PASEP Diferida em Períodos Anteriores - Valores a Pagar no Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M300"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CONT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_CONT_APUR_DIFER",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_CRED_DESC",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CRED_DESC_DIFER",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CONT_DIFER_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "PER_APUR",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_RECEB",
+     "tipo": "D"
+    }
+   ]
+  },
+  "M350": {
+   "descricao": "PIS/PASEP - Folha de Salários",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M350"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_TOT_FOL",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_EXC_BC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_TOT_BC",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_PIS_FOL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_TOT_CONT_FOL",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M400": {
+   "descricao": "Receitas Isentas, Não Alcançadas pela Incidência da Contribuição, Sujeitas à Alíquota Zero ou de Vendas com\nSuspensão – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M400"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_TOT_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DESC_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M410": {
+   "descricao": "Detalhamento das Receitas Isentas, Não Alcançadas pela Incidência da Contribuição, Sujeitas à Alíquota Zero ou de\nVendas com Suspensão – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M410"
+    },
+    {
+     "pos": 2,
+     "nome": "NAT_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DESC_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M500": {
+   "descricao": "Crédito de COFINS Relativo ao Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M500"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_CRED_ORI",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CRED",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_AJUS_ACRES",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_AJUS_REDUC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_CRED_DIFER",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_CRED_DISP",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "IND_DESC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_CRED_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "SLD_CRED",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M505": {
+   "descricao": "Detalhamento da Base de Cálculo do Crédito Apurado no Período – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M505"
+    },
+    {
+     "pos": 2,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_COFINS_TOT",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_BC_COFINS_CUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_COFINS_NC",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "QUANT_BC_COFINS_TOT",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "DESC_CRED",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M510": {
+   "descricao": "Ajustes do Crédito de COFINS Apurado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M510"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_AJ",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DESCR_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_REF",
+     "tipo": "D"
+    }
+   ]
+  },
+  "M515": {
+   "descricao": "Detalhamento dos Ajustes do Crédito de Cofins Apurado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M515"
+    },
+    {
+     "pos": 2,
+     "nome": "DET_VALOR_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DET_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DET_ALIQ",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DT_OPER_AJ",
+     "tipo": "D"
+    },
+    {
+     "pos": 7,
+     "nome": "DESC_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M600": {
+   "descricao": "Consolidação da Contribuição para a Seguridade Social - COFINS do Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M600"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_TOT_CONT_NC_PER",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_TOT_CRED_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_TOT_CRED_DESC_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_TOT_CONT_NC_DEV",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_RET_NC",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_OUT_DED_NC",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CONT_NC_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_TOT_CONT_CUM_PER",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_RET_CUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_OUT_DED_CUM",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_CONT_CUM_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_TOT_CONT_REC",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M605": {
+   "descricao": "Contribuição para a Seguridade Social - COFINS a Recolher – Detalhamento por Código de Receita (Visão Débito DCTF)",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M605"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DEBITO",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M610": {
+   "descricao": "Detalhamento da Contribuição para a Seguridade Social - COFINS do Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M610"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CONT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_REC_BRT",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_BC_CONT",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "QUANT_BC_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "ALIQ_COFINS_QUANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CONT_APUR",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_AJUS_ACRES",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_AJUS_REDUC",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_CONT_DIFER",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "VL_CONT_DIFER_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_CONT_PER",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M611": {
+   "descricao": "Sociedades Cooperativas – Composição da Base de Cálculo – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M611"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_TIP_COOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_BC_CONT_ANT_EXC_COOP",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_EXC_COOP_GER",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_EXC_ESP_COOP",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_BC_CONT",
+     "tipo": "N"
+    }
+   ]
+  },
+  "M620": {
+   "descricao": "Ajustes da COFINS Apurada",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M620"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_AJ",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DESCR_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_REF",
+     "tipo": "D"
+    }
+   ]
+  },
+  "M625": {
+   "descricao": "Detalhamento dos Ajustes da Cofins Apurada",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M625"
+    },
+    {
+     "pos": 2,
+     "nome": "DET_VALOR_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DET_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DET_ALIQ",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DT_OPER_AJ",
+     "tipo": "D"
+    },
+    {
+     "pos": 7,
+     "nome": "DESC_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M630": {
+   "descricao": "Informações Adicionais de Diferimento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M630"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_VEND",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_NAO_RECEB",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CONT_DIF",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CRED_DIF",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CRED",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M700": {
+   "descricao": "COFINS Diferida em Períodos Anteriores – Valores a Pagar no Período",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M700"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CONT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_CONT_APUR_DIFER",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_CRED_DESC",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CRED_DESC_DIFER",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CONT_DIFER_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "PER_APUR",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_RECEB",
+     "tipo": "D"
+    }
+   ]
+  },
+  "M800": {
+   "descricao": "Receitas Isentas, Não Alcançadas pela Incidência da Contribuição, Sujeitas à Alíquota Zero ou de Vendas com\nSuspensão – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M800"
+    },
+    {
+     "pos": 2,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_TOT_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DESC_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M810": {
+   "descricao": "Detalhamento das Receitas Isentas, Não Alcançadas pela Incidência da Contribuição, Sujeitas à Alíquota Zero ou de\nVendas com Suspensão – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M810"
+    },
+    {
+     "pos": 2,
+     "nome": "NAT_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DESC_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "M990": {
+   "descricao": "Encerramento do Bloco M",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "M990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_M",
+     "tipo": "N"
+    }
+   ]
+  },
+  "P001": {
+   "descricao": "Abertura do Bloco P",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "P010": {
+   "descricao": "Identificação do Estabelecimento",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P010"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    }
+   ]
+  },
+  "P100": {
+   "descricao": "Contribuição Previdenciária sobre a Receita Bruta",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P100"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_REC_TOT_EST",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ATIV_ECON",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_REC_ATIV_ESTAB",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_EXC",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_BC_CONT",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "ALIQ_CONT",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_CONT_APU",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "INFO_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "P110": {
+   "descricao": "Complemento da Escrituração – Detalhamento da Apuração da Contribuição",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P110"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_DET",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DET_VALOR",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "INF_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "P199": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P199"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "P200": {
+   "descricao": "Consolidação da Contribuição Previdenciária sobre a Receita Bruta",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P200"
+    },
+    {
+     "pos": 2,
+     "nome": "PER_REF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_TOT_CONT_APU",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_TOT_AJ_REDUC",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_TOT_AJ_ACRES",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_TOT_CONT_DEV",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_REC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "P210": {
+   "descricao": "Ajuste da Contribuição Previdenciária Apurada sobre a Receita Bruta",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P210"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_AJ",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DESCR_AJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_REF",
+     "tipo": "D"
+    }
+   ]
+  },
+  "P990": {
+   "descricao": "Encerramento do Bloco P",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "P990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_P",
+     "tipo": "N"
+    }
+   ]
+  },
+  "1001": {
+   "descricao": "Abertura do Bloco 1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1010": {
+   "descricao": "Processo Referenciado – Ação Judicial",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1010"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "ID_SEC_JUD",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "ID_VARA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_NAT_ACAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DESC_DEC_JUD",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_SENT_JUD",
+     "tipo": "D"
+    }
+   ]
+  },
+  "1020": {
+   "descricao": "Processo Referenciado – Processo Administrativo",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1020"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_NAT_ACAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_DEC_ADM",
+     "tipo": "D"
+    }
+   ]
+  },
+  "1100": {
+   "descricao": "Controle de Créditos Fiscais – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1100"
+    },
+    {
+     "pos": 2,
+     "nome": "PER_APU_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "ORIG_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CNPJ_SUC",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CRED_APU",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CRED_EXT_APU",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_TOT_CRED_APU",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_CRED_DESC_PA_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_CRED_PER_PA_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_CRED_DCOMP_PA_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "SD_CRED_DISP_EFD",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_CRED_DESC_EFD",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_CRED_PER_EFD",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_CRED_DCOMP_EFD",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_CRED_TRANS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_CRED_OUT",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "SLD_CRED_FIM",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1101": {
+   "descricao": "Apuração de Crédito Extemporâneo - Documentos e Operações de Períodos Anteriores – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1101"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "SUB_SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_OPER",
+     "tipo": "D"
+    },
+    {
+     "pos": 9,
+     "nome": "CHV_NFE",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "IND_ORIG_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 19,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 20,
+     "nome": "DESC_COMPL",
+     "tipo": "C"
+    },
+    {
+     "pos": 21,
+     "nome": "PER_ESCRIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 22,
+     "nome": "CNPJ",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1102": {
+   "descricao": "Detalhamento do Crédito Extemporâneo, Vinculado a mais de um Tipo de Receita – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1102"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_CRED_PIS_TRIB_MI",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_CRED_PIS_NT_MI",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CRED_PIS_EXP",
+     "tipo": "N"
+    }
+   ]
+  },
+  "1200": {
+   "descricao": "Contribuição Social Extemporânea – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1200"
+    },
+    {
+     "pos": 2,
+     "nome": "PER_APUR_ANT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NAT_CONT_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CONT_APUR",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CRED_PIS_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CONT_DEV",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_OUT_DED",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CONT_EXT",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_MUL",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_JUR",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "DT_RECOL",
+     "tipo": "D"
+    }
+   ]
+  },
+  "1210": {
+   "descricao": "Detalhamento da Contribuição Social Extemporânea – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1210"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DT_OPER",
+     "tipo": "D"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_BC_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "ALIQ_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_PIS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "DESC_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1220": {
+   "descricao": "Demonstração do Crédito a Descontar da Contribuição Extemporânea – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1220"
+    },
+    {
+     "pos": 2,
+     "nome": "PER_APU_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "ORIG_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CRED",
+     "tipo": "N"
+    }
+   ]
+  },
+  "1300": {
+   "descricao": "Controle dos Valores Retidos na Fonte – PIS/PASEP",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1300"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_NAT_RET",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "PR_REC_RET",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_RET_APU",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_RET_DED",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_RET_PER",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_RET_DCOMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "SLD_RET",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1500": {
+   "descricao": "Controle de Créditos Fiscais – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1500"
+    },
+    {
+     "pos": 2,
+     "nome": "PER_APU_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "ORIG_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CNPJ_SUC",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CRED_APU",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CRED_EXT_APU",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_TOT_CRED_APU",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_CRED_DESC_PA_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_CRED_PER_PA_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "VL_CRED_DCOMP_PA_ANT",
+     "tipo": "N"
+    },
+    {
+     "pos": 12,
+     "nome": "SD_CRED_DISP_EFD",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "VL_CRED_DESC_EFD",
+     "tipo": "N"
+    },
+    {
+     "pos": 14,
+     "nome": "VL_CRED_PER_EFD",
+     "tipo": "N"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_CRED_DCOMP_EFD",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "VL_CRED_TRANS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_CRED_OUT",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "SLD_CRED_FIM",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1501": {
+   "descricao": "Apuração de Crédito Extemporâneo - Documentos e Operações de Períodos Anteriores – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1501"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_ITEM",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "SUB_SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "NUM_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_OPER",
+     "tipo": "D"
+    },
+    {
+     "pos": 9,
+     "nome": "CHV_NFE",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "NAT_BC_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "IND_ORIG_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 16,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 17,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 18,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 19,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 20,
+     "nome": "DESC_COMPL",
+     "tipo": "C"
+    },
+    {
+     "pos": 21,
+     "nome": "PER_ESCRIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 22,
+     "nome": "CNPJ",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1502": {
+   "descricao": "Detalhamento do Crédito Extemporâneo, Vinculado a mais de um Tipo de Receita – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1502"
+    },
+    {
+     "pos": 2,
+     "nome": "VL_CRED_COFINS_TRIB_MI",
+     "tipo": "N"
+    },
+    {
+     "pos": 3,
+     "nome": "VL_CRED_COFINS_NT_MI",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CRED_COFINS_EXP",
+     "tipo": "N"
+    }
+   ]
+  },
+  "1600": {
+   "descricao": "Contribuição Social Extemporânea – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1600"
+    },
+    {
+     "pos": 2,
+     "nome": "PER_APUR_ANT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NAT_CONT_REC",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CONT_APUR",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CRED_COFINS_DESC",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CONT_DEV",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_OUT_DED",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CONT_EXT",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_MUL",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "VL_JUR",
+     "tipo": "N"
+    },
+    {
+     "pos": 11,
+     "nome": "DT_RECOL",
+     "tipo": "D"
+    }
+   ]
+  },
+  "1610": {
+   "descricao": "Detalhamento da Contribuição Social Extemporânea – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1610"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DT_OPER",
+     "tipo": "D"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_OPER",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_BC_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "ALIQ_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "VL_COFINS",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "DESC_COMPL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1620": {
+   "descricao": "Demonstração do Crédito a Descontar da Contribuição Extemporânea – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1620"
+    },
+    {
+     "pos": 2,
+     "nome": "PER_APU_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "ORIG_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CRED",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CRED",
+     "tipo": "N"
+    }
+   ]
+  },
+  "1700": {
+   "descricao": "Controle dos Valores Retidos na Fonte – COFINS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1700"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_NAT_RET",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "PR_REC_RET",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_RET_APU",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_RET_DED",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_RET_PER",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_RET_DCOMP",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "SLD_RET",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1800": {
+   "descricao": "Incorporação Imobiliária – RET",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1800"
+    },
+    {
+     "pos": 2,
+     "nome": "INC_IMOB",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "REC_RECEB_RET",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "REC_FIN_RET",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "BC_RET",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "ALIQ_RET",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_REC_UNI",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_REC_UNI",
+     "tipo": "D"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_REC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1809": {
+   "descricao": "Processo Referenciado",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1809"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_PROC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_PROC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1900": {
+   "descricao": "Consolidação dos Documentos Emitidos por Pessoa Jurídica Submetida ao Regime de Tributação com Base no Lucro\nPresumido – Regime de Caixa ou de Competência",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1900"
+    },
+    {
+     "pos": 2,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_MOD",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "SUB_SER",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_SIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_TOT_REC",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "QUANT_DOC",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "CST_PIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "CST_COFINS",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "CFOP",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "INF_COMPL",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "1990": {
+   "descricao": "Encerramento do Bloco 1",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "1990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_1",
+     "tipo": "N"
+    }
+   ]
+  },
+  "9001": {
+   "descricao": "Abertura do Bloco 9",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_MOV",
+     "tipo": "C"
+    }
+   ]
+  },
+  "9900": {
+   "descricao": "Registros do Arquivo",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9900"
+    },
+    {
+     "pos": 2,
+     "nome": "REG_BLC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "QTD_REG_BLC",
+     "tipo": "N"
+    }
+   ]
+  },
+  "9990": {
+   "descricao": "Encerramento do Bloco 9",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_9",
+     "tipo": "N"
+    }
+   ]
+  },
+  "9999": {
+   "descricao": "Encerramento do Arquivo Digital",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9999"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  }
+ }
+}

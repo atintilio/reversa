@@ -57,7 +57,8 @@ services:
       - "443:443"
       - "443:443/udp"
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./${CADDYFILE:-Caddyfile}:/etc/caddy/Caddyfile:ro
+      - ./cloudflare-ips.caddy:/etc/caddy/cloudflare-ips.caddy:ro
       - caddy_data:/data
       - caddy_config:/config
     networks:

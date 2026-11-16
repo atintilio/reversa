@@ -62,7 +62,7 @@
   <div class="grid-kpi" id="p-kpis"></div>
   <section class="card" aria-labelledby="t-autorizacao">
     <h2 id="t-autorizacao">Contratação</h2>
-    <p class="muted">Link exclusivo para o contador ou responsável: lista as teses prováveis e possíveis (sem cor nem classificação), recebe oposições e colhe a assinatura do contrato padrão, com honorários de 25%. Teses remotas nunca vão ao cliente.</p>
+    <p class="muted">Link exclusivo para o Aprovador ou responsável: lista as teses prováveis e possíveis (sem cor nem classificação), recebe oposições e colhe a assinatura do contrato padrão, com honorários de 25%. Teses remotas nunca vão ao cliente.</p>
     <button type="button" id="preparar-autorizacao" data-write hidden>Gerar link de contratação</button>
     <p id="link-autorizacao" role="status" aria-live="polite"></p>
     <div id="autorizacoes"></div>
@@ -262,12 +262,12 @@
     }).then(function (r) {
       $('dlg-autorizacao').close(); $('link-autorizacao').textContent = '';
       var input = document.createElement('input'); input.type = 'text'; input.readOnly = true; input.value = r.url;
-      input.setAttribute('aria-label', 'Link exclusivo de contratação; copie e envie ao contador ou responsável');
+      input.setAttribute('aria-label', 'Link exclusivo de contratação; copie e envie ao Aprovador ou responsável');
       input.style.width = '100%'; $('link-autorizacao').appendChild(input); input.select();
       var bt = document.createElement('button'); bt.type = 'button'; bt.className = 'mini sec'; bt.textContent = 'Baixar diagnóstico com este link de contratação';
       bt.onclick = function () { baixarRelatorio({ link: r.url }, 'Diagnostico-com-link-de-contratacao.pdf'); };
       $('link-autorizacao').appendChild(bt);
-      RV.toast('Link gerado. Copie e envie ao contador ou responsável pela empresa.'); carregarAutorizacoes();
+      RV.toast('Link gerado. Copie e envie ao Aprovador ou responsável pela empresa.'); carregarAutorizacoes();
     }).catch(function (err) { RV.toast(err.message); }).finally(function () { $('autorizacao-gerar').disabled = false; });
   });
   // Download do PDF por POST: o link de aprovação vai no corpo, nunca na URL.

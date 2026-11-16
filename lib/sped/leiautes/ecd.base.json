@@ -1,0 +1,1361 @@
+{
+ "leiaute": "ecd",
+ "origem": "python-sped (MIT, SPED-BR) - base portada por AST; sem tamanhos",
+ "validacao": "[VALIDAR] contra Guia Pratico oficial vigente",
+ "registros": {
+  "0000": {
+   "descricao": "ABERTURA DO ARQUIVO DIGITAL E IDENTIFICAÇÃO DO EMPRESÁRIO OU DA SOCIEDADE\nEMPRESÁRIA",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0000"
+    },
+    {
+     "pos": 2,
+     "nome": "LECD",
+     "tipo": "F",
+     "fixo": "LECD"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 5,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "UF",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "IE",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_MUN",
+     "tipo": "N"
+    },
+    {
+     "pos": 10,
+     "nome": "IM",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "IND_SIT_ESP",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "IND_SIT_INI_PER",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "IND_NIRE",
+     "tipo": "C"
+    },
+    {
+     "pos": 14,
+     "nome": "IND_FIN_ESC",
+     "tipo": "C"
+    },
+    {
+     "pos": 15,
+     "nome": "COD_HASH_SUB",
+     "tipo": "C"
+    },
+    {
+     "pos": 16,
+     "nome": "IND_GRANDE_PORTE",
+     "tipo": "C"
+    },
+    {
+     "pos": 17,
+     "nome": "TIP_ECD",
+     "tipo": "C"
+    },
+    {
+     "pos": 18,
+     "nome": "COD_SCP",
+     "tipo": "C"
+    },
+    {
+     "pos": 19,
+     "nome": "IDENT_MF",
+     "tipo": "C"
+    },
+    {
+     "pos": 20,
+     "nome": "IND_ESC_CONS",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0001": {
+   "descricao": "ABERTURA DO BLOCO 0",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0007": {
+   "descricao": "OUTRAS INSCRIÇÕES CADASTRAIS DO EMPRESÁRIO OU SOCIEDADE EMPRESÁRIA",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0007"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ENT_REF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_INSCR",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0020": {
+   "descricao": "ESCRITURAÇÃO CONTÁBIL DESCENTRALIZADA",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0020"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DEC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "UF",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "IE",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_MUN",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "IM",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "NIRE",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0150": {
+   "descricao": "TABELA DE CADASTRO DO PARTICIPANTE",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0150"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_PAIS",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "CPF",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "NIT",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "UF",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "IE",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "IE_ST",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "COD_MUN",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "IM",
+     "tipo": "C"
+    },
+    {
+     "pos": 13,
+     "nome": "SUFRAMA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "0180": {
+   "descricao": "IDENTIFICAÇÃO DO RELACIONAMENTO COM O PARTICIPANTE",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0180"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_REL",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_INI_REL",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "DT_FIN_REL",
+     "tipo": "D"
+    }
+   ]
+  },
+  "0990": {
+   "descricao": "ENCERRAMENTO DO BLOCO 0",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "0990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_0",
+     "tipo": "N"
+    }
+   ]
+  },
+  "I001": {
+   "descricao": "ABERTURA DO BLOCO I",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I010": {
+   "descricao": "IDENTIFICAÇÃO DA ESCRITURAÇÃO CONTÁBIL",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I010"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_ESC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_VER_LC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I012": {
+   "descricao": "LIVROS AUXILIARES AO DIÁRIO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I012"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_ORD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NAT_LIVR",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_HASH_AUX",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I015": {
+   "descricao": "IDENTIFICAÇÃO DAS CONTAS DA ESCRITURAÇÃO RESUMIDA A QUE SE REFERE A\nESCRITURAÇÃO AUXILIAR",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I015"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA_RES",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I020": {
+   "descricao": "CAMPOS ADICIONAIS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I020"
+    },
+    {
+     "pos": 2,
+     "nome": "REG_COD",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_AD",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DESCRICAO",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "TIPO",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I030": {
+   "descricao": "TERMO DE ABERTURA DO LIVRO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I030"
+    },
+    {
+     "pos": 2,
+     "nome": "DNRC_ABERT",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_ORD",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_LIVR",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "NIRE",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "DT_ARQ",
+     "tipo": "D"
+    },
+    {
+     "pos": 10,
+     "nome": "DT_ARQ_CONV",
+     "tipo": "D"
+    },
+    {
+     "pos": 11,
+     "nome": "DESC_MUN",
+     "tipo": "C"
+    },
+    {
+     "pos": 12,
+     "nome": "DT_EX_SOCIAL",
+     "tipo": "D"
+    }
+   ]
+  },
+  "I050": {
+   "descricao": "PLANO DE CONTAS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I050"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_NAT",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NIVEL",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_CTA_SUP",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "CTA",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I051": {
+   "descricao": "PLANO DE CONTAS REFERENCIAL",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I051"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ENT_REF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "COD_CTA_REF",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I052": {
+   "descricao": "INDICAÇÃO DOS CÓDIGOS DE AGLUTINAÇÃO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I052"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_AGL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I075": {
+   "descricao": "TABELA DE HISTÓRICO PADRONIZADO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I075"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_HIST",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESCR_HIST",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I100": {
+   "descricao": "CENTRO DE CUSTOS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I100"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_ALT",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "CCUS",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I150": {
+   "descricao": "SALDOS PERIÓDICOS – IDENTIFICAÇÃO DO PERÍODO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I150"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    }
+   ]
+  },
+  "I155": {
+   "descricao": "DETALHE DOS SALDOS PERIÓDICOS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I155"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_SLD_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_DC_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_DEB",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CRED",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_SLD_FIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_DC_FIN",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I200": {
+   "descricao": "LANÇAMENTO CONTÁBIL",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I200"
+    },
+    {
+     "pos": 2,
+     "nome": "NUM_LCTO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_LCTO",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_LCTO",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_LCTO",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I250": {
+   "descricao": "PARTIDAS DO LANÇAMENTO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I250"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_DC",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_DC",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "NUM_ARQ",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COD_HIST_PAD",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "HIST",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "COD_PART",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I300": {
+   "descricao": "BALANCETES DIÁRIOS – IDENTIFICAÇÃO DA DATA",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I300"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_BCTE",
+     "tipo": "D"
+    }
+   ]
+  },
+  "I310": {
+   "descricao": "DETALHES DO BALANCETE DIÁRIO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I310"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VAL_DEBD",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "VAL_CREDD",
+     "tipo": "N"
+    }
+   ]
+  },
+  "I350": {
+   "descricao": "SALDOS DAS CONTAS DE RESULTADO ANTES DO ENCERRAMENTO - IDENTIFICAÇÃO DA\nDATA",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I350"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_RES",
+     "tipo": "D"
+    }
+   ]
+  },
+  "I355": {
+   "descricao": "DETALHES DOS SALDOS DAS CONTAS DE RESULTADO ANTES DO ENCERRAMENTO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I355"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_CTA",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "COD_CCUS",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "VL_CTA",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "IND_DC",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I500": {
+   "descricao": "PARÂMETROS DE IMPRESSÃO E VISUALIZAÇÃO DO LIVRO RAZÃO AUXILIAR COM LEIAUTE\nPARAMETRIZÁVEL",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I500"
+    },
+    {
+     "pos": 2,
+     "nome": "TAM_FONTE",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I510": {
+   "descricao": "DEFINIÇÃO DE CAMPOS DO LIVRO RAZÃO AUXILIAR COM LEIAUTE PARAMETRIZÁVEL",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I510"
+    },
+    {
+     "pos": 2,
+     "nome": "NM_CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "DESC_CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "TIPO_CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "TAM_CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "DEC_CAMPO",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "COL_CAMPO",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I550": {
+   "descricao": "DETALHES DO LIVRO RAZÃO AUXILIAR COM LEIAUTE PARAMETRIZÁVEL",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I550"
+    },
+    {
+     "pos": 2,
+     "nome": "RZ_CONT",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I555": {
+   "descricao": "TOTAIS NO LIVRO RAZÃO AUXILIAR COM LEIAUTE PARAMETRIZÁVEL",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I555"
+    },
+    {
+     "pos": 2,
+     "nome": "RZ_CONT_TOT",
+     "tipo": "C"
+    }
+   ]
+  },
+  "I990": {
+   "descricao": "ENCERRAMENTO DO BLOCO I",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "I990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_I",
+     "tipo": "N"
+    }
+   ]
+  },
+  "J001": {
+   "descricao": "ABERTURA DO BLOCO J",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J005": {
+   "descricao": "DEMONSTRAÇÕES CONTÁBEIS",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J005"
+    },
+    {
+     "pos": 2,
+     "nome": "DT_INI",
+     "tipo": "D"
+    },
+    {
+     "pos": 3,
+     "nome": "DT_FIN",
+     "tipo": "D"
+    },
+    {
+     "pos": 4,
+     "nome": "ID_DEM",
+     "tipo": "N"
+    },
+    {
+     "pos": 5,
+     "nome": "CAB_DEM",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J100": {
+   "descricao": "BALANÇO PATRIMONIAL",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J100"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AGL",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NIVEL_AGL",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "IND_GRP_BAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "DESCR_COD_AGL",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "VL_CTA",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "IND_DC_BAL",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "VL_CTA_INI",
+     "tipo": "N"
+    },
+    {
+     "pos": 9,
+     "nome": "IND_DC_BAL_INI",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "NOTA_EXP_REF",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J150": {
+   "descricao": "DEMONSTRAÇÃO DO RESULTADO DO EXERCÍCIO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J150"
+    },
+    {
+     "pos": 2,
+     "nome": "COD_AGL",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NIVEL_AGL",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "DESCR_COD_AGL",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "VL_CTA",
+     "tipo": "N"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_VL",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "VL_CTA_ULT_DRE",
+     "tipo": "N"
+    },
+    {
+     "pos": 8,
+     "nome": "IND_VL_ULT_DRE",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "NOTA_EXP_REF",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J800": {
+   "descricao": "OUTRAS INFORMAÇÕES",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J800"
+    },
+    {
+     "pos": 2,
+     "nome": "ARQ_RTF",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IND_FIM_RTF",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J900": {
+   "descricao": "TERMO DE ENCERRAMENTO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J900"
+    },
+    {
+     "pos": 2,
+     "nome": "DNRC_ENCER",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "NUM_ORD",
+     "tipo": "N"
+    },
+    {
+     "pos": 4,
+     "nome": "NAT_LIVRO",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "NOME",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    },
+    {
+     "pos": 7,
+     "nome": "DT_INI_ESCR",
+     "tipo": "D"
+    },
+    {
+     "pos": 8,
+     "nome": "DT_FIN_ESCR",
+     "tipo": "D"
+    }
+   ]
+  },
+  "J930": {
+   "descricao": "IDENTIFICAÇÃO DOS SIGNATÁRIOS DA ESCRITURAÇÃO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J930"
+    },
+    {
+     "pos": 2,
+     "nome": "IDENT_NOM",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "IDENT_CPF_CNPJ",
+     "tipo": "C"
+    },
+    {
+     "pos": 4,
+     "nome": "IDENT_QUALIF",
+     "tipo": "C"
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ASSIN",
+     "tipo": "C"
+    },
+    {
+     "pos": 6,
+     "nome": "IND_CRC",
+     "tipo": "C"
+    },
+    {
+     "pos": 7,
+     "nome": "EMAIL",
+     "tipo": "C"
+    },
+    {
+     "pos": 8,
+     "nome": "FONE",
+     "tipo": "C"
+    },
+    {
+     "pos": 9,
+     "nome": "UF_CRC",
+     "tipo": "C"
+    },
+    {
+     "pos": 10,
+     "nome": "NUM_SEQ_CRC",
+     "tipo": "C"
+    },
+    {
+     "pos": 11,
+     "nome": "DT_CRC",
+     "tipo": "D"
+    },
+    {
+     "pos": 12,
+     "nome": "IND_RESP_LEGAL",
+     "tipo": "C"
+    }
+   ]
+  },
+  "J990": {
+   "descricao": "ENCERRAMENTO DO BLOCO J",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "J990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_J",
+     "tipo": "N"
+    }
+   ]
+  },
+  "9001": {
+   "descricao": "ABERTURA DO BLOCO 9",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9001"
+    },
+    {
+     "pos": 2,
+     "nome": "IND_DAD",
+     "tipo": "C"
+    }
+   ]
+  },
+  "9900": {
+   "descricao": "REGISTROS DO ARQUIVO",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9900"
+    },
+    {
+     "pos": 2,
+     "nome": "REG_BLC",
+     "tipo": "C"
+    },
+    {
+     "pos": 3,
+     "nome": "QTD_REG_BLC",
+     "tipo": "N"
+    }
+   ]
+  },
+  "9990": {
+   "descricao": "ENCERRAMENTO DO BLOCO 9",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9990"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_9",
+     "tipo": "N"
+    }
+   ]
+  },
+  "9999": {
+   "descricao": "ENCERRAMENTO DO ARQUIVO DIGITAL",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "F",
+     "fixo": "9999"
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN",
+     "tipo": "N"
+    }
+   ]
+  }
+ }
+}

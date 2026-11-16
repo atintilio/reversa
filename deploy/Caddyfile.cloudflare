@@ -1,0 +1,42 @@
+# Caddyfile para uso ATRAS do Cloudflare (nuvem laranja ligada).
+# Use no lugar do Caddyfile: no deploy/.env defina  CADDYFILE=Caddyfile.cloudflare
+#
+# Por que existe: com o Cloudflare na frente, o IP que o Caddy enxerga e o do Cloudflare.
+# Sem este ajuste todos os usuarios pareceriam ter o MESMO IP e o limite de tentativas de login
+# (que depende do X-Forwarded-For) passaria a bloquear todo mundo junto, ou a aceitar IP forjado.
+# Aqui o Caddy so confia no cabecalho CF-Connecting-IP quando a conexao vem de uma faixa de IP
+# do Cloudflare. A lista de faixas e baixada do proprio Cloudflare por ./atualiza-cloudflare-ips.sh
+# (gera cloudflare-ips.caddy). NAO foi validado em uma VPS real: rode a checagem do ROTEIRO.md.
+{
+	servers {
+		import /etc/caddy/cloudflare-ips.caddy
+		client_ip_headers CF-Connecting-IP
+	}
+}
+
+(reversa) {
+	encode zstd gzip
+
+	header {
+		X-Robots-Tag "noindex"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+
+	reverse_proxy app:3000 {
+		# {client_ip} = IP real do usuario (CF-Connecting-IP), so se a conexao veio do Cloudflare.
+		header_up X-Forwarded-For {client_ip}
+		header_up X-Forwarded-Proto {scheme}
+		health_uri /api/health
+		health_interval 30s
+	}
+}
+
+{$REVERSA_HOST:reversa.argusprime.com.br} {
+	import reversa
+}
+
+{$GOV_HOST:reversa-gov.argusprime.com.br} {
+	import reversa
+}

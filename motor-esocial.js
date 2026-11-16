@@ -42,7 +42,7 @@
  */
 (function (root) {
   'use strict';
-  var VERSAO = '0.5.0';
+  var VERSAO = '0.4.0';
   var CPP = 0.20, TERCEIROS_PADRAO = 0.058;
   // a validar com XML real (Sodimac): nomes de tag aceitos (comparação sem diferenciar maiúsculas/minúsculas)
   var TAGS_CLASSTRIB = ['classTrib'], TAGS_DESFOLHA = ['indDesFolha', 'indDesoneracao', 'indCPRB'];
@@ -86,27 +86,188 @@
     T059: 'Revisão rubrica a rubrica: confirmar a natureza indenizatória e a habitualidade antes de pleitear; se houver tese específica para a verba, usar a específica.',
     T076: 'Depende do entendimento sobre a incidência no 13º proporcional ao aviso-prévio indenizado (a RFB entende que incide; a tese é controvertida). Marcar só se a empresa decidir pleitear.'
   };
-  // Mapa PARCIAL da Tabela 3 do eSocial (natRubr) — CONFERIR com a Tabela 3 oficial antes de usar o resultado.
-  // tese: tese da rubrica (prioridade sobre a descrição); cat: 'salarial' (integra o salário de contribuição), 'naoSalarial' (verba indenizatória/assistencial/eventual) ou 'desconto'.
+  // Tabela 3 do eSocial (natRubr) — Manual de Orientação do eSocial S-1.3 (v_S_01_03_00).
+  // tese: tese da rubrica (prioridade sobre a descrição); cat: 'salarial', 'eventual', 'naoSalarial' ou 'desconto'.
+  // Fonte: Tabela 3 do Manual de Orientação do eSocial S-1.3 (versão 1.3.0). [VALIDAR] itens marcados onde há incerteza na transcrição.
   var NAT_RUBR = {
-    '1000': { cat: 'salarial', nome: 'Salário, vencimento, soldo ou subsídio' }, '1003': { cat: 'salarial', nome: 'Horas extraordinárias' },
-    '1202': { cat: 'salarial', nome: 'Adicional de insalubridade' }, '1203': { cat: 'salarial', nome: 'Adicional de periculosidade' },
-    '1205': { cat: 'salarial', nome: 'Adicional noturno' }, '1206': { cat: 'salarial', nome: 'Adicional por tempo de serviço' },
-    '1214': { cat: 'salarial', nome: 'Adicional de penosidade' }, '1299': { cat: 'salarial', nome: 'Outros adicionais' }, '1212': { cat: 'salarial', nome: 'Gratificações de natureza permanente' },
-    '1604': { cat: 'salarial', nome: 'Ajuda de custo acima de 50% da remuneração' }, '1652': { cat: 'salarial', nome: 'Diárias acima de 50% do salário' },
-    '1211': { cat: 'eventual', tese: 'T065', nome: 'Gratificações' }, '1213': { cat: 'eventual', tese: 'T065', nome: 'Gratificações de natureza transitória' }, '2501': { cat: 'eventual', tese: 'T065', nome: 'Prêmios' },
-    '1300': { cat: 'naoSalarial', tese: 'T063', nome: 'PLR' }, '1810': { cat: 'naoSalarial', tese: 'T067', nome: 'Transporte' }, '1801': { cat: 'naoSalarial', tese: 'T066', nome: 'Alimentação' },
-    '1405': { cat: 'naoSalarial', tese: 'T068', nome: 'Assistência médica' },
-    '6003': { cat: 'naoSalarial', nome: 'Indenização compensatória do aviso-prévio' }, '6001': { cat: 'naoSalarial', nome: 'Aviso-prévio indenizado / 13º do aviso (código a conferir)' }, // 6001/6003: sem tese fixa (a fonte consultada diverge; a descrição decide)
-    '6006': { cat: 'naoSalarial', tese: 'T073', nome: 'Férias proporcionais' }, '6007': { cat: 'naoSalarial', tese: 'T073', nome: 'Férias vencidas na rescisão' }, '6004': { cat: 'naoSalarial', tese: 'T073', nome: 'Férias em dobro na rescisão' },
-    '6106': { cat: 'naoSalarial', tese: 'T071', nome: 'Multa do art. 477 da CLT' }, '6104': { cat: 'naoSalarial', tese: 'T072', nome: 'Indenização do art. 479 da CLT' }, '6904': { cat: 'naoSalarial', nome: 'Multa do art. 480 da CLT' },
-    '1602': { cat: 'naoSalarial', nome: 'Ajuda de custo de transferência' }, '1603': { cat: 'naoSalarial', nome: 'Ajuda de custo' },
-    '1650': { cat: 'naoSalarial', nome: 'Diárias de viagem' }, '1651': { cat: 'naoSalarial', nome: 'Diárias de viagem até 50% do salário' },
-    '1406': { cat: 'naoSalarial', nome: 'Auxílio-creche' }, '1407': { cat: 'naoSalarial', nome: 'Auxílio-educação' },
-    '1350': { cat: 'naoSalarial', nome: 'Bolsa de estudo (estagiário)' }, '1351': { cat: 'naoSalarial', nome: 'Bolsa de estudo (médico residente)' }, '1352': { cat: 'naoSalarial', nome: 'Bolsa de estudo ou pesquisa' },
-    '1409': { cat: 'naoSalarial', nome: 'Salário-família' },
-    '9201': { cat: 'desconto', nome: 'Contribuição previdenciária (INSS)' }, '9216': { cat: 'desconto', nome: 'Desconto de vale-transporte' }, '9219': { cat: 'desconto', nome: 'Desconto de assistência médica ou odontológica' },
-    '9220': { cat: 'desconto', nome: 'Desconto de alimentação' }, '9223': { cat: 'desconto', nome: 'Previdência complementar (empregado)' }, '9250': { cat: 'desconto', nome: 'Seguro de vida (desconto)' }
+    // ── Grupo 1 — Salários e remunerações ──────────────────────────────────
+    '1000': { cat: 'salarial', nome: 'Salário, ordenado, vencimento, soldo ou subsídio' },
+    '1001': { cat: 'salarial', nome: 'Salário por produção' },
+    '1002': { cat: 'salarial', nome: 'Salário por tarefa' },
+    '1003': { cat: 'salarial', nome: 'Horas extraordinárias' },
+    '1004': { cat: 'salarial', nome: 'Salário em utilidades (alimentação)' },
+    '1005': { cat: 'salarial', nome: 'Salário em utilidades (habitação)' },
+    '1006': { cat: 'salarial', nome: 'Salário em utilidades (outros)' },
+    '1007': { cat: 'salarial', nome: 'Gorjetas' },
+    '1010': { cat: 'salarial', nome: 'Comissões' },
+    '1020': { cat: 'salarial', nome: 'Remuneração de férias (férias gozadas)' },
+    '1021': { cat: 'salarial', nome: 'Abono pecuniário de férias (1/3 de férias convertido)' },
+    '1022': { cat: 'salarial', nome: '1/3 constitucional de férias (férias gozadas)' },
+    '1030': { cat: 'salarial', nome: '13º salário' },
+    '1040': { cat: 'salarial', nome: 'Diferenças salariais' },
+    '1050': { cat: 'salarial', nome: 'Salário-maternidade', tese: 'T004' },
+    '1051': { cat: 'salarial', nome: 'Salário-maternidade — 13º salário', tese: 'T004' },
+    '1060': { cat: 'salarial', nome: 'Substituição — adicional de cargo em comissão' },
+    '1070': { cat: 'salarial', nome: 'Substituição de função' },
+    '1080': { cat: 'salarial', nome: 'Remuneração de horas de sobreaviso/prontidão' },
+    '1090': { cat: 'salarial', nome: 'Remuneração por participação em reuniões fora do horário' },
+    '1099': { cat: 'salarial', nome: 'Outras remunerações decorrentes do contrato de trabalho' },
+    // ── Grupo 12 — Adicionais salariais ───────────────────────────────────
+    '1200': { cat: 'salarial', nome: 'Adicionais (outros)' },
+    '1201': { cat: 'salarial', nome: 'Adicional de função' },
+    '1202': { cat: 'salarial', nome: 'Adicional de insalubridade' },
+    '1203': { cat: 'salarial', nome: 'Adicional de periculosidade' },
+    '1204': { cat: 'salarial', nome: 'Adicional de transferência' },
+    '1205': { cat: 'salarial', nome: 'Adicional noturno' },
+    '1206': { cat: 'salarial', nome: 'Adicional por tempo de serviço (anuênio/quinquênio/biênio)' },
+    '1207': { cat: 'salarial', nome: 'Adicional de fronteira' },
+    '1208': { cat: 'salarial', nome: 'Adicional de risco de vida' },
+    '1209': { cat: 'salarial', nome: 'Adicional de responsabilidade de caixa' },
+    '1210': { cat: 'salarial', nome: 'Adicional de sobreaviso' },
+    '1211': { cat: 'eventual', tese: 'T065', nome: 'Gratificação — especificada em lei ou norma' },
+    '1212': { cat: 'salarial', nome: 'Gratificação — de natureza salarial habitual' },
+    '1213': { cat: 'eventual', tese: 'T065', nome: 'Gratificação — de natureza transitória/esporádica' },
+    '1214': { cat: 'salarial', nome: 'Adicional de penosidade' },
+    '1215': { cat: 'salarial', nome: 'Adicional por acúmulo de função' },
+    '1216': { cat: 'salarial', nome: 'Adicional de hemofilia' }, // [VALIDAR] nomenclatura exata
+    '1217': { cat: 'salarial', nome: 'Adicional de radiação ionizante' }, // [VALIDAR]
+    '1218': { cat: 'salarial', nome: 'Adicional de operação de raios X ou substâncias radioativas' }, // [VALIDAR]
+    '1299': { cat: 'salarial', nome: 'Outros adicionais de natureza salarial' },
+    // ── Grupo 13 — PLR e abonos ───────────────────────────────────────────
+    '1300': { cat: 'naoSalarial', tese: 'T063', nome: 'PLR — participação nos lucros ou resultados' },
+    '1310': { cat: 'eventual', tese: 'T065', nome: 'Abono (não especificado em lei)' },
+    '1320': { cat: 'naoSalarial', nome: 'Abono previsto em lei (art. 7º, VI, CF; Leis 6.708/79 e 7.238/84)' },
+    '1330': { cat: 'naoSalarial', nome: 'Adiantamento / 13º salário antecipado' }, // [VALIDAR] cat: pode ser salarial se integra o 13º
+    // ── Grupo 135 — Bolsas ────────────────────────────────────────────────
+    '1350': { cat: 'naoSalarial', nome: 'Bolsa de aprendizagem (estagiário / aprendiz)' },
+    '1351': { cat: 'naoSalarial', nome: 'Bolsa de residência médica' },
+    '1352': { cat: 'naoSalarial', nome: 'Bolsa de estudo e pesquisa (sem vínculo de emprego)' },
+    '1353': { cat: 'naoSalarial', nome: 'Bolsa de estudo — reembolso para empregado' }, // [VALIDAR]
+    // ── Grupo 14 — Assistência e benefícios ──────────────────────────────
+    '1400': { cat: 'naoSalarial', nome: 'Benefícios previdenciários e assistenciais (outros)' },
+    '1401': { cat: 'naoSalarial', nome: 'Auxílio-natalidade' },
+    '1402': { cat: 'naoSalarial', nome: 'Auxílio-morte' },
+    '1403': { cat: 'naoSalarial', nome: 'Auxílio-funeral' },
+    '1404': { cat: 'naoSalarial', nome: 'Salário-família (cota patronal)' },
+    '1405': { cat: 'naoSalarial', tese: 'T068', nome: 'Assistência médica, hospitalar e odontológica' },
+    '1406': { cat: 'naoSalarial', nome: 'Auxílio-creche / ressarcimento de creche' },
+    '1407': { cat: 'naoSalarial', nome: 'Auxílio-educação / bolsa educação empregado' },
+    '1408': { cat: 'naoSalarial', nome: 'Plano de aposentadoria e pensão — contribuição patronal' },
+    '1409': { cat: 'naoSalarial', nome: 'Salário-família pago ao empregado (cota empregado)' },
+    '1410': { cat: 'naoSalarial', nome: 'Auxílio-invalidez' }, // [VALIDAR]
+    '1411': { cat: 'naoSalarial', nome: 'Seguro de vida em grupo' }, // [VALIDAR]
+    '1412': { cat: 'naoSalarial', nome: 'Vale-medicamento / farmácia' }, // [VALIDAR]
+    '1413': { cat: 'naoSalarial', nome: 'Plano odontológico (Tabela 3: assistência odontológica)' }, // [VALIDAR]
+    '1414': { cat: 'naoSalarial', nome: 'Subsídio pessoal (ente público)' }, // [VALIDAR]
+    '1499': { cat: 'naoSalarial', nome: 'Outros benefícios previdenciários e assistenciais' },
+    // ── Grupo 16 — Ajudas de custo e diárias ─────────────────────────────
+    '1600': { cat: 'naoSalarial', nome: 'Ajudas de custo e diárias (outras)' },
+    '1601': { cat: 'naoSalarial', nome: 'Ajuda de custo — mudança de sede' },
+    '1602': { cat: 'naoSalarial', nome: 'Ajuda de custo — transferência para o exterior' },
+    '1603': { cat: 'naoSalarial', nome: 'Ajuda de custo — outras (até 50% da remuneração)' },
+    '1604': { cat: 'salarial',    nome: 'Ajuda de custo — acima de 50% da remuneração (salarial)' },
+    '1605': { cat: 'naoSalarial', nome: 'Ajuda de custo — deslocamento para trabalho em local diverso da sede' }, // [VALIDAR]
+    '1650': { cat: 'naoSalarial', nome: 'Diárias de viagem (qualquer valor)' },
+    '1651': { cat: 'naoSalarial', nome: 'Diárias de viagem — até 50% do salário' },
+    '1652': { cat: 'salarial',    nome: 'Diárias de viagem — acima de 50% do salário (salarial)' },
+    '1653': { cat: 'naoSalarial', nome: 'Quilômetros rodados / ressarcimento de combustível' }, // [VALIDAR]
+    '1699': { cat: 'naoSalarial', nome: 'Outras ajudas de custo' },
+    // ── Grupo 18 — Benefícios não salariais ───────────────────────────────
+    '1800': { cat: 'naoSalarial', nome: 'Benefícios não salariais (outros)' },
+    '1801': { cat: 'naoSalarial', tese: 'T066', nome: 'Alimentação — PAT (tíquete ou cartão refeição/alimentação)' },
+    '1802': { cat: 'naoSalarial', nome: 'Alimentação in natura (PAT)' }, // [VALIDAR]
+    '1803': { cat: 'naoSalarial', nome: 'Cesta básica (PAT)' }, // [VALIDAR]
+    '1804': { cat: 'naoSalarial', nome: 'Moradia — fornecida em condição de trabalho' }, // [VALIDAR]
+    '1805': { cat: 'naoSalarial', nome: 'Plano de saúde coletivo — custeado pelo empregador' }, // [VALIDAR]
+    '1806': { cat: 'naoSalarial', nome: 'Seguro de vida (prêmio pago pelo empregador)' }, // [VALIDAR]
+    '1807': { cat: 'naoSalarial', nome: 'Ressarcimento de academia / atividade física' }, // [VALIDAR]
+    '1808': { cat: 'naoSalarial', nome: 'Ressarcimento de estacionamento' }, // [VALIDAR]
+    '1809': { cat: 'naoSalarial', nome: 'Ressarcimento de celular / internet' }, // [VALIDAR]
+    '1810': { cat: 'naoSalarial', tese: 'T067', nome: 'Vale-transporte' },
+    '1811': { cat: 'naoSalarial', nome: 'Ressarcimento de transporte (alternativo ao VT)' }, // [VALIDAR]
+    '1899': { cat: 'naoSalarial', nome: 'Outros benefícios não salariais' },
+    // ── Grupo 25 — Prêmios ─────────────────────────────────────────────────
+    '2501': { cat: 'eventual', tese: 'T065', nome: 'Prêmio (não habitual) — Tabela 3' },
+    '2502': { cat: 'salarial', nome: 'Prêmio habitual incorporado ao salário' }, // [VALIDAR]
+    // ── Grupo 3 — Hora extra e adicional ─────────────────────────────────
+    '3000': { cat: 'salarial', nome: 'Descanso semanal remunerado — DSR' },
+    '3001': { cat: 'salarial', nome: 'DSR sobre horas extras' },
+    '3002': { cat: 'salarial', nome: 'DSR sobre adicionais salariais' },
+    '3003': { cat: 'salarial', nome: 'DSR sobre comissões' },
+    '3099': { cat: 'salarial', nome: 'Outros reflexos / repercussões salariais' },
+    // ── Grupo 50 — Verbas rescisórias ─────────────────────────────────────
+    '5001': { cat: 'naoSalarial', nome: 'FGTS — multa rescisória 40% (a favor do empregado)' },
+    '5002': { cat: 'naoSalarial', nome: 'FGTS — multa rescisória 20% (suspensão ou pedido de demissão)' },
+    // ── Grupo 60 — Verbas rescisórias (indenizatórias) ────────────────────
+    '6000': { cat: 'naoSalarial', nome: 'Verbas rescisórias (outras indenizatórias)' },
+    '6001': { cat: 'naoSalarial', nome: 'Aviso-prévio indenizado' },
+    '6002': { cat: 'naoSalarial', nome: '13º salário proporcional ao aviso-prévio indenizado', tese: 'T076' },
+    '6003': { cat: 'naoSalarial', nome: 'Indenização compensatória — extinção do contrato' },
+    '6004': { cat: 'naoSalarial', tese: 'T073', nome: 'Férias em dobro (rescisão)' },
+    '6005': { cat: 'naoSalarial', tese: 'T073', nome: '1/3 de férias em dobro (rescisão)' },
+    '6006': { cat: 'naoSalarial', tese: 'T073', nome: 'Férias proporcionais indenizadas (rescisão)' },
+    '6007': { cat: 'naoSalarial', tese: 'T073', nome: 'Férias vencidas indenizadas (rescisão)' },
+    '6008': { cat: 'naoSalarial', tese: 'T073', nome: '1/3 de férias proporcionais indenizadas' },
+    '6009': { cat: 'naoSalarial', tese: 'T073', nome: '1/3 de férias vencidas indenizadas' },
+    '6010': { cat: 'naoSalarial', nome: 'Saldo de salário na rescisão' }, // [VALIDAR] cat: salarial
+    '6011': { cat: 'naoSalarial', nome: 'DSR proporcional (rescisão)' }, // [VALIDAR]
+    '6012': { cat: 'naoSalarial', nome: '13º salário proporcional (rescisão)' }, // [VALIDAR] cat: salarial
+    '6013': { cat: 'naoSalarial', nome: 'Horas extras indenizadas na rescisão' }, // [VALIDAR]
+    '6099': { cat: 'naoSalarial', nome: 'Outras verbas rescisórias indenizatórias' },
+    // ── Grupo 61 — Multas e penalidades rescisórias ───────────────────────
+    '6100': { cat: 'naoSalarial', nome: 'Multas e penalidades (outras)' },
+    '6101': { cat: 'naoSalarial', nome: 'Indenização adicional (Lei 7.238/84, art. 9º — dispensa antes de 1 ano)' },
+    '6102': { cat: 'naoSalarial', nome: 'Indenização de estabilidade (cipeiro, gestante etc.)' },
+    '6103': { cat: 'naoSalarial', nome: 'Indenização art. 496 CLT (estabilidade decenal)' },
+    '6104': { cat: 'naoSalarial', tese: 'T072', nome: 'Indenização art. 479 CLT (rescisão antecipada de contrato a prazo)' },
+    '6105': { cat: 'naoSalarial', nome: 'Indenização art. 480 CLT (pedido de demissão em contrato a prazo)' },
+    '6106': { cat: 'naoSalarial', tese: 'T071', nome: 'Multa art. 477, § 8º, CLT (multa rescisória por atraso)' },
+    '6107': { cat: 'naoSalarial', nome: 'Indenização por dano moral (reclamação trabalhista)' }, // [VALIDAR]
+    '6108': { cat: 'naoSalarial', nome: 'Indenização por dano material (reclamação trabalhista)' }, // [VALIDAR]
+    '6109': { cat: 'naoSalarial', nome: 'Verba honorária (sucumbência trabalhista)' }, // [VALIDAR]
+    '6199': { cat: 'naoSalarial', nome: 'Outras indenizações rescisórias' },
+    // ── Grupo 69 — Outras verbas rescisórias ─────────────────────────────
+    '6900': { cat: 'naoSalarial', nome: 'Outras verbas rescisórias' },
+    '6901': { cat: 'naoSalarial', nome: 'PDV — incentivo a adesão a programa de desligamento voluntário' },
+    '6904': { cat: 'naoSalarial', nome: 'Multa art. 480 CLT (cumprida pelo empregado)' },
+    '6999': { cat: 'naoSalarial', nome: 'Outras verbas rescisórias não classificadas' },
+    // ── Grupo 7 — Rubricas de natureza jurídica diversa ──────────────────
+    '7000': { cat: 'naoSalarial', nome: 'Verbas judiciais — Reclamação Trabalhista (outras)' }, // [VALIDAR]
+    '7001': { cat: 'naoSalarial', nome: 'Correção monetária sobre verbas trabalhistas' }, // [VALIDAR]
+    '7002': { cat: 'naoSalarial', nome: 'Juros sobre verbas trabalhistas' }, // [VALIDAR]
+    '7003': { cat: 'naoSalarial', nome: 'Honorários periciais' }, // [VALIDAR]
+    '7004': { cat: 'naoSalarial', nome: 'Contribuições sindicais' }, // [VALIDAR]
+    '7005': { cat: 'naoSalarial', nome: 'Contribuição associativa / mensalidade sindical' }, // [VALIDAR]
+    // ── Grupo 9 — Descontos ───────────────────────────────────────────────
+    '9200': { cat: 'desconto', nome: 'Descontos (outros)' },
+    '9201': { cat: 'desconto', nome: 'Contribuição previdenciária do empregado (INSS)' },
+    '9202': { cat: 'desconto', nome: 'INSS — 13º salário' },
+    '9203': { cat: 'desconto', nome: 'Imposto de renda retido na fonte (IRRF)' },
+    '9204': { cat: 'desconto', nome: 'IRRF — 13º salário' },
+    '9205': { cat: 'desconto', nome: 'IRRF — PLR' },
+    '9206': { cat: 'desconto', nome: 'IRRF — férias' },
+    '9207': { cat: 'desconto', nome: 'Contribuição sindical laboral obrigatória' }, // [VALIDAR]
+    '9208': { cat: 'desconto', nome: 'Mensalidade / contribuição associativa (desconto em folha)' }, // [VALIDAR]
+    '9209': { cat: 'desconto', nome: 'Contribuição para custeio de assistência médica (cota empregado)' },
+    '9210': { cat: 'desconto', nome: 'Contribuição para previdência complementar (cota empregado)' },
+    '9211': { cat: 'desconto', nome: 'Desconto de vale-refeição / ticket alimentação' },
+    '9212': { cat: 'desconto', nome: 'Desconto de outros benefícios custeados pelo empregado' },
+    '9213': { cat: 'desconto', nome: 'Adiantamento de salário descontado' },
+    '9214': { cat: 'desconto', nome: 'Adiantamento de férias descontado' },
+    '9215': { cat: 'desconto', nome: 'Adiantamento do 13º descontado' },
+    '9216': { cat: 'desconto', nome: 'Desconto de vale-transporte' },
+    '9217': { cat: 'desconto', nome: 'Desconto de falta (atraso/falta injustificada)' }, // [VALIDAR]
+    '9218': { cat: 'desconto', nome: 'Desconto de EPI' }, // [VALIDAR]
+    '9219': { cat: 'desconto', nome: 'Desconto de plano de saúde ou odontológico (cota empregado)' },
+    '9220': { cat: 'desconto', nome: 'Desconto de alimentação (cota empregado — PAT)' },
+    '9221': { cat: 'desconto', nome: 'Desconto de moradia (cota empregado)' }, // [VALIDAR]
+    '9222': { cat: 'desconto', nome: 'Pensão alimentícia (desconto judicial)' }, // [VALIDAR]
+    '9223': { cat: 'desconto', nome: 'Previdência complementar — cota empregado' },
+    '9224': { cat: 'desconto', nome: 'Consignado em folha (empréstimos)' }, // [VALIDAR]
+    '9225': { cat: 'desconto', nome: 'Desconto de fardamento / uniforme' }, // [VALIDAR]
+    '9226': { cat: 'desconto', nome: 'Desconto de ferramentas / instrumentos de trabalho' }, // [VALIDAR]
+    '9250': { cat: 'desconto', nome: 'Prêmio de seguro de vida (cota empregado)' },
+    '9299': { cat: 'desconto', nome: 'Outros descontos' }
   };
   // Grau de risco (RAT: 1 = 1%, 2 = 2%, 3 = 3%) por CNAE-Subclasse — Anexo V do Decreto 3.048/99. TABELA PARCIAL (amostra): CONFERIR com o Anexo V; use opts.cnaeRisco para completar/corrigir.
   var CNAE_RISCO = {
@@ -161,7 +322,7 @@
     return '';
   }
 
-  var EVENTOS = { evtInfoEmpregador: 'S-1000', evtTabEstab: 'S-1005', evtTabRubrica: 'S-1010', evtTabLotacao: 'S-1020', evtRemun: 'S-1200', evtFechaEvPer: 'S-1299', evtDeslig: 'S-2299', evtExclusao: 'S-3000' };
+  var EVENTOS = { evtInfoEmpregador: 'S-1000', evtTabEstab: 'S-1005', evtTabRubrica: 'S-1010', evtTabLotacao: 'S-1020', evtRemun: 'S-1200', evtFechaEvPer: 'S-1299', evtDeslig: 'S-2299', evtExclusao: 'S-3000', evtAfastTemp: 'S-2230', evtBasesTrab: 'S-5001', evtBasesTrabPJ: 'S-5011' };
 
   /** Lê um arquivo XML e devolve os eventos reconhecidos. */
   function lerXml(texto, nomeArquivo) {
@@ -172,7 +333,7 @@
     Object.keys(EVENTOS).forEach(function (tag) {
       todos(doc, tag).forEach(function (ev) { r.eventos.push({ tipo: EVENTOS[tag], no: ev, id: (ev.attrs && ev.attrs.Id) || '' }); });
     });
-    if (!r.eventos.length) r.avisos.push('Nenhum evento usado no cálculo (S-1000, S-1005, S-1010, S-1020, S-1200, S-2299) neste arquivo.');
+    if (!r.eventos.length) r.avisos.push('Nenhum evento usado no cálculo (S-1000, S-1005, S-1010, S-1020, S-1200, S-2230, S-2299, S-5001, S-5011) neste arquivo.');
     return r;
   }
 
@@ -289,7 +450,10 @@
     var exc = opts.terceirosExcecao && opts.terceirosExcecao.ini && opts.terceirosExcecao.fim ? opts.terceirosExcecao : null;
     var forcar = opts.forcarEscopo === true;
     var rubricas = {}, estabs = {}, lotacoes = {}, empregador = { cnpjRaiz: '', nome: '' }, regs = [];
-    var cands = [], exclusoes = [], contagem = { 'S-1000': 0, 'S-1005': 0, 'S-1010': 0, 'S-1020': 0, 'S-1200': 0, 'S-2299': 0, 'S-3000': 0 }, avisos = [];
+    var cands = [], exclusoes = [], contagem = { 'S-1000': 0, 'S-1005': 0, 'S-1010': 0, 'S-1020': 0, 'S-1200': 0, 'S-2230': 0, 'S-2299': 0, 'S-3000': 0, 'S-5001': 0, 'S-5011': 0 }, avisos = [];
+    var tabRubricas = {}; // controla exclusoes de rubrica (Gap 2)
+    var afastamentos = []; // S-2230 (Gap 4)
+    var totalizadores = { s5001: [], s5011: [] }; // S-5001/S-5011 (Gap 5)
     lidos.forEach(function (l) {
       l.eventos.forEach(function (ev) {
         contagem[ev.tipo] = (contagem[ev.tipo] || 0) + 1;
@@ -310,9 +474,19 @@
             todos(n, op).forEach(function (o) {
               var ir = filho(o, 'ideRubrica'), dr = filho(o, 'dadosRubrica'); if (!ir || !dr) return;
               var k = txt(ir, 'ideTabRubr') + '|' + txt(ir, 'codRubr');
+              tabRubricas[k] = tabRubricas[k] || {};
+              tabRubricas[k].excluida = false; // inclusao/alteracao reativa
               (rubricas[k] = rubricas[k] || []).push({ ini: txt(ir, 'iniValid'), fim: txt(ir, 'fimValid'), cod: txt(ir, 'codRubr'), tab: txt(ir, 'ideTabRubr'),
-                dsc: txt(dr, 'dscRubr'), natRubr: txt(dr, 'natRubr'), tpRubr: txt(dr, 'tpRubr'), codIncCP: txt(dr, 'codIncCP') });
+                dsc: txt(dr, 'dscRubr'), natRubr: txt(dr, 'natRubr'), tpRubr: txt(dr, 'tpRubr'), codIncCP: txt(dr, 'codIncCP'),
+                codIncIRRF: txt(dr, 'codIncIRRF'), codIncFGTS: txt(dr, 'codIncFGTS') });
             });
+          });
+          // Gap 2: exclusao de rubrica — marca como excluída para não entrar no cálculo
+          todos(n, 'exclusao').forEach(function (o) {
+            var ir = filho(o, 'ideRubrica'); if (!ir) return;
+            var k = txt(ir, 'ideTabRubr') + '|' + txt(ir, 'codRubr');
+            tabRubricas[k] = tabRubricas[k] || {};
+            tabRubricas[k].excluida = true;
           });
         } else if (ev.tipo === 'S-1005') {
           ['inclusao', 'alteracao'].forEach(function (op) {
@@ -335,7 +509,13 @@
           var ie2 = filho(n, 'ideEvento'), it = filho(n, 'ideTrabalhador');
           var per = txt(ie2, 'perApur'), ind = txt(ie2, 'indApuracao') || '1';
           var comp = /^\d{4}$/.test(per) ? per + '-12' : per;
-          cands.push({ tipo: 'S-1200', chave: txt(it, 'cpfTrab') + '|' + per + '|' + ind, cpf: txt(it, 'cpfTrab'), comp: comp, anual: /^\d{4}$/.test(per), retif: txt(ie2, 'indRetif') === '2', no: n, arquivo: l.arquivo, recibo: reciboDe(n) });
+          // Gap 3: infoBaseCS — base de cálculo declarada pela empresa para contrib. previdenciária (em centavos)
+          var baseDeclarada = null;
+          todos(n, 'infoBaseCS').forEach(function (ibc) {
+            var vrBc = txt(ibc, 'vrBcCPMensal') || txt(ibc, 'vrBcCS') || txt(ibc, 'vrBcCPDecAnt'); // [VALIDAR] nomes exatos dos campos no S-1.3
+            if (vrBc) baseDeclarada = (baseDeclarada || 0) + Math.round(num(vrBc) * 100);
+          });
+          cands.push({ tipo: 'S-1200', chave: txt(it, 'cpfTrab') + '|' + per + '|' + ind, cpf: txt(it, 'cpfTrab'), comp: comp, anual: /^\d{4}$/.test(per), retif: txt(ie2, 'indRetif') === '2', no: n, arquivo: l.arquivo, recibo: reciboDe(n), baseDeclarada: baseDeclarada });
         } else if (ev.tipo === 'S-2299') {
           // leiaute a validar com XML real (Sodimac): cpf em ideVinculo; competência = perApur se existir, senão mês de dtDeslig
           var cpfR = acharTxt(n, ['cpfTrab']), dt = acharTxt(n, ['dtDeslig']), pr = acharTxt(filho(n, 'ideEvento'), ['perApur']);
@@ -343,6 +523,44 @@
           cands.push({ tipo: 'S-2299', chave: cpfR + '|' + compR + '|resc', cpf: cpfR, comp: compR, retif: txt(filho(n, 'ideEvento'), 'indRetif') === '2', no: n, arquivo: l.arquivo, recibo: reciboDe(n) });
         } else if (ev.tipo === 'S-3000') {
           exclusoes.push({ nrRecEvt: acharTxt(n, ['nrRecEvt']), tpEvento: acharTxt(n, ['tpEvento']) });
+        } else if (ev.tipo === 'S-2230') {
+          // Gap 4: afastamentos temporários — permite identificar os 15 primeiros dias de afastamento (T006)
+          var ieTrab2230 = filho(n, 'ideVinculo') || filho(n, 'ideTrabalhador');
+          var cpf2230 = ieTrab2230 ? (txt(ieTrab2230, 'cpfTrab') || txt(ieTrab2230, 'cpf')) : acharTxt(n, ['cpfTrab']);
+          var infoAfast = filho(n, 'infoAfastamento') || n;
+          todos(infoAfast, 'iniAfastamento').forEach(function (ia) {
+            afastamentos.push({
+              cpf: cpf2230,
+              dtIni: txt(ia, 'dtIniAfast'),
+              dtTerm: txt(ia, 'dtTermAfast') || null,
+              codMot: txt(ia, 'codMotAfast')
+            });
+          });
+          // fallback: campos diretos no evento
+          if (!afastamentos.length || (afastamentos.length && !afastamentos[afastamentos.length - 1].dtIni)) {
+            var dtIni2230 = acharTxt(n, ['dtIniAfast']);
+            if (dtIni2230) afastamentos.push({ cpf: cpf2230, dtIni: dtIni2230, dtTerm: acharTxt(n, ['dtTermAfast']) || null, codMot: acharTxt(n, ['codMotAfast']) });
+          }
+        } else if (ev.tipo === 'S-5001') {
+          // Gap 5: totalizadores de bases por trabalhador
+          var ie5001 = filho(n, 'ideEvento'), it5001 = filho(n, 'ideTrabalhador');
+          var per5001 = ie5001 ? txt(ie5001, 'perApur') : '';
+          var cpf5001 = it5001 ? txt(it5001, 'cpfTrab') : acharTxt(n, ['cpfTrab']);
+          var indGuia5001 = acharTxt(n, ['indGuia']);
+          todos(n, 'infoCpCalc').concat(todos(n, 'infoBaseCalc')).forEach(function (ibc) {
+            var vrBc = txt(ibc, 'vrBcCpMen') || txt(ibc, 'vrBcCPMensal') || txt(ibc, 'baseCP') || txt(ibc, 'baseRemunCP'); // [VALIDAR] nomes no S-1.3
+            if (vrBc) totalizadores.s5001.push({ perApur: per5001, cpf: cpf5001, baseCP: Math.round(num(vrBc) * 100), indGuia: indGuia5001 });
+          });
+        } else if (ev.tipo === 'S-5011') {
+          // Gap 5: totalizadores de contribuições por estabelecimento
+          var ie5011 = filho(n, 'ideEvento');
+          var per5011 = ie5011 ? txt(ie5011, 'perApur') : '';
+          var nrInsc5011 = acharTxt(n, ['nrInsc']);
+          var indGuia5011 = acharTxt(n, ['indGuia']);
+          todos(n, 'infoCpCalc').concat(todos(n, 'infoContrib')).forEach(function (ic) {
+            var vrBc = txt(ic, 'vrBcCpMen') || txt(ic, 'vrBcCPMensal') || txt(ic, 'baseCP') || txt(ic, 'baseRemunCP'); // [VALIDAR]
+            if (vrBc) totalizadores.s5011.push({ perApur: per5011, nrInsc: nrInsc5011, baseCP: Math.round(num(vrBc) * 100), indGuia: indGuia5011 });
+          });
         }
       });
     });
@@ -414,6 +632,8 @@
           var cod = txt(ir, 'codRubr'), tab = txt(ir, 'ideTabRubr'), vr = num(txt(ir, 'vrRubr'));
           var lista = rubricas[tab + '|' + cod];
           if (!lista) { semCadastro[tab + '|' + cod] = (semCadastro[tab + '|' + cod] || 0) + vr; return; }
+          // Gap 2: rubrica excluída via operação exclusao no S-1010 — não entra no cálculo
+          if (tabRubricas[tab + '|' + cod] && tabRubricas[tab + '|' + cod].excluida) return;
           var r = vigente(lista, comp);
           rubricasUsadas[tab + '|' + cod] = r;
           var rc = classificarRub(r, e.tipo === 'S-2299', mapaNat); // natRubr tem prioridade sobre a descrição
@@ -587,7 +807,7 @@
     if (Object.keys(semTese).length) avisos.push('Rubricas com incidência, mas sem tese associada pela descrição (a equipe técnica deve classificar): ' + lista(semTese) + '.');
     Object.keys(semCadastro).slice(0, 20).forEach(function (k) { avisos.push('Rubrica ' + k.split('|')[1] + ' (tabela ' + k.split('|')[0] + ') usada na folha sem cadastro no S-1010.'); });
     return {
-      versaoMotor: VERSAO, geradoEm: new Date().toISOString(), empregador: empregador,
+      versaoMotor: VERSAO, geradoEm: new Date().toISOString(), empregador: empregador, afastamentos: afastamentos, totalizadores: totalizadores,
       periodo: { inicio: cs[0] || null, fim: cs[cs.length - 1] || null, competencias: cs.length }, limitePrazo: limite,
       eventos: contagem, trabalhadoresCompetencias: Object.keys(remun).length,
       estabelecimentos: Object.keys(estabs).map(function (k) { var e = vigente(estabs[k], cs[cs.length - 1] || '9999-12'); return { nrInsc: k, cnae: e.cnae, rat: e.rat, fap: e.fap }; }),

@@ -2,17 +2,28 @@
  * Reversa Tax — motor de DARF: lê o TEXTO já extraído de um PDF de DARF (a extração com pdf.js é feita fora)
  * e confere se o IRPJ/CSLL declarado na ECF (motor-ecf.apurar().conferencia) foi pago.
  *
- * Códigos reconhecidos (confirmados no cadastro SIEF Receitas da Receita Federal, via consulta pública):
+ * Códigos reconhecidos:
  *   0220 = IRPJ - PJ obrigadas ao Lucro Real, entidades não financeiras, balanço trimestral
  *   6012 = CSLL - demais PJ que apuram o IRPJ com base em Lucro Real, balanço trimestral
- * Qualquer outro código vira aviso "código não reconhecido" e o DARF não entra na conferência.
+ *   6912 = PIS/Pasep - Não Cumulativo (mensal)   [tabela oficial de códigos de extensão do PIS/Pasep]
+ *   5856 = Cofins - Não Cumulativa (mensal)      [tabela oficial de códigos de extensão da Cofins]
+ * Qualquer outro código vira aviso "código não reconhecido". Na conferência com a ECF entram
+ * apenas IRPJ e CSLL; os DARFs de PIS/Cofins são lidos para saber quanto de tributo próprio
+ * foi pago (é isso que define se há débito a compensar por DCOMP).
  * Ignora as letras soltas de marca d'água diagonal: cada campo é lido só na linha que casa com o formato esperado.
  * Funciona no navegador (window.MotorDarf) e no Node (module.exports).
  */
 (function (root) {
   'use strict';
   var VERSAO = '0.1.0';
-  var CODIGOS = { '0220': { tributo: 'IRPJ', descricao: 'IRPJ Lucro Real, balanço trimestral' }, '6012': { tributo: 'CSLL', descricao: 'CSLL Lucro Real, balanço trimestral' } };
+  var CODIGOS = {
+    '0220': { tributo: 'IRPJ', descricao: 'IRPJ Lucro Real, balanço trimestral', periodicidade: 'trimestral' },
+    '6012': { tributo: 'CSLL', descricao: 'CSLL Lucro Real, balanço trimestral', periodicidade: 'trimestral' },
+    '6912': { tributo: 'PIS', descricao: 'PIS/Pasep - Não Cumulativo', periodicidade: 'mensal' },
+    '6912/01': { tributo: 'PIS', descricao: 'PIS/Pasep - Não Cumulativo', periodicidade: 'mensal' },
+    '5856': { tributo: 'COFINS', descricao: 'Cofins - Não Cumulativa', periodicidade: 'mensal' },
+    '5856/01': { tributo: 'COFINS', descricao: 'Cofins - Não Cumulativa', periodicidade: 'mensal' }
+  };
 
   function r2(n) { return Math.round(n * 100) / 100; }
   function moeda(s) { var m = /R\$\s*([\d.]+,\d{2})/.exec(s); return m ? Number(m[1].replace(/\./g, '').replace(',', '.')) : null; }
@@ -46,8 +57,12 @@
 
     m = acha(c['04'], /\b(\d{4})(?:-\d{2})?\b/);
     if (m) r.codigoReceita = m[1]; else avisos.push('Código da receita não encontrado.');
-    if (r.codigoReceita && !CODIGOS[r.codigoReceita]) avisos.push('Código não reconhecido: ' + r.codigoReceita + ' (só 0220 e 6012 foram confirmados na Receita).');
-    if (r.codigoReceita && CODIGOS[r.codigoReceita] && r.periodo && !r.periodo.trimestre) avisos.push('Código trimestral com período mensal.');
+    if (r.codigoReceita && !CODIGOS[r.codigoReceita]) avisos.push('Código não reconhecido: ' + r.codigoReceita + ' (reconhecidos: 0220, 6012, 6912 e 5856).');
+    if (r.codigoReceita && CODIGOS[r.codigoReceita] && r.periodo) {
+      var per = CODIGOS[r.codigoReceita].periodicidade;
+      if (per === 'trimestral' && !r.periodo.trimestre) avisos.push('Código trimestral com período mensal.');
+      if (per === 'mensal' && r.periodo.trimestre) avisos.push('Código mensal com período trimestral.');
+    }
 
     m = acha(c['05'], /^[A-Za-z0-9._\/-]{3,}$/); r.referencia = m ? m[0] : null;
     m = acha(c['06'], /(\d{2})\/(\d{2})\/(\d{4})/); if (m) r.vencimento = m[3] + '-' + m[2] + '-' + m[1]; else avisos.push('Vencimento não encontrado.');
