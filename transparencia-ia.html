@@ -1,90 +1,129 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Transparência sobre IA · Reversa Tax</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
 <style>
-  :root { --navy:#0e2239; --teal:#1e8f88; --muted:#64748b; --line:#e2e8f0; }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Geist', system-ui, sans-serif; background: #fff; color: var(--navy); line-height: 1.65; font-size: 1rem; }
-  a { color: var(--teal); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-
-  header { border-bottom: 1px solid var(--line); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  header img { height: 28px; width: auto; }
-  header .voltar { font-size: .85rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-  header .voltar:hover { color: var(--teal); }
-
-  main { max-width: 740px; margin: 0 auto; padding: 48px 24px 80px; }
-  h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 6px; }
-  .subtitulo { font-size: .88rem; color: var(--muted); margin-bottom: 40px; }
-  h2 { font-weight: 700; color: var(--navy); margin: 36px 0 10px; text-transform: uppercase; letter-spacing: .06em; font-size: .78rem; }
-  p, li { color: #334155; font-size: .97rem; }
-  p + p { margin-top: 10px; }
-  ul { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
-  .card { background: #f8fafc; border: 1px solid var(--line); border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
-  .card h3 { font-size: .9rem; font-weight: 600; margin-bottom: 8px; color: var(--navy); }
-  .card p { font-size: .9rem; }
-  .destaque { background: #f0faf9; border-left: 3px solid var(--teal); padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 20px 0; font-size: .93rem; color: var(--navy); }
-
-  footer { border-top: 1px solid var(--line); padding: 20px 24px; text-align: center; font-size: .78rem; color: var(--muted); }
+:root { --navy:#0E2239; --teal:#1E8F88; --copper:#C78054; --bg:#F5F7F9; --line:#DCE3EA; --muted:#5A6878; }
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Geist,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--navy);line-height:1.6;-webkit-font-smoothing:antialiased}
+header{background:#fff;border-bottom:1px solid var(--line);padding:16px 32px;display:flex;align-items:center;gap:14px}
+header img{height:32px;width:auto}
+header span{font-size:.78rem;color:var(--muted);letter-spacing:.06em;font-weight:600;text-transform:uppercase;border-left:1px solid var(--line);padding-left:14px}
+.container{max-width:760px;margin:48px auto;padding:0 24px 80px}
+h1{font-size:1.9rem;font-weight:700;letter-spacing:-.03em;color:var(--navy);margin-bottom:6px}
+.subtitle{color:var(--muted);font-size:.93rem;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+h2{font-size:1.1rem;font-weight:700;color:var(--navy);margin:32px 0 10px}
+p{color:#2D3A4A;font-size:.96rem;margin-bottom:12px}
+ul{padding-left:20px;margin-bottom:12px}
+li{color:#2D3A4A;font-size:.96rem;margin-bottom:6px}
+.destaque{background:#E6F4F3;border-left:3px solid var(--teal);padding:12px 16px;border-radius:0 6px 6px 0;margin:16px 0}
+.destaque p{margin:0;font-size:.93rem}
+.alerta{background:#FDF3E3;border-left:3px solid var(--copper);padding:12px 16px;border-radius:0 6px 6px 0;margin:16px 0}
+.alerta p{margin:0;font-size:.93rem}
+.card-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+.card-title{font-weight:700;font-size:.93rem;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.card-title span{font-size:1.1em}
+.card p{font-size:.88rem;color:var(--muted);margin:0}
+footer{text-align:center;padding:24px;font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);background:#fff;margin-top:40px}
+footer a{color:var(--muted);text-decoration:underline;margin:0 8px}
+@media(max-width:600px){.container{padding:0 16px 60px}h1{font-size:1.5rem}.card-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
 <header>
-  <img src="/assets/logo-wordmark.png" alt="Reversa Tax">
-  <a href="/login.html" class="voltar">← Voltar</a>
+  <img src="/assets/argus-prime-monograma.png" alt="Argus Prime">
+  <span>Reversa Tax</span>
 </header>
 
-<main>
-  <h1>Transparência sobre Inteligência Artificial</h1>
-  <p class="subtitulo">Como e onde a IA é utilizada na Reversa Tax</p>
+<div class="container">
+  <h1>IA na Reversa Tax</h1>
+  <p class="subtitle">Transparência sobre o uso de Inteligência Artificial · Novembro de 2026</p>
 
   <div class="destaque">
-    A Reversa Tax utiliza tecnologia de inteligência artificial para apoiar profissionais contábeis e tributários. Esta página explica de forma clara como essa tecnologia é empregada.
+    <p>A Reversa Tax utiliza recursos de Inteligência Artificial como <strong>ferramenta de apoio</strong> à análise tributária e financeira. Nenhuma decisão é tomada automaticamente pela IA sem revisão e responsabilidade humana.</p>
   </div>
 
-  <h2>O que fazemos com IA</h2>
-  <p>A inteligência artificial é utilizada na plataforma Reversa Tax para:</p>
+  <h2>O que a IA faz na plataforma</h2>
+  <p>Os recursos de IA na Reversa Tax são utilizados para:</p>
   <ul>
-    <li><strong>Análise de obrigações tributárias:</strong> identificação de inconsistências e oportunidades de recuperação fiscal em arquivos SPED e XML.</li>
-    <li><strong>Diagnóstico automatizado:</strong> geração de relatórios de diagnóstico com base nas informações fornecidas pelo usuário.</li>
-    <li><strong>Sugestões de retificação:</strong> recomendações sobre ajustes em registros fiscais, com base em regras tributárias vigentes.</li>
-    <li><strong>Processamento de linguagem:</strong> interpretação de consultas e extração estruturada de dados de documentos fiscais.</li>
+    <li><strong>Sugestões de análise:</strong> identificar padrões e inconsistências em dados tributários para apoiar a revisão do profissional.</li>
+    <li><strong>Classificação auxiliar:</strong> sugerir classificações fiscais e tributárias com base em regras e histórico de dados.</li>
+    <li><strong>Resumos e sínteses:</strong> condensar grandes volumes de dados em visões gerenciais.</li>
+    <li><strong>Alertas de atenção:</strong> destacar itens que podem requerer revisão adicional pelo especialista.</li>
   </ul>
 
-  <h2>O que a IA não faz</h2>
-  <ul>
-    <li>Não toma decisões tributárias finais de forma autônoma — todas as sugestões requerem validação do profissional responsável.</li>
-    <li>Não acessa bases de dados externas sem autorização explícita.</li>
-    <li>Não armazena ou transmite os arquivos fiscais do usuário a terceiros.</li>
-    <li>Não substitui a responsabilidade técnica do contabilista ou advogado tributarista.</li>
-  </ul>
-
-  <div class="card">
-    <h3>Supervisão humana obrigatória</h3>
-    <p>Todas as análises e sugestões geradas pela plataforma devem ser revisadas por um profissional habilitado antes de qualquer ação. A Reversa Tax é uma ferramenta de apoio à decisão, não um substituto ao julgamento técnico.</p>
+  <div class="alerta">
+    <p>⚠️ <strong>Importante:</strong> os resultados gerados pela IA são sugestões e nunca devem substituir a avaliação de um profissional qualificado. Toda saída de IA na plataforma é claramente sinalizada e requer validação humana antes de uso em obrigações fiscais.</p>
   </div>
 
-  <h2>Dados e privacidade</h2>
-  <p>Os arquivos fiscais (SPED, XML) são processados localmente no navegador do usuário. Nenhum dado fiscal é enviado a servidores para fins de treinamento de modelos ou compartilhado com terceiros.</p>
-  <p>Consulte nossa <a href="/privacidade.html">Política de Privacidade</a> para mais detalhes sobre o tratamento de dados.</p>
+  <h2>Princípios que guiam nosso uso de IA</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-title"><span>🎯</span> Finalidade específica</div>
+      <p>A IA é usada apenas para apoiar análises tributárias, nunca para tomadas de decisão autônomas.</p>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>👁️</span> Transparência</div>
+      <p>Sempre que a IA contribui para um resultado, isso é claramente indicado na interface.</p>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>🔒</span> Minimização de dados</div>
+      <p>Enviamos à IA apenas os dados necessários para a tarefa específica, sem dados pessoais desnecessários.</p>
+    </div>
+    <div class="card">
+      <div class="card-title"><span>👤</span> Controle humano</div>
+      <p>Profissionais revisam e validam todos os resultados. A IA não age de forma autônoma.</p>
+    </div>
+  </div>
 
-  <h2>Limitações conhecidas</h2>
+  <h2>Quais dados são processados pela IA</h2>
+  <p>Dependendo da funcionalidade utilizada, dados podem ser processados por modelos de linguagem ou outros sistemas de IA:</p>
   <ul>
-    <li>A IA pode cometer erros — resultados devem sempre ser verificados.</li>
-    <li>Legislações tributárias mudam com frequência; a plataforma é atualizada periodicamente, mas pode não refletir alterações imediatas.</li>
-    <li>Casos atípicos ou situações muito específicas podem exigir análise manual especializada.</li>
+    <li><strong>Dados tributários e contábeis:</strong> valores, classificações e estruturas de dados financeiros, sem identificação pessoal quando possível.</li>
+    <li><strong>Texto de documentos fiscais:</strong> trechos relevantes de documentos para extração de informações.</li>
+    <li><strong>Dados operacionais agregados:</strong> métricas e resumos sem dados pessoais dos usuários finais.</li>
+  </ul>
+  <p><strong>Não são processados pela IA:</strong> senhas, tokens de sessão, dados de autenticação ou qualquer dado pessoal sensível não relacionado à análise tributária.</p>
+
+  <h2>Fornecedores de IA</h2>
+  <p>A Reversa Tax pode utilizar serviços de IA de fornecedores externos, sempre sob contrato com cláusulas de confidencialidade e proteção de dados compatíveis com a LGPD. Os fornecedores atuais estão vinculados por:</p>
+  <ul>
+    <li>Proibição de uso dos dados para treinamento de modelos sem consentimento explícito.</li>
+    <li>Retenção mínima dos dados necessária para a prestação do serviço.</li>
+    <li>Obrigações de segurança e conformidade equivalentes às nossas.</li>
   </ul>
 
-  <h2>Contato</h2>
-  <p>Dúvidas sobre o uso de IA na plataforma? Fale conosco: <a href="mailto:contato@argusprime.com.br">contato@argusprime.com.br</a></p>
-</main>
+  <h2>Limitações conhecidas da IA</h2>
+  <p>Estamos comprometidos com a transparência sobre o que a IA não faz bem:</p>
+  <ul>
+    <li>A IA pode cometer erros em interpretações complexas da legislação tributária — sempre revise.</li>
+    <li>Modelos de linguagem podem gerar conteúdo plausível mas incorreto ("alucinações") — confirme os resultados.</li>
+    <li>A IA não substitui o julgamento profissional em casos com nuances jurídicas ou situações incomuns.</li>
+    <li>Resultados da IA refletem padrões dos dados de treinamento e podem não capturar alterações legais recentes.</li>
+  </ul>
 
-<footer>Reversa Tax · Argus Prime · Engenharia Financeira e Tributária</footer>
+  <h2>Seus direitos em relação ao uso de IA</h2>
+  <p>Conforme a LGPD e as melhores práticas de IA responsável, você tem direito a:</p>
+  <ul>
+    <li>Ser informado quando uma sugestão ou resultado foi gerado com apoio de IA.</li>
+    <li>Solicitar revisão humana de qualquer resultado gerado pela IA.</li>
+    <li>Questionar e contestar resultados automatizados.</li>
+    <li>Solicitar informações sobre como seus dados foram utilizados em processos com IA.</li>
+  </ul>
 
+  <h2>Contato e dúvidas</h2>
+  <p>Para dúvidas sobre o uso de IA ou para exercer seus direitos, entre em contato com nosso Encarregado de Dados: <a href="mailto:privacidade@argusprime.com.br" style="color:var(--teal)">privacidade@argusprime.com.br</a></p>
+  <p>Consulte também nossa <a href="/privacidade.html" style="color:var(--teal)">Política de Privacidade</a> e os <a href="/termos.html" style="color:var(--teal)">Termos de Uso</a>.</p>
+</div>
+
+<footer>
+  <a href="/login.html">← Voltar ao acesso</a>
+  <a href="/privacidade.html">Privacidade &amp; LGPD</a>
+  <a href="/termos.html">Termos de Uso</a>
+  <br><br>© 2026 Argus Prime · Reversa Tax · IA Responsável
+</footer>
 </body>
 </html>

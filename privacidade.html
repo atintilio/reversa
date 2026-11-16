@@ -1,86 +1,135 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Política de Privacidade · Reversa Tax</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
 <style>
-  :root { --navy:#0e2239; --teal:#1e8f88; --muted:#64748b; --line:#e2e8f0; }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Geist', system-ui, sans-serif; background: #fff; color: var(--navy); line-height: 1.65; font-size: 1rem; }
-  a { color: var(--teal); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-
-  header { border-bottom: 1px solid var(--line); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  header img { height: 28px; width: auto; }
-  header .voltar { font-size: .85rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-  header .voltar:hover { color: var(--teal); }
-
-  main { max-width: 740px; margin: 0 auto; padding: 48px 24px 80px; }
-  h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 6px; }
-  .subtitulo { font-size: .88rem; color: var(--muted); margin-bottom: 40px; }
-  h2 { font-size: 1rem; font-weight: 700; color: var(--navy); margin: 36px 0 10px; text-transform: uppercase; letter-spacing: .06em; font-size: .78rem; }
-  p, li { color: #334155; font-size: .97rem; }
-  ul { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
-  .destaque { background: #f0faf9; border-left: 3px solid var(--teal); padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 20px 0; font-size: .93rem; color: var(--navy); }
-
-  footer { border-top: 1px solid var(--line); padding: 20px 24px; text-align: center; font-size: .78rem; color: var(--muted); }
+:root { --navy:#0E2239; --teal:#1E8F88; --copper:#C78054; --bg:#F5F7F9; --line:#DCE3EA; --muted:#5A6878; }
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Geist,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--navy);line-height:1.6;-webkit-font-smoothing:antialiased}
+header{background:#fff;border-bottom:1px solid var(--line);padding:16px 32px;display:flex;align-items:center;gap:14px}
+header img{height:32px;width:auto}
+header span{font-size:.78rem;color:var(--muted);letter-spacing:.06em;font-weight:600;text-transform:uppercase;border-left:1px solid var(--line);padding-left:14px}
+.container{max-width:760px;margin:48px auto;padding:0 24px 80px}
+h1{font-size:1.9rem;font-weight:700;letter-spacing:-.03em;color:var(--navy);margin-bottom:6px}
+.subtitle{color:var(--muted);font-size:.93rem;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+h2{font-size:1.1rem;font-weight:700;color:var(--navy);margin:32px 0 10px}
+p{color:#2D3A4A;font-size:.96rem;margin-bottom:12px}
+ul{padding-left:20px;margin-bottom:12px}
+li{color:#2D3A4A;font-size:.96rem;margin-bottom:6px}
+.destaque{background:#E6F4F3;border-left:3px solid var(--teal);padding:12px 16px;border-radius:0 6px 6px 0;margin:16px 0}
+.destaque p{margin:0;font-size:.93rem}
+.contato-box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 24px;margin-top:36px}
+.contato-box h3{font-size:1rem;margin-bottom:8px}
+.contato-box a{color:var(--teal);text-decoration:none}
+footer{text-align:center;padding:24px;font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);background:#fff;margin-top:40px}
+footer a{color:var(--muted);text-decoration:underline;margin:0 8px}
+@media(max-width:600px){.container{padding:0 16px 60px}h1{font-size:1.5rem}}
 </style>
 </head>
 <body>
-
 <header>
-  <img src="/assets/logo-wordmark.png" alt="Reversa Tax">
-  <a href="/login.html" class="voltar">← Voltar</a>
+  <img src="/assets/argus-prime-monograma.png" alt="Argus Prime">
+  <span>Reversa Tax</span>
 </header>
 
-<main>
+<div class="container">
   <h1>Política de Privacidade</h1>
-  <p class="subtitulo">Atualizado em novembro de 2026 · LGPD — Lei nº 13.709/2018</p>
-
-  <h2>Controlador dos dados</h2>
-  <p>AC Tintilio Negócios (Argus Prime) · CNPJ 54.779.620/0001-00<br>
-  Florianópolis, SC · <a href="mailto:contato@argusprime.com.br">contato@argusprime.com.br</a></p>
-
-  <h2>Dados coletados</h2>
-  <ul>
-    <li><strong>Autenticação:</strong> e-mail ou nome de usuário e senha (armazenada em hash bcrypt, nunca em texto simples).</li>
-    <li><strong>Arquivos SPED / XML:</strong> processados inteiramente no navegador do usuário. Nenhum arquivo fiscal é enviado ao servidor da Reversa Tax.</li>
-    <li><strong>Logs de acesso:</strong> endereço IP (anonimizado), horário e resultado das tentativas de autenticação, para fins de segurança e prevenção de fraudes.</li>
-  </ul>
+  <p class="subtitle">Última atualização: novembro de 2026 · Versão 1.0</p>
 
   <div class="destaque">
-    Os arquivos SPED e XML que você carrega na plataforma <strong>nunca saem do seu dispositivo</strong>. Todo o processamento ocorre localmente no seu navegador.
+    <p>Esta política descreve como a <strong>Reversa Tax</strong> coleta, usa e protege seus dados pessoais, em conformidade com a <strong>Lei Geral de Proteção de Dados (LGPD — Lei nº 13.709/2018)</strong>.</p>
   </div>
 
-  <h2>Finalidade do tratamento</h2>
+  <h2>1. Quem somos</h2>
+  <p>A Reversa Tax é uma plataforma de engenharia financeira e tributária desenvolvida e operada pela <strong>Argus Prime</strong>. Esta política aplica-se ao acesso e uso da plataforma por usuários autorizados.</p>
+
+  <h2>2. Dados que coletamos</h2>
+  <p>Para operar a plataforma, coletamos apenas os dados estritamente necessários:</p>
   <ul>
-    <li>Autenticar o acesso à plataforma.</li>
-    <li>Permitir o diagnóstico e a retificação de obrigações tributárias.</li>
-    <li>Garantir a segurança e a integridade do sistema.</li>
+    <li><strong>Dados de autenticação:</strong> endereço de e-mail e credenciais de acesso (senha armazenada em hash irreversível com bcrypt).</li>
+    <li><strong>Dados de sessão:</strong> identificador de sessão (hash SHA-256), endereço IP anonimizado, data e hora de acesso.</li>
+    <li><strong>Logs de auditoria:</strong> registros de ações realizadas na plataforma para fins de segurança e conformidade.</li>
+    <li><strong>Dados operacionais:</strong> informações tributárias e financeiras inseridas ou processadas pelo usuário no exercício das suas funções.</li>
   </ul>
 
-  <h2>Base legal</h2>
-  <p>Execução de contrato ou de procedimentos preliminares a pedido do titular (art. 7º, V, LGPD).</p>
-
-  <h2>Retenção</h2>
+  <h2>3. Finalidade e base legal</h2>
+  <p>Tratamos seus dados com base nas seguintes hipóteses legais previstas na LGPD:</p>
   <ul>
-    <li>Sessões de acesso: encerradas em até 12 horas ou após 15 minutos de inatividade.</li>
-    <li>Logs de autenticação: retidos por 90 dias e então descartados.</li>
+    <li><strong>Execução de contrato (art. 7º, V):</strong> para autenticar o acesso e fornecer as funcionalidades da plataforma.</li>
+    <li><strong>Legítimo interesse (art. 7º, IX):</strong> para manutenção de logs de segurança, prevenção a fraudes e melhoria do serviço.</li>
+    <li><strong>Cumprimento de obrigação legal (art. 7º, II):</strong> para atender requisitos de auditoria e conformidade fiscal e tributária.</li>
   </ul>
 
-  <h2>Compartilhamento</h2>
-  <p>Os dados não são vendidos, alugados ou compartilhados com terceiros para fins comerciais ou publicitários.</p>
+  <h2>4. Compartilhamento de dados</h2>
+  <p>Não vendemos nem cedemos seus dados a terceiros. Os dados podem ser acessados por:</p>
+  <ul>
+    <li>Equipe técnica da Argus Prime, sob sigilo profissional, para suporte e manutenção.</li>
+    <li>Provedores de infraestrutura (hospedagem em nuvem), vinculados por contrato de processamento de dados.</li>
+    <li>Autoridades públicas, quando exigido por lei ou ordem judicial.</li>
+  </ul>
 
-  <h2>Seus direitos (titular)</h2>
-  <p>Você pode solicitar confirmação, acesso, correção, portabilidade ou exclusão dos seus dados a qualquer momento. Envie sua solicitação para <a href="mailto:contato@argusprime.com.br">contato@argusprime.com.br</a>.</p>
+  <h2>5. Retenção de dados</h2>
+  <ul>
+    <li>Dados de sessão: excluídos automaticamente após 12 horas de inatividade.</li>
+    <li>Logs de auditoria: retidos por 5 anos para fins de conformidade.</li>
+    <li>Dados de autenticação: mantidos enquanto a conta estiver ativa; excluídos em até 30 dias após solicitação.</li>
+    <li>Dados operacionais: retidos conforme os prazos legais aplicáveis à atividade tributária (mínimo 5 anos).</li>
+  </ul>
 
-  <h2>Contato</h2>
-  <p><a href="mailto:contato@argusprime.com.br">contato@argusprime.com.br</a></p>
-</main>
+  <h2>6. Segurança</h2>
+  <p>Adotamos medidas técnicas e organizacionais para proteger seus dados:</p>
+  <ul>
+    <li>Transmissão criptografada (TLS 1.2+) em toda comunicação com a plataforma.</li>
+    <li>Senhas armazenadas exclusivamente como hash bcrypt (nunca em texto claro).</li>
+    <li>Proteção contra CSRF com token duplo por requisição.</li>
+    <li>Controle de taxa de tentativas de login (rate limiting) por IP e por conta.</li>
+    <li>Sessões com expiração automática por inatividade (15 minutos).</li>
+    <li>Acesso restrito ao banco de dados com credenciais individuais e logs de auditoria.</li>
+  </ul>
 
-<footer>Reversa Tax · Argus Prime · Engenharia Financeira e Tributária</footer>
+  <h2>7. Seus direitos (LGPD, art. 18)</h2>
+  <p>Como titular de dados, você tem direito a:</p>
+  <ul>
+    <li><strong>Confirmação e acesso:</strong> saber quais dados temos sobre você e obter uma cópia.</li>
+    <li><strong>Correção:</strong> solicitar a correção de dados incompletos ou desatualizados.</li>
+    <li><strong>Anonimização ou eliminação:</strong> solicitar a eliminação de dados desnecessários ou tratados em desconformidade com a LGPD.</li>
+    <li><strong>Portabilidade:</strong> receber seus dados em formato estruturado e interoperável.</li>
+    <li><strong>Revogação de consentimento:</strong> quando o tratamento for baseado em consentimento.</li>
+    <li><strong>Oposição:</strong> opor-se a tratamentos que causem dano, quando cabível.</li>
+  </ul>
+  <p>Para exercer seus direitos, entre em contato pelo e-mail indicado abaixo. Responderemos em até 15 dias úteis.</p>
 
+  <h2>8. Cookies e tecnologias similares</h2>
+  <p>Utilizamos apenas cookies estritamente necessários para o funcionamento da plataforma:</p>
+  <ul>
+    <li><strong>rv_sessao:</strong> cookie de sessão autenticada (HttpOnly, Secure, SameSite=Lax). Expira em 12 horas.</li>
+    <li><strong>rv_csrf:</strong> token de proteção contra CSRF (Secure, SameSite=Strict). Expira em 1 hora.</li>
+  </ul>
+  <p>Não utilizamos cookies de rastreamento, analytics de terceiros ou publicidade.</p>
+
+  <h2>9. Uso de Inteligência Artificial</h2>
+  <p>A plataforma pode utilizar recursos de IA para apoiar análises tributárias. Consulte nossa <a href="/transparencia-ia.html" style="color:var(--teal)">página de Transparência sobre IA</a> para detalhes sobre como a IA é utilizada e quais dados são processados.</p>
+
+  <h2>10. Alterações nesta política</h2>
+  <p>Podemos atualizar esta política periodicamente. Alterações significativas serão comunicadas por e-mail ou notificação na plataforma com antecedência mínima de 15 dias.</p>
+
+  <h2>11. Encarregado de Dados (DPO)</h2>
+  <div class="contato-box">
+    <h3>Entre em contato</h3>
+    <p>Para exercer seus direitos ou esclarecer dúvidas sobre o tratamento de dados:</p>
+    <p><strong>Encarregado de Proteção de Dados — Argus Prime</strong><br>
+    E-mail: <a href="mailto:privacidade@argusprime.com.br">privacidade@argusprime.com.br</a></p>
+    <p style="margin-top:8px;font-size:.88rem;color:var(--muted)">Autoridade Nacional de Proteção de Dados (ANPD): <a href="https://www.gov.br/anpd" target="_blank" rel="noopener" style="color:var(--teal)">www.gov.br/anpd</a></p>
+  </div>
+</div>
+
+<footer>
+  <a href="/login.html">← Voltar ao acesso</a>
+  <a href="/termos.html">Termos de Uso</a>
+  <a href="/transparencia-ia.html">IA na Reversa</a>
+  <br><br>© 2026 Argus Prime · Reversa Tax · LGPD
+</footer>
 </body>
 </html>

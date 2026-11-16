@@ -1,88 +1,123 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Termos de Uso · Reversa Tax</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
 <style>
-  :root { --navy:#0e2239; --teal:#1e8f88; --muted:#64748b; --line:#e2e8f0; }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Geist', system-ui, sans-serif; background: #fff; color: var(--navy); line-height: 1.65; font-size: 1rem; }
-  a { color: var(--teal); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-
-  header { border-bottom: 1px solid var(--line); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-  header img { height: 28px; width: auto; }
-  header .voltar { font-size: .85rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-  header .voltar:hover { color: var(--teal); }
-
-  main { max-width: 740px; margin: 0 auto; padding: 48px 24px 80px; }
-  h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 6px; }
-  .subtitulo { font-size: .88rem; color: var(--muted); margin-bottom: 40px; }
-  h2 { font-weight: 700; color: var(--navy); margin: 36px 0 10px; text-transform: uppercase; letter-spacing: .06em; font-size: .78rem; }
-  p, li { color: #334155; font-size: .97rem; }
-  p + p { margin-top: 10px; }
-  ul { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
-
-  footer { border-top: 1px solid var(--line); padding: 20px 24px; text-align: center; font-size: .78rem; color: var(--muted); }
+:root { --navy:#0E2239; --teal:#1E8F88; --copper:#C78054; --bg:#F5F7F9; --line:#DCE3EA; --muted:#5A6878; }
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Geist,system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--navy);line-height:1.6;-webkit-font-smoothing:antialiased}
+header{background:#fff;border-bottom:1px solid var(--line);padding:16px 32px;display:flex;align-items:center;gap:14px}
+header img{height:32px;width:auto}
+header span{font-size:.78rem;color:var(--muted);letter-spacing:.06em;font-weight:600;text-transform:uppercase;border-left:1px solid var(--line);padding-left:14px}
+.container{max-width:760px;margin:48px auto;padding:0 24px 80px}
+h1{font-size:1.9rem;font-weight:700;letter-spacing:-.03em;color:var(--navy);margin-bottom:6px}
+.subtitle{color:var(--muted);font-size:.93rem;margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+h2{font-size:1.1rem;font-weight:700;color:var(--navy);margin:32px 0 10px}
+p{color:#2D3A4A;font-size:.96rem;margin-bottom:12px}
+ul{padding-left:20px;margin-bottom:12px}
+li{color:#2D3A4A;font-size:.96rem;margin-bottom:6px}
+.aviso{background:#FDF3E3;border-left:3px solid var(--copper);padding:12px 16px;border-radius:0 6px 6px 0;margin:16px 0}
+.aviso p{margin:0;font-size:.93rem}
+.contato-box{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 24px;margin-top:36px}
+.contato-box h3{font-size:1rem;margin-bottom:8px}
+.contato-box a{color:var(--teal);text-decoration:none}
+footer{text-align:center;padding:24px;font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);background:#fff;margin-top:40px}
+footer a{color:var(--muted);text-decoration:underline;margin:0 8px}
+@media(max-width:600px){.container{padding:0 16px 60px}h1{font-size:1.5rem}}
 </style>
 </head>
 <body>
-
 <header>
-  <img src="/assets/logo-wordmark.png" alt="Reversa Tax">
-  <a href="/login.html" class="voltar">← Voltar</a>
+  <img src="/assets/argus-prime-monograma.png" alt="Argus Prime">
+  <span>Reversa Tax</span>
 </header>
 
-<main>
+<div class="container">
   <h1>Termos de Uso</h1>
-  <p class="subtitulo">Atualizado em novembro de 2026</p>
+  <p class="subtitle">Última atualização: novembro de 2026 · Versão 1.0</p>
 
-  <h2>1. Aceitação</h2>
-  <p>Ao acessar a plataforma Reversa Tax, você concorda com estes Termos de Uso. Se não concordar, não utilize o serviço.</p>
+  <div class="aviso">
+    <p>O acesso e uso da plataforma Reversa Tax estão condicionados à aceitação destes Termos. Ao acessar a plataforma, você confirma que leu, compreendeu e concorda com estas condições.</p>
+  </div>
 
-  <h2>2. Descrição do serviço</h2>
-  <p>A Reversa Tax é uma plataforma de diagnóstico e retificação de obrigações tributárias que processa arquivos SPED e XML diretamente no navegador do usuário. O processamento ocorre localmente — nenhum arquivo fiscal é transmitido a servidores externos.</p>
+  <h2>1. Aceitação dos Termos</h2>
+  <p>Estes Termos de Uso regulam o acesso e uso da plataforma <strong>Reversa Tax</strong>, operada pela <strong>Argus Prime</strong>. O uso da plataforma implica a aceitação integral e irrestrita destes termos.</p>
 
-  <h2>3. Uso permitido</h2>
+  <h2>2. Acesso e Credenciais</h2>
+  <p>O acesso à plataforma é <strong>individual, intransferível e restrito a usuários autorizados</strong> pelo administrador da organização. Ao utilizar a plataforma, você se compromete a:</p>
   <ul>
-    <li>Acesso exclusivo a usuários cadastrados e autorizados pelo administrador.</li>
-    <li>Uso restrito a finalidades tributárias e contábeis legítimas.</li>
-    <li>Responsabilidade do usuário pela exatidão dos arquivos fornecidos.</li>
+    <li>Manter suas credenciais de acesso em sigilo absoluto.</li>
+    <li>Não compartilhar login ou senha com terceiros, mesmo dentro da mesma organização.</li>
+    <li>Notificar imediatamente o administrador em caso de suspeita de acesso não autorizado.</li>
+    <li>Encerrar a sessão ao término de cada uso.</li>
+  </ul>
+  <p>A Argus Prime não se responsabiliza por danos decorrentes do uso indevido de credenciais pelo titular.</p>
+
+  <h2>3. Uso Permitido</h2>
+  <p>A plataforma é destinada exclusivamente para:</p>
+  <ul>
+    <li>Análise e processamento de dados tributários e financeiros no âmbito da atividade profissional autorizada.</li>
+    <li>Geração de relatórios e cálculos tributários para fins legítimos de negócio.</li>
+    <li>Atividades de engenharia financeira e tributária compatíveis com a finalidade do sistema.</li>
   </ul>
 
-  <h2>4. Uso proibido</h2>
+  <h2>4. Uso Proibido</h2>
+  <p>É expressamente proibido:</p>
   <ul>
-    <li>Compartilhar credenciais de acesso com terceiros.</li>
-    <li>Realizar engenharia reversa, descompilar ou modificar a plataforma.</li>
-    <li>Utilizar a plataforma para fins ilícitos ou fraudulentos.</li>
-    <li>Tentar obter acesso não autorizado a outros módulos ou contas.</li>
+    <li>Utilizar a plataforma para fins ilícitos ou contrários à legislação brasileira.</li>
+    <li>Tentar contornar, desabilitar ou interferir em mecanismos de segurança.</li>
+    <li>Realizar engenharia reversa, descompilação ou extração do código-fonte.</li>
+    <li>Automatizar o acesso de forma não autorizada (bots, scrapers, scripts).</li>
+    <li>Inserir dados falsos, adulterados ou que possam comprometer a integridade dos cálculos.</li>
+    <li>Acessar dados de outros usuários ou organizações sem autorização expressa.</li>
+    <li>Utilizar a plataforma para fins de concorrência ou espionagem industrial.</li>
   </ul>
 
-  <h2>5. Propriedade intelectual</h2>
-  <p>Todo o conteúdo, software, algoritmos e interfaces da plataforma são de propriedade da AC Tintilio Negócios (Argus Prime). É vedada a reprodução ou distribuição sem autorização expressa.</p>
+  <h2>5. Propriedade Intelectual</h2>
+  <p>Todo o conteúdo, código-fonte, algoritmos, interfaces, marcas e demais elementos da plataforma são propriedade exclusiva da <strong>Argus Prime</strong>, protegidos pela legislação de propriedade intelectual. O uso da plataforma não implica qualquer cessão de direitos.</p>
 
-  <h2>6. Limitação de responsabilidade</h2>
-  <p>A plataforma é fornecida como ferramenta de apoio técnico. As decisões fiscais e tributárias finais são de responsabilidade exclusiva do usuário ou de seu representante legal. A Reversa Tax não se responsabiliza por penalidades decorrentes de interpretações equivocadas ou uso indevido da plataforma.</p>
+  <h2>6. Dados Inseridos pelo Usuário</h2>
+  <p>Você é o único responsável pela veracidade, integridade e licitude dos dados que insere na plataforma. A Argus Prime não assume responsabilidade por erros de cálculo ou análise decorrentes de dados incorretos fornecidos pelo usuário.</p>
 
   <h2>7. Disponibilidade</h2>
-  <p>A plataforma é disponibilizada em regime de melhor esforço. Podemos interromper ou modificar funcionalidades para manutenção, segurança ou conformidade regulatória, sem aviso prévio.</p>
+  <p>A Argus Prime envidarará esforços razoáveis para manter a plataforma disponível, mas não garante disponibilidade ininterrupta. Manutenções programadas serão comunicadas com antecedência. Manutenções emergenciais de segurança podem ocorrer sem aviso prévio.</p>
 
-  <h2>8. Encerramento de acesso</h2>
-  <p>O acesso pode ser revogado a qualquer momento pelo administrador da organização ou pela Argus Prime, em caso de violação destes Termos.</p>
+  <h2>8. Limitação de Responsabilidade</h2>
+  <p>A plataforma fornece análises e cálculos como <strong>ferramenta de apoio à decisão</strong>. Os resultados devem ser validados por profissionais qualificados antes de qualquer uso em obrigações fiscais oficiais. A Argus Prime não se responsabiliza por:</p>
+  <ul>
+    <li>Decisões tomadas com base exclusiva nos resultados da plataforma.</li>
+    <li>Danos indiretos, lucros cessantes ou danos emergentes.</li>
+    <li>Indisponibilidade do serviço por causas de força maior ou falhas de terceiros.</li>
+  </ul>
 
-  <h2>9. Alterações</h2>
-  <p>Estes Termos podem ser atualizados periodicamente. O uso continuado da plataforma após publicação de alterações implica aceitação dos novos Termos.</p>
+  <h2>9. Uso de Inteligência Artificial</h2>
+  <p>A plataforma pode utilizar recursos de IA para apoiar análises. Consulte nossa <a href="/transparencia-ia.html" style="color:var(--teal)">página de Transparência sobre IA</a> para entender como esses recursos funcionam e suas limitações.</p>
 
-  <h2>10. Foro</h2>
-  <p>Fica eleito o foro da Comarca de Florianópolis, SC, para dirimir quaisquer controvérsias decorrentes destes Termos, com renúncia a qualquer outro, por mais privilegiado que seja.</p>
+  <h2>10. Privacidade e Dados Pessoais</h2>
+  <p>O tratamento de dados pessoais é regido pela nossa <a href="/privacidade.html" style="color:var(--teal)">Política de Privacidade</a>, em conformidade com a LGPD.</p>
 
-  <h2>Contato</h2>
-  <p><a href="mailto:contato@argusprime.com.br">contato@argusprime.com.br</a></p>
-</main>
+  <h2>11. Rescisão de Acesso</h2>
+  <p>O acesso à plataforma pode ser suspenso ou encerrado a qualquer tempo pelo administrador da organização ou pela Argus Prime, em caso de violação destes Termos, sem necessidade de aviso prévio.</p>
 
-<footer>Reversa Tax · Argus Prime · AC Tintilio Negócios · CNPJ 54.779.620/0001-00</footer>
+  <h2>12. Alterações nos Termos</h2>
+  <p>Estes Termos podem ser atualizados periodicamente. O uso continuado da plataforma após a notificação de mudanças implica aceitação dos novos termos.</p>
 
+  <h2>13. Lei Aplicável e Foro</h2>
+  <p>Estes Termos são regidos pela legislação brasileira. As partes elegem o foro da Comarca de São Paulo — SP para dirimir quaisquer controvérsias decorrentes deste instrumento, com renúncia expressa a qualquer outro.</p>
+
+  <div class="contato-box">
+    <h3>Dúvidas sobre estes Termos</h3>
+    <p>Entre em contato com a Argus Prime pelo e-mail: <a href="mailto:contato@argusprime.com.br">contato@argusprime.com.br</a></p>
+  </div>
+</div>
+
+<footer>
+  <a href="/login.html">← Voltar ao acesso</a>
+  <a href="/privacidade.html">Privacidade &amp; LGPD</a>
+  <a href="/transparencia-ia.html">IA na Reversa</a>
+  <br><br>© 2026 Argus Prime · Reversa Tax
+</footer>
 </body>
 </html>
