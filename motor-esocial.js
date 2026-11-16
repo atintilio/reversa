@@ -322,7 +322,7 @@
     return '';
   }
 
-  var EVENTOS = { evtInfoEmpregador: 'S-1000', evtTabEstab: 'S-1005', evtTabRubrica: 'S-1010', evtTabLotacao: 'S-1020', evtRemun: 'S-1200', evtFechaEvPer: 'S-1299', evtDeslig: 'S-2299', evtExclusao: 'S-3000', evtAfastTemp: 'S-2230', evtBasesTrab: 'S-5001', evtBasesTrabPJ: 'S-5011' };
+  var EVENTOS = { evtInfoEmpregador: 'S-1000', evtTabEstab: 'S-1005', evtTabRubrica: 'S-1010', evtTabLotacao: 'S-1020', evtTabProcesso: 'S-1070', evtRemun: 'S-1200', evtFechaEvPer: 'S-1299', evtDeslig: 'S-2299', evtExclusao: 'S-3000', evtAfastTemp: 'S-2230', evtBasesTrab: 'S-5001', evtBasesTrabPJ: 'S-5011' };
 
   /** Lê um arquivo XML e devolve os eventos reconhecidos. */
   function lerXml(texto, nomeArquivo) {
@@ -333,7 +333,7 @@
     Object.keys(EVENTOS).forEach(function (tag) {
       todos(doc, tag).forEach(function (ev) { r.eventos.push({ tipo: EVENTOS[tag], no: ev, id: (ev.attrs && ev.attrs.Id) || '' }); });
     });
-    if (!r.eventos.length) r.avisos.push('Nenhum evento usado no cálculo (S-1000, S-1005, S-1010, S-1020, S-1200, S-2230, S-2299, S-5001, S-5011) neste arquivo.');
+    if (!r.eventos.length) r.avisos.push('Nenhum evento usado no cálculo (S-1000, S-1005, S-1010, S-1020, S-1070, S-1200, S-2230, S-2299, S-5001, S-5011) neste arquivo.');
     return r;
   }
 
@@ -450,8 +450,9 @@
     var exc = opts.terceirosExcecao && opts.terceirosExcecao.ini && opts.terceirosExcecao.fim ? opts.terceirosExcecao : null;
     var forcar = opts.forcarEscopo === true;
     var rubricas = {}, estabs = {}, lotacoes = {}, empregador = { cnpjRaiz: '', nome: '' }, regs = [];
-    var cands = [], exclusoes = [], contagem = { 'S-1000': 0, 'S-1005': 0, 'S-1010': 0, 'S-1020': 0, 'S-1200': 0, 'S-2230': 0, 'S-2299': 0, 'S-3000': 0, 'S-5001': 0, 'S-5011': 0 }, avisos = [];
+    var cands = [], exclusoes = [], contagem = { 'S-1000': 0, 'S-1005': 0, 'S-1010': 0, 'S-1020': 0, 'S-1070': 0, 'S-1200': 0, 'S-2230': 0, 'S-2299': 0, 'S-3000': 0, 'S-5001': 0, 'S-5011': 0 }, avisos = [];
     var tabRubricas = {}; // controla exclusoes de rubrica (Gap 2)
+    var processos = []; // S-1070: processos judiciais/administrativos com suspensão de incidência (codSusp)
     var afastamentos = []; // S-2230 (Gap 4)
     var totalizadores = { s5001: [], s5011: [] }; // S-5001/S-5011 (Gap 5)
     lidos.forEach(function (l) {
@@ -504,6 +505,35 @@
               (lotacoes[txt(il, 'codLotacao')] = lotacoes[txt(il, 'codLotacao')] || []).push({ ini: txt(il, 'iniValid'), fim: txt(il, 'fimValid'),
                 fpas: txt(dl, 'fpasLotacao/fpas'), codTercs: txt(dl, 'fpasLotacao/codTercs') });
             });
+          });
+        } else if (ev.tipo === 'S-1070') {
+          // S-1070 (evtTabProcesso): processos judiciais e administrativos com suspensão de incidência previdenciária.
+          // codSusp é o campo-chave: identifica a tese/processo que autoriza não recolher sobre determinada rubrica.
+          // tpTrib indica o tributo suspenso: 1=CPPRB, 2=CPSegurado, 3=IRRF, 4=FGTS (pode haver vários por processo).
+          ['inclusao', 'alteracao'].forEach(function (op) {
+            todos(n, op).forEach(function (o) {
+              var ip = filho(o, 'ideProcesso'), dp = filho(o, 'dadosProcesso') || o; if (!ip) return;
+              var nrProc  = txt(ip, 'nrProc');
+              var iniValP = txt(ip, 'iniValid');
+              var fimValP = txt(ip, 'fimValid') || '';
+              // codSusp pode estar em dadosProcesso ou diretamente no nó de operação
+              var codSusp = txt(dp, 'codSusp') || txt(o, 'codSusp') || '';
+              // tpTrib: array — pode haver múltiplos nós infoProcJud/infoProcAdm com tpTrib distintos
+              var tiposTrib = [];
+              todos(o, 'infoProcJud').concat(todos(o, 'infoProcAdm')).forEach(function (info) {
+                var tt = txt(info, 'tpTrib'); if (tt && tiposTrib.indexOf(tt) < 0) tiposTrib.push(tt);
+                // codSusp pode vir em infoProcJud/infoProcAdm quando não está no nível superior
+                if (!codSusp) codSusp = txt(info, 'codSusp') || '';
+              });
+              if (!nrProc) return; // processo sem número identificado — ignorar
+              processos.push({ nrProc: nrProc, codSusp: codSusp, iniValid: iniValP, fimValid: fimValP, tpTrib: tiposTrib, op: op, excluido: false });
+            });
+          });
+          // exclusao de processo: marca os registros existentes como excluídos
+          todos(n, 'exclusao').forEach(function (o) {
+            var ip = filho(o, 'ideProcesso'); if (!ip) return;
+            var nrProc = txt(ip, 'nrProc');
+            processos.forEach(function (p) { if (p.nrProc === nrProc) p.excluido = true; });
           });
         } else if (ev.tipo === 'S-1200') {
           var ie2 = filho(n, 'ideEvento'), it = filho(n, 'ideTrabalhador');
@@ -802,12 +832,21 @@
     if (!contagem['S-1010']) avisos.unshift('Faltam os eventos S-1010 (tabela de rubricas): sem eles não é possível saber a incidência de cada rubrica.');
     if (!contagem['S-1200'] && !contagem['S-2299']) avisos.unshift('Faltam os eventos S-1200 (remuneração): sem eles não há base para o cálculo.');
     if (!contagem['S-1005']) avisos.push('Faltam os eventos S-1005 (estabelecimentos): o RAT ajustado pelo FAP não foi aplicado.');
+    var processosAtivos = processos.filter(function (p) { return !p.excluido; });
+    if (processosAtivos.length > 0) {
+      var suspCP = processosAtivos.filter(function (p) { return !p.tpTrib.length || p.tpTrib.indexOf('1') >= 0 || p.tpTrib.indexOf('2') >= 0; });
+      if (suspCP.length > 0) {
+        avisos.push('S-1070: ' + suspCP.length + ' processo(s) ativo(s) com suspensão de incidência previdenciária (codSusp: ' +
+          suspCP.slice(0, 5).map(function (p) { return p.codSusp || p.nrProc; }).join(', ') + (suspCP.length > 5 ? '...' : '') +
+          '). As contribuições sobre rubricas cobertas por esses processos podem não ser devidas — revisar com o advogado antes de lançar como crédito.');
+      }
+    }
     var lista = function (o) { return Object.keys(o).sort(function (a, b) { return o[b] - o[a]; }).slice(0, 8).join('; '); };
     if (Object.keys(semIncidencia).length) avisos.push('Rubricas sem incidência patronal declarada no S-1010 (só rubricas de vencimento com código de incidência 11, 12, 21 ou 22 entram no cálculo): ' + lista(semIncidencia) + '.');
     if (Object.keys(semTese).length) avisos.push('Rubricas com incidência, mas sem tese associada pela descrição (a equipe técnica deve classificar): ' + lista(semTese) + '.');
     Object.keys(semCadastro).slice(0, 20).forEach(function (k) { avisos.push('Rubrica ' + k.split('|')[1] + ' (tabela ' + k.split('|')[0] + ') usada na folha sem cadastro no S-1010.'); });
     return {
-      versaoMotor: VERSAO, geradoEm: new Date().toISOString(), empregador: empregador, afastamentos: afastamentos, totalizadores: totalizadores,
+      versaoMotor: VERSAO, geradoEm: new Date().toISOString(), empregador: empregador, processos: processosAtivos, afastamentos: afastamentos, totalizadores: totalizadores,
       periodo: { inicio: cs[0] || null, fim: cs[cs.length - 1] || null, competencias: cs.length }, limitePrazo: limite,
       eventos: contagem, trabalhadoresCompetencias: Object.keys(remun).length,
       estabelecimentos: Object.keys(estabs).map(function (k) { var e = vigente(estabs[k], cs[cs.length - 1] || '9999-12'); return { nrInsc: k, cnae: e.cnae, rat: e.rat, fap: e.fap }; }),
