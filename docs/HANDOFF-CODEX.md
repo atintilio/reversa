@@ -58,17 +58,38 @@ O arquivo `efd_icms_ipi.nt2026-001.json` foi gerado por script a partir do texto
 
 Registros críticos para validar primeiro: C100, C170, C591 (FCP NF3e, campos já inseridos do NT JSON), 1601 (ganhou `TOT_VS`, `TOT_ISS`, `TOT_OUTROS`).
 
-### 3.2 eSocial S-1.3 — em análise
+### 3.2 eSocial S-1.3 — gap mapeado
 
-Ver relatório gerado em `lib/sped/leiautes/_extraidos/relatorio-esocial-gap.md` (criado pelo subagente desta sessão). O motor atual (v0.3.0) já suporta S-1.x para cálculo de créditos previdenciários. O gap exato para S-1.3 está nesse relatório.
+Ver `lib/sped/leiautes/_extraidos/relatorio-esocial-gap.md` para o relatório completo.
 
-Próximo passo: certificado digital do André (pré-requisito para assinar XML e transmitir ao SPED).
+Resumo: `retificadora-esocial.js` já gera XML com `v_S_01_03_00` (S-1.3). Os motores de leitura são agnósticos de versão, mas os fixtures de teste ainda usam `v_S_01_02_00`.
 
-### 3.3 CBS/IBS 2027 — em construção
+**Gaps críticos (prioridade):**
+1. `NAT_RUBR` cobre ~40 de ~200 códigos da Tabela 3 — cálculo de natureza de rubrica incompleto
+2. Sem leitura de S-2230 (afastamentos) — T006 é estimada
+3. Sem leitura dos totalizadores S-5001/S-5011 — valores declarados vs. estimados
+4. Sem S-1070 (processos judiciais) — pode creditar o que tem suspensão homologada
+5. Operação `exclusao` do S-1010 não implementada
 
-Ver `motor-cbs-ibs.js` e `tests/motor-cbs-ibs.test.js` (criados pelo subagente desta sessão). O motor projeta o impacto da Reforma Tributária (LC 214/2025) a partir dos dados EFD-Contribuições existentes.
+Próximo passo: certificado digital do André (pré-requisito para assinar XML e transmitir).
 
-Alíquotas de referência usadas: CBS ~8,8%, IBS ~17,7% (sujeitas a confirmação por regulamentação do CMN/CGSN).
+### 3.3 CBS/IBS 2027 — motor criado ✅
+
+`motor-cbs-ibs.js` + `tests/motor-cbs-ibs.test.js` (12 testes, 0 falhas).
+
+Recebe o resultado do `motor-creditos.js` e retorna débito/crédito/CBS apurada, IBS apurado, comparação com PIS+COFINS atual e avisos de validação.
+
+**Tabela de transição implementada (LC 214/2025):**
+
+| Ano | CBS | IBS |
+|-----|-----|-----|
+| 2026 | 0,90% | 0,10% (fase-teste) |
+| 2027–2028 | 9,11% | 0,10% |
+| 2029 | 9,21% | 1,87% |
+| 2030–2031–2032 | 9,21% | crescente até 7,48% |
+| 2033+ | 9,21% | 18,70% |
+
+Alíquotas marcadas `[VALIDAR]` — pendentes de resolução definitiva do CGIBS.
 
 ### 3.4 Itens fora de escopo desta branch (próximas fases)
 
