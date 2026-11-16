@@ -1690,6 +1690,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     estado.cnpjBase = (ce && (ce.lido.cnpj || ce.lido.cpf)) || (estado.prev && estado.prev.estabelecimentos[0] && estado.prev.estabelecimentos[0].nrInsc) || (dv[0] && dv[0].lido.cnpj) || '';
     if (validos.length) {
       estado.arquivos = validos; estado.lidos = validos.map(function (x) { return x.lido; });
+      $('banner').innerHTML = '<span>⏳ Processando…</span>';
       apurar();
     } else { estado.res = null; estado.arquivos = []; estado.lidos = []; secoesResultado(false); banner(); }
     renderPrev(); renderCobertura(); renderTecnico(tec);
