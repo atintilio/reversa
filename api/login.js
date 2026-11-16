@@ -3,11 +3,16 @@ const { authenticate, createSession, legacyCookie } = require('../lib/auth');
 const { audit } = require('../lib/audit');
 const { getSql } = require('../lib/db');
 const { hit } = require('../lib/rate-limit');
-const { normalizeEmail, hashSession } = require('../lib/security');
+const { normalizeEmail, hashSession, parseCookies, safeEqual } = require('../lib/security');
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') return method(res, ['POST']);
   const body = parseBody(req);
+  const csrfBody = String(body._csrf || '');
+  const csrfCookie = parseCookies(req.headers.cookie).rv_csrf || '';
+  if (!csrfBody || !csrfCookie || !safeEqual(csrfBody, csrfCookie)) {
+    return redirect(res, '/login.html?erro=1');
+  }
   const identifier = body.usuario || body.email || '';
   const password = body.senha || body.password || '';
   let result;

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Transparência sobre IA · Reversa Tax</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap">
+<style>
+  :root { --navy:#0e2239; --teal:#1e8f88; --muted:#64748b; --line:#e2e8f0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Geist', system-ui, sans-serif; background: #fff; color: var(--navy); line-height: 1.65; font-size: 1rem; }
+  a { color: var(--teal); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  header { border-bottom: 1px solid var(--line); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  header img { height: 28px; width: auto; }
+  header .voltar { font-size: .85rem; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  header .voltar:hover { color: var(--teal); }
+
+  main { max-width: 740px; margin: 0 auto; padding: 48px 24px 80px; }
+  h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 6px; }
+  .subtitulo { font-size: .88rem; color: var(--muted); margin-bottom: 40px; }
+  h2 { font-weight: 700; color: var(--navy); margin: 36px 0 10px; text-transform: uppercase; letter-spacing: .06em; font-size: .78rem; }
+  p, li { color: #334155; font-size: .97rem; }
+  p + p { margin-top: 10px; }
+  ul { padding-left: 20px; display: flex; flex-direction: column; gap: 6px; margin-top: 6px; }
+  .card { background: #f8fafc; border: 1px solid var(--line); border-radius: 10px; padding: 20px 24px; margin: 20px 0; }
+  .card h3 { font-size: .9rem; font-weight: 600; margin-bottom: 8px; color: var(--navy); }
+  .card p { font-size: .9rem; }
+  .destaque { background: #f0faf9; border-left: 3px solid var(--teal); padding: 12px 16px; border-radius: 0 6px 6px 0; margin: 20px 0; font-size: .93rem; color: var(--navy); }
+
+  footer { border-top: 1px solid var(--line); padding: 20px 24px; text-align: center; font-size: .78rem; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="/assets/logo-wordmark.png" alt="Reversa Tax">
+  <a href="/login.html" class="voltar">← Voltar</a>
+</header>
+
+<main>
+  <h1>Transparência sobre Inteligência Artificial</h1>
+  <p class="subtitulo">Como e onde a IA é utilizada na Reversa Tax</p>
+
+  <div class="destaque">
+    A Reversa Tax utiliza tecnologia de inteligência artificial para apoiar profissionais contábeis e tributários. Esta página explica de forma clara como essa tecnologia é empregada.
+  </div>
+
+  <h2>O que fazemos com IA</h2>
+  <p>A inteligência artificial é utilizada na plataforma Reversa Tax para:</p>
+  <ul>
+    <li><strong>Análise de obrigações tributárias:</strong> identificação de inconsistências e oportunidades de recuperação fiscal em arquivos SPED e XML.</li>
+    <li><strong>Diagnóstico automatizado:</strong> geração de relatórios de diagnóstico com base nas informações fornecidas pelo usuário.</li>
+    <li><strong>Sugestões de retificação:</strong> recomendações sobre ajustes em registros fiscais, com base em regras tributárias vigentes.</li>
+    <li><strong>Processamento de linguagem:</strong> interpretação de consultas e extração estruturada de dados de documentos fiscais.</li>
+  </ul>
+
+  <h2>O que a IA não faz</h2>
+  <ul>
+    <li>Não toma decisões tributárias finais de forma autônoma — todas as sugestões requerem validação do profissional responsável.</li>
+    <li>Não acessa bases de dados externas sem autorização explícita.</li>
+    <li>Não armazena ou transmite os arquivos fiscais do usuário a terceiros.</li>
+    <li>Não substitui a responsabilidade técnica do contabilista ou advogado tributarista.</li>
+  </ul>
+
+  <div class="card">
+    <h3>Supervisão humana obrigatória</h3>
+    <p>Todas as análises e sugestões geradas pela plataforma devem ser revisadas por um profissional habilitado antes de qualquer ação. A Reversa Tax é uma ferramenta de apoio à decisão, não um substituto ao julgamento técnico.</p>
+  </div>
+
+  <h2>Dados e privacidade</h2>
+  <p>Os arquivos fiscais (SPED, XML) são processados localmente no navegador do usuário. Nenhum dado fiscal é enviado a servidores para fins de treinamento de modelos ou compartilhado com terceiros.</p>
+  <p>Consulte nossa <a href="/privacidade.html">Política de Privacidade</a> para mais detalhes sobre o tratamento de dados.</p>
+
+  <h2>Limitações conhecidas</h2>
+  <ul>
+    <li>A IA pode cometer erros — resultados devem sempre ser verificados.</li>
+    <li>Legislações tributárias mudam com frequência; a plataforma é atualizada periodicamente, mas pode não refletir alterações imediatas.</li>
+    <li>Casos atípicos ou situações muito específicas podem exigir análise manual especializada.</li>
+  </ul>
+
+  <h2>Contato</h2>
+  <p>Dúvidas sobre o uso de IA na plataforma? Fale conosco: <a href="mailto:contato@argusprime.com.br">contato@argusprime.com.br</a></p>
+</main>
+
+<footer>Reversa Tax · Argus Prime · Engenharia Financeira e Tributária</footer>
+
+</body>
+</html>

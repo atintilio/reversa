@@ -124,10 +124,16 @@ h1 em { font-family: "Libre Baskerville", Georgia, serif; font-style: italic; fo
       <p class="reset-feedback" id="reset-feedback" role="status" aria-live="polite"></p>
     </section>
     <p class="rodape" id="suporte">Problemas para acessar? Fale com o administrador da Argus Prime.</p>
+    <p class="rodape" style="margin-top:4px;font-size:0.78em"><a href="/privacidade.html" style="color:inherit;text-decoration:underline">Privacidade&nbsp;&amp;&nbsp;LGPD</a>&ensp;·&ensp;<a href="/termos.html" style="color:inherit;text-decoration:underline">Termos de Uso</a>&ensp;·&ensp;<a href="/transparencia-ia.html" style="color:inherit;text-decoration:underline">IA na Reversa</a></p>
+    <input type="hidden" name="_csrf" id="csrf-token">
   </form>
 </main>
 <script>
 (function () {
+  // CSRF: busca token do servidor e injeta no campo oculto do form
+  fetch('/api/csrf').then(function(r){ return r.json(); }).then(function(d){
+    var f = document.getElementById('csrf-token'); if (f) f.value = d.token || '';
+  }).catch(function(){});
   var q = new URLSearchParams(location.search), m = document.getElementById('msg');
   var painel = document.getElementById('recuperar');
   var resetEmail = document.getElementById('email-recuperacao');
