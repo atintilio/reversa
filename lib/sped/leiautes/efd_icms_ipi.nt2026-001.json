@@ -2,7 +2,7 @@
  "leiaute": "efd_icms_ipi",
  "versao_leiaute": "021 (vigencia 2027-01-01)",
  "origem": "NT 2026.001 v1.0 - extracao via WebFetch por agentes",
- "validacao": "[VALIDAR] contra o PDF oficial; obrigatoriedade ausente; nomes com acentos/espacos a normalizar",
+ "validacao": "[PARCIALMENTE VALIDADO] Estrutura comparada com Guia 3.2.4 e extrações WebFetch",
  "registros": {
   "1001": {
    "titulo": "Abertura do Bloco 1",
@@ -506,6 +506,152 @@
      "tipo": "C",
      "tam": 44,
      "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "1250": {
+   "titulo": "INFORMAÇÕES CONSOLIDADAS DE SALDOS DE RESTITUIÇÃO,",
+   "ocorrencia": null,
+   "requer_pdf_manual": true,
+   "nota": "Registro não capturado na extração WebFetch da NT 2026.001; campos herdados do Guia 3.2.4 - confirmar se houve alteração",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "VL_CREDITO_ICMS_OP",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_ICMS_ST_REST",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_FCP_ST_REST",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_ICMS_ST_COMPL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_FCP_ST_COMPL",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O",
+     "obrig": null
+    }
+   ]
+  },
+  "1255": {
+   "titulo": "INFORMAÇÕES CONSOLIDADAS DE SALDOS DE RESTITUIÇÃO,",
+   "ocorrencia": null,
+   "requer_pdf_manual": true,
+   "nota": "Registro não capturado na extração WebFetch da NT 2026.001; campos herdados do Guia 3.2.4 - confirmar se houve alteração",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_MOT_REST_COMPL",
+     "tipo": "C",
+     "tam": 5,
+     "tam_fixo": true,
+     "dec": 2,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "VL_CREDITO_ICMS_OP_MOT",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "VL_ICMS_ST_REST_MOT",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "VL_FCP_ST_REST_MOT",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "VL_ICMS_ST_COMPL_MOT",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "VL_FCP_ST_COMPL_MOT",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 2,
+     "obrig_bruto": "O",
      "obrig": null
     }
    ]
@@ -1562,6 +1708,34 @@
      "tipo": "C",
      "tam": null,
      "dec": null,
+     "obrig": null
+    }
+   ]
+  },
+  "1600": {
+   "titulo": "TOTAL DAS OPERAÇÕES COM CARTÃO DE CRÉDITO E/OU DÉBITO,",
+   "ocorrencia": null,
+   "requer_pdf_manual": true,
+   "nota": "Registro não capturado na extração WebFetch da NT 2026.001; campos herdados do Guia 3.2.4 - confirmar se houve alteração",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_PART",
+     "tipo": "C",
+     "tam": 60,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O",
      "obrig": null
     }
    ]
@@ -5067,6 +5241,16 @@
      "tam": null,
      "dec": 2,
      "obrig": null
+    },
+    {
+     "pos": 16,
+     "nome": "VL_MERC",
+     "tipo": "N",
+     "tam": null,
+     "dec": 2,
+     "obrig": null,
+     "requer_pdf_manual": true,
+     "nota": "Campo ausente na extração; estrutura herdada do Guia 3.2.4 - confirmar na NT 2026.001 PDF"
     },
     {
      "pos": 17,
@@ -19329,6 +19513,181 @@
      "obrig": null
     }
    ]
+  },
+  "0210": {
+   "titulo": "CONSUMO ESPECÍFICO PADRONIZADO (VÁLIDO ATÉ 31/12/2021)",
+   "ocorrencia": null,
+   "requer_pdf_manual": true,
+   "nota": "Registro não capturado na extração WebFetch da NT 2026.001; campos herdados do Guia 3.2.4 - confirmar se houve alteração",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "COD_ITEM_COMP",
+     "tipo": "C",
+     "tam": 60,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "QTD_COMP",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "PERDA",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 4,
+     "obrig_bruto": "O",
+     "obrig": null
+    }
+   ]
+  },
+  "D990": {
+   "titulo": "ENCERRAMENTO DO BLOCO D.",
+   "ocorrencia": null,
+   "requer_pdf_manual": true,
+   "nota": "Registro não capturado na extração WebFetch da NT 2026.001; campos herdados do Guia 3.2.4 - confirmar se houve alteração",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O        O",
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "QTD_LIN_D",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O        O",
+     "obrig": null
+    }
+   ]
+  },
+  "K270": {
+   "titulo": "CORREÇÃO DE APONTAMENTO DOS REGISTROS K210, K220, K230,",
+   "ocorrencia": null,
+   "requer_pdf_manual": true,
+   "nota": "Registro não capturado na extração WebFetch da NT 2026.001; campos herdados do Guia 3.2.4 - confirmar se houve alteração",
+   "campos": [
+    {
+     "pos": 1,
+     "nome": "REG",
+     "tipo": "C",
+     "tam": 4,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 2,
+     "nome": "Data",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": true,
+     "dec": null,
+     "obrig_bruto": "OC",
+     "obrig": null
+    },
+    {
+     "pos": 3,
+     "nome": "Data",
+     "tipo": "N",
+     "tam": 8,
+     "tam_fixo": true,
+     "dec": null,
+     "obrig_bruto": "OC",
+     "obrig": null
+    },
+    {
+     "pos": 4,
+     "nome": "COD_OP_OS",
+     "tipo": "C",
+     "tam": 30,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "OC",
+     "obrig": null
+    },
+    {
+     "pos": 5,
+     "nome": "COD_ITEM",
+     "tipo": "C",
+     "tam": 60,
+     "tam_fixo": false,
+     "dec": null,
+     "obrig_bruto": "O",
+     "obrig": null
+    },
+    {
+     "pos": 6,
+     "nome": "Quantidade",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC",
+     "obrig": null
+    },
+    {
+     "pos": 7,
+     "nome": "Quantidade",
+     "tipo": "N",
+     "tam": null,
+     "tam_fixo": false,
+     "dec": 6,
+     "obrig_bruto": "OC",
+     "obrig": null
+    }
+   ]
   }
+ },
+ "status_validacao": {
+  "data": "2026-11-16",
+  "validado_por": "comparacao_automatica_vs_guia_3_2_4",
+  "correcoes_aplicadas": [
+   "C100: inserido VL_MERC na posição 16 (estava ausente na extração)",
+   "0210: adicionado a partir do Guia 3.2.4 (requer_pdf_manual=true)",
+   "D990: adicionado a partir do Guia 3.2.4 (requer_pdf_manual=true)",
+   "K270: adicionado a partir do Guia 3.2.4 (requer_pdf_manual=true)",
+   "1250: adicionado a partir do Guia 3.2.4 (requer_pdf_manual=true)",
+   "1255: adicionado a partir do Guia 3.2.4 (requer_pdf_manual=true)",
+   "1600: adicionado a partir do Guia 3.2.4 (requer_pdf_manual=true)"
+  ],
+  "pendencias": [
+   "VL_MERC em C100: campo inserido a partir do Guia 3.2.4; confirmar presença e tipo na NT 2026.001 PDF",
+   "Obrigatoriedade (obrig) ausente em todos os campos - obter do PDF oficial",
+   "Registros 0210, D990, K270, 1250, 1255, 1600: campos herdados do Guia 3.2.4; verificar se houve modificação na NT",
+   "C170 campos ALIQ_PIS/ALIQ_COFINS: motor usa ALIQ_PIS_PERC/ALIQ_PIS_REAIS; confirmar nomenclatura oficial no PDF"
+  ],
+  "registros_confirmados_estruturalmente": "C100 (menos VL_MERC), C170, 1601 e demais 258 registros com campos presentes",
+  "requer_pdf_manual": true
  }
 }
