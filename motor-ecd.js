@@ -21,7 +21,41 @@
 (function (root) {
   'use strict';
   var VERSAO = '0.1.0';
-  // Mínimo de campos (contando REG) para o registro ser lido; abaixo disso vira aviso e o registro é ignorado.
+
+  // ------------------------------------------------------------------ catálogo ECD
+  // Carrega lib/sped/leiautes/ecd.json quando disponível (Node) para derivar posições
+  // de campo dinamicamente. No browser o catálogo deve ser injetado em root.CATALOGO_ECD.
+  var CATALOGO_ECD = null;
+  try {
+    if (typeof require === 'function') {
+      CATALOGO_ECD = require('./lib/sped/leiautes/ecd.json');
+    } else if (typeof root !== 'undefined' && root.CATALOGO_ECD) {
+      CATALOGO_ECD = root.CATALOGO_ECD;
+    }
+  } catch (e) { /* catálogo não disponível — usará posições hardcoded como fallback */ }
+
+  // posMap['I050']['COD_CTA'] = 6  (índice em f[] após split('|'), onde f[0]="" f[1]=REG f[pos]=campo)
+  var posMap = {};
+  var catalogoAvisos = [];
+  if (CATALOGO_ECD && CATALOGO_ECD.registros) {
+    Object.keys(CATALOGO_ECD.registros).forEach(function (reg) {
+      var campos = CATALOGO_ECD.registros[reg].campos;
+      if (!Array.isArray(campos)) return;
+      posMap[reg] = {};
+      campos.forEach(function (c) { if (c && c.nome && c.pos) posMap[reg][c.nome] = c.pos; });
+    });
+  } else {
+    catalogoAvisos.push('Catálogo ECD (ecd.json) não carregado; usando posições de campo hardcoded. Atualize o leiaute manualmente se a Receita alterar o registro.');
+  }
+
+  // p(reg, campo, fallback): retorna a posição do campo no array f[] derivada do catálogo,
+  // ou o fallback hardcoded se o catálogo não tiver o registro/campo.
+  function p(reg, campo, fallback) {
+    return (posMap[reg] && posMap[reg][campo]) ? posMap[reg][campo] : fallback;
+  }
+
+  // Mínimo de campos (contando REG) para o registro ser lido.
+  // Hardcoded com o mínimo obrigatório (campos opcionais no fim do registro não contam).
   var MIN = { '0000': 7, 'I010': 3, 'I050': 8, 'I051': 2, 'I150': 3, 'I155': 9, 'I200': 5, 'I250': 5, 'J100': 11, 'J150': 11 };
 
   var duvidas = [
@@ -35,7 +69,7 @@
 
   function lerEcd(texto, nome) {
     var out = { arquivo: nome || '', tipo: 'ecd', cnpj: '', empresa: '', ini: '', fin: '', escrituracao: '', versaoLeiaute: '',
-      contas: [], planoReferencial: [], saldos: [], lancamentos: [], balanco: [], dre: [], avisos: [], duvidas: duvidas.slice() };
+      contas: [], planoReferencial: [], saldos: [], lancamentos: [], balanco: [], dre: [], avisos: catalogoAvisos.slice(), duvidas: duvidas.slice() };
     var mapaContas = {}, atual = null, periodo = null, nLinhas = 0, total9999 = null, temLecd = false;
 
     function valor(s, reg, campo, nl) {
@@ -62,12 +96,25 @@
       if (reg === '0000') {
         temLecd = f[2] === 'LECD';
         if (!temLecd) out.avisos.push('O arquivo não é uma ECD (registro 0000 sem LECD).');
-        out.ini = data(f[3]); out.fin = data(f[4]); out.empresa = f[5] || ''; out.cnpj = (f[6] || '').replace(/\D/g, '');
-        out.finalidade = f[14] || '';
+        out.ini  = data(f[p('0000','DT_INI',3)]);
+        out.fin  = data(f[p('0000','DT_FIN',4)]);
+        out.empresa   = f[p('0000','NOME',5)] || '';
+        out.cnpj      = (f[p('0000','CNPJ',6)] || '').replace(/\D/g, '');
+        out.finalidade = f[p('0000','IND_FIN_ESC',14)] || '';
       } else if (reg === 'I010') {
-        out.escrituracao = f[2]; out.versaoLeiaute = f[3];
+        out.escrituracao  = f[p('I010','IND_ESC',2)];
+        out.versaoLeiaute = f[p('I010','COD_VER_LC',3)];
       } else if (reg === 'I050') {
-        var c = { codigo: f[6], nome: f[8], natureza: f[3], tipo: f[4], nivel: +f[5] || 0, superior: f[7] || '', dtAlt: data(f[2]), referencial: [] };
+        var c = {
+          codigo:   f[p('I050','COD_CTA',6)],
+          nome:     f[p('I050','CTA',8)],
+          natureza: f[p('I050','COD_NAT',3)],
+          tipo:     f[p('I050','IND_CTA',4)],
+          nivel:   +f[p('I050','NIVEL',5)] || 0,
+          superior: f[p('I050','COD_CTA_SUP',7)] || '',
+          dtAlt:    data(f[p('I050','DT_ALT',2)]),
+          referencial: []
+        };
         if (mapaContas[c.codigo]) out.avisos.push('Linha ' + nl + ' (I050): conta ' + c.codigo + ' repetida; mantida a última.');
         else out.contas.push(c);
         if (mapaContas[c.codigo]) out.contas[out.contas.indexOf(mapaContas[c.codigo])] = c;
@@ -79,26 +126,56 @@
         else if (ref) { atual.referencial.push(ref); out.planoReferencial.push({ conta: atual.codigo, ref: ref }); }
         else out.avisos.push('Linha ' + nl + ' (I051): sem código referencial.');
       } else if (reg === 'I150') {
-        periodo = { ini: data(f[2]), fin: data(f[3]) };
+        periodo = { ini: data(f[p('I150','DT_INI',2)]), fin: data(f[p('I150','DT_FIN',3)]) };
       } else if (reg === 'I155') {
         if (!periodo) out.avisos.push('Linha ' + nl + ' (I155): sem I150 anterior; período desconhecido.');
-        out.saldos.push({ ini: periodo && periodo.ini, fin: periodo && periodo.fin, conta: f[2], ccus: f[3] || '',
-          sldIni: valor(f[4], reg, 4, nl), dcIni: f[5], deb: valor(f[6], reg, 6, nl), cred: valor(f[7], reg, 7, nl), sldFin: valor(f[8], reg, 8, nl), dcFin: f[9] });
+        var pI155conta  = p('I155','COD_CTA',2),  pI155ccus   = p('I155','COD_CCUS',3);
+        var pI155sldIni = p('I155','VL_SLD_INI',4), pI155dcIni = p('I155','IND_DC_INI',5);
+        var pI155deb    = p('I155','VL_DEB',6),    pI155cred   = p('I155','VL_CRED',7);
+        var pI155sldFin = p('I155','VL_SLD_FIN',8), pI155dcFin = p('I155','IND_DC_FIN',9);
+        out.saldos.push({ ini: periodo && periodo.ini, fin: periodo && periodo.fin,
+          conta: f[pI155conta], ccus: f[pI155ccus] || '',
+          sldIni: valor(f[pI155sldIni], reg, pI155sldIni, nl), dcIni: f[pI155dcIni],
+          deb:    valor(f[pI155deb],    reg, pI155deb,    nl),
+          cred:   valor(f[pI155cred],   reg, pI155cred,   nl),
+          sldFin: valor(f[pI155sldFin], reg, pI155sldFin, nl), dcFin: f[pI155dcFin] });
       } else if (reg === 'I200') {
         atual = null;
-        out.lancamentos.push({ num: f[2], data: data(f[3]), valor: valor(f[4], reg, 4, nl), ind: f[5], linha: nl, partidas: [], debitos: 0, creditos: 0, balanceado: true });
+        out.lancamentos.push({
+          num:   f[p('I200','NUM_LCTO',2)],
+          data:  data(f[p('I200','DT_LCTO',3)]),
+          valor: valor(f[p('I200','VL_LCTO',4)], reg, p('I200','VL_LCTO',4), nl),
+          ind:   f[p('I200','IND_LCTO',5)],
+          linha: nl, partidas: [], debitos: 0, creditos: 0, balanceado: true });
       } else if (reg === 'I250') {
         var l = out.lancamentos[out.lancamentos.length - 1];
         if (!l) { out.avisos.push('Linha ' + nl + ' (I250): partida sem I200 anterior; ignorada.'); return; }
-        var dc = f[5];
+        var pI250dc = p('I250','IND_DC',5);
+        var dc = f[pI250dc];
         if (dc !== 'D' && dc !== 'C') out.avisos.push('Linha ' + nl + ' (I250): IND_DC "' + dc + '" inválido (esperado D ou C); partida não entra nos totais.');
-        var p = { conta: f[2], ccus: f[3] || '', valor: valor(f[4], reg, 4, nl), dc: dc, hist: f[8] || '', linha: nl };
-        l.partidas.push(p);
-        if (dc === 'D') l.debitos = r2(l.debitos + p.valor); else if (dc === 'C') l.creditos = r2(l.creditos + p.valor);
+        var pI250vl = p('I250','VL_DC',4);
+        var pt = { conta: f[p('I250','COD_CTA',2)], ccus: f[p('I250','COD_CCUS',3)] || '',
+          valor: valor(f[pI250vl], reg, pI250vl, nl), dc: dc,
+          hist: f[p('I250','HIST',8)] || '', linha: nl };
+        l.partidas.push(pt);
+        if (dc === 'D') l.debitos = r2(l.debitos + pt.valor); else if (dc === 'C') l.creditos = r2(l.creditos + pt.valor);
       } else if (reg === 'J100') {
-        out.balanco.push({ cod: f[2], ind: f[3], nivel: +f[4] || 0, sup: f[5] || '', grupo: f[6], descricao: f[7], sldIni: valor(f[8], reg, 8, nl), dcIni: f[9], sldFin: valor(f[10], reg, 10, nl), dcFin: f[11] });
+        var pJ100sldIni = p('J100','VL_CTA_INI',8),  pJ100dcIni = p('J100','IND_DC_CTA_INI',9);
+        var pJ100sldFin = p('J100','VL_CTA_FIN',10), pJ100dcFin = p('J100','IND_DC_CTA_FIN',11);
+        out.balanco.push({ cod: f[p('J100','COD_AGL',2)], ind: f[p('J100','IND_COD_AGL',3)],
+          nivel: +f[p('J100','NIVEL_AGL',4)] || 0, sup: f[p('J100','COD_AGL_SUP',5)] || '',
+          grupo: f[p('J100','IND_GRP_BAL',6)], descricao: f[p('J100','DESCR_COD_AGL',7)],
+          sldIni: valor(f[pJ100sldIni], reg, pJ100sldIni, nl), dcIni: f[pJ100dcIni],
+          sldFin: valor(f[pJ100sldFin], reg, pJ100sldFin, nl), dcFin: f[pJ100dcFin] });
       } else if (reg === 'J150') {
-        out.dre.push({ ordem: f[2], cod: f[3], ind: f[4], nivel: +f[5] || 0, sup: f[6] || '', descricao: f[7], vlIni: valor(f[8], reg, 8, nl), dcIni: f[9], vlFin: valor(f[10], reg, 10, nl), dcFin: f[11], grupo: f[12] || '' });
+        var pJ150sldIni = p('J150','VL_CTA_INI',8),  pJ150dcIni = p('J150','IND_DC_CTA_INI',9);
+        var pJ150sldFin = p('J150','VL_CTA_FIN',10), pJ150dcFin = p('J150','IND_DC_CTA_FIN',11);
+        out.dre.push({ ordem: f[p('J150','NU_ORDEM',2)], cod: f[p('J150','COD_AGL',3)],
+          ind: f[p('J150','IND_COD_AGL',4)], nivel: +f[p('J150','NIVEL_AGL',5)] || 0,
+          sup: f[p('J150','COD_AGL_SUP',6)] || '', descricao: f[p('J150','DESCR_COD_AGL',7)],
+          vlIni: valor(f[pJ150sldIni], reg, pJ150sldIni, nl), dcIni: f[pJ150dcIni],
+          vlFin: valor(f[pJ150sldFin], reg, pJ150sldFin, nl), dcFin: f[pJ150dcFin],
+          grupo: f[p('J150','IND_GRP_DRE',12)] || '' });
       } else if (reg === '9999') {
         total9999 = +f[2];
       }

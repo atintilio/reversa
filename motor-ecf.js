@@ -24,6 +24,33 @@
 (function (root) {
   'use strict';
   var VERSAO = '0.1.0';
+
+  // ------------------------------------------------------------------ catálogo de leiaute
+  var CATALOGO_ECF = null;
+  try {
+    if (typeof require === 'function') {
+      CATALOGO_ECF = require('./lib/sped/leiautes/ecf.json');
+    } else if (typeof root !== 'undefined' && root.CATALOGO_ECF) {
+      CATALOGO_ECF = root.CATALOGO_ECF;
+    }
+  } catch (e) { /* catálogo não disponível — usará posições hardcoded como fallback */ }
+
+  var posMap = {};
+  var catalogoAvisos = [];
+  if (CATALOGO_ECF && CATALOGO_ECF.registros) {
+    Object.keys(CATALOGO_ECF.registros).forEach(function (reg) {
+      var campos = CATALOGO_ECF.registros[reg].campos;
+      if (!Array.isArray(campos)) return;
+      posMap[reg] = {};
+      campos.forEach(function (c) { if (c && c.nome && c.pos) posMap[reg][c.nome] = c.pos; });
+    });
+  } else {
+    catalogoAvisos.push('Catálogo ECF (ecf.json) não carregado; usando posições de campo hardcoded. Atualize o leiaute manualmente se a Receita alterar o registro.');
+  }
+
+  function p(reg, campo, fallback) {
+    return (posMap[reg] && posMap[reg][campo]) ? posMap[reg][campo] : fallback;
+  }
   var ALIQ_IRPJ = 0.15, ADIC_IRPJ = 0.10, LIMITE_ADIC_MES = 20000, ALIQ_CSLL = 0.09;
 
   // Ordem importa: o primeiro que casa vence. "revisar" e "indedutivel" vêm antes das dedutíveis.
@@ -53,9 +80,13 @@
     for (var i = 0; i < CLASSES.length; i++) if (CLASSES[i].re.test(desc)) return CLASSES[i];
     return null;
   }
-  var FIM_TRI = ['3103', '3006', '3009', '3112'];
-  function fimMesSeguinte(dtFin) { // ddmmaaaa do fim do trimestre → último dia do mês seguinte (vencimento estimado)
-    var d = new Date(Date.UTC(+dtFin.slice(4), +dtFin.slice(2, 4) + 1, 0));
+  // FIM_TRI[i] = fim do trimestre i+1 em aaaammdd (usado como fallback quando não há M030)
+  var FIM_TRI = ['0331', '0630', '0930', '1231']; // mmdd; combina com e.ano para formar aaaammdd
+  // ECF usa aaaammdd; extrai ano e mês, retorna último dia do mês seguinte (vencimento estimado)
+  function fimMesSeguinte(dtFin) { // aaaammdd → 'aaaa-mm-dd' do último dia do mês seguinte
+    var ano = +dtFin.slice(0, 4), mes = +dtFin.slice(4, 6);
+    // Date.UTC(ano, mes+1, 0): mês mes+1 em índice 0-based = mes seguinte 1-based; dia 0 = último dia anterior
+    var d = new Date(Date.UTC(ano, mes + 1, 0));
     return isNaN(d) ? null : d.toISOString().slice(0, 10);
   }
   function ehTrimestral(cod) { return /^(T0[1-4]|00[1-4])$/.test(String(cod || '')); }
@@ -79,7 +110,7 @@
   var RE_EXCLUSOES = /^EXCLUS[ÕO]ES$/i;
 
   function lerEcf(texto, nome) {
-    var out = { arquivo: nome || '', tipo: 'ecf', cnpj: '', empresa: '', ano: null, trimestres: [], avisos: [], periodos: [] };
+    var out = { arquivo: nome || '', tipo: 'ecf', cnpj: '', empresa: '', ano: null, trimestres: [], avisos: catalogoAvisos.slice(), periodos: [] };
     var linhas = String(texto || '').split(/\r?\n/), q = -1, tri = null, ponto = false;
     var n500 = [], n630 = [], n650 = [], n670 = [];
     function novoTrimestre() {
@@ -95,22 +126,22 @@
       if (f.length < 3 || f[0] !== '') return;
       var reg = f[1];
       if (reg === 'M300' || reg === 'M350' || reg === 'N500' || reg === 'N650' || reg === 'N630' || reg === 'N670') {
-        var idxValor = (reg === 'M300' || reg === 'M350') ? 6 : 4;
+        var idxValor = (reg === 'M300' || reg === 'M350') ? p(reg, 'VALOR', 6) : p(reg, 'VALOR', 4);
         if (/\d\.\d{1,2}$/.test(f[idxValor] || '')) ponto = true;
       }
       if (reg === '0000') {
-        // 0000: 4 CNPJ | 5 NOME | 10 DT_INI | 11 DT_FIN
-        out.empresa = f[5] || '';
-        out.cnpj = (f[4] || '').replace(/\D/g, '');
-        out.dtIni = f[10] || ''; out.dtFin = f[11] || '';
-        out.ano = +String(out.dtFin || '').slice(4) || null;
-        if (f[2] !== 'LECF') out.avisos.push('O arquivo não é uma ECF (registro 0000 sem LECF).');
+        // 0000: pos4=CNPJ | pos5=NOME | pos10=DT_INI | pos11=DT_FIN | pos3=COD_VER (para LECF check)
+        out.empresa = f[p('0000', 'NOME', 5)] || '';
+        out.cnpj = (f[p('0000', 'CNPJ', 4)] || '').replace(/\D/g, '');
+        out.dtIni = f[p('0000', 'DT_INI', 10)] || ''; out.dtFin = f[p('0000', 'DT_FIN', 11)] || '';
+        out.ano = +String(out.dtFin || '').slice(0, 4) || null;
+        if (f[p('0000', 'NOME_ESC', 2)] !== 'LECF') out.avisos.push('O arquivo não é uma ECF (registro 0000 sem LECF).');
       } else if (reg === 'M030' || reg === 'N030') {
-        // M030/N030: 2 DT_INI | 3 DT_FIN | 4 PER_APUR
-        out.periodos.push({ cod: f[4] || '', ini: f[2] || '', fin: f[3] || '', bloco: reg });
+        // M030/N030: pos2=DT_INI | pos3=DT_FIN | pos4=PER_APUR
+        out.periodos.push({ cod: f[p(reg, 'PER_APUR', 4)] || '', ini: f[p(reg, 'DT_INI', 2)] || '', fin: f[p(reg, 'DT_FIN', 3)] || '', bloco: reg });
       } else if (reg === 'M300' || reg === 'M350') {
-        // M300/M350: 2 CODIGO | 3 DESCRICAO | 4 TIPO_LANCAMENTO | 6 VALOR
-        var codigo = f[2] || '', desc = (f[3] || '').trim(), tipo = (f[4] || '').trim().toUpperCase(), valor = num(f[6]);
+        // M300/M350: pos2=CODIGO | pos3=DESCRICAO | pos4=TIPO_LANCAMENTO | pos5=IND_RELACAO | pos6=VALOR
+        var codigo = f[p(reg, 'CODIGO', 2)] || '', desc = (f[p(reg, 'DESCRICAO', 3)] || '').trim(), tipo = (f[p(reg, 'TIPO_LANCAMENTO', 4)] || '').trim().toUpperCase(), valor = num(f[p(reg, 'VALOR', 6)]);
         var cs = reg === 'M350';
         if (tipo === 'L' && (cs ? RE_LUCRO_CSLL.test(desc) : RE_LUCRO_IRPJ.test(desc))) {
           // linha de resultado. O trimestre foi aberto pela linha "ATIVIDADE GERAL" (M300);
@@ -147,8 +178,8 @@
           return;
         }
       } else if (reg === 'N500' || reg === 'N650' || reg === 'N630' || reg === 'N670') {
-        // N500/N630/N650/N670: 2 CODIGO | 3 DESCRICAO | 4 VALOR
-        var reg2 = { cod: f[2] || '', descricao: (f[3] || '').trim(), valor: num(f[4]) };
+        // N500/N630/N650/N670: pos2=CODIGO | pos3=DESCRICAO | pos4=VALOR
+        var reg2 = { cod: f[p(reg, 'CODIGO', 2)] || '', descricao: (f[p(reg, 'DESCRICAO', 3)] || '').trim(), valor: num(f[p(reg, 'VALOR', 4)]) };
         if (reg === 'N500') n500.push(reg2);
         else if (reg === 'N650') n650.push(reg2);
         else if (reg === 'N630') n630.push(reg2);
@@ -228,7 +259,7 @@
         var detCs = t.adicoesCsll.length ? t.adicoesCsll : t.adicoes;
         var sc = detCs === t.adicoes ? si : separar(detCs);
         var dIrpj = Math.min(r2(irpjCalc - irpj(base - si.indev)), t.pagoIrpj), dCsll = Math.min(r2(csllCalc - csll(baseCs - sc.indev)), t.pagoCsll);
-        var venc = (per && fimMesSeguinte(per.fin)) || fimMesSeguinte(FIM_TRI[t.n - 1] + (e.ano || ''));
+        var venc = (per && fimMesSeguinte(per.fin)) || fimMesSeguinte((e.ano || '') + FIM_TRI[t.n - 1]);
         if (!venc) { avisos.push(rot + ': sem data para calcular o prazo; trimestre não entrou no valor.'); return; }
         var limite = new Date(venc); limite.setUTCFullYear(limite.getUTCFullYear() + 5);
         var prazoLimite = limite.toISOString().slice(0, 10), noPrazo = hojeStr <= prazoLimite, valor = r2(dIrpj + dCsll);

@@ -11,8 +11,8 @@ const LINHAS_ADICAO = [['MULTAS PUNITIVAS FISCAIS E DE TRÂNSITO', 50], ['DOAÇ�
 //   N500/N630/N650/N670: 2 CODIGO | 3 DESCRICAO | 4 VALOR
 function ecf(detalhe, comM350) {
   const L = [
-    '|0000|LECF|0011|99303403000177|Teste S.A.|0|0|||01012025|31122025|N||0||',
-    '|M030|01012025|31032025|T01|',
+    '|0000|LECF|0011|99303403000177|Teste S.A.|0|0|||20250101|20251231|N||0||',
+    '|M030|20250101|20250331|T01|',
     '|M300|1|ATIVIDADE GERAL|R|||',
     '|M300|2|Lucro Liquido Antes do IRPJ|L||2050000,00||',
     '|M300|5|ADIÇÕES|R||220000,00||'
@@ -20,7 +20,7 @@ function ecf(detalhe, comM350) {
   if (detalhe) LINHAS_ADICAO.forEach(([d, v], i) => L.push(`|M300|6.${i + 1}|${d}|A|3|${v}000,00|LANCAMENTO DE ADICAO|`));
   L.push('|M300|94|EXCLUSÕES|R||120000,00||');
   if (comM350) L.push('|M350|2|Lucro Antes da CSLL|L||2050000,00||', '|M350|5|ADIÇÕES|R||220000,00||');
-  L.push('|N030|01012025|31032025|T01|',
+  L.push('|N030|20250101|20250331|T01|',
     '|N500|1|Valor da base de cálculo do IRPJ|2150000,00|',
     '|N630|26|IMPOSTO DE RENDA A PAGAR|531500,00|',
     '|N670|21|CSLL A PAGAR|193500,00|');
@@ -65,7 +65,7 @@ test('valor com ponto decimal é lido como decimal e avisa', () => {
   assert.equal(l.trimestres[0].adicoes[5].valor, 15000); assert.match(l.avisos.join(), /ponto decimal/);
 });
 test('período não trimestral (ECF anual) não é calculado', () => {
-  const t = ecf(true).replace('|M030|01012025|31032025|T01|', '|M030|01012025|31122025|A00|');
+  const t = ecf(true).replace('|M030|20250101|20250331|T01|', '|M030|20250101|20251231|A00|');
   const r = M.apurar([M.lerEcf(t, 'anual')], { hoje: '2026-10-19' });
   assert.equal(r.total.valor, 0); assert.match(r.avisos.join(), /não é trimestral/);
 });
@@ -92,13 +92,13 @@ test('le o 0000 no leiaute oficial: CNPJ no campo 04 e o periodo nos campos 10 e
   assert.equal(l.cnpj, '99303403000177', 'CNPJ vem do campo 04 do 0000');
   assert.equal(l.empresa, 'Teste S.A.', 'nome vem do campo 05 do 0000');
   assert.equal(l.ano, 2025, 'ano vem do fim do periodo (campo 11 do 0000)');
-  assert.equal(l.dtIni, '01012025');
-  assert.equal(l.dtFin, '31122025');
+  assert.equal(l.dtIni, '20250101');
+  assert.equal(l.dtFin, '20251231');
 });
 test('le o M030 no leiaute oficial: DT_INI, DT_FIN e PER_APUR', () => {
   const l = M.lerEcf(ecf(true), 'a.txt');
   assert.deepEqual(l.periodos.map((p) => ({ cod: p.cod, ini: p.ini, fin: p.fin })),
-    [{ cod: 'T01', ini: '01012025', fin: '31032025' }]);
+    [{ cod: 'T01', ini: '20250101', fin: '20250331' }]);
 });
 test('le o M300 no leiaute oficial: valor no campo 06 e tipo pelo TIPO_LANCAMENTO', () => {
   const l = M.lerEcf(ecf(true), 'a.txt');
