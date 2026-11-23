@@ -84,13 +84,16 @@
       return r2(n);
     }
 
+    var fimSped = false, ultimoReg = ''; // depois do |9999| vem a assinatura digital do arquivo transmitido: não é SPED
     String(texto || '').split(/\r?\n/).forEach(function (ln, i) {
       var nl = i + 1;
+      if (fimSped) return;
       if (!ln.trim()) return;
+      if (ln.charAt(0) !== '|' && /^J80[01]$/.test(ultimoReg)) return; // J800/J801: arquivo anexo (RTF em base64) quebrado em várias linhas
       nLinhas++;
       var f = ln.split('|');
       if (f.length < 3 || f[0] !== '') { out.avisos.push('Linha ' + nl + ': formato fora do padrão SPED (|REG|...|); ignorada.'); return; }
-      var reg = f[1], n = f.length - 2; // quantidade de campos (REG incluso)
+      var reg = f[1], n = f.length - 2; ultimoReg = reg; // quantidade de campos (REG incluso)
       if (MIN[reg] && n < MIN[reg]) { out.avisos.push('Linha ' + nl + ' (' + reg + '): só ' + n + ' campos, o mínimo é ' + MIN[reg] + '; registro ignorado.'); return; }
 
       if (reg === '0000') {
@@ -159,6 +162,18 @@
           hist: f[p('I250','HIST',8)] || '', linha: nl };
         l.partidas.push(pt);
         if (dc === 'D') l.debitos = r2(l.debitos + pt.valor); else if (dc === 'C') l.creditos = r2(l.creditos + pt.valor);
+      } else if (reg === 'I300') {
+        // ECD tipo B (Livro Balancetes Diários): cada dia vira um lançamento; o I310 traz débito e crédito por conta
+        out.lancamentos.push({ num: 'BD-' + f[2], data: data(f[2]), valor: 0, ind: 'N', linha: nl, partidas: [], debitos: 0, creditos: 0, balanceado: true, balanceteDiario: true });
+      } else if (reg === 'I310') {
+        var bd = out.lancamentos[out.lancamentos.length - 1];
+        if (!bd || !bd.balanceteDiario) { out.avisos.push('Linha ' + nl + ' (I310): sem I300 anterior; ignorada.'); return; }
+        [['D', 4], ['C', 5]].forEach(function (x) {
+          var v = valor(f[x[1]], reg, x[1], nl); if (!v) return;
+          bd.partidas.push({ conta: f[2], ccus: f[3] || '', valor: v, dc: x[0], hist: 'Balancete diário', linha: nl });
+          if (x[0] === 'D') bd.debitos = r2(bd.debitos + v); else bd.creditos = r2(bd.creditos + v);
+        });
+        bd.valor = bd.debitos;
       } else if (reg === 'J100') {
         var pJ100sldIni = p('J100','VL_CTA_INI',8),  pJ100dcIni = p('J100','IND_DC_CTA_INI',9);
         var pJ100sldFin = p('J100','VL_CTA_FIN',10), pJ100dcFin = p('J100','IND_DC_CTA_FIN',11);
@@ -177,6 +192,7 @@
           vlFin: valor(f[pJ150sldFin], reg, pJ150sldFin, nl), dcFin: f[pJ150dcFin],
           grupo: f[p('J150','IND_GRP_DRE',12)] || '' });
       } else if (reg === '9999') {
+        fimSped = true;
         total9999 = +f[2];
       }
     });

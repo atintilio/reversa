@@ -176,7 +176,18 @@
     { grupo: 'Perfumaria e higiene pessoal', base: 'Lei 10.147/2000, art. 1º, I, "b"',
       prefixos: ['3303', '3304', '3305', '3306', '3307', '34011190', '34012010', '96032100'], excecoes: [] },
     { grupo: 'Pneus e câmaras de ar', base: 'Lei 10.485/2002, art. 5º',
-      prefixos: ['4011', '4013'], excecoes: [] }
+      prefixos: ['4011', '4013'], excecoes: [] },
+    // Anexo I da Lei 10.485/2002 (texto compilado do Planalto). "NCM:EX" = só com o Ex da TIPI informado no EX_IPI.
+    { grupo: 'Autopeças (Anexo I)', base: 'Lei 10.485/2002, art. 3º, § 2º, e Anexo I',
+      prefixos: ['40161010', '40169990:03,05', '6813', '70071100', '70072100', '70091000', '73201000:01', '83012000', '83023000',
+        '84073390', '84073490', '84082', '840991', '840999', '841330', '84139100:01', '84148021', '84148022', '84152', '84212300', '84213100',
+        '84314100', '84314200', '84339090', '84818099:01,02', '848310', '84832000', '848330', '848340', '848350', '850520', '85071000', '8511',
+        '851220', '85123000', '851240', '85129000', '85272', '85365090:01', '853910', '85443000', '870600', '8707', '8708',
+        '90292010', '90299010', '90303921', '90318040', '9032892', '91040000', '94012000'], excecoes: [] },
+    // Anexo II: a peça só é monofásica quando destinada às máquinas e veículos listados (84.29, 8433, 87.01 a 87.06...).
+    { grupo: 'Autopeças (Anexo II, conferir aplicação)', base: 'Lei 10.485/2002, art. 3º, § 2º, e Anexo II',
+      prefixos: ['4009', '8431', '84089090', '84122110', '84122190', '84123110', '84136019', '84148019', '84149039', '84329000',
+        '84811000', '84812090', '84818092', '848360', '85011019'], excecoes: [] }
   ];
 
   function classificarMonofasico(ncm, exIpi, extras) {
@@ -186,7 +197,10 @@
       var g = MONOFASICOS[i];
       if (g.excecoes.some(function (e) { return n.indexOf(e) === 0; })) return null;
       if (g.grupo.indexOf('Perfumaria') === 0 && n.indexOf('34011190') === 0 && soDigitos(exIpi) === '01') return null;
-      if (g.prefixos.some(function (p) { return n.indexOf(p) === 0; })) return { grupo: g.grupo, base: g.base };
+      if (g.prefixos.some(function (p) {
+        var x = p.split(':'); if (n.indexOf(x[0]) !== 0) return false;
+        return !x[1] || x[1].split(',').indexOf(soDigitos(exIpi).padStart(2, '0')) >= 0; // código com Ex: só vale com o Ex da TIPI
+      })) return { grupo: g.grupo, base: g.base };
     }
     for (var j = 0; j < (extras || []).length; j++) {
       var p = soDigitos(extras[j]);
@@ -758,7 +772,7 @@
     if (!T.monofasico.aplicavel || !T.monofasico.total.itensComValor) {
       var comNcm = saidas.concat(consol).filter(function (i) { return i.ncm; });
       if (!comNcm.length) m.monofasico = (saidas.length || consol.length ? 'Nenhum item de saída tem NCM (cadastro 0200 ausente ou sem NCM): sem NCM não é possível identificar monofásicos.' : 'Nenhuma saída com itens de nota fiscal nos arquivos.' + sufixoF('dos monofásicos', 'saida'));
-      else if (!algum(comNcm, function (i) { return classificarMonofasico(i.ncm, i.exIpi, extrasGlobais); })) m.monofasico = 'Nenhum NCM vendido está na tabela de monofásicos (farmacêuticos, perfumaria, pneus). Combustíveis, bebidas e autopeças dependem de tabela complementar.';
+      else if (!algum(comNcm, function (i) { return classificarMonofasico(i.ncm, i.exIpi, extrasGlobais); })) m.monofasico = 'Nenhum NCM vendido está na tabela de monofásicos (farmacêuticos, perfumaria, pneus e autopeças dos Anexos I e II da Lei 10.485/2002). Combustíveis e bebidas dependem de tabela complementar.';
       else m.monofasico = 'Há NCM monofásico, mas a venda não é de revenda (CFOP) ou o PIS/COFINS já está sem tributação (CST diferente de 01/02).';
     }
     if (!T.icmsSt.aplicavel || !T.icmsSt.total.itensComValor) {
