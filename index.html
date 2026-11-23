@@ -1904,10 +1904,10 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     $('rodape').textContent = 'Reversa Tax · uma ferramenta Argus Prime · motor v' + res.versaoMotor + ' · Estimativa técnica sujeita a revisão tributária' + (sc ? ', com estimativa de atualização pela Selic ao lado do valor nominal.' : ', sem atualização pela Selic.');
   }
   function banner() {
-    var n = estado.lidos.length, e = estado.prev ? (estado.nEs || 0) : 0, nt = estado.nTec || 0, nd = estado.nDarf || 0;
+    var n = estado.lidos.length, e = estado.prev ? (estado.nEs || 0) : 0, nt = estado.nTec || 0, nd = estado.nDarf || 0, nc = estado.nDctf || 0;
     $('banner').innerHTML = estado.exemplo
       ? '<span class="pill warn">EXEMPLO</span><span>Arquivos sintéticos da EMPRESA TESTE LTDA, gerados para demonstrar o motor. Envie os SPEDs do cliente para substituir.</span>'
-      : '<span class="pill ok">DADOS DO CLIENTE</span><span>' + [n ? n + ' EFD-Contribuições' : '', e ? e + ' XML do eSocial' : '', nt ? nt + ' arquivo(s) técnico(s) (ECF/ECD/EFD ICMS-IPI)' : '', nd ? nd + ' DARF' : ''].filter(Boolean).join(' e ') + ' carregado(s) nesta sessão do navegador.</span>';
+      : '<span class="pill ok">DADOS DO CLIENTE</span><span>' + [n ? n + ' EFD-Contribuições' : '', e ? e + ' XML do eSocial' : '', nt ? nt + ' arquivo(s) técnico(s) (ECF/ECD/EFD ICMS-IPI)' : '', nd ? nd + ' DARF' : '', nc ? nc + ' DCTFWeb' : ''].filter(Boolean).join(' e ') + ' carregado(s) nesta sessão do navegador.</span>';
   }
 
   // ------------------------------------------------------- previdenciário (eSocial)
