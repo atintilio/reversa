@@ -282,6 +282,8 @@
       creditosApurados: []
     };
     var linhas = texto.split(/\r?\n/);
+    // arquivo transmitido (.txt do ReceitaNet) traz a assinatura PKCS#7 depois do |9999|: ela não é SPED
+    for (var fim = 0; fim < linhas.length; fim++) if (linhas[fim].indexOf('|9999|') === 0) { linhas.length = fim + 1; break; }
     var estab = null, estab0140 = null, doc = null, docTemItem = false, qtd9999 = null, c180 = null;
     var cadastro = {};   // "cnpj|cod" e "*|cod" -> {ncm, descr, exIpi, unid}
     var estabF = null;
