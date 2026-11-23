@@ -28,6 +28,8 @@
       atividades: [],   // [{descricao, receita, irpj, csll, cofins, pis, cpp, icms, ipi, iss, total}]
       totalDas: null,   // soma de todos os débitos
       pisCofinsMono: null, // PIS+COFINS sobre receitas "Com ST/monofásica"
+      pisMono: null,       // PIS sobre receitas "Com ST/monofásica"
+      cofinsMono: null,    // COFINS sobre receitas "Com ST/monofásica"
       receitaMono: null,   // receita bruta "Com ST/monofásica"
       erros: [], avisos: []
     };
@@ -105,7 +107,9 @@
     var monoAtivs = r.atividades.filter(function(a){ return a.comMono; });
     if (monoAtivs.length) {
       r.receitaMono = r2(monoAtivs.reduce(function(s,a){ return s+(a.receita||0); }, 0));
-      r.pisCofinsMono = r2(monoAtivs.reduce(function(s,a){ return s+(a.pis||0)+(a.cofins||0); }, 0));
+      r.pisMono = r2(monoAtivs.reduce(function(s,a){ return s+(a.pis||0); }, 0));
+      r.cofinsMono = r2(monoAtivs.reduce(function(s,a){ return s+(a.cofins||0); }, 0));
+      r.pisCofinsMono = r2(r.pisMono + r.cofinsMono);
     }
 
     if (!r.cnpj)      r.erros.push('CNPJ não encontrado.');
