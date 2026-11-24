@@ -299,7 +299,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       </div>
       <div class="btns">
         <label class="btn" for="arquivos">Subir documentos</label>
-        <input type="file" id="arquivos" multiple accept=".txt,.TXT,.xml,.XML,.zip,.ZIP,.pdf,.PDF,text/plain,text/xml,application/xml,application/pdf,application/zip,application/x-zip-compressed">
+        <input type="file" id="arquivos" multiple accept=".txt,.TXT,.xml,.XML,.zip,.ZIP,.pdf,.PDF,.csv,.CSV,text/plain,text/xml,application/xml,application/pdf,application/zip,application/x-zip-compressed,text/csv">
         <button class="sec" id="btn-exemplo" type="button" hidden>Carregar exemplo</button>
       </div>
     </div>
@@ -1601,6 +1601,15 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         if (!a.length) { toast('Nenhum documento reconhecido para cálculo. Envie os arquivos originais, como baixados dos portais.'); return; }
         var novos = 0, repetidos = 0;
         a.forEach(function (arq) {
+          if (/\.csv$/i.test(arq.nome) && MPG && MPG.lerCsv) {
+            var rows = MPG.lerCsv(arq.texto || '');
+            rows.forEach(function (r, i) {
+              var fake = { nome: arq.nome + ' · linha ' + (i + 2), texto: '', pdf: false };
+              fake.tipo = 'pgdas'; fake.lido = r; fila.push(fake); novos++;
+            });
+            if (!rows.length) toast('CSV sem competências reconhecidas: ' + esc(arq.nome));
+            return;
+          }
           if (fila.some(function (x) { return x.nome === arq.nome && x.texto.length === arq.texto.length; })) { repetidos++; return; }
           lerNaFila(arq); fila.push(arq); novos++;
         });
