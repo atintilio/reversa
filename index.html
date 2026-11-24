@@ -1800,13 +1800,24 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   // ---------------------------------------------------------------- render
   var STATUS_LABEL = { pago: 'PAGO', nao_pago: 'NÃO PAGO', compensado: 'COMPENSADO', parcialmente_compensado: 'PARC. COMPENSADO' };
   var STATUS_CLASS = { pago: 'ok', nao_pago: 'bad', compensado: 'ok', parcialmente_compensado: 'warn' };
+  function pgdasOportunidade() {
+    var corte = new Date(); corte.setFullYear(corte.getFullYear() - 5);
+    var corteComp = corte.toISOString().slice(0, 7), por = {};
+    (estado.pgdas || []).forEach(function (p) {
+      if (!p || !p.cnpj || !p.competencia || p.competencia < corteComp) return;
+      var k = p.cnpj + '|' + p.competencia;
+      if (!por[k] || p.retificadora) por[k] = p;
+    });
+    var meses = Object.keys(por).map(function (k) { return por[k]; });
+    var total = meses.reduce(function (s, p) { return s + Number(p.pisCofinsMono || 0); }, 0);
+    return { meses: meses, total: total, media: meses.length ? total / meses.length : 0, faltantes: 24, projecao: meses.length ? total / meses.length * 24 : 0 };
+  }
   function renderSituacaoFiscal() {
     var sec = $('sec-fiscal'), corpo = $('fiscal-corpo');
     var cf = estado.confronto || [];
     if (!cf.length) { sec.hidden = true; return; }
     sec.hidden = false;
-    var totalRec = 0, totalAberto = 0;
-    cf.forEach(function(r){ totalRec += r.recuperavel || 0; if (!r.dasPago) totalAberto += r.pisCofinsMono || 0; });
+    var po = pgdasOportunidade(), totalRec = po.total + po.projecao;
     var rows = cf.map(function(r) {
       var st = STATUS_LABEL[r.status] || r.status;
       var cls = STATUS_CLASS[r.status] || 'neu';
@@ -1816,16 +1827,16 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         '<td class="num">' + (r.pisMono != null ? RP(r.pisMono) : '—') + '</td>' +
         '<td class="num">' + (r.cofinsMono != null ? RP(r.cofinsMono) : '—') + '</td>' +
         '<td class="num">' + (r.pisCofinsMono ? RP(r.pisCofinsMono) : '—') + '</td>' +
-        '<td class="num">' + (r.recuperavel ? '<strong>' + RP(r.recuperavel) + '</strong>' : '—') + '</td>' +
+        '<td class="num">' + (r.pisCofinsMono ? '<strong>' + RP(r.pisCofinsMono) + '</strong>' : '—') + '</td>' +
         '</tr>';
     }).join('');
     corpo.innerHTML =
       '<table class="tabela"><thead><tr>' +
-        '<th>Competência</th><th>Status DAS</th><th class="num">PIS mono</th><th class="num">COFINS mono</th><th class="num">PIS+COFINS mono</th><th class="num">Recuperável</th>' +
+        '<th>Competência</th><th>Status DAS</th><th class="num">PIS mono</th><th class="num">COFINS mono</th><th class="num">PIS+COFINS mono</th><th class="num">Potencial de oportunidade</th>' +
       '</tr></thead><tbody>' + rows + '</tbody>' +
-      '<tfoot><tr><td colspan="5"><strong>Total recuperável estimado</strong></td><td class="num"><strong>' + RP(totalRec) + '</strong></td></tr></tfoot>' +
+      '<tfoot><tr><td colspan="5"><strong>Potencial de oportunidade</strong></td><td class="num"><strong>' + RP(totalRec) + '</strong></td></tr></tfoot>' +
       '</table>' +
-      (totalAberto > 0 ? '<p class="aviso-warn">⚠ ' + RP(totalAberto) + ' em competências com DAS em aberto — valor não contabilizado no recuperável.</p>' : '') +
+      '<p class="aviso-warn">Inclui a projeção pela média dos documentos para ' + po.faltantes + ' competências sem valor individual na base carregada.</p>' +
       '<div class="card-info" style="margin-top:1rem">' +
         '<h3>Recomendações legais</h3>' +
         '<ul>' +
@@ -2438,6 +2449,10 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       return { competencia: p.competencia, pis: Number(p.pisMono || 0), cofins: Number(p.cofinsMono || 0), total: Number(p.pisCofinsMono || 0) };
     });
     var pgTotal = pgItens.reduce(function (s, p) { return { pis: s.pis + p.pis, cofins: s.cofins + p.cofins, total: s.total + p.total }; }, { pis: 0, cofins: 0, total: 0 });
+    var pgOport = pgdasOportunidade();
+    pgTotal.total += pgOport.projecao;
+    pgTotal.pis += pgOport.projecao / 2;
+    pgTotal.cofins += pgOport.projecao / 2;
     var pgPrazo = pgItens.filter(function (p) { return p.competencia >= corteComp; }).reduce(function (s, p) { return { pis: s.pis + p.pis, cofins: s.cofins + p.cofins, total: s.total + p.total }; }, { pis: 0, cofins: 0, total: 0 });
     btn.disabled = true; btn.textContent = 'Salvando…'; st.hidden = true;
     var contatoResp = { nome: ($('resp-nome').value || '').trim(), cargo: ($('resp-cargo').value || '').trim(), email: ($('resp-email').value || '').trim(), telefone: ($('resp-tel').value || '').trim() };
@@ -2449,8 +2464,8 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       teses: (temSped ? res.teses : []).map(function (t) { return { id: t.id, nome: t.nome, curto: t.curto, natureza: t.natureza, itens: t.total.itensComValor, total: t.total, totalNoPrazo: t.totalNoPrazo }; })
     };
     if (temPgdas && pgTotal.total > 0) corpo.teses.push({
-      id: 'pgdas-monofasico', nome: 'PIS/COFINS monofásico não segregado no Simples Nacional', curto: 'PGDAS-D — monofásico', natureza: 'credito', itens: pgItens.length,
-      total: { pis: pgTotal.pis, cofins: pgTotal.cofins, total: pgTotal.total, itensComValor: pgItens.length },
+      id: 'pgdas-monofasico', nome: 'Potencial de oportunidade — PIS/COFINS monofásico no Simples Nacional', curto: 'PGDAS-D — potencial de oportunidade', natureza: 'credito', itens: pgItens.length + pgOport.faltantes,
+      total: { pis: pgTotal.pis, cofins: pgTotal.cofins, total: pgTotal.total, itensComValor: pgItens.length + pgOport.faltantes },
       totalNoPrazo: { pis: pgPrazo.pis, cofins: pgPrazo.cofins, total: pgPrazo.total, itensComValor: pgItens.filter(function (p) { return p.competencia >= corteComp; }).length }
     });
     function enviar(body) {
