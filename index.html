@@ -465,7 +465,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
 <script src="/motor-efd-icms.js"></script>
 <script src="/motor-darf.js"></script>
 <script src="/motor-dctfweb.js"></script>
-<script src="/motor-pgdas.js"></script>
+<script src="/motor-pgdas.js?v=6536331"></script>
 <script src="/motor-comprovantes.js"></script>
 <script src="/selic.js"></script>
 <script src="/selic-diagnostico.js"></script>
@@ -1612,6 +1612,11 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         a.forEach(function (arq) {
           var excelBinario = arq.bytes && arq.bytes.length > 3 && arq.bytes[0] === 80 && arq.bytes[1] === 75 && arq.bytes[2] === 3 && arq.bytes[3] === 4;
           var planilha = /\.(csv|xlsx|xls)$/i.test(arq.nome) || excelBinario;
+          if (planilha && (!MPG || !MPG.lerCsv)) {
+            arq.tipo = 'pgdas';
+            arq.lido = { arquivo: arq.nome, documento: 'Planilha', erros: ['O motor de leitura de planilhas não carregou; o arquivo foi mantido na fila.'], avisos: [] };
+            fila.push(arq); novos++; toast('Motor de planilhas indisponível: ' + arq.nome); return;
+          }
           if (planilha && MPG && MPG.lerCsv) {
             var csvTxt = arq.texto || '';
             if ((/\.(xlsx|xls)$/i.test(arq.nome) || excelBinario) && typeof XLSX !== 'undefined') {
