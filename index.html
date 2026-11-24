@@ -299,7 +299,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       </div>
       <div class="btns">
         <label class="btn" for="arquivos">Subir documentos</label>
-        <input type="file" id="arquivos" multiple accept=".txt,.TXT,.xml,.XML,.zip,.ZIP,.pdf,.PDF,.csv,.CSV,text/plain,text/xml,application/xml,application/pdf,application/zip,application/x-zip-compressed,text/csv">
+        <input type="file" id="arquivos" multiple accept=".txt,.TXT,.xml,.XML,.zip,.ZIP,.pdf,.PDF,.csv,.CSV,.xlsx,.XLSX,text/plain,text/xml,application/xml,application/pdf,application/zip,application/x-zip-compressed,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
         <button class="sec" id="btn-exemplo" type="button" hidden>Carregar exemplo</button>
       </div>
     </div>
@@ -415,6 +415,11 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     <p class="note" id="prev-premissas"></p>
   </section>
 
+  <section aria-labelledby="t-fiscal" id="sec-fiscal" hidden>
+    <div class="sec-head"><h2 id="t-fiscal">Situação <em>fiscal</em> — Simples Nacional</h2></div>
+    <div id="fiscal-corpo"></div>
+  </section>
+
   <section aria-labelledby="t-arquivos">
     <div class="sec-head"><h2 id="t-arquivos">Arquivos lidos</h2></div>
     <div class="files" id="files"></div>
@@ -461,6 +466,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
 <script src="/motor-darf.js"></script>
 <script src="/motor-dctfweb.js"></script>
 <script src="/motor-pgdas.js"></script>
+<script src="/motor-comprovantes.js"></script>
 <script src="/selic.js"></script>
 <script src="/selic-diagnostico.js"></script>
 <script src="/teses-regras.js"></script>
@@ -1543,12 +1549,15 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   function dctfValidos() { return fila.filter(function (x) { return ehDctf(x) && !x.lido.erros.length; }); }
   function darfValidos() { return fila.filter(function (x) { return ehDarf(x) && !x.lido.erros.length; }); }
   function pgdasValidos() { return fila.filter(function (x) { return ehPgdas(x) && !x.lido.erros.length; }); }
+  function comprovantesValidos() { return fila.filter(function (x) { return x.tipo === 'comprovante' && x.lido && !x.lido.erros.length; }); }
   function lerNaFila(arq) {
     if (arq.pdf) { // PDF: PGDAS-D, DCTFWeb (declaração completa ou recibo) ou DARF; outro PDF vira aviso
       arq.tipo = 'darf';
       if (arq.pdfErro) { arq.lido = { arquivo: arq.nome, erros: [arq.pdfErro], avisos: [] }; return; }
       if (MPG && MPG.ehPgdas(arq.texto)) { arq.tipo = 'pgdas'; arq.lido = MPG.lerPdfTexto(arq.texto, arq.nome); return; }
       if (MDC.ehPdfDctf(arq.texto)) { arq.tipo = 'dctfweb'; arq.lido = MDC.lerPdfTexto(arq.texto, arq.nome); return; }
+      var MC = window.MotorComprovantes;
+      if (MC && MC.ehComprovante(arq.texto) && !/Documento de Arrecada[çc][ãa]o de Receitas Federais/i.test(arq.texto)) { arq.tipo = 'comprovante'; arq.lido = MC.lerPdfTexto(arq.texto, arq.nome); return; }
       var d = MD.lerDarfTexto(arq.texto, arq.nome), eh = /DARF|ARRECADA[ÇC][ÃA]O DE RECEITAS FEDERAIS/i.test(arq.texto) || d.codigoReceita;
       d.erros = eh ? [] : ['O PDF não parece ser um DARF (não encontrei os campos do documento); foi ignorado.'];
       arq.lido = d; return;
@@ -1590,7 +1599,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   ['prev-exc', 'prev-exc-ini', 'prev-exc-fim', 'prev-forcar'].forEach(function (id) { $(id).addEventListener('change', reapurarPrev); });
   function esValidos() { return fila.filter(function (x) { return ehEs(x) && !x.lido.erros.length && x.lido.eventos.length; }); }
   function zerarDerivados() { estado.ecdLidos = []; estado.dti = false; estado.tecDados = null; estado.sdCred = null; estado.sdPrev = null; estado.sdEcf = null; estado.outrosArq = []; estado.ignorados = []; estado.cnpjBase = ''; estado.nTec = 0; estado.nDarf = 0; }
-  function limparResultado() { estado.res = null; estado.prev = null; zerarDerivados(); secoesResultado(false); secaoDti(false); $('sec-prev').hidden = true; $('sec-cob').hidden = true; $('sec-tec').hidden = true; $('banner').innerHTML = ''; }
+  function limparResultado() { estado.res = null; estado.prev = null; zerarDerivados(); secoesResultado(false); secaoDti(false); $('sec-prev').hidden = true; $('sec-cob').hidden = true; $('sec-tec').hidden = true; $('sec-fiscal').hidden = true; $('banner').innerHTML = ''; }
   function aoEscolher(lista) {
     var fs = Array.prototype.slice.call(lista || []);
     if (!fs.length) return;
@@ -1601,13 +1610,20 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         if (!a.length) { toast('Nenhum documento reconhecido para cálculo. Envie os arquivos originais, como baixados dos portais.'); return; }
         var novos = 0, repetidos = 0;
         a.forEach(function (arq) {
-          if (/\.csv$/i.test(arq.nome) && MPG && MPG.lerCsv) {
-            var rows = MPG.lerCsv(arq.texto || '');
+          if (/\.(csv|xlsx)$/i.test(arq.nome) && MPG && MPG.lerCsv) {
+            var csvTxt = arq.texto || '';
+            if (/\.xlsx$/i.test(arq.nome) && typeof XLSX !== 'undefined') {
+              try {
+                var wb = XLSX.read(arq.bytes || arq.texto, { type: arq.bytes ? 'array' : 'string' });
+                csvTxt = XLSX.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]], { FS: ';' });
+              } catch (ex) { toast('Erro ao ler Excel: ' + ex.message); return; }
+            }
+            var rows = MPG.lerCsv(csvTxt);
             rows.forEach(function (r, i) {
               var fake = { nome: arq.nome + ' · linha ' + (i + 2), texto: '', pdf: false };
               fake.tipo = 'pgdas'; fake.lido = r; fila.push(fake); novos++;
             });
-            if (!rows.length) toast('CSV sem competências reconhecidas: ' + esc(arq.nome));
+            if (!rows.length) toast('Planilha sem competências reconhecidas: ' + esc(arq.nome));
             return;
           }
           if (fila.some(function (x) { return x.nome === arq.nome && x.texto.length === arq.texto.length; })) { repetidos++; return; }
@@ -1712,6 +1728,9 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     estado.dctfweb = MDC.consolidar(dc.map(function (x) { return x.lido; })); estado.nDctf = dc.length;
     var pg = pgdasValidos();
     estado.pgdas = MPG ? MPG.consolidar(pg.map(function (x) { return x.lido; })) : []; estado.nPgdas = pg.length;
+    var MC = window.MotorComprovantes;
+    var compsL = comprovantesValidos().map(function(x){ return x.lido; });
+    estado.confronto = (MC && estado.pgdas.length) ? MC.confrontar(estado.pgdas, MC.consolidar(compsL)) : [];
     estado.prevLidos = es.map(function (x) { return x.lido; }); estado.prevIncluir = {};
     estado.ecdLidos = tec.filter(function (x) { return x.tipo === 'ecd'; }).map(function (x) { return x.lido; });
     estado.prev = apurarPrev();
@@ -1730,7 +1749,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       $('banner').innerHTML = '<span>⏳ Processando…</span>';
       apurar();
     } else { estado.res = null; estado.arquivos = []; estado.lidos = []; secoesResultado(false); banner(); }
-    renderPrev(); renderCobertura(); renderTecnico(tec);
+    renderPrev(); renderCobertura(); renderTecnico(tec); renderSituacaoFiscal();
     estado.dti = true; secaoDti(true); // o DTI é gerado sempre, com o que houver de arquivo reconhecido
     toast('Diagnóstico gerado com ' + (validos.length + es.length + tec.length + dv.length + dc.length + pg.length) + ' arquivo(s)');
     if (window.salvarPastaAuto) window.salvarPastaAuto();
@@ -1751,6 +1770,44 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   $('btn-exemplo').addEventListener('click', function () { estado.prev = null; zerarDerivados(); $('sec-prev').hidden = true; $('sec-tec').hidden = true; processar(EXEMPLO, true); renderCobertura(); toast('Exemplo carregado'); selicDoExemplo(); });
 
   // ---------------------------------------------------------------- render
+  var STATUS_LABEL = { pago: 'PAGO', nao_pago: 'NÃO PAGO', compensado: 'COMPENSADO', parcialmente_compensado: 'PARC. COMPENSADO' };
+  var STATUS_CLASS = { pago: 'ok', nao_pago: 'bad', compensado: 'ok', parcialmente_compensado: 'warn' };
+  function renderSituacaoFiscal() {
+    var sec = $('sec-fiscal'), corpo = $('fiscal-corpo');
+    var cf = estado.confronto || [];
+    if (!cf.length) { sec.hidden = true; return; }
+    sec.hidden = false;
+    var totalRec = 0, totalAberto = 0;
+    cf.forEach(function(r){ totalRec += r.recuperavel || 0; if (!r.dasPago) totalAberto += r.pisCofinsMono || 0; });
+    var rows = cf.map(function(r) {
+      var st = STATUS_LABEL[r.status] || r.status;
+      var cls = STATUS_CLASS[r.status] || 'neu';
+      return '<tr>' +
+        '<td>' + compFmt(r.competencia) + '</td>' +
+        '<td><span class="pill ' + cls + '">' + st + '</span></td>' +
+        '<td class="num">' + (r.pisMono != null ? RP(r.pisMono) : '—') + '</td>' +
+        '<td class="num">' + (r.cofinsMono != null ? RP(r.cofinsMono) : '—') + '</td>' +
+        '<td class="num">' + (r.pisCofinsMono ? RP(r.pisCofinsMono) : '—') + '</td>' +
+        '<td class="num">' + (r.recuperavel ? '<strong>' + RP(r.recuperavel) + '</strong>' : '—') + '</td>' +
+        '</tr>';
+    }).join('');
+    corpo.innerHTML =
+      '<table class="tabela"><thead><tr>' +
+        '<th>Competência</th><th>Status DAS</th><th class="num">PIS mono</th><th class="num">COFINS mono</th><th class="num">PIS+COFINS mono</th><th class="num">Recuperável</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody>' +
+      '<tfoot><tr><td colspan="5"><strong>Total recuperável estimado</strong></td><td class="num"><strong>' + RP(totalRec) + '</strong></td></tr></tfoot>' +
+      '</table>' +
+      (totalAberto > 0 ? '<p class="aviso-warn">⚠ ' + RP(totalAberto) + ' em competências com DAS em aberto — valor não contabilizado no recuperável.</p>' : '') +
+      '<div class="card-info" style="margin-top:1rem">' +
+        '<h3>Recomendações legais</h3>' +
+        '<ul>' +
+          '<li><strong>Fundamento:</strong> Lei 10.485/2002 e IN RFB 2.055/2021 — PIS/COFINS monofásico não pode compor a base de cálculo do Simples Nacional.</li>' +
+          '<li><strong>Prazo:</strong> Créditos dos últimos 5 anos (competências a partir de ' + (function(){ var d = new Date(); d.setFullYear(d.getFullYear()-5); return ('0'+(d.getMonth()+1)).slice(-2)+'/'+d.getFullYear(); })() + ').</li>' +
+          '<li><strong>Instrumento:</strong> PERDCOMP — Código 8109 (PIS mono DARF) e 2172 (COFINS mono DARF).</li>' +
+          '<li><strong>Próximo passo:</strong> Verificar DARFs emitidos nos códigos 8109/2172 (já identificados acima) e protocolar PER/DCOMP para saldo remanescente.</li>' +
+        '</ul>' +
+      '</div>';
+  }
   function tese(id) { return estado.res.teses.filter(function (t) { return t.id === id; })[0]; }
   function natureza(n) {
     return n === 'credito' ? '<span class="pill ok">RECUPERÁVEL</span>' : n === 'potencial' ? '<span class="pill warn">POTENCIAL</span>' :
