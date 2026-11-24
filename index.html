@@ -1617,9 +1617,6 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   function limparResultado() { estado.res = null; estado.prev = null; zerarDerivados(); secoesResultado(false); secaoDti(false); $('sec-prev').hidden = true; $('sec-cob').hidden = true; $('sec-tec').hidden = true; $('sec-fiscal').hidden = true; $('banner').innerHTML = ''; }
   function adicionarFila(arq) {
     if (arq.lido && arq.lido.erros && arq.lido.erros.length) {
-      var detalhe = arq.lido.erros[0];
-      var excluir = window.confirm('Regra não encontrada para este documento:\n\n' + arq.nome + '\n' + detalhe + '\n\nDeseja excluir o arquivo da fila?');
-      if (excluir) return false;
       arq.lido.avisos = arq.lido.avisos || [];
       arq.lido.avisos.push('Regra não encontrada; documento mantido na fila e não incluído no cálculo.');
     }
