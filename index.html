@@ -1633,6 +1633,11 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
               arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-Excel', erros: ['A biblioteca de leitura do Excel não carregou; o arquivo foi mantido na fila para correção.'], avisos: [] };
               fila.push(arq); novos++; toast('A biblioteca de leitura do Excel não carregou: ' + arq.nome); return;
             }
+            // A extensão não define o documento: uma planilha também pode carregar EFD.
+            if (/\|0000\|/.test(csvTxt)) {
+              arq.texto = csvTxt;
+              lerNaFila(arq); fila.push(arq); novos++; return;
+            }
             var rows = MPG.lerCsv(csvTxt);
             rows.forEach(function (r, i) {
               var fake = { nome: arq.nome + ' · linha ' + (i + 2), texto: '', pdf: false };
