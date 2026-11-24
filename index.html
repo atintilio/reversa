@@ -299,7 +299,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       </div>
       <div class="btns">
         <label class="btn" for="arquivos">Subir documentos</label>
-        <input type="file" id="arquivos" multiple accept=".txt,.TXT,.xml,.XML,.zip,.ZIP,.pdf,.PDF,.csv,.CSV,.xlsx,.XLSX,text/plain,text/xml,application/xml,application/pdf,application/zip,application/x-zip-compressed,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        <input type="file" id="arquivos" multiple accept=".txt,.TXT,.xml,.XML,.zip,.ZIP,.pdf,.PDF,.csv,.CSV,.xls,.XLS,.xlsx,.XLSX,text/plain,text/xml,application/xml,application/pdf,application/zip,application/x-zip-compressed,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
         <button class="sec" id="btn-exemplo" type="button" hidden>Carregar exemplo</button>
       </div>
     </div>
@@ -1610,20 +1610,34 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         if (!a.length) { toast('Nenhum documento reconhecido para cálculo. Envie os arquivos originais, como baixados dos portais.'); return; }
         var novos = 0, repetidos = 0;
         a.forEach(function (arq) {
-          if (/\.(csv|xlsx)$/i.test(arq.nome) && MPG && MPG.lerCsv) {
+          var excelBinario = arq.bytes && arq.bytes.length > 3 && arq.bytes[0] === 80 && arq.bytes[1] === 75 && arq.bytes[2] === 3 && arq.bytes[3] === 4;
+          var planilha = /\.(csv|xlsx|xls)$/i.test(arq.nome) || excelBinario;
+          if (planilha && MPG && MPG.lerCsv) {
             var csvTxt = arq.texto || '';
-            if (/\.xlsx$/i.test(arq.nome) && typeof XLSX !== 'undefined') {
+            if ((/\.(xlsx|xls)$/i.test(arq.nome) || excelBinario) && typeof XLSX !== 'undefined') {
               try {
                 var wb = XLSX.read(arq.bytes || arq.texto, { type: arq.bytes ? 'array' : 'string' });
                 csvTxt = XLSX.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]], { FS: ';' });
-              } catch (ex) { toast('Erro ao ler Excel: ' + ex.message); return; }
+              } catch (ex) {
+                arq.tipo = 'pgdas';
+                arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-Excel', erros: ['Não foi possível ler o Excel: ' + ex.message], avisos: [] };
+                fila.push(arq); novos++; toast('Erro ao ler Excel: ' + ex.message); return;
+              }
+            } else if (/\.(xlsx|xls)$/i.test(arq.nome) || excelBinario) {
+              arq.tipo = 'pgdas';
+              arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-Excel', erros: ['A biblioteca de leitura do Excel não carregou; o arquivo foi mantido na fila para correção.'], avisos: [] };
+              fila.push(arq); novos++; toast('A biblioteca de leitura do Excel não carregou: ' + arq.nome); return;
             }
             var rows = MPG.lerCsv(csvTxt);
             rows.forEach(function (r, i) {
               var fake = { nome: arq.nome + ' · linha ' + (i + 2), texto: '', pdf: false };
               fake.tipo = 'pgdas'; fake.lido = r; fila.push(fake); novos++;
             });
-            if (!rows.length) toast('Planilha sem competências reconhecidas: ' + esc(arq.nome));
+            if (!rows.length) {
+              arq.tipo = 'pgdas';
+              arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-CSV', erros: ['Nenhuma competência reconhecida na planilha; o arquivo foi mantido na fila para correção.'], avisos: [] };
+              fila.push(arq); novos++; toast('Planilha sem competências reconhecidas: ' + esc(arq.nome));
+            }
             return;
           }
           if (fila.some(function (x) { return x.nome === arq.nome && x.texto.length === arq.texto.length; })) { repetidos++; return; }
