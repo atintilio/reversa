@@ -134,6 +134,43 @@
     return Object.keys(por).sort().map(function(k){ return por[k]; });
   }
 
-  var api = { VERSAO: VERSAO, ehPgdas: ehPgdas, lerPdfTexto: lerPdfTexto, consolidar: consolidar };
+  // Lê CSV exportado do Excel (Arquivo → Salvar como → CSV).
+  // Colunas obrigatórias: Competência, PIS Mono, COFINS Mono (separador , ou ;).
+  // Colunas opcionais: CNPJ, Receita Mono.
+  // Aceita datas MM/AAAA ou AAAA-MM.
+  function lerCsv(texto) {
+    var linhas = String(texto || '').replace(/\r/g, '').split('\n').filter(function(l){ return l.trim(); });
+    if (linhas.length < 2) return [];
+    var sep = linhas[0].indexOf(';') > -1 ? ';' : ',';
+    var COLS = {
+      competencia: /compet[êe]ncia|compet[^;,]*/i,
+      cnpj: /cnpj/i,
+      receitaMono: /receita\s*(mono|bruta\s*mono|monof[áa]sic)/i,
+      pisMono: /pis\s*(mono|monof[áa]sic)/i,
+      cofinsMono: /cofins\s*(mono|monof[áa]sic)/i,
+      pisCofinsMono: /pis\s*[\+e]\s*cofins\s*(mono)?/i
+    };
+    var header = linhas[0].split(sep).map(function(h){ return h.trim().replace(/["""]/g,''); });
+    var idx = {};
+    Object.keys(COLS).forEach(function(key) {
+      header.forEach(function(h, i) { if (!idx[key] && COLS[key].test(h)) idx[key] = i; });
+    });
+    return linhas.slice(1).map(function(linha) {
+      var v = linha.split(sep).map(function(x){ return x.trim().replace(/["""]/g,''); });
+      var r = base(null); r.documento = 'PGDAS-D-CSV';
+      if (idx.cnpj != null) r.cnpj = v[idx.cnpj].replace(/\D/g,'') || null;
+      if (idx.competencia != null) r.competencia = competencia(v[idx.competencia]) || v[idx.competencia];
+      if (idx.receitaMono != null) r.receitaMono = num(v[idx.receitaMono]);
+      if (idx.pisMono != null) r.pisMono = num(v[idx.pisMono]);
+      if (idx.cofinsMono != null) r.cofinsMono = num(v[idx.cofinsMono]);
+      if (idx.pisCofinsMono != null) r.pisCofinsMono = num(v[idx.pisCofinsMono]);
+      if (r.pisMono != null && r.cofinsMono != null && r.pisCofinsMono == null)
+        r.pisCofinsMono = r2((r.pisMono || 0) + (r.cofinsMono || 0));
+      if (!r.competencia) r.erros.push('Competência não encontrada na linha.');
+      return r;
+    }).filter(function(r){ return r.competencia; });
+  }
+
+  var api = { VERSAO: VERSAO, ehPgdas: ehPgdas, lerPdfTexto: lerPdfTexto, consolidar: consolidar, lerCsv: lerCsv };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MotorPgdas = api;
 })(this);

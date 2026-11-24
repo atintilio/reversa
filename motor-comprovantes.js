@@ -187,6 +187,57 @@
     return r;
   }
 
+  // Confronta declarações PGDAS-D com comprovantes de pagamento/compensação.
+  // pgdasDados: [{cnpj?, competencia, pisCofinsMono, pisMono?, cofinsMono?}]
+  // comprovantes: saída de consolidar()
+  // Retorna: [{competencia, pisMono, cofinsMono, pisCofinsMono, status, dasPago, compensado, valorCompensado, recuperavel}]
+  // status: 'pago' | 'nao_pago' | 'compensado' | 'parcialmente_compensado'
+  function confrontar(pgdasDados, comprovantes) {
+    var comps = comprovantes || [];
+    return (pgdasDados || []).map(function(pg) {
+      var cnpj = pg.cnpj || '';
+      var comp = String(pg.competencia || '');
+      var pcc  = Number(pg.pisCofinsMono) || 0;
+      var pi   = Number(pg.pisMono)  || 0;
+      var co   = Number(pg.cofinsMono) || 0;
+      function matchCnpj(c) { return !cnpj || !c.cnpj || c.cnpj === cnpj; }
+
+      // DAS pago para esta competência
+      var dasPago = comps.some(function(c) {
+        return (c.tipo === 'DAS' || c.tipo === 'DAS-MEI') &&
+               c.competencia === comp && matchCnpj(c) && !!c.dataPagamento;
+      });
+
+      // DARF 8109 (PIS mono) ou 2172 (COFINS mono) → indício de compensação anterior via PERDCOMP
+      var darfsMono = comps.filter(function(c) {
+        return c.tipo === 'DARF' &&
+               (c.codigoReceita === '8109' || c.codigoReceita === '2172') &&
+               c.competencia === comp && matchCnpj(c);
+      });
+      var valorCompensado = r2(darfsMono.reduce(function(s, c) { return s + (c.valorTotal || 0); }, 0));
+      var compensado = valorCompensado > 0;
+
+      // Recuperável = monofásico declarado − já compensado; requer DAS pago
+      var recuperavel = 0;
+      if (dasPago) recuperavel = r2(Math.max(0, pcc - valorCompensado));
+
+      var status = !dasPago ? 'nao_pago'
+                 : compensado && valorCompensado >= pcc ? 'compensado'
+                 : compensado ? 'parcialmente_compensado'
+                 : 'pago';
+
+      return {
+        competencia: comp,
+        pisMono: pi, cofinsMono: co, pisCofinsMono: pcc,
+        status: status,
+        dasPago: dasPago,
+        compensado: compensado,
+        valorCompensado: valorCompensado,
+        recuperavel: recuperavel
+      };
+    });
+  }
+
   // Consolida por CNPJ+competência+codigoReceita; prefere o pago sobre o não-pago.
   function consolidar(lidos) {
     var por = {};
@@ -199,6 +250,6 @@
     return Object.keys(por).sort().map(function(k) { return por[k]; });
   }
 
-  var api = { VERSAO: VERSAO, ehComprovante: ehComprovante, lerPdfTexto: lerPdfTexto, consolidar: consolidar };
+  var api = { VERSAO: VERSAO, ehComprovante: ehComprovante, lerPdfTexto: lerPdfTexto, consolidar: consolidar, confrontar: confrontar };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MotorComprovantes = api;
 })(this);
