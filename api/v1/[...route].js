@@ -133,6 +133,11 @@ async function route(req, res) {
       if (id && action === 'review' && m === 'POST') { deny(ctx, 'review', 'analysis.review'); return json(res, 200, await tax.review(ctx, id, body)); }
       return method(res, ['POST']);
 
+    case 'pgdas':
+      // POST /pgdas — registra diagnóstico T003 a partir de dados PGDAS-D já parseados no navegador
+      if (!id && m === 'POST') { deny(ctx, 'write', 'analysis.create'); return json(res, 201, await tax.analisarPgdas(ctx, body)); }
+      return method(res, ['POST']);
+
     case 'crm': {
       // /crm/pipeline · /crm/tasks · /crm/members · /crm/clients/:id[/cnpj|/agent] · /crm/contacts[/:id] · /crm/activities[/:id]
       const [, sub, sid, sact] = segments(req);
