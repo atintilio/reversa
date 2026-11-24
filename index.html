@@ -1600,6 +1600,16 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   function esValidos() { return fila.filter(function (x) { return ehEs(x) && !x.lido.erros.length && x.lido.eventos.length; }); }
   function zerarDerivados() { estado.ecdLidos = []; estado.dti = false; estado.tecDados = null; estado.sdCred = null; estado.sdPrev = null; estado.sdEcf = null; estado.outrosArq = []; estado.ignorados = []; estado.cnpjBase = ''; estado.nTec = 0; estado.nDarf = 0; }
   function limparResultado() { estado.res = null; estado.prev = null; zerarDerivados(); secoesResultado(false); secaoDti(false); $('sec-prev').hidden = true; $('sec-cob').hidden = true; $('sec-tec').hidden = true; $('sec-fiscal').hidden = true; $('banner').innerHTML = ''; }
+  function adicionarFila(arq) {
+    if (arq.lido && arq.lido.erros && arq.lido.erros.length) {
+      var detalhe = arq.lido.erros[0];
+      var excluir = window.confirm('Regra não encontrada para este documento:\n\n' + arq.nome + '\n' + detalhe + '\n\nDeseja excluir o arquivo da fila?');
+      if (excluir) return false;
+      arq.lido.avisos = arq.lido.avisos || [];
+      arq.lido.avisos.push('Regra não encontrada; documento mantido na fila e não incluído no cálculo.');
+    }
+    fila.push(arq); return true;
+  }
   function aoEscolher(lista) {
     var fs = Array.prototype.slice.call(lista || []);
     if (!fs.length) return;
@@ -1615,7 +1625,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
           if (planilha && (!MPG || !MPG.lerCsv)) {
             arq.tipo = 'pgdas';
             arq.lido = { arquivo: arq.nome, documento: 'Planilha', erros: ['O motor de leitura de planilhas não carregou; o arquivo foi mantido na fila.'], avisos: [] };
-            fila.push(arq); novos++; toast('Motor de planilhas indisponível: ' + arq.nome); return;
+            if (adicionarFila(arq)) novos++; toast('Motor de planilhas indisponível: ' + arq.nome); return;
           }
           if (planilha && MPG && MPG.lerCsv) {
             var csvTxt = arq.texto || '';
@@ -1630,17 +1640,17 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
               } catch (ex) {
                 arq.tipo = 'pgdas';
                 arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-Excel', erros: ['Não foi possível ler o Excel: ' + ex.message], avisos: [] };
-                fila.push(arq); novos++; toast('Erro ao ler Excel: ' + ex.message); return;
+                if (adicionarFila(arq)) novos++; toast('Erro ao ler Excel: ' + ex.message); return;
               }
             } else if (/\.(xlsx|xls)$/i.test(arq.nome) || excelBinario) {
               arq.tipo = 'pgdas';
               arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-Excel', erros: ['A biblioteca de leitura do Excel não carregou; o arquivo foi mantido na fila para correção.'], avisos: [] };
-              fila.push(arq); novos++; toast('A biblioteca de leitura do Excel não carregou: ' + arq.nome); return;
+              if (adicionarFila(arq)) novos++; toast('A biblioteca de leitura do Excel não carregou: ' + arq.nome); return;
             }
             // A extensão não define o documento: uma planilha também pode carregar EFD.
             if (/\|0000\|/.test(csvTxt)) {
               arq.texto = csvTxt;
-              lerNaFila(arq); fila.push(arq); novos++; return;
+              lerNaFila(arq); if (adicionarFila(arq)) novos++; return;
             }
             var rows = csvAbas.length ? csvAbas.reduce(function (todos, aba) { return todos.concat(MPG.lerCsv(aba)); }, []) : MPG.lerCsv(csvTxt);
             rows.forEach(function (r, i) {
@@ -1650,12 +1660,12 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
             if (!rows.length) {
               arq.tipo = 'pgdas';
               arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-CSV', erros: ['Nenhuma competência reconhecida na planilha; o arquivo foi mantido na fila para correção.'], avisos: [] };
-              fila.push(arq); novos++; toast('Planilha sem competências reconhecidas: ' + esc(arq.nome));
+              if (adicionarFila(arq)) novos++; toast('Planilha sem competências reconhecidas: ' + esc(arq.nome));
             }
             return;
           }
           if (fila.some(function (x) { return x.nome === arq.nome && x.texto.length === arq.texto.length; })) { repetidos++; return; }
-          lerNaFila(arq); fila.push(arq); novos++;
+          lerNaFila(arq); if (adicionarFila(arq)) novos++;
         });
         if ((estado.res || estado.prev) && !estado.exemplo && novos) limparResultado();
         renderFila();
@@ -1694,7 +1704,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     var dc = dctfValidos();
     var pg = pgdasValidos();
     var inval = fila.length - validos.length - es.length - tec.length - dv.length - dc.length - pg.length;
-    if (inval) alertas.push(['e', inval + ' arquivo(s) com erro serão ignorados no diagnóstico (veja a coluna Situação).']);
+    if (inval) alertas.push(['e', inval + ' arquivo(s) estão com regra não encontrada e não entrarão no cálculo enquanto permanecerem com erro.']);
     $('fila-alertas').innerHTML = alertas.map(function (a) { return '<li' + (a[0] === 'e' ? ' class="e"' : '') + '>' + a[1] + '</li>'; }).join('');
     var ord = fila.slice().sort(function (a, b) { var x = a.lido.meta, y = b.lido.meta; return ((x && x.competencia) || '').localeCompare((y && y.competencia) || '') || a.nome.localeCompare(b.nome); });
     $('fila-tab').innerHTML = '<thead><tr><th>Arquivo</th><th>Empresa</th><th>Competência</th><th>Regime</th><th>Tipo</th><th>Situação</th><th></th></tr></thead><tbody>' + ord.map(function (x) {
