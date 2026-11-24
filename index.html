@@ -1743,7 +1743,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       .concat(pg.map(function (x) { var l = x.lido; return { arquivo: x.nome, tipo: 'PGDAS-D', detalhe: compFmt(l.competencia) + (l.retificadora ? ' retificadora' : '') + (l.pisCofinsMono != null ? ' · PIS+COFINS mono ' + RP(l.pisCofinsMono) : '') }; }));
     estado.ignorados = fila.filter(function (x) { return x.lido && x.lido.erros && x.lido.erros.length && !ehDarf(x); }).map(function (x) { return x.nome + ': ' + x.lido.erros[0]; });
     var ce = tec.filter(function (x) { return x.tipo === 'ecf'; })[0] || tec[0];
-    estado.cnpjBase = (ce && (ce.lido.cnpj || ce.lido.cpf)) || (estado.prev && estado.prev.estabelecimentos[0] && estado.prev.estabelecimentos[0].nrInsc) || (dv[0] && dv[0].lido.cnpj) || (dc[0] && dc[0].lido.cnpj) || '';
+    estado.cnpjBase = (ce && (ce.lido.cnpj || ce.lido.cpf)) || (estado.prev && estado.prev.estabelecimentos[0] && estado.prev.estabelecimentos[0].nrInsc) || (dv[0] && dv[0].lido.cnpj) || (dc[0] && dc[0].lido.cnpj) || (estado.pgdas[0] && estado.pgdas[0].cnpj) || '';
     if (validos.length) {
       estado.arquivos = validos; estado.lidos = validos.map(function (x) { return x.lido; });
       $('banner').innerHTML = '<span>⏳ Processando…</span>';
@@ -2381,9 +2381,10 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     var sc = document.createElement('script'); sc.src = '/shell.js'; document.body.appendChild(sc); // barra de navegação da Reversa
   }
   function salvarPasta(auto) {
-    var temSped = !!(estado.res && estado.res.competencias.length), temPrev = !!(estado.prev && estado.prev.teses && estado.prev.teses.length);
-    var dct = estado.dctfweb || [], soDctf = !temSped && !temPrev && dct.length > 0; // só DCTFWeb: salva o diagnóstico sem oportunidades
-    if (!temSped && !temPrev && !soDctf) { if (!auto) toast('Carregue os arquivos do cliente antes de salvar.'); return; }
+    var pg = estado.pgdas || [];
+    var temSped = !!(estado.res && estado.res.competencias.length), temPgdas = !!pg.length, temPrev = !!(estado.prev && estado.prev.teses && estado.prev.teses.length);
+    var dct = estado.dctfweb || [], soDctf = !temSped && !temPgdas && !temPrev && dct.length > 0; // só DCTFWeb: salva o diagnóstico sem oportunidades
+    if (!temSped && !temPgdas && !temPrev && !soDctf) { if (!auto) toast('Carregue os arquivos do cliente antes de salvar.'); return; }
     if (estado.exemplo) { if (!auto) toast('Estes são os dados de exemplo. Carregue os SPEDs do cliente para salvar na pasta.'); return; }
     var lidos = estado.lidos.filter(function (x) { return x.meta && x.meta.cnpj; });
     var cnpj, ref, comps = [];
@@ -2397,7 +2398,19 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       if (cnpj.length !== 14) { if (!auto) toast('Não encontrei o CNPJ do contribuinte nos arquivos.'); else { var s0 = $('pasta-status'); s0.textContent = 'Diagnóstico gerado, mas não entrou no CRM: não encontrei o CNPJ do contribuinte nos arquivos.'; s0.hidden = false; } return; }
       ref = { nome: (estado.prev && estado.prev.empregador && estado.prev.empregador.nome) || (dct[0] && dct[0].nome) || '', regime: '' };
     }
+    if (temPgdas) {
+      cnpj = cnpj || String(pg[0].cnpj || '').replace(/\D/g, '');
+      ref.nome = ref.nome || pg[0].nome || '';
+      comps = comps.concat(pg.map(function (p) { return p.competencia; }).filter(Boolean)).sort();
+    }
     var res = estado.res, btn = $('btn-pasta'), st = $('pasta-status');
+    var corte = new Date(); corte.setFullYear(corte.getFullYear() - 5);
+    var corteComp = corte.toISOString().slice(0, 7);
+    var pgItens = pg.filter(function (p) { return Number(p.pisCofinsMono || 0) > 0; }).map(function (p) {
+      return { competencia: p.competencia, pis: Number(p.pisMono || 0), cofins: Number(p.cofinsMono || 0), total: Number(p.pisCofinsMono || 0) };
+    });
+    var pgTotal = pgItens.reduce(function (s, p) { return { pis: s.pis + p.pis, cofins: s.cofins + p.cofins, total: s.total + p.total }; }, { pis: 0, cofins: 0, total: 0 });
+    var pgPrazo = pgItens.filter(function (p) { return p.competencia >= corteComp; }).reduce(function (s, p) { return { pis: s.pis + p.pis, cofins: s.cofins + p.cofins, total: s.total + p.total }; }, { pis: 0, cofins: 0, total: 0 });
     btn.disabled = true; btn.textContent = 'Salvando…'; st.hidden = true;
     var contatoResp = { nome: ($('resp-nome').value || '').trim(), cargo: ($('resp-cargo').value || '').trim(), email: ($('resp-email').value || '').trim(), telefone: ($('resp-tel').value || '').trim() };
     if (!contatoResp.nome && !contatoResp.email && !contatoResp.telefone) contatoResp = null;
@@ -2407,6 +2420,11 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       periodStart: comps[0], periodEnd: comps[comps.length - 1], files: lidos.length, engineVersion: res && res.versaoMotor,
       teses: (temSped ? res.teses : []).map(function (t) { return { id: t.id, nome: t.nome, curto: t.curto, natureza: t.natureza, itens: t.total.itensComValor, total: t.total, totalNoPrazo: t.totalNoPrazo }; })
     };
+    if (temPgdas && pgTotal.total > 0) corpo.teses.push({
+      id: 'pgdas-monofasico', nome: 'PIS/COFINS monofásico não segregado no Simples Nacional', curto: 'PGDAS-D — monofásico', natureza: 'credito', itens: pgItens.length,
+      total: { pis: pgTotal.pis, cofins: pgTotal.cofins, total: pgTotal.total, itensComValor: pgItens.length },
+      totalNoPrazo: { pis: pgPrazo.pis, cofins: pgPrazo.cofins, total: pgPrazo.total, itensComValor: pgItens.filter(function (p) { return p.competencia >= corteComp; }).length }
+    });
     function enviar(body) {
       return fetch('/api/v1/analyses', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
         .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { if (r.status === 401) location.href = '/login.html'; if (!r.ok) throw new Error((j.error && j.error.message) || ('Erro ' + r.status)); return j; }); });
@@ -2422,7 +2440,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     }
     if (soDctf) prevCorpo = { tipo: 'previdenciario', contato: contatoResp, taxpayer: corpo.taxpayer, periodStart: dct[0].competencia, periodEnd: dct[dct.length - 1].competencia, files: estado.nDctf || 0, engineVersion: 'dctfweb-' + window.MotorDctfWeb.VERSAO, teses: [] };
     var codigos = [], pendencias = [], idCliente = null, aviso = '';
-    (temSped && document.body.getAttribute('data-modo') !== 'prev' ? enviar(corpo) : Promise.resolve(null))
+    (temSped || temPgdas) && document.body.getAttribute('data-modo') !== 'prev' ? enviar(corpo) : Promise.resolve(null)
       .then(function (j) { if (!j) return; codigos.push(j.diagnosticCode + ' v' + j.versao + ' (PIS/COFINS)' + (j.repetido ? ' sem mudanças' : '')); idCliente = j.taxpayerId; pendencias = j.pendencias || []; })
       .then(function () { if (!prevCorpo) return; return enviar(prevCorpo).then(function (j) { codigos.push(j.diagnosticCode + ' v' + j.versao + ' (Previdenciário)' + (j.repetido ? ' sem mudanças' : '')); idCliente = j.taxpayerId; pendencias = j.pendencias || pendencias; }).catch(function (e) { aviso = ' O previdenciário não foi salvo: ' + e.message; }); })
       .then(function () {
