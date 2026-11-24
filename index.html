@@ -1619,10 +1619,14 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
           }
           if (planilha && MPG && MPG.lerCsv) {
             var csvTxt = arq.texto || '';
+            var csvAbas = [];
             if ((/\.(xlsx|xls)$/i.test(arq.nome) || excelBinario) && typeof XLSX !== 'undefined') {
               try {
                 var wb = XLSX.read(arq.bytes || arq.texto, { type: arq.bytes ? 'array' : 'string' });
-                csvTxt = XLSX.utils.sheet_to_csv(wb.Sheets[wb.SheetNames[0]], { FS: ';' });
+                csvAbas = wb.SheetNames.map(function (nomeAba) {
+                  return XLSX.utils.sheet_to_csv(wb.Sheets[nomeAba], { FS: ';' });
+                });
+                csvTxt = csvAbas.join('\n');
               } catch (ex) {
                 arq.tipo = 'pgdas';
                 arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-Excel', erros: ['Não foi possível ler o Excel: ' + ex.message], avisos: [] };
@@ -1638,7 +1642,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
               arq.texto = csvTxt;
               lerNaFila(arq); fila.push(arq); novos++; return;
             }
-            var rows = MPG.lerCsv(csvTxt);
+            var rows = csvAbas.length ? csvAbas.reduce(function (todos, aba) { return todos.concat(MPG.lerCsv(aba)); }, []) : MPG.lerCsv(csvTxt);
             rows.forEach(function (r, i) {
               var fake = { nome: arq.nome + ' · linha ' + (i + 2), texto: '', pdf: false };
               fake.tipo = 'pgdas'; fake.lido = r; fila.push(fake); novos++;
