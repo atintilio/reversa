@@ -308,7 +308,7 @@
     var arquivos = ret.saidas.map(function (s, i) {
       if (!s || !veredito(s).liberado) return null;
       var a = ret.arqs[i];
-      return { nome: nomeRet(a), competencia: a.lido.meta.competencia, cnpj: a.lido.meta.cnpj, reciboOriginal: a.recibo || '', shaOriginal: s.shaOriginal, shaRetificada: s.shaRetificada,
+      return { comprovado: true, nome: nomeRet(a), competencia: a.lido.meta.competencia, cnpj: a.lido.meta.cnpj, reciboOriginal: a.recibo || '', shaOriginal: s.shaOriginal, shaRetificada: s.shaRetificada,
         teses: ret.teses, itensAlterados: s.g.itensAlterados, apuracao: s.g.apuracao,
         validacao: { erros: s.erros.length, avisos: s.avisos.length, versao: ValidadorEfd.VERSAO, mensagens: s.erros.concat(s.avisos).slice(0, 30) } };
     }).filter(Boolean);
@@ -371,7 +371,7 @@
     Promise.all(p.competencias.map(function (c) {
       var mine = p.arquivos.filter(function (a) { return a.nome.indexOf(c.competencia) === 0 || /^S-1010/.test(a.nome); }).map(function (a) { return a.xml; }).join('');
       return Promise.all([sha(enc.encode(orig + c.competencia)), sha(enc.encode(mine))]).then(function (h) {
-        return { tipo: 'esocial', nome: 'eSocial ' + c.competencia, competencia: c.competencia, cnpj: (atual ? atual.cliente.cnpj : ''), shaOriginal: h[0], shaRetificada: h[1],
+        return { comprovado: true, tipo: 'esocial', nome: 'eSocial ' + c.competencia, competencia: c.competencia, cnpj: (atual ? atual.cliente.cnpj : ''), shaOriginal: h[0], shaRetificada: h[1],
           teses: esr.teses, itensAlterados: c.trabalhadores, eventos: c.eventos, apuracao: { previdenciario: { baseRetirada: c.baseRetirada, contribuicaoEstimada: c.contribuicaoEstimada } },
           validacao: { erros: (c.pendencias || []).length + (p.erros.length ? p.erros.length : 0) + v.erros.length, avisos: p.avisos.length, versao: RetificadoraEsocial.VERSAO, mensagens: p.erros.concat(v.erros).slice(0, 30) } };
       });

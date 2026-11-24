@@ -53,7 +53,7 @@ test('EXE-002: equipe prepara fase a fase; aprovar só master e com resumo; depo
   for (const f of ['apuracao_definitiva', 'retificacao_preparada', 'pre_validacao']) assert.equal((await fase(analista, f)).statusCode, 200, f);
   assert.equal((await fase(analista, 'aprovado')).statusCode, 409, 'não pula fase');
   // arquivo com erro na pré-validação bloqueia; registrar de novo sem erro libera
-  const arq = (erros, extra) => ({ arquivos: [Object.assign({ nome: 'ret.txt', competencia: '2024-03', cnpj: '11222333000181', reciboOriginal: '12.34', shaOriginal: 'a'.repeat(64), shaRetificada: 'b'.repeat(64),
+  const arq = (erros, extra) => ({ arquivos: [Object.assign({ comprovado: true, nome: 'ret.txt', competencia: '2024-03', cnpj: '11222333000181', reciboOriginal: '12.34', shaOriginal: 'a'.repeat(64), shaRetificada: 'b'.repeat(64),
     teses: ['tema69'], itensAlterados: 2, apuracao: { pis: { aRecolherOriginal: 14750, aRecolherRetificado: 10295, diferenca: 4455, codigosReceita: [{ campo: '08', codigo: '810902', valor: 10295 }] }, cofins: { diferenca: 20520 } },
     validacao: { erros, avisos: 0, versao: '0.1.0', mensagens: [] } }, extra || {})] });
   assert.equal((await v1(`execucoes/${execId}/arquivos`, { cookie: parceiro, method: 'POST', body: arq(0) })).statusCode, 403);
