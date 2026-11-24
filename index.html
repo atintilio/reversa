@@ -1554,10 +1554,10 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     if (arq.pdf) { // PDF: PGDAS-D, DCTFWeb (declaração completa ou recibo) ou DARF; outro PDF vira aviso
       arq.tipo = 'darf';
       if (arq.pdfErro) { arq.lido = { arquivo: arq.nome, erros: [arq.pdfErro], avisos: [] }; return; }
-      if (MPG && MPG.ehPgdas(arq.texto)) { arq.tipo = 'pgdas'; arq.lido = MPG.lerPdfTexto(arq.texto, arq.nome); return; }
-      if (MDC.ehPdfDctf(arq.texto)) { arq.tipo = 'dctfweb'; arq.lido = MDC.lerPdfTexto(arq.texto, arq.nome); return; }
       var MC = window.MotorComprovantes;
       if (MC && MC.ehComprovante(arq.texto) && !/Documento de Arrecada[çc][ãa]o de Receitas Federais/i.test(arq.texto)) { arq.tipo = 'comprovante'; arq.lido = MC.lerPdfTexto(arq.texto, arq.nome); return; }
+      if (MPG && MPG.ehPgdas(arq.texto)) { arq.tipo = 'pgdas'; arq.lido = MPG.lerPdfTexto(arq.texto, arq.nome); return; }
+      if (MDC.ehPdfDctf(arq.texto)) { arq.tipo = 'dctfweb'; arq.lido = MDC.lerPdfTexto(arq.texto, arq.nome); return; }
       var d = MD.lerDarfTexto(arq.texto, arq.nome), eh = /DARF|ARRECADA[ÇC][ÃA]O DE RECEITAS FEDERAIS/i.test(arq.texto) || d.codigoReceita;
       d.erros = eh ? [] : ['O PDF não parece ser um DARF (não encontrei os campos do documento); foi ignorado.'];
       arq.lido = d; return;

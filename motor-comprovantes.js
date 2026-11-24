@@ -30,7 +30,7 @@
   function base(nome) {
     return {
       arquivo: nome || null,
-      tipo: null,          // 'DAS' | 'DARF' | 'GPS' | 'DAS-MEI'
+      tipo: null,          // 'DAS' | 'DAS-MEI' | 'PGDAS-RECIBO' | 'DARF' | 'GPS'
       cnpj: null, cpf: null,
       competencia: null,
       codigoReceita: null, // DARF: ex. "8109" (PIS), "2172" (COFINS), "2089" (IRPJ/LP)
@@ -63,6 +63,24 @@
   function ehGps(t) {
     return /Guia da Previd[êe]ncia Social/i.test(t) ||
            /GPS[\s\-]*GUIA DA PREVID/i.test(t);
+  }
+  function ehPgdasRecibo(t) {
+    return /RECIBO DE ENTREGA DA APURA[ÇC][ÃA]O NO PGDAS-D/i.test(t);
+  }
+
+  function lerPgdasRecibo(t, nome, r) {
+    r.tipo = 'PGDAS-RECIBO';
+    var m;
+    if ((m = /CNPJ da Matriz\s*\n?[^\n]*?([\d.\/\-]{14,20})/.exec(t))) r.cnpj = m[1].replace(/\D/g, '');
+    if (!r.cnpj && (m = /CNPJ[^\n]*?([\d.\/\-]{14,20})/.exec(t))) r.cnpj = m[1].replace(/\D/g, '');
+    if ((m = /Per[íi]odo de\s*\n?Apura[çc][ãa]o\s*\n?([0-9]{2}\/\d{4})/i.exec(t))) r.competencia = competencia(m[1]);
+    if (!r.competencia && (m = /\b(0[1-9]|1[0-2])\/\d{4}\b/.exec(t))) r.competencia = competencia(m[0]);
+    if ((m = /Total do\s*\n?D[ée]bito\s*\n?Exig[íi]vel\s*\n?R\$\s*([\d.,]+)/i.exec(t))) r.valorTotal = num(m[1]);
+    if ((m = /N[úu]mero do Recibo\s*\n?([\d.\-]+)/i.exec(t))) r.autenticacao = m[1];
+    if ((m = /Data e Hor[áa]rio da Transmiss[ãa]o[^\d]*(\d{2}\/\d{2}\/\d{4})/i.exec(t))) r.dataPagamento = data(m[1]);
+    if (!r.cnpj) r.erros.push('CNPJ não encontrado.');
+    if (!r.competencia) r.erros.push('Período de apuração não encontrado.');
+    return r;
   }
 
   // ── DAS (Simples Nacional) ───────────────────────────────────────────────────
@@ -174,11 +192,12 @@
   // ── API pública ───────────────────────────────────────────────────────────────
 
   function ehComprovante(texto) {
-    return ehDas(texto) || ehDasMei(texto) || ehDarf(texto) || ehGps(texto);
+    return ehDas(texto) || ehDasMei(texto) || ehPgdasRecibo(texto) || ehDarf(texto) || ehGps(texto);
   }
 
   function lerPdfTexto(texto, nome) {
     var t = String(texto || ''), r = base(nome);
+    if (ehPgdasRecibo(t)) return lerPgdasRecibo(t, nome, r);
     if (ehDasMei(t)) return lerDasMei(t, nome, r);
     if (ehDas(t))    return lerDas(t, nome, r);
     if (ehDarf(t))   return lerDarf(t, nome, r);
