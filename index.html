@@ -2495,7 +2495,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     var corpo = {
       contato: contatoResp,
       taxpayer: { cnpj: cnpj, legalName: ref.nome, taxRegime: ref.regime },
-      periodStart: comps[0], periodEnd: comps[comps.length - 1], files: lidos.length, engineVersion: res && res.versaoMotor, potentialTotal: potencialTotal,
+      periodStart: comps[0], periodEnd: comps[comps.length - 1], files: lidos.length, engineVersion: res && res.versaoMotor, potentialTotal: potencialTotal, technicalSummary: tecPot,
       teses: (temSped ? res.teses : []).map(function (t) { return { id: t.id, nome: t.nome, curto: t.curto, natureza: t.natureza, itens: t.total.itensComValor, total: t.total, totalNoPrazo: t.totalNoPrazo }; })
     };
     if (temPgdas && pgTotal.total > 0) corpo.teses.push({
