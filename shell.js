@@ -171,8 +171,8 @@
     ? GOV_MENU
     : DEMO_AMB
     ? [['/demonstracao', 'Início', 'inicio'], ['/', 'Diagnosticar', 'diag', '/?demo=1'], ['/lei-do-bem', 'Lei do Bem', 'lei', '/lei-do-bem.html?demo=1'], ['/teses', 'Teses', 'teses', '/teses.html?demo=1'], ['/metodologia', 'Metodologia', 'met'], ['/execucao', 'Retificação', 'exe'], ['/pgfn', 'Transação PGFN', 'pgfn']]
-    : [['/', 'Diagnosticar', 'diag'], ['/lei-do-bem', 'Lei do Bem', 'lei'], ['/crm', 'CRM', 'crm'], ['/clientes', 'Clientes', 'cli'], ['/teses', 'Teses', 'teses'], ['/metodologia', 'Metodologia', 'met'], ['/dashboard', 'Dashboard', 'dash']];
-  var plataforma = (DEMO_AMB || NO_GOV) ? [] : [['/execucao', 'Execução', 'exe', null, 'data-plat'], ['/pgfn', 'Transação PGFN', 'pgfn', null, 'data-plat'], ['/usuarios', 'Usuários', 'users', null, 'data-admin'], ['/master', 'Master', 'master', null, 'data-master']];
+    : [['/dashboard', 'Dashboard', 'dash'], ['/', 'Diagnosticar', 'diag'], ['/crm', 'CRM', 'crm'], ['/clientes', 'Clientes', 'cli'], ['/metodologia', 'Metodologia', 'met']];
+  var plataforma = (DEMO_AMB || NO_GOV) ? [] : [['/lei-do-bem', 'Lei do Bem', 'lei', null, 'data-plat'], ['/teses', 'Teses', 'teses', null, 'data-plat'], ['/execucao', 'Execução', 'exe', null, 'data-plat'], ['/pgfn', 'Transação PGFN', 'pgfn', null, 'data-plat'], ['/usuarios', 'Usuários', 'users', null, 'data-admin'], ['/master', 'Master', 'master', null, 'data-master']];
   var href = function (p) { return p === '/' ? '/' : p + '.html'; };
   var item = function (l) {
     if (l[0] === '@') return '<div class="grp">' + l[1] + '</div>';
@@ -260,12 +260,19 @@
 
   // Inatividade: 15 min sem mouse, teclado, toque ou rolagem derrubam a sessão; com atividade, renova a cada minuto.
   (function () {
-    var LIMITE = 15 * 60e3, ultima = Date.now(), tocou = 0;
-    ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function (ev) { window.addEventListener(ev, function () { ultima = Date.now(); }, { passive: true, capture: true }); });
+    var LIMITE = 15 * 60e3, RENOVACAO = 45e3, ultima = Date.now(), tocou = 0, pendente = false;
+    function renovar(agora) {
+      if (pendente || agora - tocou < RENOVACAO) return;
+      tocou = agora; pendente = true;
+      fetch('/api/v1/me', { credentials: 'same-origin', cache: 'no-store' }).then(function (r) {
+        if (r.status === 401) location.href = '/login.html?inativo=1';
+      }).catch(function () {}).then(function () { pendente = false; });
+    }
+    ['mousemove', 'mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(function (ev) { window.addEventListener(ev, function () { var agora = Date.now(); ultima = agora; renovar(agora); }, { passive: true, capture: true }); });
     setInterval(function () {
       var agora = Date.now();
       if (agora - ultima >= LIMITE) { location.href = '/api/logout?inativo=1'; return; }
-      if (agora - tocou >= 60e3 && agora - ultima < 60e3) { tocou = agora; fetch('/api/v1/me', { credentials: 'same-origin' }).then(function (r) { if (r.status === 401) location.href = '/login.html?inativo=1'; }).catch(function () {}); }
+      if (agora - ultima < RENOVACAO) renovar(agora);
     }, 15e3);
   })();
   RV.eu = fetch('/api/v1/me', { credentials: 'same-origin' }).then(function (r) {

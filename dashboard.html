@@ -22,7 +22,7 @@
   <div class="cab">
     <div>
       <h1>Dashboard <em>executivo</em></h1>
-      <p class="sub">Soma do diagnóstico mais recente de cada caso. PIS e COFINS sem correção pela Selic. Crédito só é “aprovado” depois da revisão humana; o resto é estimativa.</p>
+      <p class="sub">Soma do diagnóstico mais recente de cada caso, com todo o potencial cadastrado. Crédito só é “aprovado” depois da revisão humana; o restante permanece identificado para decisão.</p>
     </div>
     <span class="carimbo" id="carimbo"></span>
   </div>
@@ -53,8 +53,8 @@
   <section class="card" aria-labelledby="t-cli">
     <h2 id="t-cli">Clientes por valor</h2>
     <div class="tabela"><table>
-      <thead><tr><th>Cliente</th><th>Fase</th><th class="num">Aprovado</th><th class="num">Pendente de aprovação</th><th class="num">Potencial</th></tr></thead>
-      <tbody id="t-cli-tab"><tr><td colspan="5" class="vazio">Carregando…</td></tr></tbody>
+      <thead><tr><th>Cliente</th><th>Fase</th><th class="num">Crédito identificado</th><th class="num">Pendente de aprovação</th><th class="num">Crédito aprovado</th><th class="num">Potencial</th></tr></thead>
+      <tbody id="t-cli-tab"><tr><td colspan="6" class="vazio">Carregando…</td></tr></tbody>
     </table></div>
   </section>
 </main>
@@ -91,10 +91,11 @@
     var T = d.total;
     var contrato = d.stages.filter(function (f) { return f.id === 'contrato'; })[0] || { value: 0, cases: 0 };
     $('kpis').innerHTML = [
-      ['destaque', 'Crédito aprovado', RV.reais(T.approved), 'Revisado e aprovado'],
+      ['destaque', 'Crédito identificado', RV.reais(T.identified), 'Pendente + aprovado'],
       ['', 'Pendente de aprovação', RV.reais(T.pendingApproval), T.withAnalysis + ' de ' + T.cases + ' casos com diagnóstico'],
+      ['', 'Crédito aprovado', RV.reais(T.approved), 'Revisado e aprovado'],
       ['', 'Em contrato', RV.reais(contrato.value), contrato.cases + ' caso(s)'],
-      ['', 'Potencial a validar', RV.reais(T.potential), 'Risco identificado: ' + RV.reais(T.risk)]
+      ['', 'Potencial total', RV.reais(T.totalPotential), 'Inclui potencial a validar e risco: ' + RV.reais(T.potential + T.risk)]
     ].map(function (k) { return '<div class="kpi ' + k[0] + '"><div class="r">' + k[1] + '</div><div class="v">' + k[2] + '</div><div class="n">' + k[3] + '</div></div>'; }).join('');
 
     var teses = d.theses.filter(function (t) { return t.value > 0; });
@@ -112,8 +113,8 @@
     $('t-cli-tab').innerHTML = d.cases.length ? d.cases.map(function (c) {
       var t = c.taxpayer || {};
       return '<tr class="click" data-id="' + RV.esc(t.id || '') + '"><td><a href="/clientes.html?id=' + RV.esc(t.id || '') + '"><strong>' + RV.esc(t.legalName || '—') + '</strong></a><div class="muted mono">' + RV.cnpj(t.cnpj) + '</div></td>' +
-        '<td><span class="pill fase-' + c.stage + '">' + RV.esc(RV.nomeFase(c.stage)) + '</span></td><td class="num">' + RV.reais(c.approved) + '</td><td class="num">' + RV.reais(c.pendingApproval) + '</td><td class="num">' + RV.reais(c.potential) + '</td></tr>';
-    }).join('') : '<tr><td colspan="5" class="vazio">Nenhum caso ainda. Calcule um diagnóstico e salve na pasta do cliente.</td></tr>';
+        '<td><span class="pill fase-' + c.stage + '">' + RV.esc(RV.nomeFase(c.stage)) + '</span></td><td class="num">' + RV.reais(c.pendingApproval + c.approved) + '</td><td class="num">' + RV.reais(c.pendingApproval) + '</td><td class="num">' + RV.reais(c.approved) + '</td><td class="num">' + RV.reais(c.potential + c.risk) + '</td></tr>';
+    }).join('') : '<tr><td colspan="6" class="vazio">Nenhum caso ainda. Calcule um diagnóstico e salve na pasta do cliente.</td></tr>';
     $('carimbo').textContent = 'Atualizado em ' + RV.data(d.generatedAt, true);
   }
   $('t-cli-tab').addEventListener('click', function (e) { var tr = e.target.closest('tr[data-id]'); if (tr && !e.target.closest('a')) location.href = '/clientes.html?id=' + tr.dataset.id; });

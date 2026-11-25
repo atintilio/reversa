@@ -149,7 +149,7 @@
   <div class="topo">
     <div class="l1">
       <div><h2 id="f-nome">—</h2><div class="muted" id="f-sub" style="font-size:13px"></div></div>
-      <div class="acoes"><details class="exportar"><summary class="btn">Exportar PDF</summary><div class="menu-exp" id="f-exportar"></div></details><a class="btn sec" id="f-pasta" href="#">Abrir pasta</a><button class="sec" type="button" id="f-excluir" hidden>Excluir card</button><button class="sec" type="button" id="f-restaurar" hidden>Restaurar card</button><button class="sec" type="button" id="f-fechar" aria-label="Fechar">✕</button></div>
+      <div class="acoes"><details class="exportar"><summary class="btn">Exportar PDF</summary><div class="menu-exp" id="f-exportar"></div></details><a class="btn sec" id="f-baixar" href="#" download>Baixar diagnóstico</a><a class="btn sec" id="f-pasta" href="#">Abrir pasta</a><button class="sec" type="button" id="f-excluir" hidden>Excluir card</button><button class="sec" type="button" id="f-restaurar" hidden>Restaurar card</button><button class="sec" type="button" id="f-fechar" aria-label="Fechar">✕</button></div>
     </div>
     <div class="grade2">
       <label>Fase<select id="f-fase" data-write></select></label>
@@ -360,6 +360,7 @@
     $('f-sub').textContent = RV.cnpj(c.cnpj) + ' · ' + (c.taxRegime || 'regime não informado') + (caso.owner ? ' · ' + caso.owner : '') + (caso.estimatedValue ? ' · ' + RV.reais(centavos(caso.estimatedValue)) + ' calculados (pendente de revisão)' : '');
     $('f-pasta').href = '/clientes.html?id=' + c.id + (PARCEIRO ? '&parceiro=' + encodeURIComponent(PARCEIRO) : '');
     var base = '/api/v1/crm/clients/' + c.id + '/report'; var qp = PARCEIRO ? 'parceiro=' + encodeURIComponent(PARCEIRO) : '';
+    $('f-baixar').href = base + (qp ? '?' + qp : '');
     $('f-exportar').innerHTML = '<a href="' + base + (qp ? '?' + qp : '') + '" download><b>Diagnóstico completo</b><small>Fiscal e Previdenciário</small></a>' +
       '<a href="' + base + '?grupo=fiscal' + (qp ? '&' + qp : '') + '" download><b>Somente Fiscal</b><small>Faturamento, PIS/COFINS, ICMS, IPI, IRPJ/CSLL</small></a>' +
       '<a href="' + base + '?grupo=prev' + (qp ? '&' + qp : '') + '" download><b>Somente Previdenciário</b><small>Folha de pagamento</small></a>' +
