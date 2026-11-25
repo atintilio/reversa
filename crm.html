@@ -290,7 +290,8 @@
             (excl ? '<div class="chips"><span class="chip atraso">Excluído</span></div>' : '') +
             '<div class="nm">' + esc(c.legalName) + '</div>' +
             '<div class="meta"><span class="mono">' + RV.cnpj(c.cnpj) + '</span></div>' +
-            '<div class="meta"><span>' + RV.nomeFase(c.stage) + '</span><span class="val">' + (c.estimatedValue ? RV.reaisCurto(centavos(c.estimatedValue)) : 'sem cálculo') + '</span></div>' +
+            '<div class="meta"><span>' + RV.nomeFase(c.stage) + '</span><span class="val">' + (c.potentialValue != null ? RV.reaisCurto(c.potentialValue) : (c.estimatedValue ? RV.reaisCurto(centavos(c.estimatedValue)) : 'sem cálculo')) + '</span></div>' +
+            (c.potentialValue != null ? '<div class="meta"><span>Total potencial</span><span class="val">' + RV.reaisCurto(c.potentialValue) + '</span></div><div class="meta"><span>Recuperável</span><span class="val">' + (c.estimatedValue ? RV.reaisCurto(centavos(c.estimatedValue)) : 'R$ 0,00') + '</span></div>' : '') +
             '<div class="chips">' + chipsDiag(c.diagnostico) + (c.overdueTasks ? '<span class="chip atraso">' + c.overdueTasks + ' atrasada' + (c.overdueTasks > 1 ? 's' : '') + '</span>' : c.openTasks ? '<span class="chip">' + c.openTasks + ' tarefa' + (c.openTasks > 1 ? 's' : '') + '</span>' : '') + '</div>' +
             (c.nextStep ? '<div class="passo">→ ' + esc(c.nextStep) + '</div>' : '') +
             '<div class="meta"><span>' + esc(c.owner || '') + '</span><span>' + (c.lastActivityAt ? RV.data(c.lastActivityAt) : '') + '</span></div>' +
