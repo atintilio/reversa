@@ -2489,7 +2489,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     pgTotal.pis += pgOport.projecao / 2;
     pgTotal.cofins += pgOport.projecao / 2;
     var pgPrazo = pgItens.filter(function (p) { return p.competencia >= corteComp; }).reduce(function (s, p) { return { pis: s.pis + p.pis, cofins: s.cofins + p.cofins, total: s.total + p.total }; }, { pis: 0, cofins: 0, total: 0 });
-    btn.disabled = true; btn.textContent = 'Salvando…'; st.hidden = true;
+    btn.disabled = true; btn.textContent = 'Salvar'; st.hidden = true;
     var contatoResp = { nome: ($('resp-nome').value || '').trim(), cargo: ($('resp-cargo').value || '').trim(), email: ($('resp-email').value || '').trim(), telefone: ($('resp-tel').value || '').trim() };
     if (!contatoResp.nome && !contatoResp.email && !contatoResp.telefone) contatoResp = null;
     var corpo = {
