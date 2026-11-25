@@ -293,7 +293,8 @@
             '<div class="meta"><span>' + RV.nomeFase(c.stage) + '</span><span class="val">' + (c.estimatedValue ? RV.reaisCurto(centavos(c.estimatedValue)) : 'sem cálculo') + '</span></div>' +
             '<div class="chips">' + chipsDiag(c.diagnostico) + (c.overdueTasks ? '<span class="chip atraso">' + c.overdueTasks + ' atrasada' + (c.overdueTasks > 1 ? 's' : '') + '</span>' : c.openTasks ? '<span class="chip">' + c.openTasks + ' tarefa' + (c.openTasks > 1 ? 's' : '') + '</span>' : '') + '</div>' +
             (c.nextStep ? '<div class="passo">→ ' + esc(c.nextStep) + '</div>' : '') +
-            '<div class="meta"><span>' + esc(c.owner || '') + '</span><span>' + (c.lastActivityAt ? RV.data(c.lastActivityAt) : '') + '</span></div></article>';
+            '<div class="meta"><span>' + esc(c.owner || '') + '</span><span>' + (c.lastActivityAt ? RV.data(c.lastActivityAt) : '') + '</span></div>' +
+            '<a class="card-baixar" href="/api/v1/crm/clients/' + encodeURIComponent(c.id) + '/report' + (PARCEIRO ? '?parceiro=' + encodeURIComponent(PARCEIRO) : '') + '" download onclick="event.stopPropagation()">Baixar diagnóstico</a></article>';
         }).join('') : '<p class="muted" style="font-size:13px;text-align:center;margin:18px 0">Nenhum cliente</p>') + '</div>';
     }).join('');
   }
