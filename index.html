@@ -2477,7 +2477,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     var res = estado.res, btn = $('btn-pasta'), st = $('pasta-status');
     var zPot = res && res.resumo ? res.resumo : {};
     var tecPot = estado.tecnicoResumo || { credito: 0, saldoCredorATransportar: 0 };
-    var potencialTotal = Math.round(((zPot.recuperavel && (zPot.recuperavel.pis + zPot.recuperavel.cofins)) || 0) + ((zPot.potencial && (zPot.potencial.pis + zPot.potencial.cofins)) || 0) + ((zPot.risco && (zPot.risco.pis + zPot.risco.cofins)) || 0) + (tecPot.credito || 0) + Math.max(0, tecPot.saldoCredorATransportar || 0));
+    var potencialTotal = Math.round(((zPot.recuperavel && (zPot.recuperavel.pis + zPot.recuperavel.cofins)) || 0) + ((zPot.potencial && (zPot.potencial.pis + zPot.potencial.cofins)) || 0) + ((zPot.risco && (zPot.risco.pis + zPot.risco.cofins)) || 0) + ((tecPot.credito || 0) + Math.max(0, tecPot.saldoCredorATransportar || 0)) * 100);
     var corte = new Date(); corte.setFullYear(corte.getFullYear() - 5);
     var corteComp = corte.toISOString().slice(0, 7);
     var pgItens = pg.filter(function (p) { return Number(p.pisCofinsMono || 0) > 0; }).map(function (p) {
