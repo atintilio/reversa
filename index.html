@@ -1499,7 +1499,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   // Valores declarados nos arquivos técnicos não podem desaparecer do diagnóstico.
   // Eles ficam separados das teses PIS/COFINS para não serem confundidos com crédito já validado.
   function resumirTecnico(tec) {
-    var out = { arquivos: 0, debito: 0, credito: 0, saldoApurado: 0, icmsARecolher: 0, saldoCredorATransportar: 0 };
+    var out = { arquivos: 0, debito: 0, credito: 0, saldoApurado: 0, icmsARecolher: 0, saldoCredorATransportar: 0, detalhes: [] };
     (tec || []).filter(function (x) { return x.tipo === 'icms' && x.lido; }).forEach(function (x) {
       var m = window.MotorEfdIcms.resumo(x.lido), i = m.icms || {};
       out.arquivos++;
@@ -1508,8 +1508,10 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       out.saldoApurado += Number(i.saldoApurado || 0);
       out.icmsARecolher += Number(i.icmsARecolher || 0);
       out.saldoCredorATransportar += Number(i.saldoCredorATransportar || 0);
+      out.detalhes.push({ arquivo: x.nome, competencia: x.lido.ini || x.lido.fin || '', debito: Number(i.debito || 0), credito: Number(i.credito || 0), saldoApurado: Number(i.saldoApurado || 0), icmsARecolher: Number(i.icmsARecolher || 0), saldoCredorATransportar: Number(i.saldoCredorATransportar || 0), c190Entradas: Number(m.c190 && m.c190.icmsEntradas || 0), c190Saidas: Number(m.c190 && m.c190.icmsSaidas || 0) });
     });
-    Object.keys(out).forEach(function (k) { if (k !== 'arquivos') out[k] = Math.round(out[k] * 100) / 100; });
+    Object.keys(out).forEach(function (k) { if (k !== 'arquivos' && k !== 'detalhes') out[k] = Math.round(out[k] * 100) / 100; });
+    out.detalhes.forEach(function (d) { Object.keys(d).forEach(function (k) { if (k !== 'arquivo' && k !== 'competencia') d[k] = Math.round(d[k] * 100) / 100; }); });
     return out;
   }
   function apurar() { estado.res = M.apurar(estado.lidos, opcoesCreditos()); render(); }
