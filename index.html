@@ -1007,14 +1007,11 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       body: res.teses.map(function (x) {
         return [t(x.curto), natTxt(x.natureza), t(x.classificacao), t(x.regimes), R(x.totalNoPrazo.pis), R(x.totalNoPrazo.cofins), R(x.totalNoPrazo.pis + x.totalNoPrazo.cofins), R(x.total.pis + x.total.cofins)]
           .concat(cred ? [R(cred.teses[x.id].totalNoPrazo.pisAt + cred.teses[x.id].totalNoPrazo.cofinsAt) + (cred.teses[x.id].semSelic ? ' (crédito escritural, sem Selic)' : (x.id === 'lei14592' ? ' (juros de mora sobre débito)' : ''))] : []);
-      }).concat(res.catalogo.filter(function (c) { return !c.calculada; }).map(function (c) {
-        return [t(c.curto), natTxt(c.natureza), t(c.classificacao), t(c.regimes), '-', '-', '-', '-'].concat(cred ? ['-'] : []);
-      })),
+      }),
       foot: [['Recuperável (teses pacificadas)', '', '', '', R(z.recuperavelNoPrazo.pis), R(z.recuperavelNoPrazo.cofins), R(z.recuperavelNoPrazo.pis + z.recuperavelNoPrazo.cofins), R(z.recuperavel.pis + z.recuperavel.cofins)]
         .concat(cred ? [R(cred.resumo.recuperavelNoPrazo.pisAt + cred.resumo.recuperavelNoPrazo.cofinsAt)] : [])],
       columnStyles: { 4: { halign: 'right' }, 5: { halign: 'right' }, 6: { halign: 'right', fontStyle: 'bold' }, 7: { halign: 'right' }, 8: { halign: 'right', fontStyle: 'bold' } }
     });
-    paragrafo('Teses classificadas como "Monitorar" estão em julgamento ou têm orientação desfavorável nos tribunais superiores e não foram quantificadas.');
     }
 
     blocoRegime(false);
