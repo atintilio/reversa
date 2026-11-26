@@ -36,7 +36,7 @@
     <button id="b-novo" type="button" data-write hidden>+ Nova empresa</button>
   </div>
   <div class="filtros">
-    <input id="busca" type="search" placeholder="Buscar por nome ou CNPJ" aria-label="Buscar empresa">
+    <input id="busca" type="search" placeholder="Buscar por nome ou Tax ID" aria-label="Buscar empresa">
     <select id="f-fase" aria-label="Filtrar por fase"><option value="">Todas as fases</option></select>
   </div>
   <section class="card" style="padding:6px 8px">
@@ -140,7 +140,7 @@
     if (!vis.length) { $('lista').innerHTML = '<tr><td colspan="5" class="vazio">Nenhuma empresa nesta fase.</td></tr>'; return; }
     $('lista').innerHTML = vis.map(function (t) {
       var c = t.currentCase;
-      return '<tr class="click" data-id="' + t.id + '"><td><a href="/clientes.html?id=' + t.id + '"><strong>' + RV.esc(t.legalName) + '</strong></a></td><td class="mono">' + RV.cnpj(t.cnpj) + '</td>' +
+      return '<tr class="click" data-id="' + t.id + '"><td><a href="/clientes.html?id=' + t.id + '"><strong>' + RV.esc(t.legalName) + '</strong></a></td><td class="mono">' + RV.esc(t.taxId || RV.cnpj(t.cnpj)) + '</td>' +
         '<td>' + (c ? pill(c.stage) : '—') + '</td><td class="num">' + (c && c.estimatedValue != null ? RV.reais(Math.round(c.estimatedValue * 100)) : '<span class="muted">sem diagnóstico</span>') + '</td><td>' + RV.data(t.updatedAt) + '</td></tr>';
     }).join('');
   }
@@ -167,7 +167,7 @@
     $('p-pdf').href = '/api/v1/crm/clients/' + t.id + '/report';
     document.title = t.legalName + ' · Reversa Tax';
     $('p-nome').textContent = t.legalName;
-    $('p-sub').innerHTML = 'CNPJ <span class="mono">' + RV.cnpj(t.cnpj) + '</span>' + (t.taxRegime ? ' · ' + RV.esc(t.taxRegime) : '') + ' · pasta criada em ' + RV.data(t.createdAt);
+    $('p-sub').innerHTML = RV.esc(t.taxIdType || 'Tax ID') + ' <span class="mono">' + RV.esc(t.taxId || RV.cnpj(t.cnpj)) + '</span>' + (t.taxRegime ? ' · ' + RV.esc(t.taxRegime) : '') + ' · pasta criada em ' + RV.data(t.createdAt);
     var pode = RV.pode('write');
     $('p-fases').innerHTML = caso ? RV.FASES.map(function (f) { return '<button type="button" data-fase="' + f.id + '" aria-pressed="' + (f.id === caso.stage) + '"' + (pode ? '' : ' disabled') + '>' + RV.esc(f.nome) + '</button>'; }).join('') : '<span class="muted">Sem caso aberto.</span>';
     $('p-caso').textContent = caso ? caso.title : '';
@@ -178,6 +178,7 @@
     var pot = soma(function (a) { return a.status === 'potential_to_validate' ? a.summary.no_prazo : 0; });
     var risco = soma(function (a) { return a.status === 'risk_to_regularize' ? a.summary.total : 0; });
     $('p-kpis').innerHTML = [
+      ['destaque', 'Potencial total', ult.length ? RV.reais(soma(function (a) { return a.summary && a.summary.total; })) : '—', 'Valor cheio da oportunidade; não é aprovação'],
       ['destaque', 'Crédito aprovado', ult.length ? RV.reais(apr) : '—', 'Após revisão humana'],
       ['', 'Pendente de aprovação', ult.length ? RV.reais(pend) : '—', 'Estimado no prazo, a revisar'],
       ['', 'Potencial a validar', ult.length ? RV.reais(pot) : '—', 'Insumos: depende de prova'],
