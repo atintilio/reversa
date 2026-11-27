@@ -1004,7 +1004,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     if (rE) cons.push([t('IRPJ e CSLL (ECF)'), 'ECF', RP(rE.total.valorNoPrazo), RP(rE.total.valor), selAtiva ? (selE ? RP(selE.totalNoPrazo.valorAt) : '-') : null, t('Uso interno: não consta do relatório do cliente (base legal pendente).')]);
     if (!cons.length) cons.push([t('Nenhuma tese calculada com os arquivos recebidos'), '-', '-', '-', selAtiva ? '-' : null, t('Os arquivos lidos estão listados na seção de leituras técnicas.')]);
     tabela({
-      head: [['Grupo', 'Fonte', 'Total no prazo (nominal)', 'Total geral (nominal)'].concat(selAtiva ? ['No prazo atualizado pela Selic (estimativa)'] : []).concat(['Observação'])],
+      head: [['Grupo', 'Fonte', 'Potencial nominal', 'Total geral (nominal)'].concat(selAtiva ? ['Atualização pela Selic (estimativa)'] : []).concat(['Observação'])],
       body: cons.map(function (c) { return c.filter(function (v) { return v !== null; }); }),
       columnStyles: { 2: { halign: 'right', fontStyle: 'bold', cellWidth: 32 }, 3: { halign: 'right', cellWidth: 32 }, 4: selAtiva ? { halign: 'right', cellWidth: 38 } : { halign: 'left' } }
     });
@@ -1020,7 +1020,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     if (res) {
     titulo(++sec, 'Quadro das teses');
     tabela({
-      head: [['Tese', 'Natureza', 'Classificação', 'Regimes', 'PIS no prazo', 'COFINS no prazo', 'Total no prazo', 'Total geral'].concat(cred ? ['Total no prazo (Selic est.)'] : [])],
+      head: [['Tese', 'Natureza', 'Classificação', 'Regimes', 'PIS nominal', 'COFINS nominal', 'Potencial nominal', 'Total geral'].concat(cred ? ['Atualização Selic (estim.)'] : [])],
       body: res.teses.map(function (x) {
         return [t(x.curto), natTxt(x.natureza), t(x.classificacao), t(x.regimes), R(x.totalNoPrazo.pis), R(x.totalNoPrazo.cofins), R(x.totalNoPrazo.pis + x.totalNoPrazo.cofins), R(x.total.pis + x.total.cofins)]
           .concat(cred ? [R(cred.teses[x.id].totalNoPrazo.pisAt + cred.teses[x.id].totalNoPrazo.cofinsAt) + (cred.teses[x.id].semSelic ? ' (crédito escritural, sem Selic)' : (x.id === 'lei14592' ? ' (juros de mora sobre débito)' : ''))] : []);
@@ -1104,7 +1104,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
             (c.possivelmentePrescrito ? 'Possivelmente prescrito' : 'No prazo') + (c.retificadora ? ' · retificadora' : '')].concat(cl ? [l ? l.pagamento.split('-').reverse().join('/') : '-', l ? sAt(l) : '-'] : []);
         }),
         foot: [['Total geral', '', '', '', R(x.total.pis), R(x.total.cofins), R(x.total.pis + x.total.cofins), ''].concat(cl ? ['', sAt(cl.total)] : []),
-               ['Total no prazo', '', '', '', R(x.totalNoPrazo.pis), R(x.totalNoPrazo.cofins), R(x.totalNoPrazo.pis + x.totalNoPrazo.cofins), ''].concat(cl ? ['', sAt(cl.totalNoPrazo)] : [])],
+               ['Potencial nominal', '', '', '', R(x.total.pis), R(x.total.cofins), R(x.total.pis + x.total.cofins), ''].concat(cl ? ['', sAt(cl.totalNoPrazo)] : [])],
         columnStyles: { 3: { halign: 'right' }, 4: { halign: 'right' }, 5: { halign: 'right' }, 6: { halign: 'right', fontStyle: 'bold' }, 9: { halign: 'right', fontStyle: 'bold' } }
       });
 
@@ -1216,7 +1216,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
             .concat([l.noPrazo ? 'Sim' : 'Não']);
         }) : [['Nenhum trimestre com valor apurado.']],
         foot: [['Total geral', '', '', RP(rE.total.irpj), RP(rE.total.csll), RP(rE.total.valor)].concat(selE ? ['', RP(selE.total.valorAt)] : []).concat(['']),
-               ['Total no prazo', '', '', '', '', RP(rE.total.valorNoPrazo)].concat(selE ? ['', RP(selE.totalNoPrazo.valorAt)] : []).concat([''])],
+               ['Potencial nominal', '', '', '', '', RP(rE.total.valor)].concat(selE ? ['', RP(selE.totalNoPrazo.valorAt)] : []).concat([''])],
         columnStyles: { 2: { halign: 'right' }, 3: { halign: 'right' }, 4: { halign: 'right' }, 5: { halign: 'right', fontStyle: 'bold' }, 7: { halign: 'right', fontStyle: 'bold' } }
       });
       fonte('helvetica', 'bold', 9.5); cor(COR.tinta); espaco(24); doc.text(t('Imposto pago (DARF) x declarado na ECF'), M, y); y += 4;
@@ -2376,12 +2376,12 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     var resumo = [
       ['Reversa Tax (Argus Prime) — motor v' + res.versaoMotor], ['Calculado em', new Date(res.geradoEm).toLocaleString('pt-BR')],
       estado.exemplo ? ['ATENÇÃO', 'Dados sintéticos de exemplo'] : [], [],
-      ['Tese', 'Natureza', 'Classificação', 'PIS no prazo', 'COFINS no prazo', 'Total no prazo', 'Total geral']
+      ['Tese', 'Natureza', 'Classificação', 'PIS nominal', 'COFINS nominal', 'Potencial nominal', 'Total geral']
     ];
     res.teses.forEach(function (t) {
       resumo.push([t.curto, t.natureza, t.classificacao, reais(t.totalNoPrazo.pis), reais(t.totalNoPrazo.cofins), reais(t.totalNoPrazo.pis + t.totalNoPrazo.cofins), reais(t.total.pis + t.total.cofins)]);
     });
-    resumo.push([], ['Recuperável no prazo', '', '', reais(z.recuperavelNoPrazo.pis), reais(z.recuperavelNoPrazo.cofins), reais(z.recuperavelNoPrazo.pis + z.recuperavelNoPrazo.cofins)],
+    resumo.push([], ['Potencial nominal das oportunidades', '', '', reais(z.recuperavel.pis), reais(z.recuperavel.cofins), reais(z.recuperavel.pis + z.recuperavel.cofins)],
       ['Potencial a validar (insumos)', '', '', reais(z.potencial.pis), reais(z.potencial.cofins), reais(z.potencial.pis + z.potencial.cofins)],
       ['Risco identificado (Lei 14.592)', '', '', reais(z.risco.pis), reais(z.risco.cofins), reais(z.risco.pis + z.risco.cofins)], [],
       ['Estimativa técnica sem atualização Selic, sujeita a revisão tributária.']);
