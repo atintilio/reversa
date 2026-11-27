@@ -20,7 +20,7 @@ A instalação e validação na VPS permanecem no item 34.
 15. ✅ ~~Total potencial consistente como valor principal.~~
 16. ✅ ~~Composição rastreável das oportunidades.~~
 17. ✅ ~~Separação de saldos escriturados e oportunidades, sem dupla contagem.~~
-18. 🟡 Substituir completamente “Recuperável no prazo” na apresentação principal.
+18. ✅ ~~Substituir completamente “Recuperável no prazo” na apresentação principal.~~
 19. ✅ ~~Remover exclusão automática de teses do potencial por classificação.~~
 20. ✅ ~~Avaliar todas as teses cadastradas aplicáveis.~~
 21. 🟡 Validar integralmente a geração do diagnóstico (testes de módulos; ponta a ponta pendente).
