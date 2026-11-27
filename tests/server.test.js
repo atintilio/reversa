@@ -28,7 +28,7 @@ function get(p, { host = 'reversa.argusprime.com.br', method = 'GET', headers = 
   });
 }
 
-test('MATCHER da guarda é idêntico ao do middleware.js (Vercel)', () => {
+test('MATCHER da guarda é idêntico ao do middleware.js', () => {
   const src = fs.readFileSync(path.join(ROOT, 'middleware.js'), 'utf8');
   const fromMw = src.match(/matcher: ('(?:[^'\\]|\\.)*')/)[1];
   const fromGuard = fs.readFileSync(path.join(ROOT, 'lib', 'page-guard.js'), 'utf8').match(/const MATCHER = ('(?:[^'\\]|\\.)*');/)[1];
@@ -59,7 +59,7 @@ test('estáticos públicos servem; código de servidor, configuração e caminho
 
 test('rewrite do host Gov: "/" vira gov.html (após a guarda)', async () => {
   const r = await get('/', { host: 'reversa-gov.argusprime.com.br' });
-  assert.equal(r.status, 303); // sem sessão, a guarda vem primeiro, como no middleware da Vercel
+  assert.equal(r.status, 303); // Sem sessão, a guarda vem primeiro.
 });
 
 test('métodos não-GET em estáticos são recusados', async () => {

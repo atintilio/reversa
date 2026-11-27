@@ -1,4 +1,4 @@
-// Cron semanal (vercel.json: quarta 23:00 UTC = 20h Brasília). Protegido por CRON_SECRET (Authorization: Bearer).
+// Cron semanal da VPS: quarta 23:00 UTC = 20h Brasília. Protegido por CRON_SECRET (Authorization: Bearer).
 const crypto = require('node:crypto');
 const { json, method } = require('../lib/http');
 const { gerar, destinatarios } = require('../lib/relatorio-semanal');

@@ -420,7 +420,7 @@
     $('f-agente').innerHTML = '<h3>✦ Agente de IA</h3>' +
       (a.configurado ? '<p>Lê o CNPJ público, o perfil, o diagnóstico e o histórico e sugere como conduzir a conversa. Modelo: ' + esc(a.modelo) + '. Não calcula nem afirma crédito.</p>' +
         (pode ? '<div class="acoes"><button type="button" id="ag-analisar">Analisar cliente</button><input id="ag-pergunta" maxlength="1000" placeholder="Ou pergunte algo sobre este cliente"><button type="button" class="sec" id="ag-perguntar" style="color:#6FD0C7;border-color:#3DB8AE">Perguntar</button></div>' : '')
-        : '<p>Ainda não configurado. Defina LLM_API_KEY (Qwen no Alibaba Model Studio) no Vercel para ativar.</p>') +
+        : '<p>Ainda não configurado. Defina LLM_API_KEY no ambiente do serviço Reversa na VPS para ativar.</p>') +
       (sug && sug.length && pode ? '<div class="sug"><b>Perfil sugerido na última análise:</b>' + sug.map(function (p) { return '<label style="flex-direction:row;display:flex;gap:6px;align-items:center;font-weight:500;color:#E8EEF4"><input type="checkbox" style="width:auto" data-flag="' + p.flag + '" data-valor="' + p.valor + '" checked> ' + esc(rotulo(p.flag)) + ': ' + (p.valor ? 'sim' : 'não') + ' <span style="color:#AFC0D2">— ' + esc(p.evidencia) + '</span></label>'; }).join('') + '<div><button type="button" class="mini" id="ag-aplicar">Aplicar ao perfil</button></div></div>' : '');
     var b1 = $('ag-analisar'), b2 = $('ag-perguntar'), b3 = $('ag-aplicar');
     if (b1) b1.addEventListener('click', function () { rodarAgente({}, b1); });

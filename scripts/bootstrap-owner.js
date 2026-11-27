@@ -54,7 +54,7 @@ async function bootstrapOwner(sql, send = sendInvite) {
 async function main() {
   const url = process.env.POSTGRES_URL || process.env.DATABASE_URL;
   if (!url) { console.log('bootstrap-owner: sem banco configurado, ignorado'); return; }
-  if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== 'production') { console.log('bootstrap-owner: só roda em produção'); return; }
+  if (process.env.REVERSA_DEPLOY_ENV && process.env.REVERSA_DEPLOY_ENV !== 'production') { console.log('bootstrap-owner: só roda em produção'); return; }
   const sql = postgres(url, { max: 1, ssl: 'require', onnotice: () => {} });
   try { await bootstrapOwner(sql); } finally { await sql.end({ timeout: 5 }); }
 }

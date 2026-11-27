@@ -5,7 +5,7 @@
 
 ## 0. Regras que valem para tudo (André exigiu)
 
-1. **Não faça merge em `main`.** Push em `main` publica em produção (o Vercel antigo ainda é o plano de recuo). Trabalhe só na branch `feat/motores-sped` (e `feat/migracao-vps` para a infraestrutura). Só mergeie com ordem explícita do André.
+1. Arquitetura vigente: **Cloudflare + VPS**. Push em `main` publica código no GitHub; a atualização da VPS precisa ser executada e verificada separadamente. Consulte `deploy/ROTEIRO.md`.
 2. **Não invente campo, tipo, tamanho ou regra fiscal.** Se não estiver no PDF oficial ou no motor atual, deixe vazio e marque `[VALIDAR]`.
 3. **Não copie código de terceiros sem licença.** python-sped, esociallib, mcp-fiscal-brasil e analise-sped-fiscal são MIT (manter o aviso em `THIRD_PARTY_NOTICES.md`). Os demais repositórios avaliados (processador_de_xml, edoc-gen, valor-fiscal, rag-notecraft) **não têm licença**: só ideias, nunca código.
 4. **Não altere o que o pedido não mandou.** Mudança pequena = teste do trecho, não a suíte inteira, exceto antes de entregar.
@@ -97,7 +97,7 @@ Alíquotas marcadas `[VALIDAR]` — pendentes de resolução definitiva do CGIBS
 - Off-site backup além do pg_dump diário.
 - Primeira validação do cron semanal (`api/cron-semanal`): **não execute à mão** — envia e-mails reais.
 - Migrar `reversa-gov-suite` para a VPS.
-- Remover Vercel: só depois de ~7 dias da virada (a integração Neon depende do projeto Vercel existir).
+- A publicação é feita na VPS; valide dependências do banco antes de qualquer mudança de infraestrutura.
 
 ## 4. Como validar (checklist antes de dizer "pronto")
 
@@ -109,9 +109,9 @@ Alíquotas marcadas `[VALIDAR]` — pendentes de resolução definitiva do CGIBS
 
 ## 5. Infra (VPS) — estado e pendências
 
-- O Reversa roda **na VPS** (nginx → app na porta 3300, banco na **Neon**, não local). Domínios `reversa.argusprime.com.br` e `reversa-gov.argusprime.com.br` já apontam para a VPS (Cloudflare, SSL estrito). O Vercel antigo fica como plano de recuo por cerca de 7 dias; **não apague a conta nem o projeto no Vercel** (a integração com a Neon depende dele).
+- O Reversa roda **na VPS** (nginx → app na porta 3300). Domínios `reversa.argusprime.com.br` e `reversa-gov.argusprime.com.br` passam pelo Cloudflare. Confira a conexão do banco no ambiente do serviço; não altere o banco ao atualizar a hospedagem.
 - Backup: espelho diário da Neon para um banco local + `pg_dump` (cron 03:15). Cron semanal chama `api/cron-semanal` (envia e-mails reais: **não execute à mão**).
-- `reversa-gov-suite` é outro projeto (Vercel) que divide o banco; não foi migrado.
+- Outros projetos que compartilhem o banco precisam ser inventariados separadamente; não determinam o deploy deste Reversa.
 - **Endurecimento da VPS pendente** (aguarda André): limitar tentativas de login SSH a 4, com bloqueio de 1 hora (fail2ban), liberando antes o IP da sessão dele para não o trancar para fora; identificar o que são as portas 3110, 3111 e 2000 (abertas ao mundo, não são do Reversa) antes de qualquer firewall. A senha de root **não** será trocada hoje (decisão do André). Todo comando na VPS é executado pelo próprio André no terminal dele; senhas nunca passam pelo chat.
 
 ## 6. Como falar com o André

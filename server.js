@@ -1,5 +1,5 @@
-// Servidor próprio do Reversa para rodar fora da Vercel (VPS). Na Vercel nada disto é usado.
-// Serve as páginas estáticas, aplica os cabeçalhos do vercel.json, o rewrite do host Gov,
+// Servidor de produção do Reversa na VPS, atrás do Cloudflare e do proxy HTTP.
+// Serve as páginas estáticas, aplica os cabeçalhos de segurança e o roteamento do host Gov,
 // a guarda de login das páginas (lib/page-guard.js) e despacha /api/* para as funções existentes.
 const http = require('node:http');
 const fs = require('node:fs');
@@ -30,7 +30,7 @@ async function readBody(req) {
   return Buffer.concat(chunks).toString('utf8');
 }
 
-// Imita o que a Vercel entrega às funções: JSON e formulário já convertidos em objeto.
+// Normaliza JSON e formulário para os handlers da API.
 function parsedBody(raw, type) {
   if (!raw) return raw;
   if (/application\/json/i.test(type)) { try { return JSON.parse(raw); } catch { return raw; } }

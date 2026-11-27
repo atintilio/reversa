@@ -1,3 +1,8 @@
+# ARQUIVO HISTÓRICO — NÃO USAR COMO GUIA DE IMPLEMENTAÇÃO OU DEPLOY
+
+Arquitetura vigente: Cloudflare + VPS. Consulte `deploy/ROTEIRO.md` e `AGENTS.md`.
+As propostas de infraestrutura abaixo não representam o sistema instalado.
+
 > Material bruto exportado do chat com o Qwen (dois exports; o segundo contém o primeiro). Contém erros corrigidos em `../base-de-conhecimento.md`. O código Next.js/AWS do chat não foi usado: o módulo foi implementado nativo no Reversa.
 
 
