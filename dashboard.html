@@ -96,7 +96,7 @@
       ['', 'Crédito aprovado', RV.reais(T.approved), 'Revisado e aprovado'],
       ['', 'Em contrato', RV.reais(contrato.value), contrato.cases + ' caso(s)'],
       ['', 'Potencial total', RV.reais(T.totalPotential), 'Inclui potencial a validar e risco: ' + RV.reais(T.potential + T.risk)],
-      ['', 'Compensação projetada', T.compensationMonthly ? RV.reais(T.compensationMonthly) + '/mês' : 'Não informado', T.compensationMonths ? 'Prazo máximo: ' + T.compensationMonths + ' meses' : 'Informe a média mensal no CRM']
+      ['', 'Compensação projetada', T.compensationMonthly ? RV.reais(T.compensationMonthly) + '/mês' : '—', T.compensationMonths ? T.compensationMonths + ' meses de utilização' : '—']
     ].map(function (k) { return '<div class="kpi ' + k[0] + '"><div class="r">' + k[1] + '</div><div class="v">' + k[2] + '</div><div class="n">' + k[3] + '</div></div>'; }).join('');
 
     var teses = d.theses.filter(function (t) { return t.value > 0; });
