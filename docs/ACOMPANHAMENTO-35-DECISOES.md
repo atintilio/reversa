@@ -36,7 +36,7 @@ A instalação e validação na VPS permanecem no item 34.
 31. 🟡 Cards operacionais limpos, restritos à tela (potencial principal ajustado; reorganização completa pendente).
 32. 🔴 Fluxo mensal com contabilidade, e-mail e WhatsApp.
 33. 🟡 Validar Tax ID no banco da VPS (validador pronto; execução na VPS pendente).
-34. 🔴 Publicação e verificação na VPS atrás do Cloudflare.
+34. ✅ ~~Publicação e verificação na VPS atrás do Cloudflare.~~ (produção saudável validada)
 35. 🔴 Teste ponta a ponta na versão publicada.
 
 Após a implementação: processar a Personal, reconciliar o potencial com nominal e Selic,
