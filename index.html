@@ -1725,9 +1725,10 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       if (ehDarf(x)) return linhaDarf(x);
       if (ehDctf(x)) return linhaDctf(x);
       if (ehPgdas(x)) return linhaPgdas(x);
-      if (x.tipo === 'apoio') return '<tr><td>' + esc(x.nome) + '</td><td>—</td><td>—</td><td>—</td><td>Documento de apoio</td><td><span class="pill ok">PRESERVADO</span></td><td><button type="button" class="rm" data-rm="' + fila.indexOf(x) + '" title="Remover da lista" aria-label="Remover ' + esc(x.nome) + '">✕</button></td></tr>';
-      var l = x.lido, m = l.meta, st = l.erros.length ? '<span class="pill bad" title="' + esc(l.erros.join(' ')) + '">ERRO — ' + esc(l.erros[0]) + '</span>' : l.avisos.length ? '<span class="pill warn" title="' + esc(l.avisos.join(' ')) + '">COM AVISOS (' + l.avisos.length + ')</span>' : '<span class="pill ok">OK</span>';
-      return '<tr><td>' + esc(x.nome) + '</td><td>' + (m ? esc(m.nome) + '<br><small>' + cnpjFmt(m.cnpj) + '</small>' : '—') + '</td><td>' + (m ? compFmt(m.competencia) : '—') + '</td><td>' + (m ? esc(m.regime || '—') : '—') + '</td><td>' + (m ? (m.retificadora ? 'Retificadora' : 'Original') : '—') + '</td><td>' + st + '</td><td><button type="button" class="rm" data-rm="' + fila.indexOf(x) + '" title="Remover da lista" aria-label="Remover ' + esc(x.nome) + '">✕</button></td></tr>';
+      var l = x.lido, m = l.meta, erros = l.erros || [], avisos = l.avisos || [];
+      var st = erros.length ? '<span class="pill bad" title="' + esc(erros.join(' ')) + '">ERRO — ' + esc(erros[0]) + '</span>' : avisos.length ? '<span class="pill warn" title="' + esc(avisos.join(' ')) + '">COM AVISOS (' + avisos.length + ')</span>' : '<span class="pill ok">OK</span>';
+      var tipo = x.tipo === 'apoio' ? 'Documento de apoio' : x.tipo === 'comprovante' ? 'Comprovante' : m ? (m.retificadora ? 'Retificadora' : 'Original') : '—';
+      return '<tr><td>' + esc(x.nome) + '</td><td>' + (m ? esc(m.nome) + '<br><small>' + cnpjFmt(m.cnpj) + '</small>' : '—') + '</td><td>' + (m ? compFmt(m.competencia) : l.competencia ? compFmt(l.competencia) : '—') + '</td><td>' + (m ? esc(m.regime || '—') : '—') + '</td><td>' + tipo + '</td><td>' + st + '</td><td><button type="button" class="rm" data-rm="' + fila.indexOf(x) + '" title="Remover da lista" aria-label="Remover ' + esc(x.nome) + '">✕</button></td></tr>';
     }).join('') + '</tbody>';
     $('fila-resumo').textContent = fila.length + ' documento(s) na lista · ' + (validos.length + es.length + tec.length + dv.length + dc.length + pg.length) + ' reconhecido(s)';
     $('fila-gerar').disabled = ingesting || (!validos.length && !es.length && !tec.length && !dv.length && !dc.length && !pg.length);
