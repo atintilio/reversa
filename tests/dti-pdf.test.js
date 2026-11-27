@@ -39,7 +39,7 @@ test('DTI e dossiê usam a EFD real e geram todas as páginas em retrato', { ski
   const res = motor.apurar(lidos, { hoje });
   assert.ok(res.competencias.length);
   const pdfs = [
-    browser.GeradorMemoria.apresentar(res, 2022, { identificado: true }, { emissao: hoje }),
+    browser.GeradorMemoria.apresentar(res, 2022, { identificado: true }, { emissao: hoje, composicaoIcms: { credito: 100, saldoCredorATransportar: 50 } }),
     browser.GeradorMemoria.gerar(res, lidos, { emissao: hoje })
   ];
   for (const [i, blob] of pdfs.entries()) {
@@ -48,6 +48,11 @@ test('DTI e dossiê usam a EFD real e geram todas as páginas em retrato', { ski
     assert.ok(paginas.length && paginas.every((m) => Number(m[1]) < Number(m[2])));
     assert.match(pdf, i ? /Mem.ria de c.lculo/ : /T.cnico Inicial/);
     if (i) assert.ok(res.competencias.some((c) => pdf.includes(c.arquivo.slice(0, 30))));
+    else {
+      assert.match(pdf, /ICMS escriturado/);
+      assert.match(pdf, /registro E110/);
+      assert.doesNotMatch(pdf, /Como . feita a classifica/);
+    }
     console.log(i ? 'Dossiê' : 'DTI', paginas.length, 'páginas em retrato');
   }
   console.log(lidos.length, 'EFDs processadas', res.competencias.length, 'competências apuradas');
