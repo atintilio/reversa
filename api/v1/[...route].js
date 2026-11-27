@@ -81,6 +81,18 @@ async function route(req, res) {
       return method(res, ['PATCH', 'DELETE', 'POST']);
 
     case 'taxpayers':
+      if (id && action === 'documents') {
+        const client = await tax.getTaxpayer(ctx, id); // Verifica acesso à organização antes do storage.
+        const store = require('../../lib/document-store').createStore(process.env.REVERSA_DOCUMENT_ROOT);
+        if (m === 'GET') return json(res, 200, query.sha256 ? await store.status(ctx.organization.id, client.taxpayer.id, String(query.sha256)) : { documents: await store.list(ctx.organization.id, client.taxpayer.id), inventory: await store.report(ctx.organization.id, client.taxpayer.id) });
+        if (m === 'POST') {
+          deny(ctx, 'write', 'document.upload');
+          const result = body.operation === 'inventory' ? await store.report(ctx.organization.id, client.taxpayer.id, body) : await store.upload(ctx.organization.id, client.taxpayer.id, body);
+          if (body.operation === 'inventory' || result.complete) await audit('document.' + (body.operation === 'inventory' ? 'inventory_updated' : 'received'), { organizationId: ctx.organization.id, actorUserId: ctx.user.id, entityType: 'taxpayer', entityId: client.taxpayer.id, metadata: { sha256: result.sha256 || null } });
+          return json(res, 200, result);
+        }
+        return method(res, ['GET', 'POST']);
+      }
       if (!id) {
         if (m === 'GET') return json(res, 200, { taxpayers: await tax.listTaxpayers(ctx, query) });
         if (m === 'POST') { deny(ctx, 'write', 'taxpayer.create'); return json(res, 201, await tax.createTaxpayer(ctx, body)); }

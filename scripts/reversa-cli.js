@@ -96,6 +96,16 @@ function verificar(dir) {
 }
 function main(argv) {
   const [command, zip, out] = argv.slice(2);
+  if (command === 'ingest') {
+    const { ingest } = require('./ingest-documents');
+    const [dir, baseUrl, client, cookieFile] = argv.slice(3);
+    if (!dir || !baseUrl || !client || !cookieFile) { die('uso: reversa-cli ingest PASTA URL_REVERSA ID_CLIENTE ARQUIVO_DE_SESSAO'); return; }
+    try {
+      if ((fs.statSync(cookieFile).mode & 0o077) !== 0) throw new Error('Proteja o arquivo de sessão com chmod 600.');
+      ingest({ dir, baseUrl, client, cookie: fs.readFileSync(cookieFile, 'utf8').trim() }).then(function (r) { console.log(JSON.stringify(r)); if (r.failed.length) process.exitCode = 1; }).catch(function (e) { die(e.message); });
+    } catch (e) { die(e.message); }
+    return;
+  }
   if (!['zip-inspect', 'zip-import', 'zip-verify'].includes(command) || !zip || (command !== 'zip-verify' && !out)) { die('uso: reversa-cli zip-inspect pacote.zip manifesto.json | zip-import pacote.zip diretorio | zip-verify diretorio'); return; }
   if (command !== 'zip-verify' && !fs.existsSync(zip)) { die(`arquivo não encontrado: ${zip}`); return; }
   try { command === 'zip-inspect' ? inspect(zip, out) : command === 'zip-import' ? importar(zip, out) : verificar(zip); } catch (e) { die(e.message); }

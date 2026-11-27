@@ -292,6 +292,23 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
 
   <section aria-labelledby="envio">
     <h2 id="envio" hidden>Arquivos</h2>
+    <label for="ingest-client">Dossiê de Documentos — cliente</label>
+    <select id="ingest-client"><option value="">Selecionar cliente para armazenar os originais</option></select>
+    <p id="upload-progress" role="status" aria-live="polite"></p>
+    <details><summary>Inventário e documentos pendentes</summary>
+      <form id="document-gap-form">
+        <label>Obrigação<select id="gap-kind"><option value="dctfweb">DCTFWeb</option><option value="pgdas">PGDAS-D</option><option value="efd_contribuicoes">EFD-Contribuições</option><option value="efd_icms_ipi">EFD Fiscal</option><option value="ecd">ECD</option><option value="ecf">ECF</option><option value="perdcomp">PER/DCOMP</option></select></label>
+        <label>Competência<input id="gap-month" type="month" required></label>
+        <label>Situação<select id="gap-state"><option value="documento_ausente">Documento ausente</option><option value="declaracao_nao_encontrada_ecac">Declaração não encontrada no e-CAC</option><option value="acesso_nao_disponivel">Acesso não disponível</option><option value="consulta_inconclusiva">Consulta inconclusiva</option></select></label>
+        <label>Perfil consultado<input id="gap-profile" maxlength="160"></label>
+        <label>Referência da consulta<input id="gap-reference" maxlength="500"></label>
+        <label>Data da consulta<input id="gap-date" type="date"></label>
+        <button type="submit">Registrar no dossiê</button>
+        <button type="button" id="refresh-inventory">Consultar inventário</button>
+      </form>
+      <div id="document-inventory" role="status"></div>
+    </details>
+    <script src="/document-upload.js" defer></script>
     <div class="drop" id="drop">
       <div>
         <strong>Arraste os documentos aqui</strong>
@@ -299,7 +316,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       </div>
       <div class="btns">
         <label class="btn" for="arquivos">Subir documentos</label>
-        <input type="file" id="arquivos" multiple accept=".txt,.TXT,.xml,.XML,.zip,.ZIP,.pdf,.PDF,.csv,.CSV,.xls,.XLS,.xlsx,.XLSX,text/plain,text/xml,application/xml,application/pdf,application/zip,application/x-zip-compressed,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
+        <input type="file" id="arquivos" multiple accept=".txt,.TXT,.xml,.XML,.zip,.ZIP,.pdf,.PDF,.rec,.REC,.p7s,.P7S,.csv,.CSV,.xls,.XLS,.xlsx,.XLSX,text/plain,text/xml,application/xml,application/pdf,application/zip,application/x-zip-compressed,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
         <button class="sec" id="btn-exemplo" type="button" hidden>Carregar exemplo</button>
       </div>
     </div>
@@ -349,7 +366,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       </div>
     </div>
     <div class="scroll"><table id="tab-teses"></table></div>
-    <p class="note">Entram no recuperável só as teses pacificadas. Insumos/Tema 779 são potencial a validar com prova de essencialidade ou relevância; o risco da Lei 14.592/2023 é passivo a regularizar antes do pedido. PERSE exige habilitação, receita elegível e verificação do encerramento administrativo/decisões judiciais por competência.</p>
+    <p class="note">Composição por oportunidade e documento de origem. A classificação técnica não exclui valores da análise da equipe.</p>
     <p class="note" id="selic-nota-cred" hidden></p>
   </section>
 
@@ -1537,7 +1554,8 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       return Promise.all(nomes.map(function (n) {
         var e = zip.files[n];
         if (/\.zip$/i.test(n)) return e.async('blob').then(function (b) { return abrirZip(new File([b], n.split('/').pop())); });
-        return e.async('uint8array').then(function (bytes) {
+          return e.async('uint8array').then(function (bytes) {
+          if (/\.(rec|p7s)$/i.test(n)) return [{ nome: n.split('/').pop(), texto: '', bytes: bytes, apoio: true }];
           if (ehPdfBytes(bytes)) return [{ nome: n.split('/').pop(), texto: '', bytes: bytes, pdf: true }];
           return ehSped(bytes) || ehEsocial(bytes) || ehDctfBytes(bytes) ? [{ nome: n.split('/').pop(), texto: decodificar(bytes), bytes: bytes }] : [];
         });
@@ -1545,7 +1563,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     });
   }
   // Envio em levas: os arquivos se somam numa fila de conferência; o cálculo só roda em "Gerar diagnóstico".
-  var fila = [];
+  var fila = [], ingesting = false;
   function achar(no, nome) { if (!no) return ''; for (var i = 0; i < no.filhos.length; i++) { var f = no.filhos[i]; if (f.nome === nome) return String(f.texto || '').trim(); var r = achar(f, nome); if (r) return r; } return ''; }
   // Tipo pelo registro 0000: LECF, LECD, EFD ICMS/IPI (DT_INI de 8 dígitos no índice 4). Na dúvida, segue como EFD-Contribuições.
   function tipoTecnico(texto) {
@@ -1565,6 +1583,11 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   function darfValidos() { return fila.filter(function (x) { return ehDarf(x) && !x.lido.erros.length; }); }
   function pgdasValidos() { return fila.filter(function (x) { return ehPgdas(x) && !x.lido.erros.length; }); }
   function comprovantesValidos() { return fila.filter(function (x) { return x.tipo === 'comprovante' && x.lido && !x.lido.erros.length; }); }
+  function hashConteudo(arq) {
+    var bytes = arq.bytes && arq.bytes.length ? new Uint8Array(arq.bytes) : new TextEncoder().encode(String(arq.texto || ''));
+    if (window.crypto && crypto.subtle) return crypto.subtle.digest('SHA-256', bytes).then(function (b) { return Array.from(new Uint8Array(b)).map(function (x) { return x.toString(16).padStart(2, '0'); }).join(''); });
+    return Promise.resolve(String(arq.texto || '').length + ':' + String(arq.texto || '').slice(0, 128));
+  }
   function lerNaFila(arq) {
     if (arq.pdf) { // PDF: PGDAS-D, DCTFWeb (declaração completa ou recibo) ou DARF; outro PDF vira aviso
       arq.tipo = 'darf';
@@ -1616,75 +1639,45 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
   function zerarDerivados() { estado.ecdLidos = []; estado.dti = false; estado.tecDados = null; estado.tecnicoResumo = null; estado.sdCred = null; estado.sdPrev = null; estado.sdEcf = null; estado.outrosArq = []; estado.ignorados = []; estado.cnpjBase = ''; estado.nTec = 0; estado.nDarf = 0; }
   function limparResultado() { estado.res = null; estado.prev = null; zerarDerivados(); secoesResultado(false); secaoDti(false); $('sec-prev').hidden = true; $('sec-cob').hidden = true; $('sec-tec').hidden = true; $('sec-fiscal').hidden = true; $('banner').innerHTML = ''; }
   function adicionarFila(arq) {
-    if (arq.lido && arq.lido.erros && arq.lido.erros.length) {
-      arq.lido.avisos = arq.lido.avisos || [];
-      arq.lido.avisos.push('Regra não encontrada; documento mantido na fila e não incluído no cálculo.');
-    }
     fila.push(arq); return true;
   }
   function limparResultado() { estado.res = null; estado.prev = null; zerarDerivados(); secoesResultado(false); secaoDti(false); $('sec-prev').hidden = true; $('sec-cob').hidden = true; $('sec-tec').hidden = true; $('sec-fiscal').hidden = true; $('banner').innerHTML = ''; }
   function aoEscolher(lista) {
     var fs = Array.prototype.slice.call(lista || []);
-    if (!fs.length) return;
+    if (!fs.length || ingesting) return;
+    ingesting = true; $('arquivos').disabled = true; $('fila-gerar').disabled = true;
     toast('Lendo ' + fs.length + ' arquivo(s)…');
-    Promise.all(fs.map(function (f) { return ehZip(f) ? abrirZip(f) : ehPdf(f) ? lerPdfArquivo(f) : lerArquivo(f).then(function (a) { return [a]; }); }))
-      .then(function (listas) { return Promise.all([].concat.apply([], listas).map(extrairPdf)); })
-      .then(function (a) {
-        if (!a.length) { toast('Nenhum documento reconhecido para cálculo. Envie os arquivos originais, como baixados dos portais.'); return; }
-        var novos = 0, repetidos = 0;
-        a.forEach(function (arq) {
-          var excelBinario = arq.bytes && arq.bytes.length > 3 && arq.bytes[0] === 80 && arq.bytes[1] === 75 && arq.bytes[2] === 3 && arq.bytes[3] === 4;
-          var planilha = /\.(csv|xlsx|xls)$/i.test(arq.nome) || excelBinario;
-          if (planilha && (!MPG || !MPG.lerCsv)) {
-            arq.tipo = 'pgdas';
-            arq.lido = { arquivo: arq.nome, documento: 'Planilha', erros: ['O motor de leitura de planilhas não carregou; o arquivo foi mantido na fila.'], avisos: [] };
-            if (adicionarFila(arq)) novos++; toast('Motor de planilhas indisponível: ' + arq.nome); return;
-          }
-          if (planilha && MPG && MPG.lerCsv) {
-            var csvTxt = arq.texto || '';
-            var csvAbas = [];
-            if ((/\.(xlsx|xls)$/i.test(arq.nome) || excelBinario) && typeof XLSX !== 'undefined') {
-              try {
-                var wb = XLSX.read(arq.bytes || arq.texto, { type: arq.bytes ? 'array' : 'string' });
-                csvAbas = wb.SheetNames.map(function (nomeAba) {
-                  return XLSX.utils.sheet_to_csv(wb.Sheets[nomeAba], { FS: ';' });
-                });
-                csvTxt = csvAbas.join('\n');
-              } catch (ex) {
-                arq.tipo = 'pgdas';
-                arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-Excel', erros: ['Não foi possível ler o Excel: ' + ex.message], avisos: [] };
-                if (adicionarFila(arq)) novos++; toast('Erro ao ler Excel: ' + ex.message); return;
+    var total = fs.length, processados = 0, novos = 0, repetidos = 0;
+    return fs.reduce(function (p, f) { return p.then(function () {
+      var envio = (window.ReversaDocumentUpload && typeof window.ReversaDocumentUpload.send === 'function') ? window.ReversaDocumentUpload.send(f).catch(function () { return { ok: false }; }) : Promise.resolve({ ok: true });
+      return envio.then(function () { return ehZip(f) ? abrirZip(f) : ehPdf(f) ? lerPdfArquivo(f) : lerArquivo(f).then(function (a) { return [a]; }); })
+        .catch(function (e) { return [{ nome: f.name, texto: '', pdfErro: 'Falha ao abrir: ' + e.message }]; })
+        .then(function (listaArquivo) { return listaArquivo.reduce(function (q, arq) { return q.then(function () {
+          return extrairPdf(arq).catch(function (e) { arq.pdfErro = 'Falha ao extrair PDF: ' + e.message; return arq; }).then(function () {
+            return hashConteudo(arq).then(function (hash) {
+              arq.hash = hash; var anterior = fila.find(function (x) { return x.hash === hash; });
+              if (anterior && anterior.lido && anterior.lido.erros && anterior.lido.erros.length) fila.splice(fila.indexOf(anterior), 1); else if (anterior) { repetidos++; return; }
+              if (/\.(rec|p7s)$/i.test(arq.nome)) { arq.tipo = 'apoio'; arq.lido = { arquivo: arq.nome, erros: [], avisos: ['Recibo/assinatura preservado como apoio; não entra no cálculo.'] }; fila.push(arq); novos++; return; }
+              var excelBinario = arq.bytes && arq.bytes.length > 3 && arq.bytes[0] === 80 && arq.bytes[1] === 75 && arq.bytes[2] === 3 && arq.bytes[3] === 4;
+              var planilha = /\.(csv|xlsx|xls)$/i.test(arq.nome) || excelBinario;
+              if (planilha && MPG && MPG.lerCsv) {
+                var csvTxt = arq.texto || '', abas = [];
+                if (/\.(xlsx|xls)$/i.test(arq.nome) || excelBinario) {
+                  if (typeof XLSX === 'undefined') throw new Error('Biblioteca de planilhas indisponível.');
+                  var wb = XLSX.read(arq.bytes, { type: 'array' }); abas = wb.SheetNames.map(function (n) { return XLSX.utils.sheet_to_csv(wb.Sheets[n], { FS: ';' }); }); csvTxt = abas.join('\n');
+                }
+                if (/\|0000\|/.test(csvTxt)) { arq.texto = csvTxt; try { lerNaFila(arq); } catch (e) { arq.lido = { arquivo: arq.nome, erros: ['Falha no parser: ' + e.message], avisos: [] }; } fila.push(arq); novos++; return; }
+                var rows = abas.length ? abas.reduce(function (all, aba) { return all.concat(MPG.lerCsv(aba)); }, []) : MPG.lerCsv(csvTxt);
+                rows.forEach(function (r, i) { fila.push({ nome: arq.nome + ' · linha ' + (i + 2), texto: '', tipo: 'pgdas', hash: hash + ':' + i, lido: r }); novos++; });
+                if (!rows.length) { arq.tipo = 'pgdas'; arq.lido = { arquivo: arq.nome, erros: ['Nenhuma competência reconhecida na planilha.'], avisos: [] }; fila.push(arq); novos++; }
+                return;
               }
-            } else if (/\.(xlsx|xls)$/i.test(arq.nome) || excelBinario) {
-              arq.tipo = 'pgdas';
-              arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-Excel', erros: ['A biblioteca de leitura do Excel não carregou; o arquivo foi mantido na fila para correção.'], avisos: [] };
-              if (adicionarFila(arq)) novos++; toast('A biblioteca de leitura do Excel não carregou: ' + arq.nome); return;
-            }
-            // A extensão não define o documento: uma planilha também pode carregar EFD.
-            if (/\|0000\|/.test(csvTxt)) {
-              arq.texto = csvTxt;
-              lerNaFila(arq); if (adicionarFila(arq)) novos++; return;
-            }
-            var rows = csvAbas.length ? csvAbas.reduce(function (todos, aba) { return todos.concat(MPG.lerCsv(aba)); }, []) : MPG.lerCsv(csvTxt);
-            rows.forEach(function (r, i) {
-              var fake = { nome: arq.nome + ' · linha ' + (i + 2), texto: '', pdf: false };
-              fake.tipo = 'pgdas'; fake.lido = r; fila.push(fake); novos++;
+              try { lerNaFila(arq); } catch (e) { arq.lido = { arquivo: arq.nome, erros: ['Falha no parser: ' + e.message], avisos: [] }; }
+              fila.push(arq); novos++;
             });
-            if (!rows.length) {
-              arq.tipo = 'pgdas';
-              arq.lido = { arquivo: arq.nome, documento: 'PGDAS-D-CSV', erros: ['Nenhuma competência reconhecida na planilha; o arquivo foi mantido na fila para correção.'], avisos: [] };
-              if (adicionarFila(arq)) novos++; toast('Planilha sem competências reconhecidas: ' + esc(arq.nome));
-            }
-            return;
-          }
-          if (fila.some(function (x) { return x.nome === arq.nome && x.texto.length === arq.texto.length; })) { repetidos++; return; }
-          lerNaFila(arq); if (adicionarFila(arq)) novos++;
-        });
-        if ((estado.res || estado.prev) && !estado.exemplo && novos) limparResultado();
-        renderFila();
-        toast(novos + ' documento(s) adicionado(s)' + (repetidos ? ' · ' + repetidos + ' já estava(m) na lista' : '') + '. Confira e clique em Gerar diagnóstico.');
-      })
-      .catch(function (e) { toast(e.message); });
+          }).catch(function (e) { arq.lido = { arquivo: arq.nome, erros: ['Falha de leitura: ' + e.message], avisos: [] }; fila.push(arq); novos++; });
+        }); }, Promise.resolve([])); }).then(function () { processados++; renderFila(); $('fila-resumo').textContent = 'Processados ' + processados + '/' + total + ' arquivo(s) · ' + fila.length + ' na lista'; });
+    }); }, Promise.resolve([])).then(function () { if ((estado.res || estado.prev) && !estado.exemplo && novos) limparResultado(); renderFila(); toast(novos + ' documento(s) adicionado(s)' + (repetidos ? ' · ' + repetidos + ' repetido(s)' : '') + '. Confira e clique em Gerar diagnóstico.'); }).catch(function (e) { toast('Falha no lote: ' + e.message); }).finally(function () { ingesting = false; $('arquivos').disabled = false; renderFila(); });
   }
   function proximoMes(c) { var a = +c.slice(0, 4), m = +c.slice(5, 7) + 1; if (m > 12) { m = 1; a++; } return a + '-' + (m < 10 ? '0' : '') + m; }
   function renderFila() {
@@ -1716,8 +1709,9 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     if (dv.length && !tec.some(function (x) { return x.tipo === 'ecf'; })) alertas.push(['w', dv.length + ' DARF(s) enviado(s) sem ECF: o DARF só é conferido contra a ECF do mesmo ano.']);
     var dc = dctfValidos();
     var pg = pgdasValidos();
-    var inval = fila.length - validos.length - es.length - tec.length - dv.length - dc.length - pg.length;
-    if (inval) alertas.push(['e', inval + ' arquivo(s) estão com regra não encontrada e não entrarão no cálculo enquanto permanecerem com erro.']);
+    var apoio = fila.filter(function (x) { return x.tipo === 'apoio'; });
+    var inval = fila.length - validos.length - es.length - tec.length - dv.length - dc.length - pg.length - apoio.length - comprovantesValidos().length;
+    if (inval) alertas.push(['e', inval + ' documento(s) precisam de revisão de leitura. Consulte o motivo em cada linha; os demais documentos podem ser processados.']);
     $('fila-alertas').innerHTML = alertas.map(function (a) { return '<li' + (a[0] === 'e' ? ' class="e"' : '') + '>' + a[1] + '</li>'; }).join('');
     var ord = fila.slice().sort(function (a, b) { var x = a.lido.meta, y = b.lido.meta; return ((x && x.competencia) || '').localeCompare((y && y.competencia) || '') || a.nome.localeCompare(b.nome); });
     $('fila-tab').innerHTML = '<thead><tr><th>Arquivo</th><th>Empresa</th><th>Competência</th><th>Regime</th><th>Tipo</th><th>Situação</th><th></th></tr></thead><tbody>' + ord.map(function (x) {
@@ -1726,11 +1720,12 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       if (ehDarf(x)) return linhaDarf(x);
       if (ehDctf(x)) return linhaDctf(x);
       if (ehPgdas(x)) return linhaPgdas(x);
+      if (x.tipo === 'apoio') return '<tr><td>' + esc(x.nome) + '</td><td>—</td><td>—</td><td>—</td><td>Documento de apoio</td><td><span class="pill ok">PRESERVADO</span></td><td><button type="button" class="rm" data-rm="' + fila.indexOf(x) + '" title="Remover da lista" aria-label="Remover ' + esc(x.nome) + '">✕</button></td></tr>';
       var l = x.lido, m = l.meta, st = l.erros.length ? '<span class="pill bad" title="' + esc(l.erros.join(' ')) + '">ERRO — ' + esc(l.erros[0]) + '</span>' : l.avisos.length ? '<span class="pill warn" title="' + esc(l.avisos.join(' ')) + '">COM AVISOS (' + l.avisos.length + ')</span>' : '<span class="pill ok">OK</span>';
       return '<tr><td>' + esc(x.nome) + '</td><td>' + (m ? esc(m.nome) + '<br><small>' + cnpjFmt(m.cnpj) + '</small>' : '—') + '</td><td>' + (m ? compFmt(m.competencia) : '—') + '</td><td>' + (m ? esc(m.regime || '—') : '—') + '</td><td>' + (m ? (m.retificadora ? 'Retificadora' : 'Original') : '—') + '</td><td>' + st + '</td><td><button type="button" class="rm" data-rm="' + fila.indexOf(x) + '" title="Remover da lista" aria-label="Remover ' + esc(x.nome) + '">✕</button></td></tr>';
     }).join('') + '</tbody>';
     $('fila-resumo').textContent = fila.length + ' documento(s) na lista · ' + (validos.length + es.length + tec.length + dv.length + dc.length + pg.length) + ' reconhecido(s)';
-    $('fila-gerar').disabled = !validos.length && !es.length && !tec.length && !dv.length && !dc.length && !pg.length;
+    $('fila-gerar').disabled = ingesting || (!validos.length && !es.length && !tec.length && !dv.length && !dc.length && !pg.length);
   }
   function linhaTec(x) {
     var l = x.lido, nome = { ecf: 'ECF', ecd: 'ECD', icms: 'EFD ICMS/IPI' }[x.tipo];
@@ -1767,7 +1762,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     var validos = efdValidos(), es = esValidos(), tec = tecValidos();
     if (!validos.length && !es.length && !tec.length && !darfValidos().length && !dctfValidos().length && !pgdasValidos().length) return;
     var btn = $('fila-gerar'); btn.disabled = true;
-    carregarSelic().then(function () { btn.disabled = false; gerarDiagnostico(validos, es, tec); });
+    carregarSelic().then(function () { gerarDiagnostico(validos, es, tec); }).catch(function (e) { toast('Não foi possível gerar o diagnóstico: ' + e.message); }).finally(function () { btn.disabled = false; });
   });
   var NOME_TEC = { ecf: 'ECF', ecd: 'ECD', icms: 'EFD ICMS/IPI' };
   function gerarDiagnostico(validos, es, tec) {
@@ -2005,22 +2000,28 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     var ln = function (o) { return sc ? '<br>Atualizado pela Selic (estimativa): ' + sAt(o) : ''; };
     $('kpis').innerHTML =
       kpi('all', 'Total potencial apurado', R(potencialTotal), 'Inclui teses calculadas, potenciais, riscos e valores técnicos EFD/ICMS que exigem validação') +
-      kpi('main', 'Recuperável no prazo', R(noPrazo), (fora > 0 ? R(fora) + ' em competências possivelmente prescritas' : 'Teses pacificadas' + (sc ? '' : ', sem Selic')) + ln(sc && sc.resumo.recuperavelNoPrazo)) +
+      kpi('main', 'Potencial das oportunidades PIS/COFINS', R(potencialTeses), 'Composição por tese abaixo') +
       kpi('', 'PIS', R(z.recuperavelNoPrazo.pis), 'COFINS ' + R(z.recuperavelNoPrazo.cofins) + (sc ? '<br>Selic (estim.): PIS ' + R(sc.resumo.recuperavelNoPrazo.pisAt) + ' · COFINS ' + R(sc.resumo.recuperavelNoPrazo.cofinsAt) : '')) +
       kpi('pot', 'Potencial a validar', R(z.potencial.pis + z.potencial.cofins), 'Insumos, depende de análise' + ln(sc && sc.resumo.potencial)) +
       kpi('risk', 'Risco identificado', R(z.risco.pis + z.risco.cofins), 'Crédito sobre ICMS após 05/2023' + ln(sc && sc.resumo.risco));
 
     // quadro das teses
     var linhas = res.teses.map(function (t) {
-      var tot = t.totalNoPrazo.pis + t.totalNoPrazo.cofins;
+      var tot = t.total.pis + t.total.cofins;
       return '<tr class="clic" data-tese="' + t.id + '"><td><strong>' + esc(t.curto) + '</strong></td><td>' + natureza(t.natureza) + '</td><td>' + esc(t.classificacao) + '</td><td>' + esc(t.regimes) + '</td>' +
-        '<td class="r">' + (t.aplicavel ? t.total.itensComValor + ' / ' + t.total.itens : '—') + '</td><td class="r">' + R(t.totalNoPrazo.pis) + '</td><td class="r">' + R(t.totalNoPrazo.cofins) + '</td><td class="r"><strong>' + R(tot) + '</strong></td>' +
+        '<td class="r">' + (t.aplicavel ? t.total.itensComValor + ' / ' + t.total.itens : '—') + '</td><td class="r">' + R(t.total.pis) + '</td><td class="r">' + R(t.total.cofins) + '</td><td class="r"><strong>' + R(tot) + '</strong></td>' +
         (sc ? '<td class="r"' + (sc.teses[t.id].semSelic ? ' title="' + esc(sc.teses[t.id].motivoSemSelic) + '"' : '') + '>' + sAt(sc.teses[t.id].totalNoPrazo) + (sc.teses[t.id].semSelic ? '<br><small>crédito escritural — sem Selic</small>' : (t.id === 'lei14592' ? '<br><small>juros de mora sobre débito</small>' : '')) + '</td>' : '') + '</tr>';
     }).join('') + res.catalogo.filter(function (c) { return !c.calculada; }).map(function (c) {
       return '<tr><td>' + esc(c.curto) + '</td><td>' + natureza(c.natureza) + '</td><td>' + esc(c.classificacao) + '</td><td>' + esc(c.regimes) + '</td><td class="r">Pendente</td><td class="r">Pendente</td><td class="r">Pendente</td><td class="r">Pendente</td>' + (sc ? '<td class="r">Pendente</td>' : '') + '</tr>';
     }).join('');
-    $('tab-teses').innerHTML = '<thead><tr><th>Tese</th><th>Natureza</th><th>Classificação</th><th>Regimes</th><th class="r">Itens c/ valor</th><th class="r">PIS no prazo</th><th class="r">COFINS no prazo</th><th class="r">Total no prazo</th>' + (sc ? '<th class="r">Atualizado pela Selic (estimativa)</th>' : '') + '</tr></thead><tbody>' + linhas +
-      '</tbody><tfoot><tr><td colspan="5">Recuperável no prazo (só teses pacificadas)</td><td class="r">' + R(z.recuperavelNoPrazo.pis) + '</td><td class="r">' + R(z.recuperavelNoPrazo.cofins) + '</td><td class="r">' + R(noPrazo) + '</td>' + (sc ? '<td class="r">' + sAt(sc.resumo.recuperavelNoPrazo) + '</td>' : '') + '</tr></tfoot>';
+    (tec.detalhes || []).forEach(function (d) {
+      [['Créditos escriturados de ICMS', d.credito], ['Saldo credor de ICMS a transportar', Math.max(0, d.saldoCredorATransportar || 0)]].forEach(function (item) {
+        if (!item[1]) return;
+        linhas += '<tr><td><strong>' + item[0] + '</strong><details><summary>Documento de origem</summary>' + esc(d.arquivo) + ' · ' + esc(d.competencia) + ' · registro E110</details></td><td>Valor declarado</td><td>Revisão da equipe</td><td>Conforme escrituração</td><td>—</td><td>—</td><td>—</td><td class="r">' + R(Math.round(item[1] * 100)) + '</td>' + (sc ? '<td>—</td>' : '') + '</tr>';
+      });
+    });
+    $('tab-teses').innerHTML = '<thead><tr><th>Oportunidade / composição</th><th>Natureza</th><th>Classificação</th><th>Regimes</th><th class="r">Itens c/ valor</th><th class="r">PIS</th><th class="r">COFINS</th><th class="r">Potencial nominal</th>' + (sc ? '<th class="r">Atualizado pela Selic</th>' : '') + '</tr></thead><tbody>' + linhas +
+      '</tbody><tfoot><tr><td colspan="7">Total da composição analisada</td><td class="r">' + R(potencialTotal) + '</td>' + (sc ? '<td>—</td>' : '') + '</tr></tfoot>';
     var nc = $('selic-nota-cred'), nh = notaSelic(sc && sc.estimados); nc.innerHTML = nh || ''; nc.hidden = !nh;
     Array.prototype.forEach.call(document.querySelectorAll('#tab-teses tr.clic'), function (tr) {
       tr.addEventListener('click', function () { estado.tese = tr.getAttribute('data-tese'); renderTese(); $('t-det').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
