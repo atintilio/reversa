@@ -10,7 +10,7 @@ A instalação e validação na VPS permanecem no item 34.
 5. ✅ ~~Processamento dos documentos disponíveis com registro de lacunas.~~
 6. ✅ ~~Distinguir documento ausente, declaração não encontrada, acesso indisponível e consulta inconclusiva.~~
 7. ✅ ~~Dossiê de Documentos completo no workspace.~~
-8. 🟡 Provisionar e validar storage persistente na VPS (script pronto; execução não validada).
+8. ✅ ~~Provisionar e validar storage persistente na VPS.~~ (validado na VPS-905340)
 9. ✅ ~~Planilha automática de completude.~~
 10. ✅ ~~Planilha comparativa de retificações.~~
 11. ✅ ~~Planilha de PER/DCOMPs.~~
