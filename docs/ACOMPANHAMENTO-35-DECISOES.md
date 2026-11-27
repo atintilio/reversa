@@ -24,18 +24,18 @@ A instalação e validação na VPS permanecem no item 34.
 19. ✅ ~~Remover exclusão automática de teses do potencial por classificação.~~
 20. ✅ ~~Avaliar todas as teses cadastradas aplicáveis.~~
 21. 🟡 Validar integralmente a geração do diagnóstico (testes de módulos; ponta a ponta pendente).
-22. 🔴 Reorganizar preliminar e separar execução.
+22. 🟡 Reorganizar preliminar e separar execução (estrutura definida; integração visual completa pendente).
 23. ✅ ~~Navegação fluida mantendo identidade visual.~~ (publicada e validada na VPS)
-24. 🟡 Workspace, versões anteriores e cadastro sem documentos (base documental pronta; UX completa pendente).
-25. 🔴 Memória de cálculo com fórmula e documento de origem.
+24. 🟡 Workspace, versões anteriores e cadastro sem documentos (motor pronto; UX completa pendente).
+25. 🟡 Memória de cálculo com fórmula e documento de origem (motor pronto; integração ao PDF pendente).
 26. 🔴 Conectar diagnóstico, dossiê e execução.
-27. 🔴 Nominal, Selic e total atualizado conciliados.
-28. 🟡 Etapas operacionais com evidências e revisão humana (revisão humana preservada; fluxo completo pendente).
-29. 🔴 Projeção de compensação baseada nos tributos do cliente.
-30. 🔴 Dashboard temporal de estoque, utilização e faturamento.
+27. 🟡 Nominal, Selic e total atualizado conciliados (motor pronto; integração completa pendente).
+28. 🟡 Etapas operacionais com evidências e revisão humana (motor pronto; tela/fluxo completo pendente).
+29. 🟡 Projeção de compensação baseada nos tributos do cliente (motor pronto; integração ao CRM pendente).
+30. 🟡 Dashboard temporal de estoque, utilização e faturamento (motor pronto; tela consolidada pendente).
 31. 🟡 Cards operacionais limpos, restritos à tela (potencial principal ajustado; reorganização completa pendente).
 32. 🔴 Fluxo mensal com contabilidade, e-mail e WhatsApp.
-33. 🔴 Validar Tax ID no banco da VPS.
+33. 🟡 Validar Tax ID no banco da VPS (validador pronto; execução na VPS pendente).
 34. 🔴 Publicação e verificação na VPS atrás do Cloudflare.
 35. 🔴 Teste ponta a ponta na versão publicada.
 
