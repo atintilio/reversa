@@ -13,6 +13,7 @@ const execucao = require('../../lib/domain/execucao');
 const pgfn = require('../../lib/domain/pgfn');
 const selicFontes = require('../../lib/selic-fontes');
 const history = require('../../lib/domain/history');
+const dossier = require('../../lib/dossier');
 
 function deny(ctx, permission, action) {
   if (can(ctx, permission)) return;
@@ -81,6 +82,12 @@ async function route(req, res) {
       return method(res, ['PATCH', 'DELETE', 'POST']);
 
     case 'taxpayers':
+      if (id && action === 'dossier') {
+        const client = await tax.getTaxpayer(ctx, id);
+        if (m === 'GET') return json(res, 200, dossier.workspace({ id: client.taxpayer.id, nome: client.taxpayer.razao_social || client.taxpayer.nome, cnpj: client.taxpayer.cnpj, documentos: client.taxpayer.document_count || 0 }));
+        if (m === 'POST') { deny(ctx, 'write', 'dossier.write'); return json(res, 200, dossier.memory(body.lines || [], { selic: body.selic })); }
+        return method(res, ['GET', 'POST']);
+      }
       if (id && action === 'documents') {
         const client = await tax.getTaxpayer(ctx, id); // Verifica acesso à organização antes do storage.
         const store = require('../../lib/document-store').createStore(process.env.REVERSA_DOCUMENT_ROOT);
