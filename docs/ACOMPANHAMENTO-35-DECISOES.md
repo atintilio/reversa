@@ -25,7 +25,7 @@ A instalação e validação na VPS permanecem no item 34.
 20. ✅ ~~Avaliar todas as teses cadastradas aplicáveis.~~
 21. 🟡 Validar integralmente a geração do diagnóstico (testes de módulos; ponta a ponta pendente).
 22. 🔴 Reorganizar preliminar e separar execução.
-23. 🔴 Navegação fluida mantendo identidade visual.
+23. ✅ ~~Navegação fluida mantendo identidade visual.~~ (publicada e validada na VPS)
 24. 🟡 Workspace, versões anteriores e cadastro sem documentos (base documental pronta; UX completa pendente).
 25. 🔴 Memória de cálculo com fórmula e documento de origem.
 26. 🔴 Conectar diagnóstico, dossiê e execução.
