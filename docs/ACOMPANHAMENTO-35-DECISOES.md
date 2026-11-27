@@ -9,21 +9,21 @@ A instalação e validação na VPS permanecem no item 34.
 4. ~~Deduplicação por conteúdo e preservação de versões.~~
 5. ~~Processamento dos documentos disponíveis com registro de lacunas.~~
 6. ~~Distinguir documento ausente, declaração não encontrada, acesso indisponível e consulta inconclusiva.~~
-7. Dossiê de Documentos completo no workspace.
+7. ~~Dossiê de Documentos completo no workspace.~~
 8. Provisionar e validar storage persistente na VPS.
-9. Planilha automática de completude.
-10. Planilha comparativa de retificações.
-11. Planilha de PER/DCOMPs.
-12. Segmentação por histórico de regime integrada aos motores.
-13. Janela máxima de cinco anos uniforme.
-14. Projeção por amostra, cobertura, confiança e limitações.
-15. Total potencial consistente como valor principal.
-16. Composição rastreável das oportunidades.
-17. Separação de saldos escriturados e oportunidades, sem dupla contagem.
+9. ~~Planilha automática de completude.~~
+10. ~~Planilha comparativa de retificações.~~
+11. ~~Planilha de PER/DCOMPs.~~
+12. ~~Segmentação por histórico de regime integrada aos motores.~~
+13. ~~Janela máxima de cinco anos uniforme.~~
+14. ~~Projeção por amostra, cobertura, confiança e limitações.~~
+15. ~~Total potencial consistente como valor principal.~~
+16. ~~Composição rastreável das oportunidades.~~
+17. ~~Separação de saldos escriturados e oportunidades, sem dupla contagem.~~
 18. Substituir Recuperável no prazo na apresentação principal.
-19. Remover exclusão automática de teses do potencial por classificação.
-20. Avaliar todas as teses cadastradas aplicáveis.
-21. Validar integralmente a geração do diagnóstico.
+19. ~~Remover exclusão automática de teses do potencial por classificação.~~
+20. ~~Avaliar todas as teses cadastradas aplicáveis.~~
+21. ~~Validar integralmente a geração do diagnóstico.~~
 22. Reorganizar preliminar e separar execução.
 23. Navegação fluida mantendo identidade visual.
 24. Workspace, versões anteriores e cadastro sem documentos.
