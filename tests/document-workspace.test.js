@@ -14,3 +14,9 @@ test('exportação CSV usa separador semicolon e escapa conteúdo', () => {
   assert.match(out, /^id;nome;tipo;/);
   assert.match(out, /"a;original\.xml"/);
 });
+
+test('exportação de completude preserva lacunas e evidências', () => {
+  const out = W.exportCompletude({ result: [{ tipo: 'dctfweb', competencia: '2024-01', estado: 'documento_ausente' }] });
+  assert.match(out, /tipo;competencia;estado;evidencia;consultadaEm/);
+  assert.match(out, /dctfweb;2024-01;documento_ausente/);
+});
