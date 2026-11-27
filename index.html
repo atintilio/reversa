@@ -123,7 +123,7 @@ input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
 
 /* resumo */
 .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-.kpi { padding: 20px 18px; display: grid; gap: 6px; align-content: start; }
+.kpi { padding: 20px 18px; display: grid; gap: 6px; align-content: start; border: 0; background: transparent; color: inherit; text-align: left; font: inherit; cursor: pointer; }
 .kpi + .kpi { border-left: 1px solid var(--line); }
 .kpi .lbl { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted-fg); font-weight: 600; }
 .kpi .val { font-family: var(--f-display); font-size: 1.6rem; line-height: 1.1; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -2002,6 +2002,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       kpi('', 'PIS nominal', R(z.recuperavel.pis), 'COFINS nominal ' + R(z.recuperavel.cofins) + (sc ? '<br>Selic estimada em coluna separada' : '')) +
       kpi('pot', 'Potencial a validar', R(z.potencial.pis + z.potencial.cofins), 'Insumos, depende de análise' + ln(sc && sc.resumo.potencial)) +
       kpi('risk', 'Risco identificado', R(z.risco.pis + z.risco.cofins), 'Crédito sobre ICMS após 05/2023' + ln(sc && sc.resumo.risco));
+    bindKpis();
 
     // quadro das teses
     var linhas = res.teses.map(function (t) {
@@ -2258,7 +2259,22 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     p.teses.forEach(function (t) { t.rubricas.forEach(function (r) { rows.push([t.nome, r.cod, r.tab, r.dsc, r.natRubr, r.codIncCP, r.motivo, String(r.base).replace('.', ',')]); }); });
     salvar('Rubricas-eSocial-' + (p.empregador.cnpjRaiz || 'empresa') + '.csv', new Blob(['\ufeff' + rows.map(function (r) { return r.map(function (c) { return '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"'; }).join(';'); }).join('\r\n')], { type: 'text/csv;charset=utf-8' }));
   });
-  function kpi(cls, lbl, val, sub) { return '<div class="kpi ' + cls + '"><span class="lbl">' + lbl + '</span><span class="val">' + val + '</span><span class="sub">' + sub + '</span></div>'; }
+  function kpiTarget(lbl) {
+    var s = String(lbl).toLowerCase();
+    if (s.indexOf('document') >= 0 || s.indexOf('evento') >= 0) return 't-arquivos';
+    if (s.indexOf('cobertura') >= 0 || s.indexOf('pend') >= 0 || s.indexOf('risco') >= 0) return 't-cob';
+    if (s.indexOf('selic') >= 0 || s.indexOf('potencial') >= 0 || s.indexOf('saldo') >= 0) return 't-teses';
+    return 'resumo';
+  }
+  function kpi(cls, lbl, val, sub) {
+    var target = kpiTarget(lbl);
+    return '<button type="button" class="kpi ' + cls + '" data-kpi-target="' + target + '" aria-label="Abrir detalhamento: ' + esc(lbl) + '"><span class="lbl">' + lbl + '</span><span class="val">' + val + '</span><span class="sub">' + sub + '</span></button>';
+  }
+  function bindKpis() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-kpi-target]'), function (b) {
+      b.addEventListener('click', function () { var e = document.getElementById(b.getAttribute('data-kpi-target')); if (e) e.closest('section').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    });
+  }
 
   function renderTese() {
     var t = tese(estado.tese) || estado.res.teses[0];
