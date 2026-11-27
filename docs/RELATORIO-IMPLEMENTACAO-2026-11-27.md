@@ -9,8 +9,11 @@ Há formulário para registrar competência esperada e resultado da consulta. Re
 não satisfaz declaração ausente. Documentos disponíveis continuam processáveis.
 O código preserva os originais em diretório privado fora do repositório.
 
-Verificação: nove testes automatizados aprovados de fila, inventário, storage, CLI e
-API com dependências controladas, além da validação de sintaxe.
+Verificação: quinze testes automatizados aprovados de fila, inventário, storage, CLI,
+API, workspace, projeção por regime e composição auditável, além da validação de sintaxe.
+
+Segundo lote publicado: workspace/exportações CSV, segmentação por regime, janela
+uniforme de até 60 meses, projeção por amostra e composição sem exclusão automática.
 
 Operação: `INGESTAO-LINHA-DE-COMANDO.md`. Configurar `REVERSA_DOCUMENT_ROOT` no serviço
 da VPS; `deploy/configura-storage.sh` prepara o diretório na instalação nativa.
