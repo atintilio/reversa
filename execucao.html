@@ -123,6 +123,11 @@
 
   function carregar() {
     return RV.api('GET', '/api/v1/execucoes').then(function (r) {
+      var caso = new URLSearchParams(location.search).get('caso');
+      if (caso) {
+        r.candidatos = r.candidatos.filter(function (c) { return c.caseId === caso; });
+        r.execucoes = r.execucoes.filter(function (c) { return c.caseId === caso; });
+      }
       dados = r; $('conteudo').hidden = false;
       $('sec-cand').hidden = !r.candidatos.length;
       $('tab-cand').innerHTML = '<thead><tr><th>Cliente</th><th>Parceiro</th><th></th></tr></thead><tbody>' + r.candidatos.map(function (c) {

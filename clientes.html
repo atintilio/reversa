@@ -52,7 +52,7 @@
   <a class="voltar" href="/clientes.html">← Todos os clientes</a>
   <div class="cab">
     <div><h1 id="p-nome"></h1><p class="sub" id="p-sub"></p></div>
-    <div class="acoes"><a class="btn" id="p-pdf" href="#" download title="Diagnóstico executivo: Fiscal e Previdenciário">Exportar PDF</a><a class="btn sec" id="p-crm" href="/crm.html">Abrir no CRM</a><a class="btn" href="/">Novo diagnóstico</a><button class="sec" id="p-editar" type="button" data-write hidden>Editar dados</button></div>
+    <div class="acoes"><a class="btn" id="p-pdf" href="#" download>Exportar relatório do CRM</a><a class="btn sec" id="p-crm" href="/crm.html">Abrir no CRM</a><a class="btn" id="p-novo-dti" href="/">Novo DTI</a><button class="sec" id="p-editar" type="button" data-write hidden>Editar dados</button></div>
   </div>
   <section class="card" aria-labelledby="t-fase">
     <h2 id="t-fase">Fase comercial</h2>
@@ -69,7 +69,8 @@
   </section>
   <div class="dois">
     <section class="card" aria-labelledby="t-diag">
-      <h2 id="t-diag">Diagnósticos</h2>
+      <h2 id="t-diag">DTI e versões anteriores</h2>
+      <div id="p-versoes" aria-live="polite"></div>
       <div id="p-diags"></div>
     </section>
     <div style="display:grid;gap:24px">
@@ -77,6 +78,15 @@
       <section class="card" aria-labelledby="t-hist"><h2 id="t-hist">Histórico</h2><ul class="hist" id="p-hist"></ul></section>
     </div>
   </div>
+  <section class="card" aria-labelledby="t-compensacao">
+    <h2 id="t-compensacao">Potencial de compensação</h2>
+    <form id="p-compensacao">
+      <label>Saldo de crédito (R$)<input name="credito" type="number" min="0" max="999999999999" step="0.01" required></label>
+      <label>Tributos mensais (R$)<input name="tributos" type="number" min="0.01" max="999999999999" step="0.01" required></label>
+      <button type="submit">Projetar</button>
+      <output aria-live="polite"></output>
+    </form>
+  </section>
 </main>
 
 <dialog id="dlg" aria-labelledby="dlg-t">
@@ -156,6 +166,31 @@
   $('lista').addEventListener('click', function (e) { var tr = e.target.closest('tr[data-id]'); if (tr && !e.target.closest('a')) location.href = '/clientes.html?id=' + tr.dataset.id; });
 
   // ---------- pasta
+  $('p-compensacao').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var credito = Math.round(this.elements.credito.valueAsNumber * 100);
+    var tributos = Math.round(this.elements.tributos.valueAsNumber * 100);
+    var meses = Math.ceil(credito / tributos);
+    var ultimo = credito ? credito - (meses - 1) * tributos : 0;
+    this.querySelector('output').textContent = meses + (meses === 1 ? ' mês' : ' meses') + (meses ? ' · ' + RV.reais(ultimo) + ' no último mês' : '');
+  });
+  function renderVersoes(versoes) {
+    $('p-versoes').innerHTML = versoes.length ? '<ul>' + versoes.map(function (d) {
+      var destino = d.batchId && document.getElementById('dti-' + d.batchId);
+      var titulo = RV.esc(d.code + ' · versão ' + d.versao + ' · ' + d.tipo);
+      return '<li>' + (destino ? '<a href="#' + RV.esc(destino.id) + '">' + titulo + '</a>' : titulo) +
+        ' · ' + (d.status === 'vigente' ? 'Vigente' : 'Anterior') + ' · ' + RV.data(d.createdAt) +
+        (d.caseId ? ' · <a href="/execucao.html?caso=' + encodeURIComponent(d.caseId) + '">Execução do caso</a>' : '') + '</li>';
+    }).join('') + '</ul>' : '<p class="muted">Nenhuma versão registrada.</p>';
+  }
+  function memoriaDti(linhas) {
+    if (!linhas || !linhas.length) return '';
+    return '<details><summary>Memória de cálculo</summary><ul>' + linhas.map(function (l) {
+      return '<li>' + RV.esc(l.competencia + ' · ' + l.origem) + '<br>' +
+        'PIS ' + RV.reais(l.pis) + ' + COFINS ' + RV.reais(l.cofins) + ' = nominal ' + RV.reais(l.nominal) +
+        (l.selic === null ? ' · Selic indisponível' : ' + Selic ' + RV.reais(l.selic) + ' = ' + RV.reais(l.atualizado)) + '</li>';
+    }).join('') + '</ul></details>';
+  }
   function lotes(analyses) {
     var g = {}, ordem = [];
     analyses.forEach(function (a) { var k = (a.summary && a.summary.batch_id) || a.id; if (!g[k]) { g[k] = []; ordem.push(k); } g[k].push(a); });
@@ -164,6 +199,7 @@
   function renderPasta(j) {
     pasta = j; var t = j.taxpayer, caso = j.cases[0];
     $('p-crm').href = '/crm.html?id=' + t.id;
+    $('p-novo-dti').href = '/?cliente=' + encodeURIComponent(t.id);
     $('p-pdf').href = '/api/v1/crm/clients/' + t.id + '/report';
     document.title = t.legalName + ' · Reversa Tax';
     $('p-nome').textContent = t.legalName;
@@ -187,13 +223,13 @@
     var revisa = RV.pode('review');
     $('p-diags').innerHTML = j.analyses.length ? lotes(j.analyses).map(function (lote, n) {
       var a0 = lote[0];
-      return '<div style="margin-bottom:22px"><h3 style="font-size:1rem;margin:0 0 4px">' + (n === 0 ? 'Mais recente · ' : '') + RV.data(a0.calculatedAt, true) + '</h3>' +
+      return '<div id="dti-' + RV.esc(a0.summary.batch_id || a0.id) + '" style="margin-bottom:22px"><h3 style="font-size:1rem;margin:0 0 4px">' + (n === 0 ? 'Mais recente · ' : '') + RV.data(a0.calculatedAt, true) + '</h3>' +
         '<p class="muted" style="font-size:13px;margin:0 0 8px">Período ' + per(a0.periodStart, a0.periodEnd) + ' · ' + (a0.summary.arquivos || 0) + ' arquivo(s) · motor ' + RV.esc(a0.engineVersion) + ' · por ' + RV.esc(a0.createdBy || '—') + '</p>' +
         '<div class="tabela"><table><thead><tr><th>Tese</th><th>Situação</th><th class="num">No prazo</th><th class="num">Total</th><th>Revisão</th><th></th></tr></thead><tbody>' +
         lote.map(function (a) {
           var s = STATUS[a.status] || [a.status, ''];
           var podeRev = revisa && /^(recoverable_|potential_|risk_)/.test(a.status);
-          return '<tr><td>' + RV.esc(a.summary.nome) + '<div class="muted" style="font-size:12px">' + (NAT[a.summary.natureza] || '') + '</div></td>' +
+          return '<tr><td>' + RV.esc(a.summary.nome) + '<div class="muted" style="font-size:12px">' + (NAT[a.summary.natureza] || '') + '</div>' + memoriaDti(a.summary.memoria) + '</td>' +
             '<td><span class="pill ' + s[1] + '">' + s[0] + '</span></td><td class="num">' + RV.reais(a.summary.no_prazo) + '</td><td class="num">' + RV.reais(a.summary.total) + '</td>' +
             '<td>' + RV.esc(REV[a.reviewStatus] || a.reviewStatus) + (a.reviewedBy ? '<div class="muted" style="font-size:12px">' + RV.esc(a.reviewedBy) + ' · ' + RV.data(a.reviewedAt) + '</div>' : '') + '</td>' +
             '<td class="num">' + (podeRev ? '<button class="mini sec" data-rev="' + a.id + '">Revisar</button>' : '') + '</td></tr>';
@@ -211,7 +247,12 @@
   }
   function carregarPasta() {
     $('v-pasta').hidden = false;
-    return RV.api('GET', '/api/v1/taxpayers/' + encodeURIComponent(id)).then(renderPasta)
+    var url = '/api/v1/taxpayers/' + encodeURIComponent(id);
+    return RV.api('GET', url).then(function (j) {
+      renderPasta(j);
+      return RV.api('GET', url + '/diagnostics').then(function (r) { renderVersoes(r.diagnostics); })
+        .catch(function () { $('p-versoes').textContent = 'Não foi possível consultar as versões.'; });
+    })
       .catch(function (e) { $('p-nome').textContent = 'Pasta não encontrada'; $('p-sub').textContent = e.message; });
   }
   function carregarAutorizacoes() {

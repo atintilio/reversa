@@ -9,7 +9,6 @@ process.env.RESET_TOKEN_PEPPER = 'teste-pepper';
 process.env.APP_BASE_URL = 'https://reversa.argusprime.com.br';
 process.env.REVERSA_USERS = 'andre:senha-legada-1';
 process.env.LEGACY_AUTH_UNTIL = '2099-12-31';
-const origError = console.error; console.error = () => {};
 
 let sql; let api; let cookie; let orgId;
 const v1 = (path, opts = {}) => call(api, { ...opts, url: '/api/v1/' + path, query: opts.query || {} });
@@ -27,9 +26,10 @@ test.before(async () => {
   await sql`insert into organization_members (organization_id, user_id, role, status) values (${orgId}, ${u.id}, 'admin', 'active')`;
   api = freshRequire('api/v1/[...route]');
   const H = { login: freshRequire('api/login') };
-  cookie = cookieFrom(await call(H.login, { method: 'POST', body: { usuario: 'a@x.com', senha: 'Senha-forte-123' } }));
+  const login = await call(H.login, { method: 'POST', cookie: 'rv_csrf=teste-dti', body: { _csrf: 'teste-dti', usuario: 'a@x.com', senha: 'Senha-forte-123' } });
+  assert.equal(login.statusCode, 303, login.body);
+  cookie = cookieFrom(login);
 });
-test.after(() => { console.error = origError; });
 
 test('primeiro diagnóstico: código DX, v1, CRM e pendência cadastral', async () => {
   const r = await salvar(); assert.equal(r.statusCode, 201, r.body);
@@ -87,4 +87,23 @@ test('responsável informado pelo parceiro vira contato principal e zera a pend�
   assert.deepEqual(J(r2).pendencias, []);
   c = await sql`select role, phone from crm_contacts where name = 'Carla Souza'`;
   assert.equal(c.length, 1); assert.equal(c[0].role, 'Controller'); assert.equal(c[0].phone, '48999990000');
+});
+
+test('DTI versionado preserva memória e origem no workspace', async () => {
+  const tese = { ...credito(18000, 2000), memoria: [{ competencia: '2025-10', origem: 'efd.txt', pis: 18000, cofins: 2000, atualizado: 21000 }] };
+  const r = await salvar({ taxpayer: { cnpj: '04.252.011/0001-10', legalName: 'Cliente com dossiê' }, teses: [tese] });
+  assert.equal(r.statusCode, 201, r.body);
+  const dti = J(r);
+  const versoes = J(await v1('taxpayers/' + dti.taxpayerId + '/diagnostics', { cookie })).diagnostics;
+  assert.equal(versoes[0].batchId, dti.batchId);
+  assert.equal(versoes[0].caseId, dti.caseId);
+  const pasta = J(await v1('taxpayers/' + dti.taxpayerId, { cookie }));
+  assert.equal(pasta.taxpayer.taxId, '04252011000110');
+  assert.equal(pasta.taxpayer.taxIdType, 'CNPJ');
+  assert.deepEqual(pasta.analyses[0].summary.memoria[0], {
+    competencia: '2025-10', origem: 'efd.txt', pis: 18000, cofins: 2000, nominal: 20000, selic: 1000, atualizado: 21000
+  });
+  const repetido = J(await salvar({ taxpayer: { cnpj: '04.252.011/0001-10', legalName: 'Cliente com dossiê' }, teses: [tese] }));
+  assert.equal(repetido.repetido, true);
+  assert.equal(repetido.versao, dti.versao);
 });

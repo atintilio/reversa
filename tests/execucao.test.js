@@ -23,7 +23,9 @@ test.before(async () => {
     const hash = await bcrypt.hash('senha-de-teste', 4);
     const id = (await sql`insert into users (email,email_normalized,name,password_hash,status) values (${email},${email},${email.split('@')[0]},${hash},'active') returning id`)[0].id;
     await sql`insert into organization_members (organization_id,user_id,role,status) values (${org},${id},${role},'active')`;
-    return cookieFrom(await call(freshRequire('api/login'), { method: 'POST', body: { usuario: email, senha: 'senha-de-teste' } }));
+    const r = await call(freshRequire('api/login'), { method: 'POST', cookie: 'rv_csrf=teste-execucao', body: { _csrf: 'teste-execucao', usuario: email, senha: 'senha-de-teste' } });
+    assert.equal(r.statusCode, 303, r.body);
+    return cookieFrom(r);
   }
   master = await login('andre@argus.test', plat, 'owner');
   analista = await login('analista@argus.test', plat, 'analyst');
@@ -33,6 +35,19 @@ test.before(async () => {
   assert.equal((await v1('cases/' + caseId, { cookie: parceiro, method: 'PATCH', body: { stage: 'contrato' } })).statusCode, 200);
 });
 test.after(async () => { await db.close(); });
+
+test('dashboard administrativo exige permissão master', async () => {
+  assert.equal((await v1('master/resumo', { cookie: parceiro })).statusCode, 403);
+  assert.equal((await v1('master/resumo', { cookie: analista })).statusCode, 403);
+  const membro = (await sql`select id from users where email_normalized = 'analista@argus.test'`)[0].id;
+  await sql`update organization_members set master = true where user_id = ${membro}`;
+  try {
+    assert.equal((await v1('master/resumo', { cookie: master })).statusCode, 200);
+    assert.equal((await v1('master/resumo', { cookie: analista })).statusCode, 200);
+  } finally {
+    await sql`update organization_members set master = false where user_id = ${membro}`;
+  }
+});
 
 test('EXE-001: parceiro não acessa; plataforma vê o caso com contrato e inicia a execução', async () => {
   assert.equal((await v1('execucoes', { cookie: parceiro })).statusCode, 403);

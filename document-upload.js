@@ -7,7 +7,22 @@
   var output = document.getElementById('document-inventory');
   function showInventory(j) {
     var inv = j.inventory || j;
-    output.textContent = (inv.documents || []).length + ' documento(s) recebido(s). ' + (inv.gaps || []).map(function (g) { return g.tipo + ' ' + g.competencia + ': ' + g.estado.replace(/_/g, ' '); }).join(' · ');
+    output.textContent = (inv.documents || []).length + ' documento(s) recebido(s).';
+    var acoes = {
+      documento_ausente: 'Solicite à contabilidade a declaração dessa competência e envie o arquivo.',
+      declaracao_nao_encontrada_ecac: 'Confirme com a contabilidade se houve entrega e solicite o recibo, se existir.',
+      acesso_nao_disponivel: 'Confirme a autorização de acesso ao perfil do cliente antes de consultar novamente.',
+      consulta_inconclusiva: 'Repita a consulta e registre o perfil, a data e a referência do resultado.'
+    };
+    (inv.gaps || []).forEach(function (g) {
+      var item = document.createElement('details');
+      var titulo = document.createElement('summary');
+      titulo.textContent = g.tipo + ' ' + g.competencia + ' · ' + g.estado.replace(/_/g, ' ');
+      var acao = document.createElement('p');
+      acao.textContent = acoes[g.estado] || 'Revise o registro da competência.';
+      item.append(titulo, acao);
+      output.append(item);
+    });
   }
   async function api(url, body) {
     var r = await fetch(url, { method: body ? 'POST' : 'GET', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(60000) });
