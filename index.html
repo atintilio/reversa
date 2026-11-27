@@ -959,7 +959,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     y += 2;
     if (res) {
     var bw = (W - 2 * M - 12) / 4, bx = M;
-    [['Recuperável no prazo', R(z.recuperavelNoPrazo.pis + z.recuperavelNoPrazo.cofins), true], ['PIS', R(z.recuperavelNoPrazo.pis)], ['COFINS', R(z.recuperavelNoPrazo.cofins)],
+    [['Potencial nominal no período', R(z.recuperavel.pis + z.recuperavel.cofins), true], ['PIS', R(z.recuperavel.pis)], ['COFINS', R(z.recuperavel.cofins)],
      ['Total geral (inclui possíveis prescritos)', R(z.recuperavel.pis + z.recuperavel.cofins)]].forEach(function (k) {
       doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.rect(bx, y, bw, 22);
       fonte('helvetica', 'bold', 7); cor(COR.suave); doc.text(t(k[0].toUpperCase()), bx + 4, y + 6);
@@ -971,7 +971,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     doc.text(t('Fora do recuperável: potencial de insumos a validar ' + R(z.potencial.pis + z.potencial.cofins) + ' · risco identificado (Lei 14.592/2023) ' + R(z.risco.pis + z.risco.cofins) + '.'), M, y); y += 7;
     if (cred) {
       fonte('helvetica', 'bold', 9); cor(COR.bronze);
-      doc.text(t('Recuperável no prazo atualizado pela Selic (estimativa): ' + R(cred.resumo.recuperavelNoPrazo.pisAt + cred.resumo.recuperavelNoPrazo.cofinsAt) + ' · os valores nominais acima são mantidos.'), M, y); y += 7;
+      doc.text(t('Atualização pela Selic (estimativa): ' + R(cred.resumo.recuperavelNoPrazo.pisAt + cred.resumo.recuperavelNoPrazo.cofinsAt) + ' · os valores nominais acima são mantidos.'), M, y); y += 7;
     }
     }
     if (opts.exemplo) {
@@ -1025,7 +1025,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         return [t(x.curto), natTxt(x.natureza), t(x.classificacao), t(x.regimes), R(x.totalNoPrazo.pis), R(x.totalNoPrazo.cofins), R(x.totalNoPrazo.pis + x.totalNoPrazo.cofins), R(x.total.pis + x.total.cofins)]
           .concat(cred ? [R(cred.teses[x.id].totalNoPrazo.pisAt + cred.teses[x.id].totalNoPrazo.cofinsAt) + (cred.teses[x.id].semSelic ? ' (crédito escritural, sem Selic)' : (x.id === 'lei14592' ? ' (juros de mora sobre débito)' : ''))] : []);
       }),
-      foot: [['Recuperável (teses pacificadas)', '', '', '', R(z.recuperavelNoPrazo.pis), R(z.recuperavelNoPrazo.cofins), R(z.recuperavelNoPrazo.pis + z.recuperavelNoPrazo.cofins), R(z.recuperavel.pis + z.recuperavel.cofins)]
+      foot: [['Potencial nominal das oportunidades', '', '', '', R(z.recuperavel.pis), R(z.recuperavel.cofins), R(z.recuperavel.pis + z.recuperavel.cofins), R(z.recuperavel.pis + z.recuperavel.cofins)]
         .concat(cred ? [R(cred.resumo.recuperavelNoPrazo.pisAt + cred.resumo.recuperavelNoPrazo.cofinsAt)] : [])],
       columnStyles: { 4: { halign: 'right' }, 5: { halign: 'right' }, 6: { halign: 'right', fontStyle: 'bold' }, 7: { halign: 'right' }, 8: { halign: 'right', fontStyle: 'bold' } }
     });
@@ -1989,8 +1989,6 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     banner();
     $('gerado').textContent = 'Motor v' + res.versaoMotor + ' · calculado em ' + new Date(res.geradoEm).toLocaleString('pt-BR');
 
-    var noPrazo = z.recuperavelNoPrazo.pis + z.recuperavelNoPrazo.cofins;
-    var fora = z.recuperavel.pis + z.recuperavel.cofins - noPrazo;
     var tec = estado.tecnicoResumo || { credito: 0, saldoCredorATransportar: 0 };
     var potencialTeses = z.recuperavel.pis + z.recuperavel.cofins + z.potencial.pis + z.potencial.cofins + z.risco.pis + z.risco.cofins;
     var potencialTotal = potencialTeses + Math.round((tec.credito + Math.max(0, tec.saldoCredorATransportar || 0)) * 100);
@@ -2001,7 +1999,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     $('kpis').innerHTML =
       kpi('all', 'Total potencial apurado', R(potencialTotal), 'Inclui teses calculadas, potenciais, riscos e valores técnicos EFD/ICMS que exigem validação') +
       kpi('main', 'Potencial das oportunidades PIS/COFINS', R(potencialTeses), 'Composição por tese abaixo') +
-      kpi('', 'PIS', R(z.recuperavelNoPrazo.pis), 'COFINS ' + R(z.recuperavelNoPrazo.cofins) + (sc ? '<br>Selic (estim.): PIS ' + R(sc.resumo.recuperavelNoPrazo.pisAt) + ' · COFINS ' + R(sc.resumo.recuperavelNoPrazo.cofinsAt) : '')) +
+      kpi('', 'PIS nominal', R(z.recuperavel.pis), 'COFINS nominal ' + R(z.recuperavel.cofins) + (sc ? '<br>Selic estimada em coluna separada' : '')) +
       kpi('pot', 'Potencial a validar', R(z.potencial.pis + z.potencial.cofins), 'Insumos, depende de análise' + ln(sc && sc.resumo.potencial)) +
       kpi('risk', 'Risco identificado', R(z.risco.pis + z.risco.cofins), 'Crédito sobre ICMS após 05/2023' + ln(sc && sc.resumo.risco));
 
