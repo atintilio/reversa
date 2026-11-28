@@ -49,7 +49,7 @@ test('DTI e dossiê usam a EFD real e geram todas as páginas em retrato', { ski
     assert.match(pdf, i ? /Mem.ria de c.lculo/ : /T.cnico Inicial/);
     if (i) assert.ok(res.competencias.some((c) => pdf.includes(c.arquivo.slice(0, 30))));
     else {
-      assert.match(pdf, /ICMS escriturado/);
+      assert.match(pdf, /ICMS\/IPI/);
       assert.match(pdf, /registro E110/);
       assert.doesNotMatch(pdf, /Como . feita a classifica/);
     }

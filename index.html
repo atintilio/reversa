@@ -855,7 +855,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       } else tabela({ head: [['Grupo', 'Situação']], body: [[t('PIS/COFINS e previdenciário'), t('Nenhuma oportunidade a apresentar com os documentos recebidos até o momento.')]] });
       var icms = opts.composicaoIcms;
       if (mostra && icms && (icms.credito || icms.saldoCredorATransportar > 0)) {
-        titulo(++sec, 'ICMS escriturado');
+        titulo(++sec, 'ICMS/IPI');
         tabela({ head: [['Composição', 'Origem', 'Valor declarado']], body: [
           ['Créditos escriturados', 'EFD ICMS/IPI · registro E110', RP(icms.credito)],
           ['Saldo credor a transportar', 'EFD ICMS/IPI · registro E110', RP(Math.max(0, icms.saldoCredorATransportar || 0))]
@@ -2001,8 +2001,9 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     var sAt = function (o) { return R(o.pisAt + o.cofinsAt); };
     var ln = function (o) { return sc ? '<br>Atualizado pela Selic (estimativa): ' + sAt(o) : ''; };
     $('kpis').innerHTML =
-      kpi('all', 'Total da composição', R(potencialTotal), 'PIS/COFINS ' + R(potencialTeses) + ' · ICMS escriturado ' + R(icmsEscriturado), 't-teses') +
-      kpi('main', 'PIS/COFINS', R(potencialTeses), 'EFD-Contribuições<br>ICMS escriturado: ' + R(icmsEscriturado) + ' · EFD ICMS/IPI, registro E110', 't-teses') +
+      kpi('all', 'Total da composição', R(potencialTotal), '', 't-teses') +
+      kpi('main', 'PIS/Cofins', R(potencialTeses), '', 't-teses') +
+      kpi('', 'ICMS/IPI', R(icmsEscriturado), '', 't-teses') +
       (sc ? kpi('', 'Atualização pela Selic', 'Ver valores', 'Nominal, Selic e total por tese', 'tab-teses') : '') +
       kpi('', 'Documentos processados', String(estado.lidos.length), 'Ver situação de leitura', 't-arquivos') +
       kpi('', 'Pendências documentais', 'Consultar', 'Ver o inventário e as ações por competência', 'document-gap-form') +
