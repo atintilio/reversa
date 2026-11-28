@@ -105,6 +105,13 @@
     <h2 id="rev-t">Revisar tese</h2>
     <p class="muted" id="rev-info"></p>
     <label>Decisão<select id="rev-dec"><option value="approve">Aprovar</option><option value="return">Devolver para análise</option><option value="reject">Rejeitar</option></select></label>
+    <fieldset id="rev-prova">
+      <legend>Prova documental da oportunidade</legend>
+      <label>Documentos preservados<select id="rev-docs" multiple size="4"></select></label>
+      <label>Tese, regra aplicada e regime<textarea id="rev-regra" rows="2" maxlength="1600"></textarea></label>
+      <label>Memória: competência, arquivo, registro ou linha e fórmula<textarea id="rev-memoria" rows="2" maxlength="1600"></textarea></label>
+      <label>Conciliação: pagamento ou saldo, uso anterior e sobreposição<textarea id="rev-conciliacao" rows="2" maxlength="1600"></textarea></label>
+    </fieldset>
     <label>Observação<textarea id="rev-nota" rows="3" maxlength="2000" placeholder="Obrigatória para devolver ou rejeitar"></textarea></label>
     <div class="acoes" style="justify-content:flex-end"><button type="button" class="sec" id="rev-cancel">Cancelar</button><button type="submit">Registrar</button></div>
   </form>
@@ -210,11 +217,11 @@
     var ult = lotes(j.analyses)[0] || [];
     var soma = function (fn) { return ult.reduce(function (s, a) { return s + (fn(a) || 0); }, 0); };
     var pend = soma(function (a) { return a.status === 'recoverable_pending_approval' ? a.summary.no_prazo : 0; });
-    var apr = soma(function (a) { return a.status === 'recoverable_approved' ? a.summary.no_prazo : 0; });
+    var apr = soma(function (a) { return a.status === 'recoverable_approved' && a.summary.prova_depuracao ? a.summary.no_prazo : 0; });
     var pot = soma(function (a) { return a.status === 'potential_to_validate' ? a.summary.no_prazo : 0; });
     var risco = soma(function (a) { return a.status === 'risk_to_regularize' ? a.summary.total : 0; });
     $('p-kpis').innerHTML = [
-      ['destaque', 'Potencial total', ult.length ? RV.reais(soma(function (a) { return a.summary && a.summary.total; })) : '—', 'Valor cheio da oportunidade; não é aprovação'],
+      ['destaque', 'Potencial total', ult.length ? RV.reais(soma(function (a) { return a.summary && a.summary.tese_id !== 'efd-tecnico-total' && a.summary.natureza !== 'risco' ? a.summary.total : 0; })) : '—', 'Oportunidades identificadas'],
       ['destaque', 'Crédito aprovado', ult.length ? RV.reais(apr) : '—', 'Após revisão humana'],
       ['', 'Pendente de aprovação', ult.length ? RV.reais(pend) : '—', 'Estimado no prazo, a revisar'],
       ['', 'Potencial a validar', ult.length ? RV.reais(pot) : '—', 'Insumos: depende de prova'],
@@ -228,7 +235,7 @@
         '<div class="tabela"><table><thead><tr><th>Tese</th><th>Situação</th><th class="num">No prazo</th><th class="num">Total</th><th>Revisão</th><th></th></tr></thead><tbody>' +
         lote.map(function (a) {
           var s = STATUS[a.status] || [a.status, ''];
-          var podeRev = revisa && /^(recoverable_|potential_|risk_)/.test(a.status);
+          var podeRev = revisa && a.summary.tese_id !== 'efd-tecnico-total' && /^(recoverable_|potential_|risk_)/.test(a.status);
           return '<tr><td>' + RV.esc(a.summary.nome) + '<div class="muted" style="font-size:12px">' + (NAT[a.summary.natureza] || '') + '</div>' + memoriaDti(a.summary.memoria) + '</td>' +
             '<td><span class="pill ' + s[1] + '">' + s[0] + '</span></td><td class="num">' + RV.reais(a.summary.no_prazo) + '</td><td class="num">' + RV.reais(a.summary.total) + '</td>' +
             '<td>' + RV.esc(REV[a.reviewStatus] || a.reviewStatus) + (a.reviewedBy ? '<div class="muted" style="font-size:12px">' + RV.esc(a.reviewedBy) + ' · ' + RV.data(a.reviewedAt) + '</div>' : '') + '</td>' +
@@ -344,12 +351,23 @@
     var b = e.target.closest('[data-rev]'); if (!b) return;
     revAtual = pasta.analyses.filter(function (a) { return a.id === b.dataset.rev; })[0];
     $('rev-info').textContent = revAtual.summary.nome + ' · no prazo ' + RV.reais(revAtual.summary.no_prazo);
-    $('rev-nota').value = ''; $('dlg-rev').showModal();
+    ['rev-nota', 'rev-regra', 'rev-memoria', 'rev-conciliacao'].forEach(function (id) { $(id).value = ''; });
+    $('rev-docs').replaceChildren();
+    $('rev-prova').hidden = $('rev-dec').value !== 'approve';
+    $('dlg-rev').showModal();
+    RV.api('GET', '/api/v1/taxpayers/' + encodeURIComponent(pasta.taxpayer.id) + '/documents').then(function (r) {
+      $('rev-docs').replaceChildren.apply($('rev-docs'), r.documents.filter(function (d) { return d.complete; }).map(function (d) {
+        return new Option(d.names[0], d.sha256);
+      }));
+    }).catch(function (err) { RV.toast(err.message); });
   });
   $('rev-cancel').onclick = function () { $('dlg-rev').close(); };
+  $('rev-dec').onchange = function () { $('rev-prova').hidden = this.value !== 'approve'; };
   $('f-rev').addEventListener('submit', function (e) {
     e.preventDefault();
-    RV.api('POST', '/api/v1/analyses/' + revAtual.id + '/review', { decision: $('rev-dec').value, note: $('rev-nota').value.trim() })
+    var prova = { arquivos: Array.from($('rev-docs').selectedOptions, function (o) { return o.value; }),
+      fundamento: $('rev-regra').value, memoria: $('rev-memoria').value, conciliacao: $('rev-conciliacao').value };
+    RV.api('POST', '/api/v1/analyses/' + revAtual.id + '/review', { decision: $('rev-dec').value, note: $('rev-nota').value.trim(), prova: prova })
       .then(function () { $('dlg-rev').close(); RV.toast('Revisão registrada'); carregarPasta(); }).catch(function (e) { RV.toast(e.message); });
   });
 

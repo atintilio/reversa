@@ -70,6 +70,8 @@ test('lê E110, E111, E116 e H010', () => {
   const r = M.lerEfdIcms(arquivo(base));
   assert.equal(r.apuracaoE110.length, 1);
   const a = r.apuracaoE110[0];
+  assert.match(arquivo(base).split(/\r?\n/)[a.linha - 1], /^\|E110\|/);
+  assert.deepEqual(a.conferencia, { devedorCentavos: 6800, credorCentavos: 0, confere: true });
   assert.equal(a.vlTotDebitos, 170); assert.equal(a.vlTotCreditos, 102); assert.equal(a.vlSldApurado, 68); assert.equal(a.vlIcmsRecolher, 68);
   assert.equal(a.periodo.ini, '2024-01-01');
   assert.equal(r.ajustesE111.length, 1); assert.equal(r.ajustesE111[0].vlAjApur, 5); assert.equal(a.ajustes.length, 1);

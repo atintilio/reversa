@@ -344,13 +344,15 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     </div>
   </section>
   <section aria-labelledby="t-pdf">
-    <div class="sec-head"><h2 id="t-pdf">Dossiê técnico — <em>memória de cálculo</em></h2></div>
+    <div class="sec-head"><h2 id="t-pdf">DOCI — <em>detalhamento e depuração da oportunidade</em></h2></div>
     <form class="pdf-form" id="form-pdf">
       <label class="chk" for="pdf-resp-on" style="display:flex;flex-direction:row;align-items:center;gap:8px;text-transform:none;letter-spacing:0;font-size:.9rem"><input type="checkbox" id="pdf-resp-on" style="width:auto"> Incluir responsável técnico</label>
       <label for="pdf-resp">Responsável técnico<input type="text" id="pdf-resp" placeholder="Nome completo" autocomplete="name" disabled></label>
       <label for="pdf-reg">Registro profissional<input type="text" id="pdf-reg" placeholder="Ex.: CRC SC-000000/O-0" disabled></label>
       <label for="pdf-local">Local<input type="text" id="pdf-local" placeholder="Florianópolis/SC"></label>
-      <button type="submit" id="btn-pdf">Gerar memória técnica completa</button>
+      <label for="doci-referencia">Referência do DTI anterior<input id="doci-referencia" type="text" maxlength="240"></label>
+      <label for="doci-linhas">Linhas do DTI anterior<textarea id="doci-linhas" rows="4" maxlength="12000" placeholder="Uma linha por oportunidade: tese | valor anterior | documento ou referência | resultado da depuração"></textarea></label>
+      <button type="submit" id="btn-pdf">Gerar DOCI</button>
       <button type="button" id="btn-pasta" class="sec" hidden>Salvar na pasta do cliente</button>
     </form>
     <p class="note" id="pasta-status" role="status" aria-live="polite" hidden></p>
@@ -605,7 +607,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     // apresentação ao cliente: mesmo documento, enxuto — sem ECF (IRPJ/CSLL), DARF, ECD/ICMS e sem trilha técnica
     var cli = opts.cliente || null;
     if (cli) { ecfD = null; outros = []; outrosArq = []; darfsLidos = []; }
-    var TIT = cli ? 'Diagnóstico Técnico Inicial - DTI' : 'Dossiê técnico - Memória de cálculo';
+    var TIT = cli ? 'Diagnóstico Técnico Inicial - DTI' : 'DOCI - Detalhamento e depuração da oportunidade';
     var cnpjs = Object.keys(contribuintes);
     var comps = res ? res.competencias.map(function (c) { return c.competencia; }).sort() : [];
     var periodo = comps.length ? compFmt(comps[0]) + (comps.length > 1 ? ' a ' + compFmt(comps[comps.length - 1]) : '') : '-';
@@ -621,10 +623,33 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       doc.text(linhas, M, y); y += linhas.length * 4.6 + 2;
     }
     function titulo(n, txt) {
-      espaco(16); y += 4;
-      fonte('helvetica', 'bold', 13); cor(COR.tinta); doc.text(t(n + '. ' + txt), M, y);
+      fonte('helvetica', 'bold', 13); cor(COR.tinta);
+      var linhas = doc.splitTextToSize(t(n + '. ' + txt), W - 2 * M);
+      espaco(10 + linhas.length * 5.6); y += 4;
+      doc.text(linhas, M, y, { lineHeightFactor: 1.2 });
+      y += (linhas.length - 1) * 5.6;
       doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.line(M, y + 2.5, W - M, y + 2.5);
       y += 9;
+    }
+    function cartoesPdf(caixas) {
+      var gap = 4, largura = (W - 2 * M - gap) / 2;
+      for (var i = 0; i < caixas.length; i += 2) {
+        fonte('helvetica', 'bold', 7);
+        var linha = caixas.slice(i, i + 2).map(function (k) {
+          return { rotulo: doc.splitTextToSize(t(k[0].toUpperCase()), largura - 8), valor: k[1], destaque: k[2] };
+        });
+        var altura = 17 + Math.max.apply(null, linha.map(function (k) { return k.rotulo.length; })) * 3.4;
+        espaco(altura + gap);
+        linha.forEach(function (k, j) {
+          var x = M + j * (largura + gap);
+          doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.rect(x, y, largura, altura);
+          fonte('helvetica', 'bold', 7); cor(COR.suave);
+          doc.text(k.rotulo, x + 4, y + 6);
+          fonte('helvetica', 'bold', k.destaque ? 16 : 13); cor(k.destaque ? COR.bronze : COR.tinta);
+          doc.text(t(k.valor), x + 4, y + altura - 5);
+        });
+        y += altura + gap;
+      }
     }
     function tabela(cfg) {
       doc.autoTable(Object.assign({
@@ -686,7 +711,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     doc.setFillColor(COR.bronze[0], COR.bronze[1], COR.bronze[2]); doc.rect(0, 0, 4, H, 'F');
     doc.setFillColor(COR.cobre[0], COR.cobre[1], COR.cobre[2]); doc.rect(4, 0, 0.8, H, 'F');
     if (root.REVERSA_EMBLEMA) { try { doc.addImage(root.REVERSA_EMBLEMA, 'PNG', pX - 18, 14, 74, 74 * 416 / 426); } catch (e) { /* segue sem emblema */ } }
-    fonte('helvetica', 'bold', 44); cor(COR.tinta); doc.text(cli ? 'DTI' : 'Dossiê', pX, 104);
+    fonte('helvetica', 'bold', 44); cor(COR.tinta); doc.text(cli ? 'DTI' : 'DOCI', pX, 104);
     fonte('helvetica', 'bold', 20); doc.text(t(cli ? 'Diagnóstico Técnico Inicial' : 'Memória de cálculo'), pX, 116);
     cor(COR.bronze); doc.text('Reversa Tax', pX, 126);
     doc.setFillColor(COR.cobre[0], COR.cobre[1], COR.cobre[2]); doc.rect(pX, 134, 30, 1.2, 'F');
@@ -767,6 +792,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       return linhas;
     }
     function blocoRegime(limpo) {
+      espaco(46);
       titulo(++sec, 'Regime tributário ao longo do tempo');
       tabela({ head: [['Período', 'Regime', 'Fonte']], body: linhasRegime(limpo).map(function (r) { return r.map(t); }), columnStyles: { 0: { cellWidth: 55 }, 2: { cellWidth: 60 } } });
     }
@@ -797,7 +823,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       // ficha (página 4), no mesmo padrão do DTI
       fonte('helvetica', 'bold', 8); cor(COR.bronze);
       doc.setDrawColor(COR.cobre[0], COR.cobre[1], COR.cobre[2]); doc.setLineWidth(0.6); doc.line(M, y + 3, M + 10, y + 3);
-      doc.setCharSpace(1.2); doc.text('REVERSA TAX  ·  UMA FERRAMENTA ARGUS PRIME', M + 13, y + 4); doc.setCharSpace(0);
+      doc.setCharSpace(1.2); doc.text('REVERSA TAX', M + 13, y + 4); doc.setCharSpace(0);
       if (root.REVERSA_LOGO) { try { doc.addImage(root.REVERSA_LOGO, 'PNG', W - M - 60, M - 4, 60, 12); } catch (e) { /* segue sem logo */ } }
       y += 18;
       fonte('helvetica', 'bold', 24); cor(COR.tinta); doc.text(t('Resumo das oportunidades'), M, y); y += 10;
@@ -819,19 +845,12 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       var caixas = [];
       if (mostra && nT) {
         caixas.push(['Total identificado', R(tot), true]);
-        if (C.pis.length) caixas.push(['PIS e COFINS', R(C.tPis)]);
+        if (C.pis.length) caixas.push(['PIS/Cofins', R(C.tPis)]);
         if (C.prev.length) caixas.push(['Previdenciário', R(C.tPrev)]);
         if (cS) caixas.push(['Atualizado pela Selic (estimativa)', R(totAt)]);
       } else if (!mostra) C.projecao.forEach(function (g, i) { caixas.push(['Projeção ' + g[0], R(g[2]), i === 0]); });
       if (caixas.length) {
-        var bw = (W - 2 * M - 12) / 4, bx = M;
-        caixas.forEach(function (k) {
-          doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.rect(bx, y, bw, 22);
-          fonte('helvetica', 'bold', 7); cor(COR.suave); doc.text(doc.splitTextToSize(t(k[0].toUpperCase()), bw - 8), bx + 4, y + 5);
-          fonte('helvetica', 'bold', k[2] ? 16 : 13); cor(k[2] ? COR.bronze : COR.tinta); doc.text(t(k[1]), bx + 4, y + 16);
-          bx += bw + 4;
-        });
-        y += 28;
+        cartoesPdf(caixas);
       } else { paragrafo('Com os documentos recebidos até o momento não há oportunidade de PIS/COFINS ou previdenciária a apresentar. A análise segue com a validação dos demais documentos.'); y += 2; }
       if (opts.exemplo) { fonte('helvetica', 'bold', 9); cor(COR.alerta); doc.text(t('DOCUMENTO DE DEMONSTRAÇÃO: gerado a partir de arquivos SPED sintéticos. Não utilizar com clientes.'), M, y); y += 6; }
       paragrafo(cS ? 'Valores nominais e atualização estimada pela Selic.' : 'Valores nominais. A apuração definitiva fica no dossiê técnico.');
@@ -872,7 +891,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
           head: [['Tese', 'Grupo', 'Classificação', 'Período'].concat(mostra ? ['Valor identificado (nominal)'] : []).concat(cS ? ['Atualizado pela Selic (estimativa)'] : [])],
           body: qt.map(function (r) { return [t(r[0]), r[1], t(r[2]), r[3]].concat(mostra ? [R(r[4])] : []).concat(cS ? [R(r[5])] : []); }),
           foot: mostra ? [['Total', '', '', '', R(tot)].concat(cS ? [R(totAt)] : [])] : undefined,
-          columnStyles: { 0: { cellWidth: 92 }, 4: { halign: 'right', fontStyle: 'bold' }, 5: { halign: 'right' } }
+          columnStyles: { 0: { cellWidth: 58 }, 4: { halign: 'right', fontStyle: 'bold' }, 5: { halign: 'right' } }
         });
       }
       if (sel && sel.nota && sel.nota.length && (cS || sel.indisponivel)) {
@@ -960,17 +979,8 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
 
     y += 2;
     if (res) {
-    var bw = (W - 2 * M - 12) / 4, bx = M;
-    [['Potencial nominal no período', R(z.recuperavel.pis + z.recuperavel.cofins), true], ['PIS', R(z.recuperavel.pis)], ['COFINS', R(z.recuperavel.cofins)],
-     ['Total geral (inclui possíveis prescritos)', R(z.recuperavel.pis + z.recuperavel.cofins)]].forEach(function (k) {
-      doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.rect(bx, y, bw, 22);
-      fonte('helvetica', 'bold', 7); cor(COR.suave); doc.text(t(k[0].toUpperCase()), bx + 4, y + 6);
-      fonte('helvetica', 'bold', k[2] ? 16 : 13); cor(k[2] ? COR.bronze : COR.tinta); doc.text(t(k[1]), bx + 4, y + 16);
-      bx += bw + 4;
-    });
-    y += 28;
-    fonte('helvetica', 'normal', 9); cor(COR.tinta);
-    doc.text(t('Fora do recuperável: potencial de insumos a validar ' + R(z.potencial.pis + z.potencial.cofins) + ' · risco identificado (Lei 14.592/2023) ' + R(z.risco.pis + z.risco.cofins) + '.'), M, y); y += 7;
+    cartoesPdf([['PIS/Cofins · nominal', R(z.recuperavel.pis + z.recuperavel.cofins), true], ['PIS', R(z.recuperavel.pis)], ['Cofins', R(z.recuperavel.cofins)]]);
+    paragrafo('Potencial de insumos a validar: ' + R(z.potencial.pis + z.potencial.cofins) + ' · Risco identificado (Lei 14.592/2023): ' + R(z.risco.pis + z.risco.cofins) + '.');
     if (cred) {
       fonte('helvetica', 'bold', 9); cor(COR.bronze);
       doc.text(t('Atualização pela Selic (estimativa): ' + R(cred.resumo.recuperavelNoPrazo.pisAt + cred.resumo.recuperavelNoPrazo.cofinsAt) + ' · os valores nominais acima são mantidos.'), M, y); y += 7;
@@ -1011,6 +1021,24 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       columnStyles: { 2: { halign: 'right', fontStyle: 'bold', cellWidth: 32 }, 3: { halign: 'right', cellWidth: 32 }, 4: selAtiva ? { halign: 'right', cellWidth: 38 } : { halign: 'left' } }
     });
     paragrafo(sel && sel.indisponivel ? 'Selic indisponível - valores sem atualização.' : selAtiva ? 'A atualização pela Selic é estimativa e aparece ao lado do valor nominal, que permanece. ' + (sel.avisoRfb || '') : 'Valores históricos, sem atualização monetária pela taxa Selic.');
+
+    espaco(46);
+    titulo(++sec, 'Depuração do DTI anterior');
+    if (opts.dociReferencia) paragrafo('Referência: ' + opts.dociReferencia);
+    var historicoDti = String(opts.dociLinhas || '').split(/\r?\n/).filter(function (l) { return l.trim(); }).map(function (l, i) {
+      var c = l.split('|').map(function (v) { return v.trim(); });
+      var valor = c[1] && c[1].replace(/^R\$\s*/, '');
+      if (c.length !== 4 || !c.every(Boolean) || !/^\d+(?:\.\d{3})*(?:,\d{2})?$/.test(valor || '')) {
+        throw new Error('Linha ' + (i + 1) + ' do DTI anterior: use tese | valor | fonte | conclusão.');
+      }
+      return { tese: c[0], valor: Math.round(Number(valor.replace(/\./g, '').replace(',', '.')) * 100), fonte: c[2], conclusao: c[3] };
+    });
+    if (historicoDti.length) {
+      tabela({ head: [['Tese ou parcela do DTI', 'Valor anterior', 'Documento ou referência', 'Resultado da depuração']],
+        body: historicoDti.map(function (l) { return [t(l.tese), R(l.valor), t(l.fonte), t(l.conclusao)]; }),
+        foot: [['Valor bruto do DTI de referência', R(historicoDti.reduce(function (s, l) { return s + l.valor; }, 0)), '', '']] });
+    } else paragrafo('Composição anterior indisponível nesta emissão. As evidências atuais estão nas seções de origem e memória de cálculo.');
+    paragrafo('A aprovação é registrada por oportunidade na pasta do cliente. Exige documentos preservados, regra aplicável ao regime e à competência, fórmula reproduzível e conciliação de pagamento, saldo ou uso anterior. Escrituração e projeções permanecem identificadas nas suas próprias seções.');
 
     titulo(++sec, 'Objeto');
     if (res) paragrafo('Este documento demonstra, item a item, os valores de PIS e de COFINS apurados a maior pelo contribuinte em cada tese analisada, a partir das informações que o próprio contribuinte transmitiu à Receita Federal na EFD-Contribuições do período. Também apresenta, separadamente, créditos potenciais que dependem de validação e riscos identificados na escrituração.');
@@ -1252,13 +1280,44 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     if (outros.length) {
       doc.addPage(); y = M + 6;
       titulo(++sec, 'Leituras técnicas (ECD e EFD ICMS/IPI)');
+      var icmsDossie = opts.composicaoIcms;
+      if (icmsDossie && icmsDossie.arquivos) {
+        tabela({ head: [['Reconciliação da composição anterior', 'Valor', 'Tratamento']], body: [
+          ['Créditos do período somados', RP(icmsDossie.credito), 'Movimentação declarada no E110'],
+          ['Saldos transportados somados', RP(icmsDossie.saldoCredorATransportar), 'Pode repetir o saldo nas competências seguintes'],
+          ['Soma que aparecia no total anterior', RP(icmsDossie.credito + icmsDossie.saldoCredorATransportar), 'Composição histórica de escrituração']
+        ] });
+      }
       outros.forEach(function (o) {
         espaco(40);
-        fonte('helvetica', 'bold', 9.5); cor(COR.tinta); doc.text(t((o.tipo === 'ecd' ? 'ECD' : 'EFD ICMS/IPI') + ' - ' + o.nome), M, y); y += 4;
+        paragrafo((o.tipo === 'ecd' ? 'ECD' : 'EFD ICMS/IPI') + ' - ' + o.nome);
         tabela({ body: o.linhas.map(function (r) { return [t(r[0]), t(r[1])]; }), styles: { font: 'helvetica', fontSize: 9, cellPadding: 1.5, textColor: COR.tinta, lineColor: COR.linha, lineWidth: { bottom: 0.15 } }, columnStyles: { 0: { cellWidth: 45, textColor: COR.suave, fontStyle: 'bold' } } });
+        if (o.e110 && o.e110.length) {
+          tabela({
+            head: [['Período / linha E110', 'Saldo anterior', 'Créditos', 'Débitos', 'Saldo devedor declarado', 'Saldo credor declarado', 'Conferência dos saldos']],
+            body: o.e110.map(function (r) {
+              var p = r.periodo || {};
+              var c = r.conferencia;
+              return [(p.ini ? dataIso(p.ini) + ' a ' + dataIso(p.fin) : '-') + ' · linha ' + r.linha,
+                RP(r.vlSldCredorAnt), RP(r.vlTotCreditos), RP(r.vlTotDebitos), RP(r.vlSldApurado), RP(r.vlSldCredorTransportar),
+                c ? (c.confere ? 'Confere' : 'Divergência') + '\nDevedor: ' + R(c.devedorCentavos) + '\nCredor: ' + R(c.credorCentavos) : 'Campos insuficientes'];
+            })
+          });
+          paragrafo('Conferência E110: débitos e ajustes a débito, mais estornos de crédito, menos créditos, ajustes a crédito, estornos de débito e saldo credor anterior. A conferência aritmética comprova a coerência do registro, com validação do direito de recuperação em etapa separada.');
+        }
         if (o.avisos.length) lista('Avisos', o.avisos.map(t));
         paragrafo('Leitura apenas — nenhuma tese calculada a partir deste arquivo ainda.');
       });
+    }
+
+    var pgdas = (opts.pgdas || []).filter(function (p) { return p.pisCofinsMono > 0; });
+    if (pgdas.length) {
+      espaco(44);
+      titulo(++sec, 'PGDAS-D · PIS/Cofins sobre receitas monofásicas');
+      paragrafo('A origem é a declaração da competência. O valor é a soma do PIS e da Cofins declarados sobre as receitas identificadas pelo leitor. A revisão precisa conferir a segregação e o pagamento correspondente. As linhas abaixo contêm valores documentais.');
+      tabela({ head: [['Competência', 'Declaração de origem', 'PIS', 'Cofins', 'Total declarado']], body: pgdas.map(function (p) {
+        return [compFmt(p.competencia), t(p.arquivo), RP(p.pisMono), RP(p.cofinsMono), RP(p.pisCofinsMono)];
+      }) });
     }
 
     if (res && res.creditosAproveitados) {
@@ -1349,7 +1408,8 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     } // fim do corpo da memória técnica
 
     // ------------------------------------------------------------- encerramento
-    titulo(++sec, 'Responsabilidade técnica');
+      espaco(38);
+      titulo(++sec, 'Responsabilidade técnica');
     paragrafo('Os valores acima foram apurados de forma automatizada a partir das escriturações informadas e conferidos segundo a metodologia descrita. A utilização deste documento em pedido de restituição, compensação ou medida judicial depende de revisão e validação ' + (opts.responsavel ? 'pelo responsável técnico abaixo identificado.' : 'por responsável técnico habilitado.'));
     if (opts.responsavel) {
       espaco(34); y += 18;
@@ -1375,7 +1435,8 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       doc.setPage(i);
       doc.setDrawColor(COR.linha[0], COR.linha[1], COR.linha[2]); doc.setLineWidth(0.2); doc.line(M, H - 12, W - M, H - 12);
       fonte('helvetica', 'normal', 7); cor(COR.suave);
-      doc.text(t('Reversa Tax · uma ferramenta Argus Prime · ' + TIT + ' · ' + (cnpjs.map(cnpjFmt).join('; ') || '')) + (opts.exemplo ? ' · DEMONSTRAÇÃO' : ''), M, H - 7.5);
+      doc.text(doc.splitTextToSize(t('Reversa Tax · Argus Prime · ' + (cli ? 'DTI' : 'DOCI') + ' · ' + (cnpjs.map(cnpjFmt).join('; ') || '') +
+        (opts.exemplo ? ' · DEMONSTRAÇÃO' : '')), W - 2 * M - 30)[0], M, H - 7.5);
       doc.text('Página ' + i + ' de ' + n, W - M, H - 7.5, { align: 'right' });
     }
     doc.setProperties({ title: TIT, author: 'Argus Prime', creator: 'Reversa Tax v' + versaoMotor });
@@ -1993,17 +2054,16 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     $('gerado').textContent = 'Motor v' + res.versaoMotor + ' · calculado em ' + new Date(res.geradoEm).toLocaleString('pt-BR');
 
     var tec = estado.tecnicoResumo || { credito: 0, saldoCredorATransportar: 0 };
-    var potencialTeses = z.recuperavel.pis + z.recuperavel.cofins + z.potencial.pis + z.potencial.cofins + z.risco.pis + z.risco.cofins;
+    var potencialTeses = res.teses.filter(function (t) { return t.aplicavel && (t.natureza === 'credito' || t.natureza === 'potencial'); })
+      .reduce(function (s, t) { return s + Math.max(0, t.total.pis + t.total.cofins); }, 0);
     var icmsEscriturado = Math.round((tec.credito + Math.max(0, tec.saldoCredorATransportar || 0)) * 100);
-    var potencialTotal = potencialTeses + icmsEscriturado;
     // Selic (estimativa) ao lado do nominal, que continua em destaque; sem Selic (rota indisponível) só o nominal.
     var sc = estado.sdCred = SD.creditos(res, estado.selic, estado.hoje);
     var sAt = function (o) { return R(o.pisAt + o.cofinsAt); };
     var ln = function (o) { return sc ? '<br>Atualizado pela Selic (estimativa): ' + sAt(o) : ''; };
     $('kpis').innerHTML =
-      kpi('all', 'Total da composição', R(potencialTotal), '', 't-teses') +
       kpi('main', 'PIS/Cofins', R(potencialTeses), '', 't-teses') +
-      kpi('', 'ICMS/IPI', R(icmsEscriturado), '', 't-teses') +
+      kpi('', 'ICMS/IPI', R(icmsEscriturado), 'Composição escritural', 't-tec') +
       (sc ? kpi('', 'Atualização pela Selic', 'Ver valores', 'Nominal, Selic e total por tese', 'tab-teses') : '') +
       kpi('', 'Documentos processados', String(estado.lidos.length), 'Ver situação de leitura', 't-arquivos') +
       kpi('', 'Pendências documentais', 'Consultar', 'Ver o inventário e as ações por competência', 'document-gap-form') +
@@ -2012,23 +2072,24 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
 
     // quadro das teses
     var linhas = res.teses.map(function (t) {
-      var chave = t.natureza === 'potencial' ? 'totalNoPrazo' : 'total';
-      var nominal = t[chave], tot = nominal.pis + nominal.cofins;
-      var atual = sc && sc.teses[t.id][chave];
+      var nominal = t.total, tot = nominal.pis + nominal.cofins;
+      var atual = sc && sc.teses[t.id].total;
       return '<tr class="clic" data-tese="' + t.id + '"><td><strong>' + esc(t.curto) + '</strong><br><small>PIS/COFINS · EFD-Contribuições</small></td><td>' + natureza(t.natureza) + '</td><td>' + esc(t.classificacao) + '</td><td>' + esc(t.regimes) + '</td>' +
         '<td class="r">' + (t.aplicavel ? nominal.itensComValor + ' / ' + nominal.itens : '—') + '</td><td class="r">' + R(nominal.pis) + '</td><td class="r">' + R(nominal.cofins) + '</td><td class="r"><strong>' + R(tot) + '</strong></td>' +
         (atual ? '<td class="r">' + sAt(atual) + '<br><small>Selic: ' + R(atual.pisAt + atual.cofinsAt - tot) + '</small></td>' : '') + '</tr>';
     }).join('') + res.catalogo.filter(function (c) { return !c.calculada; }).map(function (c) {
       return '<tr><td>' + esc(c.curto) + '</td><td>' + natureza(c.natureza) + '</td><td>' + esc(c.classificacao) + '</td><td>' + esc(c.regimes) + '</td><td class="r">Pendente</td><td class="r">Pendente</td><td class="r">Pendente</td><td class="r">Pendente</td>' + (sc ? '<td class="r">Pendente</td>' : '') + '</tr>';
     }).join('');
+    var linhasIcms = '';
     (tec.detalhes || []).forEach(function (d) {
       [['Créditos escriturados de ICMS', d.credito], ['Saldo credor de ICMS a transportar', Math.max(0, d.saldoCredorATransportar || 0)]].forEach(function (item) {
         if (!item[1]) return;
-        linhas += '<tr><td><strong>' + item[0] + '</strong><details><summary>Documento de origem</summary>' + esc(d.arquivo) + ' · ' + esc(d.competencia) + ' · registro E110</details></td><td>Valor declarado</td><td>Revisão da equipe</td><td>Conforme escrituração</td><td>—</td><td>—</td><td>—</td><td class="r">' + R(Math.round(item[1] * 100)) + '</td>' + (sc ? '<td>—</td>' : '') + '</tr>';
+        linhasIcms += '<tr><td><strong>' + item[0] + '</strong><details><summary>Documento de origem</summary>' + esc(d.arquivo) + ' · ' + esc(d.competencia) + ' · registro E110</details></td><td>Valor declarado</td><td>Revisão da equipe</td><td>Conforme escrituração</td><td>—</td><td>—</td><td>—</td><td class="r">' + R(Math.round(item[1] * 100)) + '</td>' + (sc ? '<td>—</td>' : '') + '</tr>';
       });
     });
     $('tab-teses').innerHTML = '<thead><tr><th>Oportunidade / composição</th><th>Natureza</th><th>Classificação</th><th>Regimes</th><th class="r">Itens c/ valor</th><th class="r">PIS</th><th class="r">COFINS</th><th class="r">Potencial nominal</th>' + (sc ? '<th class="r">Atualizado pela Selic</th>' : '') + '</tr></thead><tbody>' + linhas +
-      '</tbody><tfoot><tr><td colspan="7">Total da composição analisada</td><td class="r">' + R(potencialTotal) + '</td>' + (sc ? '<td>—</td>' : '') + '</tr></tfoot>';
+      '<tr><th colspan="7" scope="row">Potencial identificado de PIS/Cofins</th><td class="r">' + R(potencialTeses) + '</td>' + (sc ? '<td>—</td>' : '') + '</tr></tbody>' +
+      (linhasIcms ? '<tbody><tr><th colspan="' + (sc ? 9 : 8) + '" scope="rowgroup">ICMS/IPI · escrituração</th></tr>' + linhasIcms + '</tbody>' : '');
     var nc = $('selic-nota-cred'), nh = notaSelic(sc && sc.estimados); nc.innerHTML = nh || ''; nc.hidden = !nh;
     Array.prototype.forEach.call(document.querySelectorAll('#tab-teses tr.clic'), function (tr) {
       tr.addEventListener('click', function () { estado.tese = tr.getAttribute('data-tese'); renderTese(); $('t-det').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
@@ -2153,10 +2214,10 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         var m2 = window.MotorEfdIcms.resumo(l), nItens = l.notas.reduce(function (s, n) { return s + n.itens.length; }, 0); av = m2.avisos;
         linhasR = [['Empresa', l.empresa], ['CNPJ', cnpjFmt(l.cnpj || l.cpf)], ['Período', (l.ini || '') + ' a ' + (l.fin || '')], ['Notas', l.notas.length], ['Itens', nItens], ['ICMS débito (E110)', RP(m2.icms.debito)], ['ICMS crédito (E110)', RP(m2.icms.credito)], ['Saldo apurado', RP(m2.icms.saldoApurado)], ['ICMS a recolher (E110)', RP(m2.icms.icmsARecolher)], ['Saldo credor a transportar (E110)', RP(m2.icms.saldoCredorATransportar)], ['Crédito de entradas (C190)', RP(m2.c190.icmsEntradas)], ['ICMS de saídas (C190)', RP(m2.c190.icmsSaidas)]];
       }
-      dados.outros.push({ tipo: x.tipo, nome: x.nome, linhas: linhasR.map(function (p) { return [p[0], String(p[1] == null ? '' : p[1])]; }), avisos: av.slice(), cnpj: x.tipo === 'ecd' ? l.cnpj : (l.cnpj || l.cpf), empresa: l.empresa, ini: l.ini, fin: l.fin });
+      dados.outros.push({ tipo: x.tipo, nome: x.nome, linhas: linhasR.map(function (p) { return [p[0], String(p[1] == null ? '' : p[1])]; }), avisos: av.slice(), cnpj: x.tipo === 'ecd' ? l.cnpj : (l.cnpj || l.cpf), empresa: l.empresa, ini: l.ini, fin: l.fin, e110: l.apuracaoE110 });
       h += '<h3>' + (x.tipo === 'ecd' ? 'ECD' : 'EFD ICMS/IPI') + ' — ' + esc(x.nome) + '</h3><div class="scroll"><table><tbody>' +
         linhasR.map(function (p) { return '<tr><th scope="row">' + p[0] + '</th><td>' + esc(String(p[1] == null ? '' : p[1])) + '</td></tr>'; }).join('') + '</tbody></table></div>' +
-        lista('Avisos', av.map(esc)) + '<p class="note">Todos os valores declarados foram preservados. Os valores técnicos abaixo entram no total potencial apurado como “a validar”; não são descartados nem classificados automaticamente como zero.</p>';
+        lista('Avisos', av.map(esc)) + '<p class="note">Valores da escrituração preservados no dossiê para conferência documental.</p>';
     });
     h += relatorioIrpjVeiculos(tec);
     $('tec-corpo').innerHTML = h; sec.hidden = false;
@@ -2437,11 +2498,13 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
         var blob = window.GeradorMemoria.gerar(resEfd(), estado.lidos, {
           prev: estado.prev, incluirCondicionais: estado.prevIncluir, prevForcado: $('prev-forcar').checked, tecnico: estado.tecDados, darfs: estado.darfs, outrosArquivos: estado.outrosArq, ignorados: estado.ignorados,
           responsavel: $('pdf-resp-on').checked ? $('pdf-resp').value.trim() : '', registro: $('pdf-resp-on').checked ? $('pdf-reg').value.trim() : '', local: $('pdf-local').value.trim(),
-          hashes: estado.hashes, exemplo: estado.exemplo, ncmsExtras: ncmsExtras(), selic: selicPdf()
+          hashes: estado.hashes, exemplo: estado.exemplo, ncmsExtras: ncmsExtras(), selic: selicPdf(),
+          composicaoIcms: estado.tecnicoResumo, pgdas: estado.pgdas,
+          dociReferencia: $('doci-referencia').value.trim(), dociLinhas: $('doci-linhas').value.trim()
         });
-        salvar('Dossie-' + nomeBase() + '.pdf', blob);
+        salvar('DOCI-' + nomeBase() + '.pdf', blob);
       } catch (err) { toast(err.message); }
-      btn.disabled = false; btn.textContent = 'Gerar memória técnica completa';
+      btn.disabled = false; btn.textContent = 'Gerar DOCI';
     }, 30);
   });
   $('btn-copiar').addEventListener('click', function () {
@@ -2482,19 +2545,12 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       comps = comps.concat(pg.map(function (p) { return p.competencia; }).filter(Boolean)).sort();
     }
     var res = estado.res, btn = $('btn-pasta'), st = $('pasta-status');
-    var zPot = res && res.resumo ? res.resumo : {};
-    var tecPot = estado.tecnicoResumo || { credito: 0, saldoCredorATransportar: 0 };
-    var potencialTotal = Math.round(((zPot.recuperavel && (zPot.recuperavel.pis + zPot.recuperavel.cofins)) || 0) + ((zPot.potencial && (zPot.potencial.pis + zPot.potencial.cofins)) || 0) + ((zPot.risco && (zPot.risco.pis + zPot.risco.cofins)) || 0) + ((tecPot.credito || 0) + Math.max(0, tecPot.saldoCredorATransportar || 0)) * 100);
     var corte = new Date(); corte.setFullYear(corte.getFullYear() - 5);
     var corteComp = corte.toISOString().slice(0, 7);
     var pgItens = pg.filter(function (p) { return Number(p.pisCofinsMono || 0) > 0; }).map(function (p) {
-      return { competencia: p.competencia, pis: Number(p.pisMono || 0), cofins: Number(p.cofinsMono || 0), total: Number(p.pisCofinsMono || 0) };
+      return { competencia: p.competencia, origem: p.arquivo, pis: Number(p.pisMono || 0), cofins: Number(p.cofinsMono || 0), total: Number(p.pisCofinsMono || 0) };
     });
     var pgTotal = pgItens.reduce(function (s, p) { return { pis: s.pis + p.pis, cofins: s.cofins + p.cofins, total: s.total + p.total }; }, { pis: 0, cofins: 0, total: 0 });
-    var pgOport = pgdasOportunidade();
-    pgTotal.total += pgOport.projecao;
-    pgTotal.pis += pgOport.projecao / 2;
-    pgTotal.cofins += pgOport.projecao / 2;
     var pgPrazo = pgItens.filter(function (p) { return p.competencia >= corteComp; }).reduce(function (s, p) { return { pis: s.pis + p.pis, cofins: s.cofins + p.cofins, total: s.total + p.total }; }, { pis: 0, cofins: 0, total: 0 });
     btn.disabled = true; btn.textContent = 'Salvar'; st.hidden = true;
     var contatoResp = { nome: ($('resp-nome').value || '').trim(), cargo: ($('resp-cargo').value || '').trim(), email: ($('resp-email').value || '').trim(), telefone: ($('resp-tel').value || '').trim() };
@@ -2502,7 +2558,7 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
     var corpo = {
       contato: contatoResp,
       taxpayer: { cnpj: cnpj, legalName: ref.nome, taxRegime: ref.regime },
-      periodStart: comps[0], periodEnd: comps[comps.length - 1], files: lidos.length, engineVersion: res && res.versaoMotor, potentialTotal: potencialTotal, technicalSummary: tecPot,
+      periodStart: comps[0], periodEnd: comps[comps.length - 1], files: lidos.length, engineVersion: res && res.versaoMotor, technicalSummary: estado.tecnicoResumo,
       teses: (temSped ? res.teses.filter(function (t) { return t.aplicavel; }) : []).map(function (t) {
         var ajuste = estado.sdCred && estado.sdCred.teses[t.id];
         return { id: t.id, nome: t.nome, curto: t.curto, natureza: t.natureza, itens: t.total.itensComValor, total: t.total, totalNoPrazo: t.totalNoPrazo,
@@ -2513,8 +2569,9 @@ body[data-modo="prev"] section[aria-labelledby="t-pdf"], body[data-modo="prev"] 
       })
     };
     if (temPgdas && pgTotal.total > 0) corpo.teses.push({
-      id: 'pgdas-monofasico', nome: 'Potencial de oportunidade — PIS/COFINS monofásico no Simples Nacional', curto: 'PGDAS-D — potencial de oportunidade', natureza: 'credito', itens: pgItens.length + pgOport.faltantes,
-      total: { pis: pgTotal.pis, cofins: pgTotal.cofins, total: pgTotal.total, itensComValor: pgItens.length + pgOport.faltantes },
+      id: 'pgdas-monofasico', nome: 'Potencial de oportunidade — PIS/COFINS monofásico no Simples Nacional', curto: 'PGDAS-D — potencial de oportunidade', natureza: 'potencial', itens: pgItens.length,
+      total: { pis: pgTotal.pis, cofins: pgTotal.cofins, total: pgTotal.total, itensComValor: pgItens.length },
+      memoria: pgItens.map(function (p) { return { competencia: p.competencia, origem: p.origem, pis: p.pis, cofins: p.cofins, atualizado: null }; }),
       totalNoPrazo: { pis: pgPrazo.pis, cofins: pgPrazo.cofins, total: pgPrazo.total, itensComValor: pgItens.filter(function (p) { return p.competencia >= corteComp; }).length }
     });
     function enviar(body) {

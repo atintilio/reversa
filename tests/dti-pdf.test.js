@@ -40,14 +40,20 @@ test('DTI e dossiê usam a EFD real e geram todas as páginas em retrato', { ski
   assert.ok(res.competencias.length);
   const pdfs = [
     browser.GeradorMemoria.apresentar(res, 2022, { identificado: true }, { emissao: hoje, composicaoIcms: { credito: 100, saldoCredorATransportar: 50 } }),
-    browser.GeradorMemoria.gerar(res, lidos, { emissao: hoje })
+    browser.GeradorMemoria.gerar(res, lidos, { emissao: hoje, dociReferencia: 'DTI de teste',
+      dociLinhas: 'Tese de teste | 1.245,83 | Escrituração do cenário | Depuração pendente' })
   ];
   for (const [i, blob] of pdfs.entries()) {
     const pdf = Buffer.from(await blob.arrayBuffer()).toString('latin1');
     const paginas = [...pdf.matchAll(/\/MediaBox \[0 0 ([\d.]+) ([\d.]+)\]/g)];
     assert.ok(paginas.length && paginas.every((m) => Number(m[1]) < Number(m[2])));
     assert.match(pdf, i ? /Mem.ria de c.lculo/ : /T.cnico Inicial/);
-    if (i) assert.ok(res.competencias.some((c) => pdf.includes(c.arquivo.slice(0, 30))));
+    if (i) {
+      assert.ok(res.competencias.some((c) => pdf.includes(c.arquivo.slice(0, 30))));
+      assert.match(pdf, /DOCI/);
+      assert.match(pdf, /1\.245,83/);
+      assert.match(pdf, /DTI de teste/);
+    }
     else {
       assert.match(pdf, /ICMS\/IPI/);
       assert.match(pdf, /registro E110/);

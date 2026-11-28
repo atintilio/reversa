@@ -145,6 +145,16 @@ O sistema deve permitir a aprovação dessas linhas individualmente e deve desta
 
 O total de R$ 144.070,69 é o total bruto apresentado no diagnóstico. O total oficial para execução somente será calculado após as decisões do aprovador e a conciliação documental.
 
+### Regra de depuração do DOCI
+
+O DTI permanece como referência histórica, com a composição original. O DOCI registra uma conclusão por parcela e identifica a tese aplicável, o regime, as competências, os documentos e registros de origem, a fórmula e as diferenças em relação ao DTI. O DOCI distingue valor declarado, oportunidade apurada, projeção e crédito aprovado.
+
+Créditos e saldos declarados no E110 ficam na seção de escrituração. O DOCI mostra o saldo anterior, os créditos, os débitos, os saldos declarados e os saldos recalculados. O saldo transportado é uma posição na data, e a soma de posições mensais fica restrita à reconciliação histórica. Valores do C190 podem servir à conferência do E110. Qualquer tese que utilize esses mesmos registros exige conciliação antes de compor o potencial. O IPI requer evidência própria.
+
+O servidor exige que o aprovador vincule documentos preservados do contribuinte, registre a regra aplicável, apresente a memória e demonstre a conciliação de pagamento, saldo, uso anterior e sobreposição. O evento de revisão preserva essa prova. A estimativa do PGDAS-D permanece separada dos valores documentais. A demonstração aritmética, isoladamente, não concede direito à recuperação.
+
+Referências da escrituração e execução federal: [Guia Prático EFD ICMS/IPI, registros E110 e E520](https://sped.rfb.gov.br/estatico/74/D84DAAF7A4229EE5EFB705CCD7E7BA4D323CBE/Guia%20Pr%C3%A1tico%20EFD%20-%20Vers%C3%A3o%203.2.2.pdf) e [roteiros da Receita Federal para pagamento indevido ou a maior](https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/restituicao-ressarcimento-reembolso-e-compensacao/creditos/pagamento/darf/manuais-e-roteiros).
+
 As páginas genéricas com teses `A DIMENSIONAR` não devem aparecer no dossiê oficial aprovado. Elas continuam disponíveis na tela de revisão e no histórico técnico.
 
 ## 8. Integração com a especificação original

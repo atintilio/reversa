@@ -107,3 +107,44 @@ test('DTI versionado preserva memória e origem no workspace', async () => {
   assert.equal(repetido.repetido, true);
   assert.equal(repetido.versao, dti.versao);
 });
+
+test('escrituração de ICMS fica no dossiê sem criar oportunidade sintética', async () => {
+  const technicalSummary = { credito: 65641.11, saldoCredorATransportar: 32718.06 };
+  const r = await salvar({ teses: [credito(200, 100)], potentialTotal: 9836217, technicalSummary });
+  assert.equal(r.statusCode, 201, r.body);
+  const { caseId, batchId } = J(r);
+  const registro = (await sql`select resumo from diagnostics where batch_id = ${batchId}`)[0];
+  assert.deepEqual(registro.resumo.escrituracaoIcms, technicalSummary);
+  const caso = (await sql`select metadata from tax_cases where id = ${caseId}`)[0];
+  assert.equal(caso.metadata.potential_total_cents, 300);
+  assert.equal(J(r).analyses.length, 1);
+});
+
+test('aprovação exige fórmula, regra, conciliação e original do mesmo contribuinte', async (t) => {
+  const { mkdtemp, rm } = require('node:fs/promises');
+  const root = await mkdtemp(require('node:path').join(require('node:os').tmpdir(), 'reversa-prova-'));
+  const anterior = process.env.REVERSA_DOCUMENT_ROOT;
+  process.env.REVERSA_DOCUMENT_ROOT = root;
+  t.after(async () => {
+    if (anterior === undefined) delete process.env.REVERSA_DOCUMENT_ROOT;
+    else process.env.REVERSA_DOCUMENT_ROOT = anterior;
+    await rm(root, { recursive: true, force: true });
+  });
+  const salvo = await salvar({ teses: [credito(200, 300)] });
+  assert.equal(salvo.statusCode, 201, salvo.body);
+  const { taxpayerId, analyses } = J(salvo);
+  const revisar = (prova) => v1('analyses/' + analyses[0] + '/review', { method: 'POST', cookie, body: { decision: 'approve', prova } });
+  const semProva = await revisar();
+  assert.equal(J(semProva).error.code, 'DOSSIER_EVIDENCE_REQUIRED');
+  const bytes = Buffer.from('registro de prova');
+  const sha256 = require('node:crypto').createHash('sha256').update(bytes).digest('hex');
+  const prova = { arquivos: [sha256], fundamento: 'Regra da tese e regime da competência', memoria: 'Documento, registro e fórmula da apuração', conciliacao: 'Pagamento e uso anterior conferidos' };
+  assert.equal(J(await revisar(prova)).error.code, 'DOSSIER_DOCUMENT_NOT_FOUND');
+  const store = require('../lib/document-store').createStore(root);
+  await store.upload(orgId, taxpayerId, { name: 'prova.txt', size: bytes.length, offset: 0, sha256, data: bytes.toString('base64') });
+  const ok = await revisar(prova);
+  assert.equal(ok.statusCode, 200, ok.body);
+  assert.equal(J(ok).status, 'recoverable_approved');
+  const registrado = (await sql`select result_summary from tax_analyses where id = ${analyses[0]}`)[0];
+  assert.deepEqual(registrado.result_summary.prova_depuracao, prova);
+});

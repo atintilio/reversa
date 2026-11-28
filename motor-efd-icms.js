@@ -65,7 +65,7 @@
     'Tabela de COD_VER x vigência não foi confirmada; o código é apenas exibido (aviso se não tiver 3 dígitos).',
     'Tabela de COD_SIT (00 a 08) usada de memória do Guia; confirmar na tabela 4.1.2 da versão vigente.',
     'C197 foi lido como filho do C100 (na hierarquia oficial vem abaixo do C195, que não é lido); o vínculo com o documento é o C100 anterior.',
-    'Não implementado: conferência aritmética do E110 (VL_SLD_APURADO etc.), por falta da fórmula oficial confirmada. Também não são lidos C300, C390, C490, C590, C690, C790, C850, D190 etc.; o comparativo C190 x E110 é parcial.',
+    'A conferência do E110 verifica a aritmética dos saldos declarados. C300, C390, C490, C590, C690, C790, C850 e D190 não são lidos; o comparativo C190 x E110 é parcial.',
     'COD_AJ (C197) e COD_AJ_APUR (E111) são exibidos como vêm no arquivo (sem decodificar UF/tipo de utilização); a interpretação depende das tabelas estaduais 5.1.1 e 5.3.'
   ];
 
@@ -232,11 +232,24 @@
       } else if (reg === 'E110') {
         nota = null;
         e110 = {
-          periodo: per, vlTotDebitos: num(c, reg, 'VL_TOT_DEBITOS', n), vlAjDebitos: num(c, reg, 'VL_AJ_DEBITOS', n), vlTotAjDebitos: num(c, reg, 'VL_TOT_AJ_DEBITOS', n), vlEstornosCred: num(c, reg, 'VL_ESTORNOS_CRED', n),
+          linha: n, periodo: per, vlTotDebitos: num(c, reg, 'VL_TOT_DEBITOS', n), vlAjDebitos: num(c, reg, 'VL_AJ_DEBITOS', n), vlTotAjDebitos: num(c, reg, 'VL_TOT_AJ_DEBITOS', n), vlEstornosCred: num(c, reg, 'VL_ESTORNOS_CRED', n),
           vlTotCreditos: num(c, reg, 'VL_TOT_CREDITOS', n), vlAjCreditos: num(c, reg, 'VL_AJ_CREDITOS', n), vlTotAjCreditos: num(c, reg, 'VL_TOT_AJ_CREDITOS', n), vlEstornosDeb: num(c, reg, 'VL_ESTORNOS_DEB', n),
           vlSldCredorAnt: num(c, reg, 'VL_SLD_CREDOR_ANT', n), vlSldApurado: num(c, reg, 'VL_SLD_APURADO', n), vlTotDed: num(c, reg, 'VL_TOT_DED', n), vlIcmsRecolher: num(c, reg, 'VL_ICMS_RECOLHER', n),
           vlSldCredorTransportar: num(c, reg, 'VL_SLD_CREDOR_TRANSPORTAR', n), debEsp: num(c, reg, 'DEB_ESP', n), ajustes: []
         };
+        var camposSaldo = ['VL_TOT_DEBITOS', 'VL_AJ_DEBITOS', 'VL_TOT_AJ_DEBITOS', 'VL_ESTORNOS_CRED',
+          'VL_TOT_CREDITOS', 'VL_AJ_CREDITOS', 'VL_TOT_AJ_CREDITOS', 'VL_ESTORNOS_DEB', 'VL_SLD_CREDOR_ANT',
+          'VL_SLD_APURADO', 'VL_SLD_CREDOR_TRANSPORTAR'];
+        if (camposSaldo.every(function (k) { return /^\d+(?:[,.]\d{1,2})?$/.test(c[k]); })) {
+          var centavos = function (v) { return Math.round(v * 100); };
+          var debitos = [e110.vlTotDebitos, e110.vlAjDebitos, e110.vlTotAjDebitos, e110.vlEstornosCred];
+          var creditos = [e110.vlTotCreditos, e110.vlAjCreditos, e110.vlTotAjCreditos, e110.vlEstornosDeb, e110.vlSldCredorAnt];
+          var somaCentavos = function (valores) { return valores.reduce(function (s, v) { return s + centavos(v); }, 0); };
+          var saldo = somaCentavos(debitos) - somaCentavos(creditos);
+          var devedor = Math.max(saldo, 0), credor = Math.max(-saldo, 0);
+          e110.conferencia = { devedorCentavos: devedor, credorCentavos: credor,
+            confere: devedor === centavos(e110.vlSldApurado) && credor === centavos(e110.vlSldCredorTransportar) };
+        }
         r.apuracaoE110.push(e110);
       } else if (reg === 'E111') {
         if (!e110) ctx.avisar('e111orfao', 'E111 sem E110 anterior.', n);
